@@ -1,0 +1,8 @@
+<ng-container *ngFor="let item of formControlsData">
+  <app-form-control
+    [label]="item.label"
+    [value]="item.value"
+    [validators]="item.validators ?? []"
+    [valueType]="item.valueType"
+  ></app-form-control>
+</ng-container>

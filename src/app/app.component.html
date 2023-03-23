@@ -1,3 +1,20 @@
 <h1>Angular dynamic form</h1>
 
-<textarea name="" id="" cols="30" rows="10"></textarea>
+<div class="info">
+  JSON format:
+  <code> </code>
+</div>
+
+<div class="main-content">
+  <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
+  <div class="form-generated">
+    <button (click)="generateForm()">Generate form</button>
+
+    <ng-container *ngFor="let item of formGroupList | keyvalue">
+      <app-form-wrapper
+        [label]="item.key"
+        [data]="item.value"
+      ></app-form-wrapper>
+    </ng-container>
+  </div>
+</div>

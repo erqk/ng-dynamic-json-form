@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: rgb(56 131 250);
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+
+    &:hover {
+        background-color: rgb(115, 169, 255);
+    }
+
+    &:active {
+        background-color: rgb(42, 124, 255);
+    }
+}

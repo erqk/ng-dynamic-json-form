@@ -30,6 +30,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
               "src/styles.scss"
             ],
             "scripts": []

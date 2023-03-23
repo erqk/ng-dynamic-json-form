@@ -2,15 +2,17 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { FormControlComponent } from './components/form-control/form-control.component';
+import { JsonInputComponent } from './components/json-input/json-input.component';
+import { FormWrapperComponent } from './components/form-wrapper/form-wrapper.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FormControlComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    JsonInputComponent,
+    FormWrapperComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]
