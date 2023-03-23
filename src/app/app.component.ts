@@ -17,12 +17,12 @@ export class AppComponent {
       {
         label: 'Name',
         value: 'Andrew',
-        validators: ['required'],
+        validators: ['required', 'minLength:4', 'regex:\\w+'],
       },
       {
         label: 'Age',
         value: '18',
-        validators: ['required', '[18, 30]'],
+        validators: ['required', 'min:18', 'max:50'],
       },
       {
         label: 'Email',
@@ -33,7 +33,7 @@ export class AppComponent {
         label: 'Address',
         value: {},
         child: {
-          adressHome: [
+          addressHome: [
             {
               label: 'Country',
               value: 'country name',
@@ -47,7 +47,7 @@ export class AppComponent {
               value: '00000',
             },
           ],
-          adressCompany: [
+          addressCompany: [
             {
               label: 'Country',
               value: 'country name',

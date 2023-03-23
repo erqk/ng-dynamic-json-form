@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
-  Component, Input,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
   SimpleChanges
 } from '@angular/core';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  UntypedFormGroup
+} from '@angular/forms';
 import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
 import { FormControlComponent } from '../form-control/form-control.component';
 
@@ -10,14 +17,15 @@ import { FormControlComponent } from '../form-control/form-control.component';
   selector: 'app-form-wrapper',
   templateUrl: './form-wrapper.component.html',
   styleUrls: ['./form-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, FormControlComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormControlComponent],
 })
 export class FormWrapperComponent {
   @Input() label: string = '';
   @Input() data: JsonFormControlData[] = [];
 
-  formControlsData: JsonFormControlData[] = [];
+  form?: UntypedFormGroup;
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (simpleChanges['data']) {
@@ -26,9 +34,9 @@ export class FormWrapperComponent {
   }
 
   generateFormControls(): void {
-    this.formControlsData = this.data.map((x) => ({
-      ...x,
-      valueType: typeof x.value,
-    }));
+    this.form = new UntypedFormGroup({});
+    for (const item of this.data) {
+      this.form.addControl(item.label, new FormControl(item.value));
+    }
   }
 }

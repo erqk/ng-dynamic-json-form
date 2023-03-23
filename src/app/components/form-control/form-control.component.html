@@ -1,1 +1,7 @@
-<p>form-input works!</p>
+<ng-container *ngIf="!!formControl">
+  <label>{{ label }}</label>
+  <input type="text" [formControl]="$any(formControl)" />
+  <span *ngIf="formControl.errors">
+    {{ formControl.errors | json }}
+  </span>
+</ng-container>

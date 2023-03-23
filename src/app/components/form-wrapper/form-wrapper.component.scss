@@ -1,0 +1,25 @@
+:host {
+    display: block;
+    
+    &.nested {
+        margin: 0.5rem 0;
+    }
+}
+
+.form-label {
+  display: block;
+}
+
+form {
+  display: grid;
+
+  .form-control {
+    display: flex;
+    flex-direction: column;
+    margin: 0.25rem 0;
+
+    &:last-of-type {
+        margin-bottom: 1rem;
+    }
+  }
+}

@@ -1,64 +1,91 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
+  NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormControl,
+  ValidationErrors,
+  Validator,
 } from '@angular/forms';
+import { getValidators } from 'src/app/utils/validator-generator';
 
 @Component({
   selector: 'app-form-control',
   templateUrl: './form-control.component.html',
   styleUrls: ['./form-control.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FormControlComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => FormControlComponent),
+      multi: true,
+    },
   ],
 })
-export class FormControlComponent implements ControlValueAccessor {
+export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() label = '';
-  @Input() valueType: any = '';
-  @Input() value: any = '';
   @Input() validators: string[] = [];
 
-  formControl?: AbstractControl;
+  formControl?: UntypedFormControl;
 
   writeValue(obj: any): void {
-    if (!obj || !this.formControl) return;
+    if (!this.formControl) return;
 
-    this.formControl.setValue(obj);
-    console.log(obj);
+    this.formControl.setValue(this.getInitialValue(obj));
   }
   registerOnChange(fn: any): void {
     this.formControl?.valueChanges.subscribe(fn);
   }
   registerOnTouched(fn: any): void {
-    throw new Error('Method not implemented.');
+    this.formControl?.markAllAsTouched();
   }
   setDisabledState?(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
+    isDisabled ? this.formControl?.disable() : this.formControl?.enable();
+    this.formControl?.updateValueAndValidity();
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    if (!this.formControl) return null;
+    return this.formControl.valid ? null : this.formControl.errors;
+  }
+  registerOnValidatorChange?(fn: () => void): void {
+    return;
   }
 
   ngOnInit(): void {
-    this.initFormControl();
+    this.formControl = new UntypedFormControl('', {
+      validators: getValidators(this.validators),
+    });
   }
 
-  initFormControl(): void {
-    if (!this.value) {
-      this.formControl = new FormControl('');
-      return;
+  private getInitialValue(input: any): any {
+    if (input !== null && input !== '' && input !== undefined) {
+      return input;
     }
 
-    if (typeof this.value !== this.valueType) {
-      throw `${this.value} is not a type of ${this.valueType}!`;
-    }
+    switch (typeof input) {
+      case 'boolean':
+        return false;
 
-    this.formControl = new FormControl(this.value, {
-      validators: [],
-    });
+      case 'number':
+        return 0;
+
+      case 'string':
+        return '';
+
+      default:
+        return null;
+    }
   }
 }
