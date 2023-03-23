@@ -25,16 +25,23 @@ export class JsonInputComponent {
   initJsonEditor(): void {
     const el = document.querySelector('.json-editor') as HTMLElement;
     const JSONEditor = require('jsoneditor');
+    const contentSaved = window.localStorage.getItem('jsonEditorContent');
 
     this.editor = new JSONEditor(el, {
       mode: 'code',
-      onChangeText: (jsonString: string) => this.onChanged.emit(jsonString),
+      onChangeText: (jsonString: string) => this.onChangeText(jsonString),
     });
+
+    if (!!contentSaved) {
+      try {
+        this.editor.set(JSON.parse(contentSaved));
+        this.onChangeText(contentSaved);
+      } catch (e) {}
+    }
   }
 
-  generateForm(): void {
-    this.editor.validate();
-    const json = this.editor.get();
-    console.log(json);
+  private onChangeText(jsonString: string): void {
+    this.onChanged.emit(jsonString);
+    window.localStorage.setItem('jsonEditorContent', jsonString);
   }
 }
