@@ -1,6 +1,7 @@
 <label class="form-label">{{ label }}</label>
 
 <h4>STATUS: {{ form?.status }}</h4>
+<p>{{ form?.value | json }}</p>
 <form action="POST" *ngIf="!!form" [formGroup]="form">
   <ng-container *ngFor="let item of data">
     <ng-container *ngIf="!item.child">

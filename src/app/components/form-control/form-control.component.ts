@@ -27,7 +27,6 @@ import { getValidators } from 'src/app/utils/validator-generator';
   selector: 'app-form-control',
   templateUrl: './form-control.component.html',
   styleUrls: ['./form-control.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   providers: [
@@ -52,7 +51,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   formControl?: UntypedFormControl;
   checkboxValues: any[] = [];
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor() {}
 
   writeValue(obj: any): void {
     if (!this.formControl) return;
@@ -61,7 +60,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       switch (this.inputType) {
         case 'checkbox':
           this.checkboxValues = [...obj];
-          return;
+          break;
       }
     }
 
@@ -123,6 +122,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       this.checkboxValues.push(input.value);
     }
 
-    this.formControl?.setValue([...this.checkboxValues]);
+    this.formControl?.setValue(this.checkboxValues);
   }
 }

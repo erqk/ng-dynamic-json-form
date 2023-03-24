@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import {
   FormControl,
   ReactiveFormsModule,
-  UntypedFormGroup
+  UntypedFormGroup,
 } from '@angular/forms';
 import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
 import { FormControlComponent } from '../form-control/form-control.component';
@@ -17,7 +18,6 @@ import { FormControlComponent } from '../form-control/form-control.component';
   selector: 'app-form-wrapper',
   templateUrl: './form-wrapper.component.html',
   styleUrls: ['./form-wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormControlComponent],
 })
@@ -27,10 +27,16 @@ export class FormWrapperComponent {
 
   form?: UntypedFormGroup;
 
+  constructor(private cd: ChangeDetectorRef) {}
+
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (simpleChanges['data']) {
       this.generateFormControls();
     }
+  }
+
+  ngOnInit(): void {
+    this.form?.valueChanges.subscribe((x) => console.log(this.form));
   }
 
   generateFormControls(): void {
