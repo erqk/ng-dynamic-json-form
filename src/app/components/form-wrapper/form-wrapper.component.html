@@ -20,13 +20,15 @@
       *ngIf="!!item.child"
       [ngTemplateOutlet]="nestedForm"
       [ngTemplateOutletContext]="{
+        label: item.label,
         child: item.child
       }"
     ></ng-container>
   </ng-container>
 </form>
 
-<ng-template #nestedForm let-child="child">
+<ng-template #nestedForm let-label="label" let-child="child">
+  <label class="form-label">{{ label }}</label>
   <ng-container *ngFor="let item of child | keyvalue">
     <app-form-wrapper
       class="nested"
