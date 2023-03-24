@@ -62,6 +62,26 @@ export const testData: JsonFormGroupData = {
       ],
     },
     {
+      label: 'Car brand',
+      formControlName: 'carBrand',
+      type: 'dropdown',
+      value: '0',
+      options: [
+        {
+          label: 'Tesla',
+          value: '0',
+        },
+        {
+          label: 'BMW',
+          value: '1',
+        },
+        {
+          label: 'Mercedes',
+          value: '2',
+        },
+      ],
+    },
+    {
       label: 'Address',
       formControlName: 'address',
       value: {},

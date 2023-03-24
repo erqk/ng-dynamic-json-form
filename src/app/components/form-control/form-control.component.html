@@ -1,36 +1,49 @@
-<!-- Use switch case to switch to predefined type of input,
-  otherwise will not working properly when using radio buttons etc.
--->
 <ng-container *ngIf="!!formControl">
   <label>{{ label }}</label>
 
   <ng-container *ngIf="!options.length" [ngSwitch]="inputType">
-    <ng-container *ngSwitchDefault>
-      <input type="{{ inputType }}" [formControl]="$any(formControl)" />
-    </ng-container>
+    <input type="{{ inputType }}" [formControl]="$any(formControl)" />
   </ng-container>
 
-  <div class="group-buttons" *ngIf="!!options.length">
-    <ng-container *ngFor="let button of options" [ngSwitch]="inputType">
-      <label>
-        <span>{{ button.label }}</span>
-        <ng-container *ngSwitchCase="'radio'">
+  <div class="group-buttons" *ngIf="!!options.length" [ngSwitch]="inputType">
+    <ng-container *ngSwitchCase="'dropdown'">
+      <select [formControl]="$any(formControl)">
+        <option *ngFor="let item of options" [value]="item.value">
+          {{ item.label }}
+        </option>
+      </select>
+    </ng-container>
+
+    <!-- Must set the input type explicitly (not using variable),
+      otherwise will not working properly when using radio buttons etc.
+    -->
+    <ng-container *ngSwitchCase="'radio'">
+      <ng-container *ngFor="let item of options">
+        <label>
+          <span>{{ item.label }}</span>
+
           <input
             type="radio"
-            [value]="button.value"
+            [value]="item.value"
             [formControl]="$any(formControl)"
           />
-        </ng-container>
+        </label>
+      </ng-container>
+    </ng-container>
 
-        <ng-container *ngSwitchCase="'checkbox'">
+    <ng-container *ngSwitchCase="'checkbox'">
+      <ng-container *ngFor="let item of options">
+        <label>
+          <span>{{ item.label }}</span>
+
           <input
             type="checkbox"
-            [value]="button.value"
-            [checked]="checkboxValues.includes(button.value)"
+            [value]="item.value"
+            [checked]="checkboxValues.includes(item.value)"
             (change)="onCheckboxChange($event)"
           />
-        </ng-container>
-      </label>
+        </label>
+      </ng-container>
     </ng-container>
   </div>
 
