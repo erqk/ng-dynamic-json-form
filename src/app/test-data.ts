@@ -45,6 +45,7 @@ export const testData: JsonFormGroupData = {
       formControlName: 'creditCardTypes',
       type: 'checkbox',
       value: ['master'],
+      validators: ['required'],
       options: [
         {
           label: 'Visa',
