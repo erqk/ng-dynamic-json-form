@@ -36,7 +36,7 @@ export class FormWrapperComponent {
   generateFormControls(): void {
     this.form = new UntypedFormGroup({});
     for (const item of this.data) {
-      this.form.addControl(item.label, new FormControl(item.value));
+      this.form.addControl(item.formControlName, new FormControl(item.value));
     }
   }
 }

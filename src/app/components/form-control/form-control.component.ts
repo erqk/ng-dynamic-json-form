@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  forwardRef,
+  Input,
+} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -8,9 +14,13 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
   UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { debounceTime, map, tap } from 'rxjs';
+import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
+import { JsonFormControlOptions } from 'src/app/core/models/json-form-control-options.model';
 import { getValidators } from 'src/app/utils/validator-generator';
 
 @Component({
@@ -35,17 +45,30 @@ import { getValidators } from 'src/app/utils/validator-generator';
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() label = '';
+  @Input() inputType = '';
+  @Input() options: JsonFormControlOptions[] = [];
   @Input() validators: string[] = [];
 
   formControl?: UntypedFormControl;
+  checkboxValues: any[] = [];
+
+  constructor(private cd: ChangeDetectorRef) {}
 
   writeValue(obj: any): void {
     if (!this.formControl) return;
 
+    if (!!this.options.length) {
+      switch (this.inputType) {
+        case 'checkbox':
+          this.checkboxValues = [...obj];
+          return;
+      }
+    }
+
     this.formControl.setValue(this.getInitialValue(obj));
   }
   registerOnChange(fn: any): void {
-    this.formControl?.valueChanges.subscribe(fn);
+    this.formControl?.valueChanges.pipe(debounceTime(0)).subscribe(fn);
   }
   registerOnTouched(fn: any): void {
     this.formControl?.markAllAsTouched();
@@ -87,5 +110,19 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       default:
         return null;
     }
+  }
+
+  onCheckboxChange(e: Event): void {
+    const input = e.target as HTMLInputElement;
+
+    if (!input.checked || this.checkboxValues.includes(input.value)) {
+      this.checkboxValues = this.checkboxValues.filter(
+        (x) => x !== input.value
+      );
+    } else {
+      this.checkboxValues.push(input.value);
+    }
+
+    this.formControl?.setValue([...this.checkboxValues]);
   }
 }

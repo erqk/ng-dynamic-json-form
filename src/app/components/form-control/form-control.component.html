@@ -1,6 +1,39 @@
+<!-- Use switch case to switch to predefined type of input,
+  otherwise will not working properly when using radio buttons etc.
+-->
 <ng-container *ngIf="!!formControl">
   <label>{{ label }}</label>
-  <input type="text" [formControl]="$any(formControl)" />
+
+  <ng-container *ngIf="!options.length" [ngSwitch]="inputType">
+    <ng-container *ngSwitchDefault>
+      <input type="{{ inputType }}" [formControl]="$any(formControl)" />
+    </ng-container>
+  </ng-container>
+
+  <div class="group-buttons" *ngIf="!!options.length">
+    <ng-container *ngFor="let button of options" [ngSwitch]="inputType">
+      <label>
+        <span>{{ button.label }}</span>
+        <ng-container *ngSwitchCase="'radio'">
+          <input
+            type="radio"
+            [value]="button.value"
+            [formControl]="$any(formControl)"
+          />
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'checkbox'">
+          <input
+            type="checkbox"
+            [value]="button.value"
+            [checked]="checkboxValues.includes(button.value)"
+            (change)="onCheckboxChange($event)"
+          />
+        </ng-container>
+      </label>
+    </ng-container>
+  </div>
+
   <span *ngIf="formControl.errors">
     {{ formControl.errors | json }}
   </span>

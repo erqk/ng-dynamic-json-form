@@ -7,8 +7,10 @@
       <div class="form-control">
         <app-form-control
           [label]="item.label"
+          [inputType]="item.type ?? ''"
+          [options]="item.options ?? []"
           [validators]="item.validators ?? []"
-          formControlName="{{ item.label }}"
+          formControlName="{{ item.formControlName }}"
         ></app-form-control>
       </div>
     </ng-container>
