@@ -1,5 +1,4 @@
-
 export interface JsonFormControlOptions {
-    label: string;
-    value: any;
+  label: string;
+  value: any;
 }
