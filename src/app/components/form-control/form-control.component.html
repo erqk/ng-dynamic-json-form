@@ -1,5 +1,5 @@
 <ng-container *ngIf="!!formControl">
-  <label>{{ label }}</label>
+  <label class="input-label">{{ label }}</label>
 
   <ng-container *ngIf="!options.length" [ngSwitch]="inputType">
     <input type="{{ inputType }}" [formControl]="$any(formControl)" />
@@ -19,29 +19,31 @@
     -->
     <ng-container *ngSwitchCase="'radio'">
       <ng-container *ngFor="let item of options">
-        <label>
-          <span>{{ item.label }}</span>
-
+        <label class="option-button">
           <input
             type="radio"
             [value]="item.value"
             [formControl]="$any(formControl)"
           />
+
+          <span class="marker"></span>
+          <span>{{ item.label }}</span>
         </label>
       </ng-container>
     </ng-container>
 
     <ng-container *ngSwitchCase="'checkbox'">
       <ng-container *ngFor="let item of options">
-        <label>
-          <span>{{ item.label }}</span>
-
+        <label class="option-button">
           <input
             type="checkbox"
             [value]="item.value"
             [checked]="checkboxValues.includes(item.value)"
             (change)="onCheckboxChange($event)"
           />
+          
+          <span class="marker"></span>
+          <span>{{ item.label }}</span>
         </label>
       </ng-container>
     </ng-container>
