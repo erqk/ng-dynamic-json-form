@@ -43,6 +43,37 @@ button {
   }
 }
 
+input {
+  padding: 0.5rem 0.75rem;
+  font-size: inherit;
+  border: solid 1px lightgray;
+  border-radius: 0.5rem;
+  outline: none;
+
+  &:hover {
+    border-color: var(--primary-500);
+  }
+
+  &:focus {
+    border-color: var(--primary-600);
+    box-shadow: 0 0 2px 1px var(--primary-300);
+  }
+}
+
+select {
+  padding: 0.25rem 0.5rem;
+  font-size: inherit;
+  border-radius: 0.5rem;
+  border: solid 1px lightgray;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    border: solid 1px var(--primary-600);
+    box-shadow: 0 0 2px 1px var(--primary-300);
+  }
+}
+
 .input-label {
   margin-bottom: 0.35rem;
   font-weight: bold;
@@ -64,35 +95,7 @@ button {
     margin-left: 1.5rem;
   }
 
-  .marker {
-    position: relative;
-    display: block;
-    width: var(--markerSize);
-    height: var(--markerSize);
-    margin-right: 0.5rem;
-    cursor: pointer;
-    transition: 0.25s;
-    z-index: 0;
-  }
-}
-
-input {
-  padding: 0.5rem 0.75rem;
-  font-size: inherit;
-  border: solid 1px lightgray;
-  border-radius: 0.5rem;
-  outline: none;
-
-  &:hover {
-    border-color: var(--primary-500);
-  }
-
-  &:focus {
-    border-color: var(--primary-600);
-    box-shadow: 0 0 2px 1px var(--primary-300);
-  }
-
-  &[type="radio"] {
+  input[type="radio"] {
     display: none;
 
     &:checked {
@@ -125,7 +128,7 @@ input {
     }
   }
 
-  &[type="checkbox"] {
+  input[type="checkbox"] {
     display: none;
 
     &:checked {
@@ -158,18 +161,63 @@ input {
       }
     }
   }
+
+  .marker {
+    position: relative;
+    display: block;
+    width: var(--markerSize);
+    height: var(--markerSize);
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: 0.25s;
+    z-index: 0;
+  }
 }
 
-select {
-  padding: 0.25rem 0.5rem;
-  font-size: inherit;
-  border-radius: 0.5rem;
-  border: solid 1px lightgray;
-  outline: none;
+.switch-button {
+  --buttonWidth: 2.5rem;
+  --buttonHeight: 1.5rem;
 
-  &:hover,
-  &:focus {
-    border: solid 1px var(--primary-600);
-    box-shadow: 0 0 2px 1px var(--primary-300);
+  position: relative;
+  width: var(--buttonWidth);
+  height: var(--buttonHeight);
+  border-radius: var(--buttonWidth);
+  background-color: var(--primary-600);
+  cursor: pointer;
+  transition: 0.2s;
+  z-index: 0;
+
+  &:hover {
+    background-color: var(--primary-500);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  input[type="checkbox"] {
+    display: none;
+
+    &:checked {
+      ~ .marker {
+        left: calc(var(--buttonWidth) - var(--markerPadding) - var(--markerSize));
+      }
+    }
+  }
+
+  .marker {
+    --markerSize: calc(var(--buttonHeight) * 0.65);
+    --markerPadding: calc((var(--buttonHeight) - var(--markerSize)) * 0.5);
+
+    position: absolute;
+    top: 50%;
+    left: var(--markerPadding);
+    transform: translate(0, -50%);
+    width: var(--markerSize);
+    height: var(--markerSize);
+    border-radius: 50%;
+    background-color: white;
+    transition: 0.25s;
   }
 }

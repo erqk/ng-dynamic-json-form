@@ -34,6 +34,13 @@ export const testData: JsonFormGroupData = {
       ],
     },
     {
+      label: 'Is married',
+      formControlName: 'status',
+      value: false,
+      type: 'switch',
+      validators: ['required'],
+    },
+    {
       label: 'Email',
       formControlName: 'email',
       value: 'emailaddress@example.com',

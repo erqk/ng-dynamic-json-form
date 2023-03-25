@@ -10,6 +10,7 @@ export interface JsonFormControlData {
     | 'password'
     | 'number'
     | 'email'
+    | 'switch'
     | 'radio'
     | 'checkbox'
     | 'dropdown'

@@ -2,7 +2,16 @@
   <label class="input-label">{{ label }}</label>
 
   <ng-container *ngIf="!options.length" [ngSwitch]="inputType">
-    <input type="{{ inputType }}" [formControl]="$any(formControl)" />
+    <ng-container *ngSwitchCase="'switch'">
+      <label class="switch-button">
+        <input type="checkbox" [formControl]="$any(formControl)" />
+        <span class="marker"></span>
+      </label>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <input type="{{ inputType }}" [formControl]="$any(formControl)" />
+    </ng-container>
   </ng-container>
 
   <div class="group-buttons" *ngIf="!!options.length" [ngSwitch]="inputType">
@@ -41,7 +50,7 @@
             [checked]="checkboxValues.includes(item.value)"
             (change)="onCheckboxChange($event)"
           />
-          
+
           <span class="marker"></span>
           <span>{{ item.label }}</span>
         </label>
