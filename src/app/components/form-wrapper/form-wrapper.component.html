@@ -1,16 +1,8 @@
 <label class="form-label">{{ label }}</label>
 
-<div class="debug-info">
-  <code>{{ form?.value | json }}</code>
-  <br /><br />
-  <code>
-    <strong>STATUS: {{ form?.status }}</strong>
-  </code>
-</div>
-
-<form action="POST" *ngIf="!!form" [formGroup]="form">
+<ng-container *ngIf="!!form" [formGroup]="form">
   <ng-container *ngFor="let item of data">
-    <ng-container *ngIf="!item.child">
+    <ng-container *ngIf="!item.children">
       <div class="form-control">
         <app-form-control
           [label]="item.label"
@@ -22,24 +14,12 @@
       </div>
     </ng-container>
 
-    <ng-container
-      *ngIf="!!item.child"
-      [ngTemplateOutlet]="nestedForm"
-      [ngTemplateOutletContext]="{
-        label: item.label,
-        child: item.child
-      }"
-    ></ng-container>
+    <ng-container *ngIf="!!item.children">
+      <app-form-wrapper
+        formControlName="{{ item.formControlName }}"
+        [label]="item.label"
+        [data]="item.children"
+      ></app-form-wrapper>
+    </ng-container>
   </ng-container>
-</form>
-
-<ng-template #nestedForm let-label="label" let-child="child">
-  <label class="form-label">{{ label }}</label>
-  <ng-container *ngFor="let item of child | keyvalue">
-    <app-form-wrapper
-      class="nested"
-      [label]="$any(item.key)"
-      [data]="$any(item.value)"
-    ></app-form-wrapper>
-  </ng-container>
-</ng-template>
+</ng-container>

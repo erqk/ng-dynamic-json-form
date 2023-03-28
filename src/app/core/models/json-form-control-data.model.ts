@@ -17,5 +17,5 @@ export interface JsonFormControlData {
     | 'range';
   validators?: string[];
   options?: JsonFormControlOptions[];
-  child?: JsonFormGroupData;
+  children?: JsonFormControlData[];
 }

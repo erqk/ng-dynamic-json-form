@@ -1,25 +1,18 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   forwardRef,
-  Input,
+  Input
 } from '@angular/core';
 import {
   AbstractControl,
-  ControlValueAccessor,
-  FormControl,
-  NG_VALIDATORS,
+  ControlValueAccessor, NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
-  UntypedFormControl,
-  UntypedFormGroup,
-  ValidationErrors,
-  Validator,
+  UntypedFormControl, ValidationErrors,
+  Validator
 } from '@angular/forms';
-import { debounceTime, map, tap } from 'rxjs';
-import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
+import { debounceTime } from 'rxjs';
 import { JsonFormControlOptions } from 'src/app/core/models/json-form-control-options.model';
 import { getValidators } from 'src/app/utils/validator-generator';
 
@@ -51,12 +44,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   formControl?: UntypedFormControl;
   checkboxValues: any[] = [];
 
-  constructor() {}
-
   writeValue(obj: any): void {
-    if (!this.formControl) return;
+    if (!this.formControl || (!obj && typeof obj !== 'boolean')) return;
 
-    if (!!this.options.length) {
+    if (!!this.options.length && !!obj.length) {
       switch (this.inputType) {
         case 'checkbox':
           this.checkboxValues = [...obj];
@@ -79,10 +70,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     if (!this.formControl) return null;
-    return this.formControl.valid ? null : this.formControl.errors;
+    return this.formControl.invalid ? this.formControl.errors : null;
   }
   registerOnValidatorChange?(fn: () => void): void {
-    return;
+    this.formControl?.updateValueAndValidity();
   }
 
   ngOnInit(): void {

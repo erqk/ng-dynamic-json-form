@@ -92,48 +92,73 @@ export const testData: JsonFormGroupData = {
       label: 'Address',
       formControlName: 'address',
       value: {},
-      child: {
-        addressHome: [
-          {
-            label: 'Country',
-            formControlName: 'country',
-            value: 'country name',
-            type: 'text',
-          },
-          {
-            label: 'State',
-            formControlName: 'state',
-            value: 'State name',
-            type: 'text',
-          },
-          {
-            label: 'Postcode',
-            formControlName: 'postcode',
-            value: '00000',
-            type: 'text',
-          },
-        ],
-        addressCompany: [
-          {
-            label: 'Country',
-            formControlName: 'country',
-            value: 'country name',
-            type: 'text',
-          },
-          {
-            label: 'State',
-            formControlName: 'state',
-            value: 'State name',
-            type: 'text',
-          },
-          {
-            label: 'Postcode',
-            formControlName: 'postcode',
-            value: '11111',
-            type: 'text',
-          },
-        ],
-      },
+      children: [
+        {
+          label: 'Country',
+          formControlName: 'country',
+          value: 'country name',
+          type: 'text',
+        },
+        {
+          label: 'State',
+          formControlName: 'state',
+          value: 'State name',
+          type: 'text',
+        },
+        {
+          label: 'Postcode',
+          formControlName: 'postcode',
+          value: '00000',
+          type: 'text',
+        },
+      ],
     },
+    // {
+    //   label: 'Address',
+    //   formControlName: 'address',
+    //   value: {},
+    //   children: {
+    //     addressHome: [
+    //       {
+    //         label: 'Country',
+    //         formControlName: 'country',
+    //         value: 'country name',
+    //         type: 'text',
+    //       },
+    //       {
+    //         label: 'State',
+    //         formControlName: 'state',
+    //         value: 'State name',
+    //         type: 'text',
+    //       },
+    //       {
+    //         label: 'Postcode',
+    //         formControlName: 'postcode',
+    //         value: '00000',
+    //         type: 'text',
+    //       },
+    //     ],
+    //     addressCompany: [
+    //       {
+    //         label: 'Country',
+    //         formControlName: 'country',
+    //         value: 'country name',
+    //         type: 'text',
+    //       },
+    //       {
+    //         label: 'State',
+    //         formControlName: 'state',
+    //         value: 'State name',
+    //         type: 'text',
+    //       },
+    //       {
+    //         label: 'Postcode',
+    //         formControlName: 'postcode',
+    //         value: '11111',
+    //         type: 'text',
+    //       },
+    //     ],
+    //   },
+    // },
   ],
 };

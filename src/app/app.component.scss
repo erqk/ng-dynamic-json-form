@@ -1,18 +1,25 @@
 :host {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 2fr 3fr;
-    gap: 1rem;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 1rem;
+}
+
+.debug-info {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--primary-100);
+  border-radius: 0.5rem;
 }
 
 @media (max-width: 992px) {
-    .main-content {
-        flex-direction: column;
-    }
+  .main-content {
+    flex-direction: column;
+  }
 }

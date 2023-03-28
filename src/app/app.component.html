@@ -10,11 +10,25 @@
   <div class="form-generated">
     <button (click)="generateForm()">Generate form</button>
 
-    <ng-container *ngFor="let item of formGroupList | keyvalue">
-      <app-form-wrapper
-        [label]="item.key"
-        [data]="item.value"
-      ></app-form-wrapper>
+    <ng-container *ngIf="!!form && !!jsonParsed && !reloading">
+      <div class="debug-info">
+        <code>{{ form.value | json }}</code>
+        <br /><br />
+        <code>
+          <strong>STATUS: {{ form.status }}</strong>
+        </code>
+      </div>
+
+      <form action="POST" [formGroup]="form">
+        <ng-container *ngFor="let jsonItem of jsonParsed | keyvalue">
+          <app-form-wrapper
+            [label]="jsonItem.key"
+            [data]="jsonItem.value"
+            formControlName="{{ jsonItem.key }}"
+          ></app-form-wrapper>
+        </ng-container>
+      </form>
+      
     </ng-container>
   </div>
 </div>
