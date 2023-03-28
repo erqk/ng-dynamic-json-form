@@ -1,20 +1,14 @@
 import { CommonModule } from '@angular/common';
+import { Component, forwardRef, Input } from '@angular/core';
 import {
-  Component,
-  forwardRef,
-  Input
-} from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor, NG_VALIDATORS,
+  NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
-  UntypedFormControl, ValidationErrors,
-  Validator
+  UntypedFormControl
 } from '@angular/forms';
-import { debounceTime } from 'rxjs';
 import { JsonFormControlOptions } from 'src/app/core/models/json-form-control-options.model';
 import { getValidators } from 'src/app/utils/validator-generator';
+import { CvaBaseComponent } from '../cva-base/cva-base.component';
 
 @Component({
   selector: 'app-form-control',
@@ -35,16 +29,16 @@ import { getValidators } from 'src/app/utils/validator-generator';
     },
   ],
 })
-export class FormControlComponent implements ControlValueAccessor, Validator {
+export class FormControlComponent extends CvaBaseComponent {
   @Input() label = '';
   @Input() inputType = '';
   @Input() options: JsonFormControlOptions[] = [];
   @Input() validators: string[] = [];
 
-  formControl?: UntypedFormControl;
+  override formControl?: UntypedFormControl;
   checkboxValues: any[] = [];
 
-  writeValue(obj: any): void {
+  override writeValue(obj: any): void {
     if (!this.formControl || (!obj && typeof obj !== 'boolean')) return;
 
     if (!!this.options.length && !!obj.length) {
@@ -56,24 +50,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
 
     this.formControl.setValue(this.getInitialValue(obj));
-  }
-  registerOnChange(fn: any): void {
-    this.formControl?.valueChanges.pipe(debounceTime(0)).subscribe(fn);
-  }
-  registerOnTouched(fn: any): void {
-    this.formControl?.markAllAsTouched();
-  }
-  setDisabledState?(isDisabled: boolean): void {
-    isDisabled ? this.formControl?.disable() : this.formControl?.enable();
-    this.formControl?.updateValueAndValidity();
-  }
-
-  validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    if (!this.formControl) return null;
-    return this.formControl.invalid ? this.formControl.errors : null;
-  }
-  registerOnValidatorChange?(fn: () => void): void {
-    this.formControl?.updateValueAndValidity();
   }
 
   ngOnInit(): void {

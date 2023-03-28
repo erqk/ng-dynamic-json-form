@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import {
-  FormControl, UntypedFormControl,
-  UntypedFormGroup
+  FormControl,
+  UntypedFormControl,
+  UntypedFormGroup,
 } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 import { JsonFormGroupData } from './core/models/json-form-group-data.model';
 import { generateFormGroup } from './utils/form-group-generator';
 
@@ -26,6 +28,8 @@ export class AppComponent {
   form?: UntypedFormGroup;
   reloading = false;
 
+  reset$ = new Subject();
+
   onJsonEditorChanged(value: string): void {
     this.jsonString = value;
   }
@@ -40,6 +44,7 @@ export class AppComponent {
     if (!this.jsonParsed) return;
 
     this.reloading = true;
+    this.reset$.next(null);
     this.form = new UntypedFormGroup({});
     for (const key in this.jsonParsed) {
       const formGroup = generateFormGroup(this.jsonParsed[key]);
@@ -50,5 +55,9 @@ export class AppComponent {
     setTimeout(() => {
       this.reloading = false;
     }, 0);
+
+    this.form.valueChanges.pipe(takeUntil(this.reset$)).subscribe((x) => {
+      console.log(this.form);
+    });
   }
 }

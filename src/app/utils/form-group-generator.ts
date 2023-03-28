@@ -1,6 +1,5 @@
-import { UntypedFormGroup, FormControl } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { JsonFormControlData } from '../core/models/json-form-control-data.model';
-import { getValidators } from './validator-generator';
 
 export function generateFormGroup(
   data: JsonFormControlData[]
@@ -11,14 +10,8 @@ export function generateFormGroup(
       ? generateFormGroup(item.children).value
       : item.value;
 
-    formGroup.addControl(
-      item.formControlName,
-      new FormControl(value, {
-        validators: getValidators(item.validators ?? []),
-      })
-    );
+    formGroup.addControl(item.formControlName, new FormControl(value));
   }
 
-  console.log(formGroup);
   return formGroup;
 }
