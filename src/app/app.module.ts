@@ -3,9 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { JsonInputComponent } from './components/json-input/json-input.component';
-import { FormWrapperComponent } from './components/form-wrapper/form-wrapper.component';
+import { FormGroupComponent } from './components/form-group/form-group.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormControlComponent } from './components/form-control/form-control.component';
+import { DynamicFormGeneratorComponent } from './components/dynamic-form-generator/dynamic-form-generator.component';
 
 @NgModule({
   declarations: [
@@ -15,8 +16,9 @@ import { FormControlComponent } from './components/form-control/form-control.com
     BrowserModule,
     ReactiveFormsModule,
     JsonInputComponent,
-    FormWrapperComponent,
+    FormGroupComponent,
     FormControlComponent,
+    DynamicFormGeneratorComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

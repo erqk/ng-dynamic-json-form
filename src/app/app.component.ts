@@ -6,7 +6,7 @@ import {
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { JsonFormGroupData } from './core/models/json-form-group-data.model';
-import { generateFormGroup } from './utils/form-group-generator';
+import { FormGeneratorService } from './services/form-generator.service';
 
 @Component({
   selector: 'app-root',
@@ -26,38 +26,18 @@ export class AppComponent {
   }[] = [];
 
   form?: UntypedFormGroup;
+  formShadow?: UntypedFormGroup;
   reloading = false;
 
   reset$ = new Subject();
+
+  constructor(private formGeneratorService: FormGeneratorService) {}
 
   onJsonEditorChanged(value: string): void {
     this.jsonString = value;
   }
 
-  generateForm(): void {
-    try {
-      this.jsonParsed = JSON.parse(this.jsonString);
-    } catch (e) {
-      throw 'JSON data invalid';
-    }
-
-    if (!this.jsonParsed) return;
-
-    this.reloading = true;
-    this.reset$.next(null);
-    this.form = new UntypedFormGroup({});
-    for (const key in this.jsonParsed) {
-      const formGroup = generateFormGroup(this.jsonParsed[key]);
-      this.form.addControl(key, new FormControl(formGroup.value));
-    }
-
-    // instantiate form using next tick to prevent binding error
-    setTimeout(() => {
-      this.reloading = false;
-    }, 0);
-
-    this.form.valueChanges.pipe(takeUntil(this.reset$)).subscribe((x) => {
-      console.log(this.form);
-    });
+  onFormGet(e: UntypedFormGroup): void {
+    this.form = e;
   }
 }

@@ -8,27 +8,18 @@
 <div class="main-content">
   <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
   <div class="form-generated">
-    <button (click)="generateForm()">Generate form</button>
 
-    <ng-container *ngIf="!!form && !!jsonParsed && !reloading">
-      <div class="debug-info">
-        <code>{{ form.value | json }}</code>
-        <br /><br />
-        <code>
-          <strong>STATUS: {{ form.status }}</strong>
-        </code>
-      </div>
+    <div class="debug-info">
+      <code>{{ form?.value | json }}</code>
+      <br /><br />
+      <code>
+        <strong>STATUS: {{ form?.status }}</strong>
+      </code>
+    </div>
 
-      <form action="POST" [formGroup]="form">
-        <ng-container *ngFor="let jsonItem of jsonParsed | keyvalue">
-          <app-form-wrapper
-            [label]="jsonItem.key"
-            [data]="jsonItem.value"
-            formControlName="{{ jsonItem.key }}"
-          ></app-form-wrapper>
-        </ng-container>
-      </form>
-      
-    </ng-container>
+    <app-dynamic-form-generator
+      [jsonString]="jsonString"
+      (formGet)="onFormGet($event)"
+    ></app-dynamic-form-generator>
   </div>
 </div>

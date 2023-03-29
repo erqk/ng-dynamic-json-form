@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormWrapperComponent } from './form-wrapper.component';
+import { FormGroupComponent } from './form-group.component';
 
 describe('FormWrapperComponent', () => {
-  let component: FormWrapperComponent;
-  let fixture: ComponentFixture<FormWrapperComponent>;
+  let component: FormGroupComponent;
+  let fixture: ComponentFixture<FormGroupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FormWrapperComponent ]
+      declarations: [ FormGroupComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FormWrapperComponent);
+    fixture = TestBed.createComponent(FormGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -15,11 +15,11 @@
     </ng-container>
 
     <ng-container *ngIf="!!item.children">
-      <app-form-wrapper
+      <app-form-group
         formControlName="{{ item.formControlName }}"
         [label]="item.label"
         [data]="item.children"
-      ></app-form-wrapper>
+      ></app-form-group>
     </ng-container>
   </ng-container>
 </ng-container>

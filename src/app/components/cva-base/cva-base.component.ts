@@ -68,12 +68,10 @@ export class CvaBaseComponent implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     if (!!this.form) {
-      console.log(this.form.errors);
       return this.form.invalid ? this.form.errors : null;
     }
 
     if (!!this.formControl) {
-      console.log(this.formControl.errors);
       return this.formControl.invalid ? this.formControl.errors : null;
     }
 

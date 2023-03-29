@@ -26,4 +26,21 @@ export class FormGeneratorService {
 
     return formGroup;
   }
+
+  generateFormGroupWithValidation(
+    data: JsonFormControlData[]
+  ): UntypedFormGroup {
+    const formGroup = new UntypedFormGroup({});
+    for (const item of data) {
+      const control = !!item.children
+        ? this.generateFormGroupWithValidation(item.children)
+        : new FormControl(item.value, {
+            validators: getValidators(item.validators ?? []),
+          });
+
+      formGroup.addControl(item.formControlName, control);
+    }
+
+    return formGroup;
+  }
 }
