@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   UntypedFormControl
 } from '@angular/forms';
-import { JsonFormControlOptions } from 'src/app/core/models/json-form-control-options.model';
+import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
 import { getValidators } from 'src/app/utils/validator-generator';
 import { CvaBaseComponent } from '../cva-base/cva-base.component';
 
@@ -30,10 +30,7 @@ import { CvaBaseComponent } from '../cva-base/cva-base.component';
   ],
 })
 export class FormControlComponent extends CvaBaseComponent {
-  @Input() label = '';
-  @Input() inputType = '';
-  @Input() options: JsonFormControlOptions[] = [];
-  @Input() validators: string[] = [];
+  @Input() data: JsonFormControlData | null = null;
 
   override formControl?: UntypedFormControl;
   checkboxValues: any[] = [];
@@ -41,8 +38,8 @@ export class FormControlComponent extends CvaBaseComponent {
   override writeValue(obj: any): void {
     if (!this.formControl || (!obj && typeof obj !== 'boolean')) return;
 
-    if (!!this.options.length && !!obj.length) {
-      switch (this.inputType) {
+    if (!!this.data?.options?.length && !!obj.length) {
+      switch (this.data.type) {
         case 'checkbox':
           this.checkboxValues = [...obj];
           break;
@@ -54,7 +51,7 @@ export class FormControlComponent extends CvaBaseComponent {
 
   ngOnInit(): void {
     this.formControl = new UntypedFormControl('', {
-      validators: getValidators(this.validators),
+      validators: getValidators(this.data?.validators || []),
     });
   }
 

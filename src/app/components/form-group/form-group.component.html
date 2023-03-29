@@ -15,10 +15,7 @@
           }"
         >
           <app-form-control
-            [label]="item.label"
-            [inputType]="item.type ?? ''"
-            [options]="item.options ?? []"
-            [validators]="item.validators ?? []"
+            [data]="item"
             formControlName="{{ item.formControlName }}"
           ></app-form-control>
         </div>

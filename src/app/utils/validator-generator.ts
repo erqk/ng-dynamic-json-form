@@ -36,7 +36,7 @@ export function getValidators(input: string[]): ValidatorFn[] {
         break;
 
       case 'email':
-        result = Validators.pattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+        result = Validators.pattern(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/);
         break;
 
       default:

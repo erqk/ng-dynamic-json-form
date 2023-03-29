@@ -3,6 +3,10 @@
 
   &.nested {
     margin: 0.5rem 0;
+
+    .form-label {
+      display: block;
+    }
   }
 }
 .container {
@@ -12,15 +16,19 @@
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 1rem;
+  display: none;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-bottom: solid 1px var(--primary-500);
 }
 
 
 .form-control {
   display: flex;
   flex-direction: column;
-  margin: 0.25rem 0 1rem;
+  margin: 0.25rem 0;
 
   &:last-of-type {
     margin-bottom: 2rem;

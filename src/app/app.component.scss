@@ -7,8 +7,23 @@
 .main-content {
   flex: 1;
   display: grid;
-  grid-template-columns: 2fr 3fr;
-  gap: 1rem;
+  grid-template-columns: minmax(350px, 2fr) 3fr minmax(350px, 2fr);
+  gap: 3rem;
+  padding: 1rem;
+
+  .json-input {
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    background-color: var(--primary-100);
+    padding: 1rem;
+
+    app-json-input {
+      flex: 1;
+    }
+  }
 }
 
 .debug-info {
@@ -16,6 +31,12 @@
   padding: 1rem;
   background-color: var(--primary-100);
   border-radius: 0.5rem;
+  overflow: auto;
+}
+
+.section-title {
+  margin: 0;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 992px) {

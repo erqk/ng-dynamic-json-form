@@ -1,27 +1,29 @@
 <h1>Angular dynamic form</h1>
 
-<div class="info">
-  JSON format:
-  <code> </code>
-</div>
-
 <div class="main-content">
-  <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
-  <div class="form-generated">
+  <div class="json-input">
+    <h4 class="section-title">Put your JSON data here:</h4>
     <button (click)="generateForm()">Generate form</button>
-    
-    <div class="debug-info">
-      <code>{{ form?.value | json }}</code>
-      <br /><br />
-      <code>
-        <strong>STATUS: {{ form?.status }}</strong>
-      </code>
-    </div>
+    <br>
+    <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
+  </div>
 
+  <div class="form-generated">
     <app-dynamic-form-generator
       *ngIf="jsonString"
       [jsonString]="jsonString"
       (formGet)="onFormGet($event)"
     ></app-dynamic-form-generator>
+  </div>
+
+  <div>
+    <h4 class="section-title">Form output:</h4>
+    <div class="debug-info">
+      <code>
+        <strong>STATUS: {{ form?.status }}</strong>
+      </code>
+      <br /><br />
+      <code>{{ form?.value | json }}</code>
+    </div>
   </div>
 </div>

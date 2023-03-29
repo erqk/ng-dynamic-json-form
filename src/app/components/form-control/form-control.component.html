@@ -1,23 +1,30 @@
-<ng-container *ngIf="!!formControl">
-  <label class="input-label">{{ label }}</label>
+<ng-container *ngIf="!!formControl && !!data">
+  <label class="input-label">{{ data.label }}</label>
 
-  <ng-container *ngIf="!options.length" [ngSwitch]="inputType">
+  <ng-container *ngIf="!data.options?.length" [ngSwitch]="data.type">
     <ng-container *ngSwitchCase="'switch'">
       <label class="switch-button">
         <input type="checkbox" [formControl]="$any(formControl)" />
         <span class="marker"></span>
       </label>
-    </ng-container> 
+    </ng-container>
 
     <ng-container *ngSwitchDefault>
-      <input type="{{ inputType }}" [formControl]="$any(formControl)" />
+      <input type="{{ data.type }}" [formControl]="$any(formControl)" />
     </ng-container>
   </ng-container>
 
-  <div class="group-buttons" *ngIf="!!options.length" [ngSwitch]="inputType">
+  <div
+    *ngIf="!!data.options?.length"
+    [ngSwitch]="data.type"
+    class="group-buttons"
+    [ngStyle]="{
+      'flex-direction': data.optionsLayout
+    }"
+  >
     <ng-container *ngSwitchCase="'dropdown'">
       <select [formControl]="$any(formControl)">
-        <option *ngFor="let item of options" [value]="item.value">
+        <option *ngFor="let item of data.options" [value]="item.value">
           {{ item.label }}
         </option>
       </select>
@@ -27,7 +34,7 @@
       otherwise will not working properly when using radio buttons etc.
     -->
     <ng-container *ngSwitchCase="'radio'">
-      <ng-container *ngFor="let item of options">
+      <ng-container *ngFor="let item of data.options">
         <label class="option-button">
           <input
             type="radio"
@@ -42,7 +49,7 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'checkbox'">
-      <ng-container *ngFor="let item of options">
+      <ng-container *ngFor="let item of data.options">
         <label class="option-button">
           <input
             type="checkbox"

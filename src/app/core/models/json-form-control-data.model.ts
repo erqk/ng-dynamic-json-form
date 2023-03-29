@@ -15,6 +15,7 @@ export interface JsonFormControlData {
     | 'dropdown'
     | 'range';
   validators?: string[];
+  optionsLayout?: 'column' | 'row';
   options?: JsonFormControlOptions[];
   children?: JsonFormControlData[];
   gridRow?: string;

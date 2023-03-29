@@ -41,6 +41,10 @@ button {
   &:active {
     background-color: var(--primary-600);
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 input {
@@ -74,25 +78,18 @@ select {
   }
 }
 
-.input-label, .form-label {
-  margin-bottom: 0.35rem;
-  font-weight: bold;
-}
-
 .option-button {
   --markerSize: 1rem;
 
   display: flex;
   align-items: center;
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
 
   &:hover {
     .marker {
       box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
     }
-  }
-
-  + .option-button {
-    margin-left: 1.5rem;
   }
 
   input[type="radio"] {
