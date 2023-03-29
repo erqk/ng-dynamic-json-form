@@ -98,67 +98,23 @@ export const testData: JsonFormGroupData = {
           formControlName: 'country',
           value: 'country name',
           type: 'text',
+          gridRow: '1/2'
         },
         {
           label: 'State',
           formControlName: 'state',
           value: 'State name',
           type: 'text',
+          gridRow: '1/2'
         },
         {
           label: 'Postcode',
           formControlName: 'postcode',
           value: '00000',
           type: 'text',
+          gridColumn: 'span 2'
         },
       ],
     },
-    // {
-    //   label: 'Address',
-    //   formControlName: 'address',
-    //   value: {},
-    //   children: {
-    //     addressHome: [
-    //       {
-    //         label: 'Country',
-    //         formControlName: 'country',
-    //         value: 'country name',
-    //         type: 'text',
-    //       },
-    //       {
-    //         label: 'State',
-    //         formControlName: 'state',
-    //         value: 'State name',
-    //         type: 'text',
-    //       },
-    //       {
-    //         label: 'Postcode',
-    //         formControlName: 'postcode',
-    //         value: '00000',
-    //         type: 'text',
-    //       },
-    //     ],
-    //     addressCompany: [
-    //       {
-    //         label: 'Country',
-    //         formControlName: 'country',
-    //         value: 'country name',
-    //         type: 'text',
-    //       },
-    //       {
-    //         label: 'State',
-    //         formControlName: 'state',
-    //         value: 'State name',
-    //         type: 'text',
-    //       },
-    //       {
-    //         label: 'Postcode',
-    //         formControlName: 'postcode',
-    //         value: '11111',
-    //         type: 'text',
-    //       },
-    //     ],
-    //   },
-    // },
   ],
 };

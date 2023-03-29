@@ -1,25 +1,32 @@
 :host {
-    display: block;
-    
-    &.nested {
-        margin: 0.5rem 0;
-    }
+  display: block;
+
+  &.nested {
+    margin: 0.5rem 0;
+  }
+}
+.container {
+  display: grid;
+  gap: 1rem;
+  row-gap: 0.5rem;
 }
 
 .form-label {
   display: block;
+  margin-bottom: 1rem;
 }
 
-form {
-  display: grid;
 
-  .form-control {
-    display: flex;
-    flex-direction: column;
-    margin: 0.25rem 0 1rem;
+.form-control {
+  display: flex;
+  flex-direction: column;
+  margin: 0.25rem 0 1rem;
 
-    &:last-of-type {
-        margin-bottom: 2rem;
-    }
+  &:last-of-type {
+    margin-bottom: 2rem;
+  }
+
+  &.grid-layout {
+    margin-bottom: 0;
   }
 }

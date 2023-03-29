@@ -1,5 +1,4 @@
 import { JsonFormControlOptions } from './json-form-control-options.model';
-import { JsonFormGroupData } from './json-form-group-data.model';
 
 export interface JsonFormControlData {
   label: string;
@@ -18,4 +17,6 @@ export interface JsonFormControlData {
   validators?: string[];
   options?: JsonFormControlOptions[];
   children?: JsonFormControlData[];
+  gridRow?: string;
+  gridColumn?: string;
 }
