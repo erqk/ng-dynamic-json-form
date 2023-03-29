@@ -1,12 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  FormControl,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import { JsonFormGroupData } from './core/models/json-form-group-data.model';
-import { FormGeneratorService } from './services/form-generator.service';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -17,27 +10,20 @@ export class AppComponent {
   title = 'angular-dynamic-form';
 
   jsonString = '';
-  jsonParsed: JsonFormGroupData | null = null;
-  formValue = null;
-
-  formGroupListData: {
-    formControlName: string;
-    data: JsonFormGroupData;
-  }[] = [];
+  private _jsonString = '';
 
   form?: UntypedFormGroup;
-  formShadow?: UntypedFormGroup;
-  reloading = false;
-
-  reset$ = new Subject();
-
-  constructor(private formGeneratorService: FormGeneratorService) {}
 
   onJsonEditorChanged(value: string): void {
-    this.jsonString = value;
+    this._jsonString = value;
   }
 
   onFormGet(e: UntypedFormGroup): void {
     this.form = e;
+  }
+
+  // Update form manually to prevent form binding errors when JSON is invalid
+  generateForm(): void {
+    this.jsonString = this._jsonString;
   }
 }

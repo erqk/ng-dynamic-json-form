@@ -8,7 +8,8 @@
 <div class="main-content">
   <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
   <div class="form-generated">
-
+    <button (click)="generateForm()">Generate form</button>
+    
     <div class="debug-info">
       <code>{{ form?.value | json }}</code>
       <br /><br />
@@ -18,6 +19,7 @@
     </div>
 
     <app-dynamic-form-generator
+      *ngIf="jsonString"
       [jsonString]="jsonString"
       (formGet)="onFormGet($event)"
     ></app-dynamic-form-generator>
