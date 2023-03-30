@@ -4,16 +4,14 @@ import {
   EventEmitter,
   Input,
   Output,
-  SimpleChanges,
+  SimpleChanges
 } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   ReactiveFormsModule,
   UntypedFormControl,
-  UntypedFormGroup,
+  UntypedFormGroup
 } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { JsonFormGroupData } from 'src/app/core/models/json-form-group-data.model';
 import { FormGeneratorService } from 'src/app/services/form-generator.service';
 import { clearEmpties } from 'src/app/utils/clear-empties';
@@ -45,9 +43,7 @@ export class DynamicFormGeneratorComponent {
     }
   }
 
-  ngOnDestroy(): void {}
-
-  parseJsonData(): JsonFormGroupData {
+  private parseJsonData(): JsonFormGroupData {
     try {
       this.jsonParsed = JSON.parse(this.jsonString);
       return this.jsonParsed!;
@@ -56,7 +52,7 @@ export class DynamicFormGeneratorComponent {
     }
   }
 
-  buildForm(jsonParsed: JsonFormGroupData): void {
+  private buildForm(jsonParsed: JsonFormGroupData): void {
     if (!jsonParsed) return;
 
     this.reload = true;
@@ -79,7 +75,7 @@ export class DynamicFormGeneratorComponent {
     }
 
     this.form.valueChanges.subscribe((x) => this.updateFormStatus());
-    
+
     // Initiate form on the next tick to prevent
     // "There is no FormControl instance attached to form control element with name: XXX" error
     setTimeout(() => {
@@ -88,7 +84,7 @@ export class DynamicFormGeneratorComponent {
     }, 0);
   }
 
-  updateFormStatus(): void {
+  private updateFormStatus(): void {
     if (!this.form) return;
 
     const getFormErrors = (input: UntypedFormControl | UntypedFormGroup) => {
