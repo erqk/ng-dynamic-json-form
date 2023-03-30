@@ -4,13 +4,13 @@ import {
   EventEmitter,
   Input,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import {
   FormControl,
   ReactiveFormsModule,
   UntypedFormControl,
-  UntypedFormGroup
+  UntypedFormGroup,
 } from '@angular/forms';
 import { JsonFormGroupData } from 'src/app/core/models/json-form-group-data.model';
 import { FormGeneratorService } from 'src/app/services/form-generator.service';
@@ -61,12 +61,14 @@ export class DynamicFormGeneratorComponent {
     this.shadowForm = new UntypedFormGroup({});
 
     for (const key in jsonParsed) {
-      const formGroup = this.formGeneratorService.generateFormGroup(
-        jsonParsed[key]
-      );
+      const formGroup =
+        this.formGeneratorService.generateFormGroup(
+          jsonParsed[key],
+          true
+        );
 
       const formGroupShadow =
-        this.formGeneratorService.generateFormGroupWithValidation(
+        this.formGeneratorService.generateFormGroup(
           jsonParsed[key]
         );
 
@@ -75,6 +77,9 @@ export class DynamicFormGeneratorComponent {
     }
 
     this.form.valueChanges.subscribe((x) => this.updateFormStatus());
+
+    console.log(this.shadowForm);
+    console.log(this.form);
 
     // Initiate form on the next tick to prevent
     // "There is no FormControl instance attached to form control element with name: XXX" error

@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
-  UntypedFormGroup
+  UntypedFormGroup,
 } from '@angular/forms';
 import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
 import { FormGeneratorService } from 'src/app/services/form-generator.service';
 import { CvaBaseComponent } from '../cva-base/cva-base.component';
+import { FormArrayComponent } from '../form-array/form-array.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 
 @Component({
@@ -16,7 +17,12 @@ import { FormControlComponent } from '../form-control/form-control.component';
   templateUrl: './form-group.component.html',
   styleUrls: ['./form-group.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormControlComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormControlComponent,
+    FormArrayComponent,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -40,13 +46,14 @@ export class FormGroupComponent extends CvaBaseComponent {
     super();
   }
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (simpleChanges['data']) {
-      this.initForm();
-    }
+  ngOnInit(): void {
+    this.initForm();
   }
 
   private initForm(): void {
-    this.form = this.formGeneratorService.generateFormGroup(this.data);
+    this.form = this.formGeneratorService.generateFormGroup(
+      this.data,
+      true
+    );
   }
 }

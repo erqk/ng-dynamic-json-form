@@ -32,11 +32,11 @@ import { CvaBaseComponent } from '../cva-base/cva-base.component';
 export class FormControlComponent extends CvaBaseComponent {
   @Input() data: JsonFormControlData | null = null;
 
-  override formControl?: UntypedFormControl;
+  override form?: UntypedFormControl;
   checkboxValues: any[] = [];
 
   override writeValue(obj: any): void {
-    if (!this.formControl || (!obj && typeof obj !== 'boolean')) return;
+    if (!this.form || (!obj && typeof obj !== 'boolean')) return;
 
     if (!!this.data?.options?.length && !!obj.length) {
       switch (this.data.type) {
@@ -46,11 +46,11 @@ export class FormControlComponent extends CvaBaseComponent {
       }
     }
 
-    this.formControl.setValue(this.getInitialValue(obj));
+    this.form.setValue(this.getInitialValue(obj));
   }
 
   ngOnInit(): void {
-    this.formControl = new UntypedFormControl('', {
+    this.form = new UntypedFormControl('', {
       validators: getValidators(this.data?.validators || []),
     });
   }
@@ -86,6 +86,6 @@ export class FormControlComponent extends CvaBaseComponent {
       this.checkboxValues.push(input.value);
     }
 
-    this.formControl?.setValue(this.checkboxValues);
+    this.form?.setValue(this.checkboxValues);
   }
 }

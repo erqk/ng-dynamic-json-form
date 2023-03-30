@@ -3,7 +3,8 @@
 <ng-container *ngIf="!!form" [formGroup]="form">
   <div class="container">
     <ng-container *ngFor="let item of data">
-      <ng-container *ngIf="!item.children">
+      <!-- Form control -->
+      <ng-container *ngIf="!item.children && !item.formArray">
         <div
           class="form-control"
           [ngClass]="{
@@ -21,7 +22,8 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="!!item.children">
+      <!-- Child form group -->
+      <ng-container *ngIf="!!item.children && !item.formArray">
         <div class="form-group">
           <app-form-group
             class="nested"
@@ -29,6 +31,19 @@
             [label]="item.label"
             [data]="item.children"
           ></app-form-group>
+        </div>
+      </ng-container>
+
+      <!-- Form array -->
+      <ng-container *ngIf="!!item.formArray && !item.children">
+        <div class="form-group">
+          <app-form-array
+            class="nested"
+            formControlName="{{ item.formControlName }}"
+            [label]="item.label"
+            [data]="item.formArray.template"
+            [count]="item.formArray.count"
+          ></app-form-array>
         </div>
       </ng-container>
     </ng-container>

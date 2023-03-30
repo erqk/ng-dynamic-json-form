@@ -121,6 +121,48 @@ export const testData: JsonFormGroupData = {
             },
           ],
         },
+        {
+          label: 'Family member info',
+          formControlName: 'familyMemberInfo',
+          value: [],
+          formArray: {
+            count: 5,
+            template: [
+              {
+                label: 'Name',
+                formControlName: 'name',
+                value: '',
+                type: 'text',
+              },
+              {
+                label: 'Email',
+                formControlName: 'email',
+                value: '',
+                type: 'text',
+              },
+              {
+                label: 'Relationship',
+                formControlName: 'relationship',
+                value: '',
+                type: 'dropdown',
+                options: [
+                  {
+                    label: 'Father',
+                    value: 0,
+                  },
+                  {
+                    label: 'Mother',
+                    value: 1,
+                  },
+                  {
+                    label: 'Siblings',
+                    value: 2,
+                  },
+                ],
+              },
+            ],
+          },
+        },
       ],
     },
   ],

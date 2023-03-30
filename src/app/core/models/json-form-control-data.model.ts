@@ -18,6 +18,10 @@ export interface JsonFormControlData {
   optionsLayout?: 'column' | 'row';
   options?: JsonFormControlOptions[];
   children?: JsonFormControlData[];
+  formArray?: {
+    count: number;
+    template: JsonFormControlData[];
+  };
   gridRow?: string;
   gridColumn?: string;
 }

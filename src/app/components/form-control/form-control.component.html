@@ -1,16 +1,16 @@
-<ng-container *ngIf="!!formControl && !!data">
+<ng-container *ngIf="!!form && !!data">
   <label class="input-label">{{ data.label }}</label>
 
   <ng-container *ngIf="!data.options?.length" [ngSwitch]="data.type">
     <ng-container *ngSwitchCase="'switch'">
       <label class="switch-button">
-        <input type="checkbox" [formControl]="$any(formControl)" />
+        <input type="checkbox" [formControl]="$any(form)" />
         <span class="marker"></span>
       </label>
     </ng-container>
 
     <ng-container *ngSwitchDefault>
-      <input type="{{ data.type }}" [formControl]="$any(formControl)" />
+      <input type="{{ data.type }}" [formControl]="$any(form)" />
     </ng-container>
   </ng-container>
 
@@ -23,7 +23,7 @@
     }"
   >
     <ng-container *ngSwitchCase="'dropdown'">
-      <select [formControl]="$any(formControl)">
+      <select [formControl]="$any(form)">
         <option *ngFor="let item of data.options" [value]="item.value">
           {{ item.label }}
         </option>
@@ -39,7 +39,7 @@
           <input
             type="radio"
             [value]="item.value"
-            [formControl]="$any(formControl)"
+            [formControl]="$any(form)"
           />
 
           <span class="marker"></span>
@@ -65,7 +65,7 @@
     </ng-container>
   </div>
 
-  <span *ngIf="formControl.errors">
-    {{ formControl.errors | json }}
+  <span *ngIf="form.errors">
+    {{ form.errors | json }}
   </span>
 </ng-container>
