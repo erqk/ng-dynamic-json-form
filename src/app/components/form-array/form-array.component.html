@@ -1,1 +1,21 @@
-<p>form-array works!</p>
+<label class="form-label">{{ label }}</label>
+
+<ng-container *ngIf="!!form" [formGroup]="form">
+  <ng-container formArrayName="formArray">
+    <ng-container
+      *ngFor="
+        let formGroup of $any(form.controls['formArray']).controls;
+        index as i
+      "
+    >
+      <div class="container" formGroupName="{{ i }}">
+        <ng-container *ngFor="let item of data">
+          <app-form-control
+            [data]="item"
+            formControlName="{{ item.formControlName }}"
+          ></app-form-control>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
