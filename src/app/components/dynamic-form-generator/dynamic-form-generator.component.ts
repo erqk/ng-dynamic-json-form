@@ -95,7 +95,7 @@ export class DynamicFormGeneratorComponent {
       const isFormGroup = 'controls' in input;
 
       if (!isFormGroup) {
-        return input.errors;
+        return JSON.parse(JSON.stringify(input.errors));
       }
 
       const errors = Object.keys(input.controls).reduce((acc, key) => {
@@ -113,7 +113,7 @@ export class DynamicFormGeneratorComponent {
         return acc;
       }, {});
 
-      return errors;
+      return JSON.parse(JSON.stringify(errors));
     };
 
     this.shadowForm?.patchValue(this.form.getRawValue());
