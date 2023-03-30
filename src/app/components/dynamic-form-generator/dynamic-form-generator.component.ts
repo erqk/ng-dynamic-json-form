@@ -61,25 +61,20 @@ export class DynamicFormGeneratorComponent {
     this.shadowForm = new UntypedFormGroup({});
 
     for (const key in jsonParsed) {
-      const formGroup =
-        this.formGeneratorService.generateFormGroup(
-          jsonParsed[key],
-          true
-        );
+      const formGroup = this.formGeneratorService.generateFormGroup(
+        jsonParsed[key],
+        true
+      );
 
-      const formGroupShadow =
-        this.formGeneratorService.generateFormGroup(
-          jsonParsed[key]
-        );
+      const formGroupShadow = this.formGeneratorService.generateFormGroup(
+        jsonParsed[key]
+      );
 
       this.form.addControl(key, new FormControl(formGroup.value));
       this.shadowForm.addControl(key, formGroupShadow);
     }
 
     this.form.valueChanges.subscribe((x) => this.updateFormStatus());
-
-    console.log(this.shadowForm);
-    console.log(this.form);
 
     // Initiate form on the next tick to prevent
     // "There is no FormControl instance attached to form control element with name: XXX" error

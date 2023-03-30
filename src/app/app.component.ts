@@ -26,4 +26,34 @@ export class AppComponent {
   generateForm(): void {
     this.jsonString = this._jsonString;
   }
+
+  patchForm(): void {
+    const dataToOverwrite = {
+      form: {
+        basicInfo: {
+          name: 'NAMEEEEEEE',
+          age: '18',
+          gender: '0',
+          status: false,
+          email: '1233123123@example.com',
+          creditCardTypes: [''],
+          carBrand: '0',
+          address: {
+            country: 'SSS name',
+            state: 'State name',
+            postcode: '1123124',
+          },
+          familyMemberInfo: [
+            {
+              name: 'MemberA',
+              email: '',
+              relationship: 0,
+            },
+          ],
+        },
+      },
+    };
+
+    this.form?.patchValue(dataToOverwrite)
+  }
 }
