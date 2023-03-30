@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input } from '@angular/core';
 import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
-  UntypedFormControl
+  UntypedFormControl,
 } from '@angular/forms';
 import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
 import { getValidators } from 'src/app/utils/validator-generator';
@@ -31,6 +31,21 @@ import { CvaBaseComponent } from '../cva-base/cva-base.component';
 })
 export class FormControlComponent extends CvaBaseComponent {
   @Input() data: JsonFormControlData | null = null;
+
+  @HostBinding('class.grid-layout')
+  get isGridLayout() {
+    return this.data?.gridColumn || this.data?.gridRow;
+  }
+
+  @HostBinding('style.grid-row')
+  get getGridRow() {
+    return this.data?.gridRow ?? '';
+  }
+
+  @HostBinding('style.grid-column')
+  get getGridColumn() {
+    return this.data?.gridColumn ?? '';
+  }
 
   override form?: UntypedFormControl;
   checkboxValues: any[] = [];

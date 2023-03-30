@@ -24,17 +24,16 @@
   border-bottom: solid 1px var(--primary-500);
 }
 
-
 .form-control {
   display: flex;
   flex-direction: column;
   margin: 0.25rem 0;
 
-  &:last-of-type {
-    margin-bottom: 2rem;
-  }
-
   &.grid-layout {
     margin-bottom: 0;
+  }
+
+  + :not(.form-control) {
+    margin-top: 2rem;
   }
 }

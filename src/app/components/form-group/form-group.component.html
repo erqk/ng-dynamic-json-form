@@ -5,21 +5,10 @@
     <ng-container *ngFor="let item of data">
       <!-- Form control -->
       <ng-container *ngIf="!item.children && !item.formArray">
-        <div
-          class="form-control"
-          [ngClass]="{
-            'grid-layout': item.gridRow || item.gridColumn
-          }"
-          [ngStyle]="{
-            'grid-row': item.gridRow ?? '',
-            'grid-column': item.gridColumn ?? ''
-          }"
-        >
-          <app-form-control
-            [data]="item"
-            formControlName="{{ item.formControlName }}"
-          ></app-form-control>
-        </div>
+        <app-form-control
+          [data]="item"
+          formControlName="{{ item.formControlName }}"
+        ></app-form-control>
       </ng-container>
 
       <!-- Child form group -->
