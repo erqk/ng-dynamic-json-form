@@ -31,7 +31,8 @@
             ],
             "styles": [
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
-              "src/styles.scss"
+              "src/styles/dynamic-form-generator.scss",
+              "src/styles/styles.scss"
             ],
             "scripts": []
           },

@@ -1,4 +1,4 @@
-<label class="form-label">{{ label }}</label>
+<label class="form-group-label">{{ label }}</label>
 
 <ng-container
   *ngIf="
@@ -19,12 +19,16 @@
       "
     >
       <div class="group" formGroupName="{{ i }}">
-        <span>{{ data.templateLabel }} {{ i + 1 }}</span>
+        <div class="form-array-group-header">
+          <span class="label">{{ data.templateLabel }} {{ i + 1 }}</span>
 
-        <ng-container *ngIf="data.editable === true">
-          <button (click)="addForm(i + 1)">+</button>
-          <button (click)="removeForm(i)">-</button>
-        </ng-container>
+          <div class="buttons">
+            <ng-container *ngIf="data.editable === true">
+              <button (click)="addForm(i + 1)">+</button>
+              <button (click)="removeForm(i)">-</button>
+            </ng-container>
+          </div>
+        </div>
 
         <ng-container *ngFor="let item of data.template">
           <app-form-control

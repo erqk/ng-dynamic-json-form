@@ -1,7 +1,7 @@
-<label class="form-label">{{ label }}</label>
+<label class="form-group-label">{{ label }}</label>
 
 <ng-container *ngIf="!!form" [formGroup]="form">
-  <div class="container">
+  <div class="grid-container">
     <ng-container *ngFor="let item of data">
       <!-- Form control -->
       <ng-container *ngIf="!item.children && !item.formArray">
