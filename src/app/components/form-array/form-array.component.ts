@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input } from '@angular/core';
 import {
   FormGroup,
   NG_VALIDATORS,
@@ -45,6 +45,9 @@ export class FormArrayComponent extends CvaBaseComponent {
 
   /**Data here is use as a template */
   @Input() data: JsonFormControlData[] = [];
+
+  @HostBinding('class.form-array-container')
+  formArrayClass = true;
 
   override form = new FormGroup({
     formArray: new UntypedFormArray([]),

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input } from '@angular/core';
 import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
@@ -40,6 +40,9 @@ export class FormGroupComponent extends CvaBaseComponent {
   @Input() label: string = '';
   @Input() data: JsonFormControlData[] = [];
 
+  @HostBinding('class.form-group-container')
+  formGroupClass = true;
+
   override form?: UntypedFormGroup;
 
   constructor(private formGeneratorService: FormGeneratorService) {
@@ -51,9 +54,6 @@ export class FormGroupComponent extends CvaBaseComponent {
   }
 
   private initForm(): void {
-    this.form = this.formGeneratorService.generateFormGroup(
-      this.data,
-      true
-    );
+    this.form = this.formGeneratorService.generateFormGroup(this.data, true);
   }
 }

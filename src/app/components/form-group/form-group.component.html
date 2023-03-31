@@ -13,27 +13,23 @@
 
       <!-- Child form group -->
       <ng-container *ngIf="!!item.children && !item.formArray">
-        <div class="form-group">
-          <app-form-group
-            class="nested"
-            formControlName="{{ item.formControlName }}"
-            [label]="item.label"
-            [data]="item.children"
-          ></app-form-group>
-        </div>
+        <app-form-group
+          class="nested"
+          formControlName="{{ item.formControlName }}"
+          [label]="item.label"
+          [data]="item.children"
+        ></app-form-group>
       </ng-container>
 
       <!-- Form array -->
       <ng-container *ngIf="!!item.formArray && !item.children">
-        <div class="form-group">
-          <app-form-array
-            class="nested"
-            formControlName="{{ item.formControlName }}"
-            [label]="item.label"
-            [data]="item.formArray.template"
-            [count]="item.formArray.count"
-          ></app-form-array>
-        </div>
+        <app-form-array
+          class="nested"
+          formControlName="{{ item.formControlName }}"
+          [label]="item.label"
+          [data]="item.formArray.template"
+          [count]="item.formArray.count"
+        ></app-form-array>
       </ng-container>
     </ng-container>
   </div>

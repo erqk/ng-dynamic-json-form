@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, HostBinding, Input } from '@angular/core';
+import { Component, forwardRef, Host, HostBinding, Input } from '@angular/core';
 import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
@@ -32,6 +32,9 @@ import { CvaBaseComponent } from '../cva-base/cva-base.component';
 export class FormControlComponent extends CvaBaseComponent {
   @Input() data: JsonFormControlData | null = null;
 
+  @HostBinding('class.form-control-container')
+  formControlClass = true;
+  
   @HostBinding('class.grid-layout')
   get isGridLayout() {
     return this.data?.gridColumn || this.data?.gridRow;
@@ -51,7 +54,7 @@ export class FormControlComponent extends CvaBaseComponent {
   checkboxValues: any[] = [];
 
   override writeValue(obj: any): void {
-    if (!this.form || (!obj && typeof obj !== 'boolean')) return;
+    if (!this.form || obj === undefined || obj === null) return;
 
     if (!!this.data?.options?.length && !!obj.length) {
       switch (this.data.type) {
