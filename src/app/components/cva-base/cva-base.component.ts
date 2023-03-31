@@ -36,7 +36,7 @@ export class CvaBaseComponent implements ControlValueAccessor, Validator {
   form?: AbstractControl;
 
   writeValue(obj: any): void {
-    if (obj === undefined || obj === null) return;
+    if (!this.form || obj === undefined || obj === null) return;
     this.form?.patchValue(obj);
   }
   registerOnChange(fn: any): void {
