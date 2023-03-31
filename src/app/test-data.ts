@@ -127,6 +127,7 @@ export const testData: JsonFormGroupData = {
           value: [],
           formArray: {
             count: 5,
+            templateLabel: 'Member',
             template: [
               {
                 label: 'Name',

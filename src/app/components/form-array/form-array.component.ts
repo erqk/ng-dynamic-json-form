@@ -42,6 +42,7 @@ import { FormGroupComponent } from '../form-group/form-group.component';
 export class FormArrayComponent extends CvaBaseComponent {
   @Input() label: string = '';
   @Input() count: number = 1;
+  @Input() templateLabel: string = '';
 
   /**Data here is use as a template */
   @Input() data: JsonFormControlData[] = [];

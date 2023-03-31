@@ -20,6 +20,7 @@ export interface JsonFormControlData {
   children?: JsonFormControlData[];
   formArray?: {
     count: number;
+    templateLabel: string;
     template: JsonFormControlData[];
   };
   gridRow?: string;

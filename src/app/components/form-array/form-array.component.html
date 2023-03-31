@@ -8,7 +8,8 @@
         index as i
       "
     >
-      <div class="container" formGroupName="{{ i }}">
+      <div class="group" formGroupName="{{ i }}">
+        <span>{{ templateLabel }} {{ i + 1 }}</span>
         <ng-container *ngFor="let item of data">
           <app-form-control
             [data]="item"
