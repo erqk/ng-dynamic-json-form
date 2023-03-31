@@ -11,6 +11,14 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "paths": {
+      "ng-dynamic-form": [
+        "dist/ng-dynamic-form"
+      ],
+      "ng-dynamic-json-form": [
+        "dist/ng-dynamic-json-form"
+      ]
+    },
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
