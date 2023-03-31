@@ -1,3 +1,4 @@
+import { JsonFormArrayData } from './json-form-array-data.model';
 import { JsonFormControlOptions } from './json-form-control-options.model';
 
 export interface JsonFormControlData {
@@ -18,11 +19,7 @@ export interface JsonFormControlData {
   optionsLayout?: 'column' | 'row';
   options?: JsonFormControlOptions[];
   children?: JsonFormControlData[];
-  formArray?: {
-    count: number;
-    templateLabel: string;
-    template: JsonFormControlData[];
-  };
+  formArray?: JsonFormArrayData;
   gridRow?: string;
   gridColumn?: string;
 }

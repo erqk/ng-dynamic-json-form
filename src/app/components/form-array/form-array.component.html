@@ -1,5 +1,15 @@
 <label class="form-label">{{ label }}</label>
 
+<ng-container
+  *ngIf="
+    data.editable === true &&
+    !data.minLength &&
+    form.controls.formArray.length === 0
+  "
+>
+  <button (click)="addForm()">+</button>
+</ng-container>
+
 <ng-container *ngIf="!!form" [formGroup]="form">
   <ng-container formArrayName="formArray">
     <ng-container
@@ -9,8 +19,14 @@
       "
     >
       <div class="group" formGroupName="{{ i }}">
-        <span>{{ templateLabel }} {{ i + 1 }}</span>
-        <ng-container *ngFor="let item of data">
+        <span>{{ data.templateLabel }} {{ i + 1 }}</span>
+
+        <ng-container *ngIf="data.editable === true">
+          <button (click)="addForm(i + 1)">+</button>
+          <button (click)="removeForm(i)">-</button>
+        </ng-container>
+
+        <ng-container *ngFor="let item of data.template">
           <app-form-control
             [data]="item"
             formControlName="{{ item.formControlName }}"

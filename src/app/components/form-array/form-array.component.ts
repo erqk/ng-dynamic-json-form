@@ -9,7 +9,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { debounceTime, map } from 'rxjs';
-import { JsonFormControlData } from 'src/app/core/models/json-form-control-data.model';
+import { JsonFormArrayData } from 'src/app/core/models/json-form-array-data.model';
 import { FormGeneratorService } from 'src/app/services/form-generator.service';
 import { CvaBaseComponent } from '../cva-base/cva-base.component';
 import { FormControlComponent } from '../form-control/form-control.component';
@@ -41,11 +41,7 @@ import { FormGroupComponent } from '../form-group/form-group.component';
 })
 export class FormArrayComponent extends CvaBaseComponent {
   @Input() label: string = '';
-  @Input() count: number = 1;
-  @Input() templateLabel: string = '';
-
-  /**Data here is use as a template */
-  @Input() data: JsonFormControlData[] = [];
+  @Input() data: JsonFormArrayData = {} as JsonFormArrayData;
 
   @HostBinding('class.form-array-container')
   formArrayClass = true;
@@ -75,14 +71,48 @@ export class FormArrayComponent extends CvaBaseComponent {
 
   private patchFormArray(arrayData?: any[]): void {
     if (!arrayData) return;
-    
+
     this.form.controls.formArray.clear();
     for (const item of arrayData) {
-      const formGroup = this.formGeneratorService.generateFormGroup(this.data);
+      const formGroup = this.generateFormGroup();
       formGroup.patchValue(item);
       this.form.controls.formArray.push(formGroup);
     }
 
     this.form.controls.formArray.patchValue(arrayData);
+  }
+
+  private generateFormGroup(): UntypedFormGroup {
+    return this.formGeneratorService.generateFormGroup(
+      this.data.template,
+      true
+    );
+  }
+
+  addForm(index?: number): void {
+    if (
+      this.data.maxLength &&
+      this.form.controls.formArray.length >= this.data.maxLength
+    ) {
+      return;
+    }
+
+    const formGroup = this.generateFormGroup();
+    if (!index) {
+      this.form.controls.formArray.push(formGroup);
+    } else {
+      this.form.controls.formArray.insert(index, formGroup);
+    }
+  }
+
+  removeForm(index: number): void {
+    if (
+      this.data.minLength &&
+      this.form.controls.formArray.length <= this.data.minLength
+    ) {
+      return;
+    }
+
+    this.form.controls.formArray.removeAt(index);
   }
 }

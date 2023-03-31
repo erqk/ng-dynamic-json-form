@@ -77,7 +77,7 @@ export class FormGeneratorService {
       ) {
         control = this.generateFormArray(
           item.formArray.template,
-          item.formArray.count
+          item.formArray.length
         );
       }
 
