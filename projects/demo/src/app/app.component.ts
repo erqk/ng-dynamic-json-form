@@ -29,29 +29,40 @@ export class AppComponent {
 
   patchForm(): void {
     const dataToOverwrite = {
-      form: {
-        basicInfo: {
-          name: 'NAMEEEEEEE',
-          age: '18',
-          gender: '0',
-          status: false,
-          email: '1233123123@example.com',
-          creditCardTypes: [''],
-          carBrand: '0',
-          address: {
-            country: 'SSS name',
-            state: 'State name',
-            postcode: '1123124',
-          },
-          familyMemberInfo: [
-            {
-              name: 'MemberA',
-              email: '',
-              relationship: 0,
-            },
-          ],
-        },
+      name: 'NAMEEEEEEE',
+      age: '18',
+      gender: '0',
+      status: false,
+      email: '1233123123@example.com',
+      creditCardTypes: [''],
+      carBrand: '0',
+      address: {
+        country: 'SSS name',
+        state: 'State name',
+        postcode: '1123124',
       },
+      familyMemberInfo: [
+        {
+          name: 'A',
+          email: '',
+          relationship: 0,
+        },
+        {
+          name: 'B',
+          email: '',
+          relationship: 0,
+        },
+        {
+          name: 'C',
+          email: '',
+          relationship: 0,
+        },
+        {
+          name: 'D',
+          email: '',
+          relationship: 0,
+        },
+      ],
     };
 
     this.form?.patchValue(dataToOverwrite)

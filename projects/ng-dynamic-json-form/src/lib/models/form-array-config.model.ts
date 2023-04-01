@@ -1,9 +1,9 @@
-import { NgDynamicJsonFormControlConfig as NgDynamicJsonFormControlConfig } from './form-control-config.model';
+import { NgDynamicJsonFormConfig as NgDynamicJsonFormConfig } from './form-control-config.model';
 
 export interface NgDynamicJsonFormArrayConfig {
   length: number;
   templateLabel: string;
-  template: NgDynamicJsonFormControlConfig[];
+  template: NgDynamicJsonFormConfig[];
   editable?: boolean;
   minLength?: number;
   maxLength?: number;

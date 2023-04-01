@@ -7,7 +7,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { getValidators } from '../utils/validator-generator';
-import { NgDynamicJsonFormControlConfig } from '../models/form-control-config.model';
+import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
 
 @Injectable({
   providedIn: 'root',
@@ -46,7 +46,7 @@ export class FormGeneratorService {
    *
    */
   generateFormGroup(
-    data: NgDynamicJsonFormControlConfig[],
+    data: NgDynamicJsonFormConfig[],
     convertToFormControl = false
   ): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
@@ -92,7 +92,7 @@ export class FormGeneratorService {
   }
 
   private generateFormArray(
-    data: NgDynamicJsonFormControlConfig[],
+    data: NgDynamicJsonFormConfig[],
     count: number,
     convertToFormControl = false
   ): UntypedFormArray {

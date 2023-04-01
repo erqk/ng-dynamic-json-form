@@ -17,7 +17,7 @@ import { FormGeneratorService } from '../../services/form-generator.service';
 @Component({
   selector: 'app-form-array',
   templateUrl: './form-array.component.html',
-  styleUrls: ['./form-array.component.scss'],
+  styles: [],
   standalone: true,
   imports: [
     CommonModule,

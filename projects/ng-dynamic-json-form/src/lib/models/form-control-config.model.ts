@@ -1,7 +1,7 @@
 import { NgDynamicJsonFormArrayConfig } from './form-array-config.model';
 import { NgDynamicJsonFormControlOptions } from './form-control-options.model';
 
-export interface NgDynamicJsonFormControlConfig {
+export interface NgDynamicJsonFormConfig {
   label: string;
   formControlName: string;
   value?: any;
@@ -18,7 +18,7 @@ export interface NgDynamicJsonFormControlConfig {
   validators?: string[];
   optionsLayout?: 'column' | 'row';
   options?: NgDynamicJsonFormControlOptions[];
-  children?: NgDynamicJsonFormControlConfig[];
+  children?: NgDynamicJsonFormConfig[];
   formArray?: NgDynamicJsonFormArrayConfig;
   gridRow?: string;
   gridColumn?: string;

@@ -7,13 +7,13 @@ import {
   UntypedFormControl,
 } from '@angular/forms';
 import { CvaBaseComponent } from '../cva-base/cva-base.component';
-import { NgDynamicJsonFormControlConfig } from '../../models/form-control-config.model';
+import { NgDynamicJsonFormConfig } from '../../models/form-control-config.model';
 import { getValidators } from '../../utils/validator-generator';
 
 @Component({
   selector: 'app-form-control',
   templateUrl: './form-control.component.html',
-  styleUrls: ['./form-control.component.scss'],
+  styles: [],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   providers: [
@@ -30,7 +30,7 @@ import { getValidators } from '../../utils/validator-generator';
   ],
 })
 export class FormControlComponent extends CvaBaseComponent {
-  @Input() data: NgDynamicJsonFormControlConfig | null = null;
+  @Input() data: NgDynamicJsonFormConfig | null = null;
 
   @HostBinding('class.form-control-container')
   formControlClass = true;

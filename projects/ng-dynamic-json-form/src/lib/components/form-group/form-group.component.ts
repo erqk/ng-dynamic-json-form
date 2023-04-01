@@ -9,13 +9,13 @@ import {
 import { FormControlComponent } from '../form-control/form-control.component';
 import { FormArrayComponent } from '../form-array/form-array.component';
 import { CvaBaseComponent } from '../cva-base/cva-base.component';
-import { NgDynamicJsonFormControlConfig } from '../../models/form-control-config.model';
+import { NgDynamicJsonFormConfig } from '../../models/form-control-config.model';
 import { FormGeneratorService } from '../../services/form-generator.service';
 
 @Component({
   selector: 'app-form-group',
   templateUrl: './form-group.component.html',
-  styleUrls: ['./form-group.component.scss'],
+  styles: [],
   standalone: true,
   imports: [
     CommonModule,
@@ -38,7 +38,7 @@ import { FormGeneratorService } from '../../services/form-generator.service';
 })
 export class FormGroupComponent extends CvaBaseComponent {
   @Input() label: string = '';
-  @Input() data: NgDynamicJsonFormControlConfig[] = [];
+  @Input() data: NgDynamicJsonFormConfig[] = [];
 
   @HostBinding('class.form-group-container')
   formGroupClass = true;

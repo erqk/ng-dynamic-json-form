@@ -1,0 +1,79 @@
+<ng-container *ngIf="jsonParsed && !!form && !reload">
+  <form action="POST" [formGroup]="form">
+    <ng-container
+      *ngTemplateOutlet="
+        formGroupTemplate;
+        context: {
+          label: jsonParsed.label,
+          parentForm: form,
+          controlsData: jsonParsed.children
+        }
+      "
+    ></ng-container>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="!jsonString">
+  Please pass in your JSON string
+</ng-container>
+
+<ng-template
+  #formGroupTemplate
+  let-label="label"
+  let-parentForm="parentForm"
+  let-controlsData="controlsData"
+>
+  <span class="form-group-label">{{ label }}</span>
+
+  <ng-container [formGroup]="parentForm">
+    <ng-container *ngFor="let control of controlsData">
+      <!-- Form control -->
+      <ng-container *ngIf="!control.children && !control.formArray">
+        <app-form-control
+          [data]="control"
+          formControlName="{{ control.formControlName }}"
+        ></app-form-control>
+      </ng-container>
+
+      <!-- Form group -->
+      <ng-container
+        *ngIf="!!control.children && !control.formArray"
+        [ngTemplateOutlet]="formGroupTemplate"
+        [ngTemplateOutletContext]="{
+          label: control.label,
+          parentForm: parentForm.controls[control.formControlName],
+          controlsData: control.children
+        }"
+      >
+      </ng-container>
+
+      <!-- Form array -->
+      <ng-container
+        *ngIf="
+          !control.children &&
+          !!control.formArray &&
+          !!control.formArray.template.length
+        "
+      >
+        <ng-container formArrayName="{{ control.formControlName }}">
+          <ng-container
+            *ngFor="
+              let formGroup of parentForm.controls[control.formControlName]
+                .controls
+            "
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                formGroupTemplate;
+                context: {
+                  parentForm: formGroup,
+                  controlsData: control.formArray.template
+                }
+              "
+            ></ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
