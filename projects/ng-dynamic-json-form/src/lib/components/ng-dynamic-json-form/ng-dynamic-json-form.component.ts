@@ -6,14 +6,12 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {
-  UntypedFormGroup,
-  FormControl,
-  UntypedFormControl,
   FormArray,
+  UntypedFormGroup
 } from '@angular/forms';
-import { FormGeneratorService } from '../../services';
-import { clearEmpties } from '../../utils/clear-empties';
+import { Subject } from 'rxjs';
 import { NgDynamicJsonFormConfig } from '../../models';
+import { FormGeneratorService } from '../../services/form-generator.service';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -22,13 +20,14 @@ import { NgDynamicJsonFormConfig } from '../../models';
 })
 export class NgDynamicJsonFormComponent {
   @Input() jsonString = '';
+  @Input() patchEvent: any = null;
   @Output() formGet = new EventEmitter();
 
-  jsonParsed: NgDynamicJsonFormConfig[] | null = null;
-
   form?: UntypedFormGroup;
-
+  jsonParsed: NgDynamicJsonFormConfig[] | null = null;
   reload = false;
+
+  reset$ = new Subject();
 
   constructor(private formGeneratorService: FormGeneratorService) {}
 
@@ -53,52 +52,20 @@ export class NgDynamicJsonFormComponent {
     if (!jsonParsed.length) return;
 
     this.reload = true;
+    this.reset$.next(null);
 
     this.form = new UntypedFormGroup({});
     this.form = this.formGeneratorService.generateFormGroup(jsonParsed);
-    this.form.valueChanges.subscribe((x) => this.updateFormStatus());
-
     this.formGet.emit(this.form);
 
     // Initiate form on the next tick to prevent
     // "There is no FormControl instance attached to form control element with name: XXX" error
     setTimeout(() => {
       this.reload = false;
-      this.updateFormStatus();
     }, 0);
   }
 
-  private updateFormStatus(): void {
-    if (!this.form) return;
-
-    const getFormErrors = (input: UntypedFormControl | UntypedFormGroup) => {
-      const isFormGroup = 'controls' in input;
-
-      if (!isFormGroup) {
-        return JSON.parse(JSON.stringify(input.errors));
-      }
-
-      const errors = Object.keys(input.controls).reduce((acc, key) => {
-        const formControlErrors = getFormErrors(
-          input.controls[key] as UntypedFormControl
-        );
-
-        if (!!formControlErrors) {
-          acc = {
-            ...acc,
-            [key]: formControlErrors,
-          };
-        }
-
-        return acc;
-      }, {});
-
-      return JSON.parse(JSON.stringify(errors));
-    };
-
-    const errors = clearEmpties(getFormErrors(this.form));
-    this.form.setErrors(!Object.keys(errors).length ? null : errors);
-  }
+  private setFormArray(): void {}
 
   addFormGroup(
     formArray: FormArray,

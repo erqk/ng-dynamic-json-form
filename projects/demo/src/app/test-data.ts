@@ -127,7 +127,7 @@ export const testData: NgDynamicJsonFormConfig[] = [
     formControlName: 'familyMemberInfo',
     value: [],
     formArray: {
-      length: 2,
+      length: 5,
       templateLabel: 'Member',
       template: [
         {

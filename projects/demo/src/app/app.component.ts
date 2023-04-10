@@ -4,11 +4,11 @@ import { UntypedFormGroup } from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'NgDynamicJsonForm Demo';
-  
+
   jsonString = '';
   private _jsonString = '';
 
@@ -29,42 +29,44 @@ export class AppComponent {
 
   patchForm(): void {
     const dataToOverwrite = {
-      name: 'NAMEEEEEEE',
-      age: '18',
-      gender: '0',
-      status: false,
-      email: '1233123123@example.com',
-      creditCardTypes: [''],
+      basicInfo: {
+        name: 'ANother NameYOu dontKNow',
+        age: '25',
+        gender: '1',
+        status: false,
+        email: 'emailPatched@example.com',
+      },
+      creditCardTypes: ['master'],
       carBrand: '0',
       address: {
-        country: 'SSS name',
+        country: 'country name',
         state: 'State name',
-        postcode: '1123124',
+        postcode: '00000',
       },
       familyMemberInfo: [
         {
-          name: 'A',
+          name: '00',
           email: '',
-          relationship: 0,
+          address: {
+            country: 'country A',
+            state: 'State A',
+            postcode: '00001',
+          },
+          relationship: '',
         },
         {
-          name: 'B',
+          name: 'AA123',
           email: '',
-          relationship: 0,
-        },
-        {
-          name: 'C',
-          email: '',
-          relationship: 0,
-        },
-        {
-          name: 'D',
-          email: '',
-          relationship: 0,
+          address: {
+            country: 'country B',
+            state: 'State B',
+            postcode: '00002',
+          },
+          relationship: '',
         },
       ],
     };
 
-    this.form?.patchValue(dataToOverwrite)
+    this.form?.patchValue(dataToOverwrite);
   }
 }
