@@ -1,3 +1,24 @@
+.form-grid-container {
+  display: grid;
+  gap: 1rem;
+  row-gap: 0.5rem;
+}
+
+.form-label {
+  display: block;
+  margin: 2rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: solid 1px var(--primary-500);
+
+  .form-label {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}
+
 .form-control-container {
   display: flex;
   flex-direction: column;
@@ -5,10 +26,6 @@
 
   &.grid-layout {
     margin-bottom: 0;
-  }
-
-  + :not(.form-control-container) {
-    margin-top: 2rem;
   }
 
   .input-label {
@@ -24,36 +41,48 @@
 }
 
 .form-group-container {
-  &.nested {
-    .form-group-label {
-      display: block;
+  &:first-of-type {
+    .form-label {
+      margin-top: 0;
     }
   }
 
-  + :not(.form-group-container) {
-    margin-top: 2rem;
+  &.nested-group {
+    .input-label {
+      font-weight: normal;
+    }
   }
 
-  .form-group-label {
-    display: none;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.25rem;
-    font-size: 1.25rem;
-    font-weight: bold;
-    border-bottom: solid 1px var(--primary-500);
+  &:not(.nested-group) {
+    + .form-control-container {
+      border-top: solid 1px var(--primary-500);
+      padding-top: 2.5rem;
+    }
+  }
+
+  .form-grid-container {
+    margin-bottom: 1rem;
   }
 }
 
 .form-array-container {
-  + :not(.form-array-container) {
-    margin-top: 2rem;
+  .form-group-container {
+    .form-label {
+      margin-bottom: 0;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .form-grid-container {
+      margin-bottom: 1rem;
+    }
   }
 
   .form-array-group-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 1rem;
+    margin: 1rem 0 0.5rem;
 
     &:hover {
       .buttons {
@@ -88,10 +117,11 @@
       }
     }
   }
-}
 
-.grid-container {
-  display: grid;
-  gap: 1rem;
-  row-gap: 0.5rem;
+  .group {
+    + .group {
+      margin-top: 2rem;
+      border-top: solid 1px #f1f1f1;
+    }
+  }
 }

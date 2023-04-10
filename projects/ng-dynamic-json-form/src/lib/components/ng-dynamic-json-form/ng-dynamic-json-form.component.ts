@@ -23,10 +23,9 @@ export class NgDynamicJsonFormComponent {
   @Input() jsonString = '';
   @Output() formGet = new EventEmitter();
 
-  jsonParsed: NgDynamicJsonFormConfig | null = null;
+  jsonParsed: NgDynamicJsonFormConfig[] | null = null;
 
   form?: UntypedFormGroup;
-  shadowForm?: UntypedFormGroup;
 
   reload = false;
 
@@ -38,8 +37,8 @@ export class NgDynamicJsonFormComponent {
     }
   }
 
-  private parseJsonData(): NgDynamicJsonFormConfig | undefined {
-    if (!this.jsonString) return undefined;
+  private parseJsonData(): NgDynamicJsonFormConfig[] {
+    if (!this.jsonString) return [];
 
     try {
       this.jsonParsed = JSON.parse(this.jsonString);
@@ -49,18 +48,14 @@ export class NgDynamicJsonFormComponent {
     }
   }
 
-  private buildForm(jsonParsed?: NgDynamicJsonFormConfig): void {
-    if (!jsonParsed) return;
+  private buildForm(jsonParsed: NgDynamicJsonFormConfig[]): void {
+    if (!jsonParsed.length) return;
 
     this.reload = true;
 
     this.form = new UntypedFormGroup({});
-    this.shadowForm = new UntypedFormGroup({});
-
-    if (!jsonParsed.children?.length) return;
-    this.form = this.formGeneratorService.generateFormGroup(
-      jsonParsed.children
-    );
+    this.form = this.formGeneratorService.generateFormGroup(jsonParsed);
+    this.form.valueChanges.subscribe((x) => this.updateFormStatus());
 
     this.formGet.emit(this.form);
 
@@ -68,6 +63,39 @@ export class NgDynamicJsonFormComponent {
     // "There is no FormControl instance attached to form control element with name: XXX" error
     setTimeout(() => {
       this.reload = false;
+      this.updateFormStatus();
     }, 0);
+  }
+
+  private updateFormStatus(): void {
+    if (!this.form) return;
+
+    const getFormErrors = (input: UntypedFormControl | UntypedFormGroup) => {
+      const isFormGroup = 'controls' in input;
+
+      if (!isFormGroup) {
+        return JSON.parse(JSON.stringify(input.errors));
+      }
+
+      const errors = Object.keys(input.controls).reduce((acc, key) => {
+        const formControlErrors = getFormErrors(
+          input.controls[key] as UntypedFormControl
+        );
+
+        if (!!formControlErrors) {
+          acc = {
+            ...acc,
+            [key]: formControlErrors,
+          };
+        }
+
+        return acc;
+      }, {});
+
+      return JSON.parse(JSON.stringify(errors));
+    };
+
+    const errors = clearEmpties(getFormErrors(this.form));
+    this.form.setErrors(!Object.keys(errors).length ? null : errors);
   }
 }
