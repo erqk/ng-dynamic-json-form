@@ -84,14 +84,6 @@
     align-items: flex-end;
     margin: 1rem 0 0.5rem;
 
-    &:hover {
-      .buttons {
-        opacity: 1;
-        visibility: visible;
-        transition-delay: 0s;
-      }
-    }
-
     .label {
       font-weight: bold;
       opacity: 0.65;
@@ -99,20 +91,56 @@
 
     .buttons {
       display: flex;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.25s;
-      transition-delay: 0.25s;
 
-      button {
+      [class*="btn-"] {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 2.25rem;
         height: 2.25rem;
+        padding: 0;
 
-        + button {
+        + [class*="btn-"] {
           margin-left: 0.5rem;
+        }
+
+        &.btn-remove {
+          span {
+            &::after {
+              content: none;
+            }
+          }
+        }
+
+        span {
+          --lineWidth: 3px;
+          --lineColor: white;
+
+          position: relative;
+          width: 55%;
+          height: 55%;
+          z-index: 0;
+
+          &::before,
+          &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--lineColor);
+            border-radius: 100rem;
+          }
+
+          &::before {
+            width: 100%;
+            height: var(--lineWidth);
+          }
+
+          &::after {
+            width: var(--lineWidth);
+            height: 100%;
+          }
         }
       }
     }

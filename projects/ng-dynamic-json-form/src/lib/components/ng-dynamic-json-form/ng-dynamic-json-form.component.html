@@ -69,6 +69,29 @@
           <div class="form-array-container">
             <label class="form-label">{{ control.label }}</label>
 
+            <!-- Show add button when form array is empty -->
+            <div
+              *ngIf="
+                parentForm.controls[control.formControlName].controls.length ===
+                0
+              "
+              class="form-array-group-header"
+            >
+              <div class="buttons">
+                <button
+                  class="btn-add"
+                  (click)="
+                    addFormGroup(
+                      parentForm.controls[control.formControlName],
+                      control.formArray.template
+                    )
+                  "
+                >
+                  <span></span>
+                </button>
+              </div>
+            </div>
+
             <ng-container formArrayName="{{ control.formControlName }}">
               <ng-container
                 *ngFor="
@@ -85,9 +108,29 @@
 
                     <div class="buttons">
                       <ng-container *ngIf="control.formArray.editable === true">
-                        buttons
-                        <!-- <button (click)="addForm(i + 1)">+</button>
-                        <button (click)="removeForm(i)">-</button> -->
+                        <button
+                          class="btn-add"
+                          (click)="
+                            addFormGroup(
+                              parentForm.controls[control.formControlName],
+                              control.formArray.template,
+                              i + 1
+                            )
+                          "
+                        >
+                          <span></span>
+                        </button>
+                        <button
+                          class="btn-remove"
+                          (click)="
+                            removeFormGroup(
+                              parentForm.controls[control.formControlName],
+                              i
+                            )
+                          "
+                        >
+                          <span></span>
+                        </button>
                       </ng-container>
                     </div>
                   </div>

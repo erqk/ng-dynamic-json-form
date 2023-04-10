@@ -9,6 +9,7 @@ import {
   UntypedFormGroup,
   FormControl,
   UntypedFormControl,
+  FormArray,
 } from '@angular/forms';
 import { FormGeneratorService } from '../../services';
 import { clearEmpties } from '../../utils/clear-empties';
@@ -97,5 +98,19 @@ export class NgDynamicJsonFormComponent {
 
     const errors = clearEmpties(getFormErrors(this.form));
     this.form.setErrors(!Object.keys(errors).length ? null : errors);
+  }
+
+  addFormGroup(
+    formArray: FormArray,
+    template: NgDynamicJsonFormConfig[],
+    index?: number
+  ): void {
+    const formGroup = this.formGeneratorService.generateFormGroup(template);
+    if (!index) formArray.push(formGroup);
+    else formArray.insert(index, formGroup);
+  }
+
+  removeFormGroup(formArray: FormArray, index?: number): void {
+    formArray.removeAt(index ?? formArray.length - 1);
   }
 }
