@@ -31,25 +31,7 @@ import { getValidators } from '../../utils/validator-generator';
 })
 export class FormControlComponent extends CvaBaseComponent {
   @Input() data: NgDynamicJsonFormConfig | null = null;
-
-  @HostBinding('class.form-control-container')
-  formControlClass = true;
   
-  @HostBinding('class.grid-layout')
-  get isGridLayout() {
-    return this.data?.gridColumn || this.data?.gridRow;
-  }
-
-  @HostBinding('style.grid-row')
-  get getGridRow() {
-    return this.data?.gridRow ?? '';
-  }
-
-  @HostBinding('style.grid-column')
-  get getGridColumn() {
-    return this.data?.gridColumn ?? '';
-  }
-
   override form?: UntypedFormControl;
   checkboxValues: any[] = [];
 

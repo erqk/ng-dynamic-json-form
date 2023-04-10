@@ -47,37 +47,16 @@
     }
   }
 
-  &.nested-group {
-    .input-label {
-      font-weight: normal;
-    }
-  }
-
   &:not(.nested-group) {
     + .form-control-container {
       border-top: solid 1px var(--primary-500);
       padding-top: 2.5rem;
+      margin-top: 2.5rem;
     }
-  }
-
-  .form-grid-container {
-    margin-bottom: 1rem;
   }
 }
 
 .form-array-container {
-  .form-group-container {
-    .form-label {
-      margin-bottom: 0;
-      border: none;
-      font-size: 1rem;
-    }
-
-    .form-grid-container {
-      margin-bottom: 1rem;
-    }
-  }
-
   .form-array-group-header {
     display: flex;
     justify-content: space-between;
@@ -151,5 +130,20 @@
       margin-top: 2rem;
       border-top: solid 1px #f1f1f1;
     }
+  }
+}
+
+.nested-group {
+  margin: 1rem 0;
+
+  .form-label {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .input-label {
+    font-weight: normal;
   }
 }
