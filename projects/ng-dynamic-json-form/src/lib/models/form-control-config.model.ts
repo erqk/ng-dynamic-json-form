@@ -1,5 +1,6 @@
 import { NgDynamicJsonFormArrayConfig } from './form-array-config.model';
 import { NgDynamicJsonFormControlOptions } from './form-control-options.model';
+import { NgDynamicJsonFormValidatorConfig } from './form-validator-config.model';
 
 export interface NgDynamicJsonFormConfig {
   label: string;
@@ -15,7 +16,7 @@ export interface NgDynamicJsonFormConfig {
     | 'checkbox'
     | 'dropdown'
     | 'range';
-  validators?: string[];
+  validators?: NgDynamicJsonFormValidatorConfig[];
   optionsLayout?: 'column' | 'row';
   options?: NgDynamicJsonFormControlOptions[];
   children?: NgDynamicJsonFormConfig[];

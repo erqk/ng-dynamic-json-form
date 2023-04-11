@@ -10,21 +10,49 @@ export const testData: NgDynamicJsonFormConfig[] = [
         formControlName: 'name',
         value: 'Andrew',
         type: 'text',
-        validators: ['required', 'minLength:4', 'regex:\\D+'],
+        validators: [
+          {
+            name: 'required',
+          },
+          {
+            name: 'minLength',
+            value: 4,
+          },
+          {
+            name: 'regex',
+            value: '\\D+',
+          },
+        ],
       },
       {
         label: 'Age',
         formControlName: 'age',
         value: '18',
         type: 'number',
-        validators: ['required', 'min:18', 'max:50'],
+        validators: [
+          {
+            name: 'required',
+          },
+          {
+            name: 'min',
+            value: 18,
+          },
+          {
+            name: 'max',
+            value: 50,
+          },
+        ],
       },
       {
         label: 'Gender',
         formControlName: 'gender',
         value: '0',
         type: 'radio',
-        validators: ['required'],
+        validators: [
+          {
+            name: 'required',
+          },
+        ],
         options: [
           {
             label: 'Male',
@@ -41,14 +69,25 @@ export const testData: NgDynamicJsonFormConfig[] = [
         formControlName: 'status',
         value: false,
         type: 'switch',
-        validators: ['required'],
+        validators: [
+          {
+            name: 'required',
+          },
+        ],
       },
       {
         label: 'Email',
         formControlName: 'email',
         value: 'emailaddress@example.com',
         type: 'email',
-        validators: ['required', 'email'],
+        validators: [
+          {
+            name: 'required',
+          },
+          {
+            name: 'email',
+          },
+        ],
       },
     ],
   },
@@ -57,7 +96,11 @@ export const testData: NgDynamicJsonFormConfig[] = [
     formControlName: 'creditCardTypes',
     type: 'checkbox',
     value: ['master'],
-    validators: ['required'],
+    validators: [
+      {
+        name: 'required',
+      },
+    ],
     optionsLayout: 'column',
     options: [
       {
@@ -140,7 +183,11 @@ export const testData: NgDynamicJsonFormConfig[] = [
           label: 'Email',
           formControlName: 'email',
           value: '',
-          validators: ['email'],
+          validators: [
+            {
+              name: 'email',
+            },
+          ],
           type: 'text',
         },
         {

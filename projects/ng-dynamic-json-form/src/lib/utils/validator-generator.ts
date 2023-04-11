@@ -1,36 +1,13 @@
-import { Injectable } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
+import { NgDynamicJsonFormValidatorConfig } from '../models/form-validator-config.model';
 
-export function getValidators(input: string[]): ValidatorFn[] {
-  const rangeValidator = (input: string): ValidatorFn => {
-    const splitted = input.split(':');
-    if (!splitted.length) return Validators.nullValidator;
-
-    const key = splitted[0];
-    const value = parseInt(splitted[1]);
-
-    switch (key) {
-      case 'min':
-        return Validators.min(value);
-
-      case 'max':
-        return Validators.max(value);
-
-      case 'minLength':
-        return Validators.minLength(value);
-
-      case 'maxLength':
-        return Validators.maxLength(value);
-
-      default:
-        return Validators.nullValidator;
-    }
-  };
-
+export function getValidators(
+  input: NgDynamicJsonFormValidatorConfig[]
+): ValidatorFn[] {
   return input.map((item) => {
-    let result: any = Validators.nullValidator;
+    let result: ValidatorFn = Validators.nullValidator;
 
-    switch (item) {
+    switch (item.name) {
       case 'required':
         result = Validators.required;
         break;
@@ -39,14 +16,24 @@ export function getValidators(input: string[]): ValidatorFn[] {
         result = Validators.pattern(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/);
         break;
 
-      default:
-        if (item.includes('regex:')) {
-          result = Validators.pattern(item.replace('regex:', ''));
-        } else if (item.includes(':')) {
-          result = rangeValidator(item);
-        } else {
-          result = Validators.nullValidator;
-        }
+      case 'regex':
+        result = Validators.pattern(item.value);
+        break;
+
+      case 'min':
+        result = Validators.min(item.value);
+        break;
+
+      case 'max':
+        result = Validators.max(item.value);
+        break;
+
+      case 'minLength':
+        result = Validators.minLength(item.value);
+        break;
+
+      case 'maxLength':
+        result = Validators.maxLength(item.value);
         break;
     }
 
