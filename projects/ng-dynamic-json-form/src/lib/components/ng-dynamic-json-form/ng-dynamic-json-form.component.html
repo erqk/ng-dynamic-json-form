@@ -39,7 +39,7 @@
             <app-form-control
               style="display: flex; flex-direction: column"
               [data]="control"
-              formControlName="{{ control.formControlName }}"
+              [control]="parentForm.controls[control.formControlName]"
             ></app-form-control>
           </grid-item-wrapper>
         </ng-container>

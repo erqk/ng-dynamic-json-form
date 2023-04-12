@@ -64,36 +64,42 @@ export class FormStatusService {
     const result = (type: 'hidden' | 'disabled' | 'required') =>
       this.getConditionResult(form, conditionsFiltered(type));
 
-    const controlRequired = result('required') === true;
-    const disableControl = result('disabled') === true;
-    const hideControl = result('hidden') === true;
-    let element = document.querySelector(
-      `ng-dynamic-json-form grid-item-wrapper #${controlPath.replace(
-        '.',
-        '\\.'
-      )}`
-    );
+    const controlRequired = result('required');
+    const disableControl = result('disabled');
+    const hideControl = result('hidden');
+    const getElement$ = new Promise<HTMLElement | null>((resolve, reject) => {
+      requestAnimationFrame(() => {
+        const element = document.querySelector(
+          `ng-dynamic-json-form grid-item-wrapper#${controlPath.replace(
+            '.',
+            '\\.'
+          )}`
+        ) as HTMLElement | null;
+
+        resolve(element);
+      });
+    });
 
     if (!control) return;
 
-    if (controlRequired) {
-      control.addValidators(Validators.required);
-    } else if (!controlRequired) {
-      control.removeValidators(Validators.required);
+    if (controlRequired !== undefined) {
+      if (controlRequired) control.addValidators(Validators.required);
+      else control.removeValidators(Validators.required);
     }
 
-    if (disableControl) {
-      control.disable();
-    } else if (!disableControl) {
-      control.enable();
+    if (disableControl !== undefined) {
+      if (disableControl) control.disable();
+      else control.enable();
     }
 
-    if (hideControl) {
-      element?.setAttribute('style', 'display: none');
-      control.disable();
-    } else if (!hideControl) {
-      element?.setAttribute('style', 'display: block');
-      control.enable();
+    if (hideControl !== undefined) {
+      if (hideControl) {
+        getElement$.then((x) => x?.setAttribute('style', 'display:none'));
+        control.disable();
+      } else {
+        getElement$.then((x) => x?.setAttribute('style', 'display:block'));
+        control.enable();
+      }
     }
 
     control.updateValueAndValidity();
@@ -132,8 +138,8 @@ export class FormStatusService {
   private getConditionResult(
     form: FormGroup,
     conditions: NgDynamicJsonFormControlCondition[]
-  ): boolean {
-    if (!conditions.length) return false;
+  ): boolean | undefined {
+    if (!conditions.length) return undefined;
 
     const chainCondition = (
       input: NgDynamicJsonFormControlCondition[],

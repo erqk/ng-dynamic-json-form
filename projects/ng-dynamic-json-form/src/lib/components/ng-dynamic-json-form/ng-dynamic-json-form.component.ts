@@ -84,15 +84,15 @@ export class NgDynamicJsonFormComponent {
 
     // Initiate form on the next tick to prevent
     // "There is no FormControl instance attached to form control element with name: XXX" error
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       this.reload = false;
-    }, 0);
+    });
 
     // Set listener and apply changes on next tick after form is build
     // Otherwise updateControlStatus() -> getElementById() will fail to work
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       this.listenFormChanges();
-    }, 0);
+    });
   }
 
   private listenFormChanges(): void {
