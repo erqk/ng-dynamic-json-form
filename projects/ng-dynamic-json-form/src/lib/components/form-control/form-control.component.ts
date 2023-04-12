@@ -14,10 +14,6 @@ export class FormControlComponent {
   @Input() data: NgDynamicJsonFormConfig | null = null;
   @Input() control: UntypedFormControl | null = null;
 
-  checkboxValues: any[] = [];
-
-  ngOnInit(): void {}
-
   onCheckboxChange(e: Event): void {
     const input = e.target as HTMLInputElement;
 

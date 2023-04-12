@@ -8,15 +8,12 @@ import {
 import { Subject } from 'rxjs';
 import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
 import { getValidators } from '../utils/validator-generator';
-import { FormStatusService } from './form-status.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormGeneratorService {
   reset$ = new Subject();
-
-  constructor(private formStatusService: FormStatusService) {}
 
   generateFormGroup(data: NgDynamicJsonFormConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
