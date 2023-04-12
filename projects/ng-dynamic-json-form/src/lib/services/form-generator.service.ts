@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
-  FormGroup,
   UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
+  UntypedFormGroup
 } from '@angular/forms';
-import { getValidators } from '../utils/validator-generator';
+import { Subject } from 'rxjs';
 import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
-import { clearEmpties } from '../utils/clear-empties';
-import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
+import { getValidators } from '../utils/validator-generator';
+import { FormStatusService } from './form-status.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormGeneratorService {
   reset$ = new Subject();
+
+  constructor(private formStatusService: FormStatusService) {}
 
   generateFormGroup(data: NgDynamicJsonFormConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
@@ -57,7 +57,6 @@ export class FormGeneratorService {
       formGroup.addControl(item.formControlName, control);
     }
 
-    this.listenFormChanges(formGroup);
     return formGroup;
   }
 
@@ -73,47 +72,5 @@ export class FormGeneratorService {
     }
 
     return formArray;
-  }
-
-  private listenFormChanges(form: FormGroup): void {
-    this.reset$.next(null);
-
-    form.valueChanges
-      .pipe(
-        debounceTime(0),
-        tap((x) => this.updateFormStatus(form)),
-        takeUntil(this.reset$)
-      )
-      .subscribe();
-  }
-
-  private updateFormStatus(form: FormGroup): void {
-    const getFormErrors = (input: UntypedFormControl | UntypedFormGroup) => {
-      const isFormGroup = 'controls' in input;
-
-      if (!isFormGroup) {
-        return JSON.parse(JSON.stringify(input.errors));
-      }
-
-      const errors = Object.keys(input.controls).reduce((acc, key) => {
-        const formControlErrors = getFormErrors(
-          input.controls[key] as UntypedFormControl
-        );
-
-        if (!!formControlErrors) {
-          acc = {
-            ...acc,
-            [key]: formControlErrors,
-          };
-        }
-
-        return acc;
-      }, {});
-
-      return JSON.parse(JSON.stringify(errors));
-    };
-
-    const errors = clearEmpties(getFormErrors(form));
-    form.setErrors(!Object.keys(errors).length ? null : errors);
   }
 }

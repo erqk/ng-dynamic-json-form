@@ -80,6 +80,14 @@ export const testData: NgDynamicJsonFormConfig[] = [
         formControlName: 'email',
         value: 'emailaddress@example.com',
         type: 'email',
+        conditions: [
+          {
+            name: 'hidden',
+            control: 'basicInfo.status',
+            controlValue: false,
+            operator: '===',
+          },
+        ],
         validators: [
           {
             name: 'required',
@@ -171,6 +179,7 @@ export const testData: NgDynamicJsonFormConfig[] = [
     value: [],
     formArray: {
       length: 5,
+      editable: true,
       templateLabel: 'Member',
       template: [
         {

@@ -11,8 +11,16 @@ import { NgDynamicJsonFormConfig } from '../../models';
 })
 export class GridItemWrapperComponent {
   @Input() class = '';
+  @Input() parentId = '';
   @Input() data: NgDynamicJsonFormConfig = {} as NgDynamicJsonFormConfig;
   @Input() isNested = false;
+
+  @HostBinding('id')
+  get hostId() {
+    return this.parentId
+      ? `${this.parentId}.${this.data.formControlName}`
+      : this.data.formControlName;
+  }
 
   @HostBinding('class')
   get hostClass() {
@@ -23,7 +31,7 @@ export class GridItemWrapperComponent {
   get isGridLayout() {
     return this.data?.gridColumn || this.data?.gridRow;
   }
-  
+
   @HostBinding('class.nested-group')
   get isNestedGroup() {
     return this.isNested;
@@ -38,5 +46,4 @@ export class GridItemWrapperComponent {
   get getGridColumn() {
     return this.data?.gridColumn ?? '';
   }
-
 }

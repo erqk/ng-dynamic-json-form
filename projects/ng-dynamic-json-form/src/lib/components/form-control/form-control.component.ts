@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Host, HostBinding, Input } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
   UntypedFormControl,
 } from '@angular/forms';
-import { CvaBaseComponent } from '../cva-base/cva-base.component';
 import { NgDynamicJsonFormConfig } from '../../models/form-control-config.model';
 import { getValidators } from '../../utils/validator-generator';
+import { CvaBaseComponent } from '../cva-base/cva-base.component';
 
 @Component({
   selector: 'app-form-control',
@@ -31,7 +31,7 @@ import { getValidators } from '../../utils/validator-generator';
 })
 export class FormControlComponent extends CvaBaseComponent {
   @Input() data: NgDynamicJsonFormConfig | null = null;
-  
+
   override form?: UntypedFormControl;
   checkboxValues: any[] = [];
 

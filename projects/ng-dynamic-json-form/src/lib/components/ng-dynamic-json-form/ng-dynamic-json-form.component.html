@@ -16,21 +16,13 @@
   </form>
 </ng-container>
 
-<ng-template #itemWrapperTemplate let-class="class" let-control="control">
-  <div
-    class="{{ class }}"
-    [ngClass]="{
-      'grid-layout': control.gridColumn || control.gridRow
-    }"
-  ></div>
-</ng-template>
-
 <ng-template
   #formGroupTemplate
   let-label="label"
   let-parentForm="parentForm"
   let-controlsData="controlsData"
   let-isNested="isNested"
+  let-parentId="parentId"
 >
   <span *ngIf="label" class="form-label">{{ label }}</span>
 
@@ -40,6 +32,7 @@
         <!-- Form control -->
         <ng-container *ngIf="!control.children && !control.formArray">
           <grid-item-wrapper
+            [parentId]="parentId"
             [class]="'form-control-container'"
             [data]="control"
           >
@@ -54,15 +47,19 @@
         <!-- Form group -->
         <ng-container *ngIf="!!control.children && !control.formArray">
           <grid-item-wrapper
+            [parentId]="parentId"
             [class]="'form-group-container'"
+            [data]="control"
             [isNested]="isNested === true"
           >
             <ng-container
               [ngTemplateOutlet]="formGroupTemplate"
               [ngTemplateOutletContext]="{
                 label: control.label,
-                parentForm: parentForm.controls[control.formControlName],
                 controlsData: control.children,
+                parentId:
+                  (parentId ? parentId + '.' : '') + control.formControlName,
+                parentForm: parentForm.controls[control.formControlName],
                 isNested: true
               }"
             ></ng-container>
@@ -78,6 +75,7 @@
           "
         >
           <grid-item-wrapper
+            [parentId]="parentId"
             [class]="'form-array-container'"
             [data]="control"
             [isNested]="isNested === true"
@@ -157,9 +155,10 @@
             *ngTemplateOutlet="
               formGroupTemplate;
               context: {
+                parentId: formArrayName,
                 parentForm: formGroup,
-                controlsData: formArrayConfig.template,
-                isNested: true
+                isNested: true,
+                controlsData: formArrayConfig.template
               }
             "
           ></ng-container>
