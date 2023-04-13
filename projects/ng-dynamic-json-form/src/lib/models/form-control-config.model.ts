@@ -17,6 +17,7 @@ export interface NgDynamicJsonFormConfig {
     | 'checkbox'
     | 'dropdown'
     | 'range';
+  customComponent?: string;
   validators?: NgDynamicJsonFormValidatorConfig[];
   conditions?: NgDynamicJsonFormControlCondition[];
   optionsLayout?: 'column' | 'row';

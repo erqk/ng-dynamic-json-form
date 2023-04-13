@@ -1,0 +1,31 @@
+<ng-container *ngIf="control">
+  <span>Your custom input here... </span>
+  <br />
+  <input type="text" [formControl]="control" />
+  <ng-container *ngIf="control.errors">
+    <div>{{ control.errors | json }}</div>
+  </ng-container>
+
+  <br />
+
+  <div>
+    <ng-container [formGroup]="formGroup">
+      <p>
+        Or you can also build form group element, then use setValue() to write
+        value back to FormControl
+      </p>
+
+      <div class="form-group">
+        <span>Label 1</span>
+        <input type="text" formControlName="control1" />
+
+        <span>Label 2</span>
+        <input type="text" formControlName="control2" />
+
+        <span>Label 3</span>
+        <input type="text" formControlName="control3" />
+      </div>
+    </ng-container>
+
+  </div>
+</ng-container>

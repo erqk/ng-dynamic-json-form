@@ -24,8 +24,8 @@ export const testData: NgDynamicJsonFormConfig[] = [
           },
           {
             name: 'custom',
-            value: 'firstUppercase'
-          }
+            value: 'firstUppercase',
+          },
         ],
       },
       {
@@ -46,6 +46,11 @@ export const testData: NgDynamicJsonFormConfig[] = [
             value: 50,
           },
         ],
+      },
+      {
+        label: 'Custom Component',
+        formControlName: 'customComponent',
+        customComponent: 'custom-input',
       },
       {
         label: 'Gender',

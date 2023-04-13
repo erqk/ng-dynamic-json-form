@@ -3,7 +3,8 @@ import {
   EventEmitter,
   Input,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  Type,
 } from '@angular/core';
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import {
@@ -22,6 +23,7 @@ import {
 import { NgDynamicJsonFormConditionExtracted } from '../../models/condition-extracted.model';
 import { FormGeneratorService } from '../../services/form-generator.service';
 import { FormStatusService } from '../../services/form-status.service';
+import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -31,6 +33,9 @@ import { FormStatusService } from '../../services/form-status.service';
 export class NgDynamicJsonFormComponent {
   @Input() jsonString = '';
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
+  @Input() customComponents: {
+    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
+  } = {};
 
   @Output() formGet = new EventEmitter();
 

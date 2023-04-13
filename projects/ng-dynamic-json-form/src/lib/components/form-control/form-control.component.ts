@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Type, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   Observable,
@@ -11,17 +11,23 @@ import {
   tap,
 } from 'rxjs';
 import { NgDynamicJsonFormConfig } from '../../models/form-control-config.model';
+import { DynamicComponentAnchorDirective } from '../../directives/dynamic-component-anchor.directive';
+import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 
 @Component({
   selector: 'app-form-control',
   templateUrl: './form-control.component.html',
   styles: [],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DynamicComponentAnchorDirective],
 })
 export class FormControlComponent {
   @Input() data: NgDynamicJsonFormConfig | null = null;
   @Input() control: UntypedFormControl | null = null;
+  @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
+
+  @ViewChild(DynamicComponentAnchorDirective, { static: true })
+  dynamicComponentAnchor?: DynamicComponentAnchorDirective;
 
   errors$?: Observable<string[]>;
 
@@ -31,6 +37,19 @@ export class FormControlComponent {
       debounceTime(0),
       switchMap((x) => this.getErrors$())
     );
+    
+    this.injectCustomComponent();
+  }
+
+  private injectCustomComponent(): void {
+    if (!this.customComponent || !this.dynamicComponentAnchor) return;
+
+    const componentRef =
+      this.dynamicComponentAnchor.viewContainerRef.createComponent(
+        this.customComponent
+      );
+    componentRef.instance.control = this.control;
+    componentRef.instance.data = this.data;
   }
 
   private getErrors$(): Observable<string[]> {

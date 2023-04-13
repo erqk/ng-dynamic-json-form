@@ -1,0 +1,10 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+}

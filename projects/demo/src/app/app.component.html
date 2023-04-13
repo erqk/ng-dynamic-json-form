@@ -23,12 +23,6 @@
   </div>
 
   <div class="form-generated">
-    TODO:
-    <ol>
-      <li>Custom error message</li>
-      <li>JSON data input format</li>
-      <li>Use custom component</li>
-    </ol>
     <button (click)="generateForm()">Generate form</button>
     <button (click)="patchForm()">Patch form</button>
     <br />
@@ -37,6 +31,7 @@
     <ng-dynamic-json-form
       [jsonString]="jsonString"
       [customValidators]="customValidators"
+      [customComponents]="customComponents"
       (formGet)="onFormGet($event)"
     ></ng-dynamic-json-form>
   </div>
