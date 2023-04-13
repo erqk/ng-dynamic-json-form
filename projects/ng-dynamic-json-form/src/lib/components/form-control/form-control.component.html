@@ -62,8 +62,10 @@
   </div>
 
   <ng-container *ngIf="control.touched || control.value">
-    <ng-container *ngFor="let error of errors$ | async">
-      <div>{{ error }}</div>
-    </ng-container>
+    <div class="errors-container">
+      <ng-container *ngFor="let error of errors$ | async">
+        <div class="error">{{ error }}</div>
+      </ng-container>
+    </div>
   </ng-container>
 </ng-container>

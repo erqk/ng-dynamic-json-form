@@ -36,6 +36,16 @@
     display: flex;
     flex-wrap: wrap;
   }
+
+  .errors-container {
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+    
+    .error {
+      color: #ff4747;
+      margin-bottom: 0.35rem;
+    }
+  }
 }
 
 .form-group-container {

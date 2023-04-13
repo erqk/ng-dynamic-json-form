@@ -18,6 +18,10 @@ export function getValidators(
         validator = Validators.required;
         break;
 
+      case 'requiredTrue':
+        validator = Validators.requiredTrue;
+        break;
+
       case 'email':
         validator = emailValidator;
         break;

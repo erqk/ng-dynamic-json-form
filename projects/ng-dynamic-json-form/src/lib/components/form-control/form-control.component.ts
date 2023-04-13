@@ -39,13 +39,31 @@ export class FormControlComponent {
         if (!errors) return [];
 
         return Object.keys(errors!).reduce((acc, key) => {
-          const customErrorMessage = this.data?.validators?.find(
-            (x) => x.name.toLocaleLowerCase() === key.toLocaleLowerCase()
-          )?.message;
+          switch (key.toLocaleLowerCase()) {
+            case 'required':
+            case 'min':
+            case 'max':
+            case 'minlength':
+            case 'maxlength':
+            case 'pattern':
+            case 'email':
+            case 'requiredTrue':
+              const customErrorMessage = this.data?.validators?.find(
+                (x) => x.name.toLocaleLowerCase() === key.toLocaleLowerCase()
+              )?.message;
 
-          acc.push(
-            customErrorMessage ?? JSON.stringify({ [key]: errors![key] })
-          );
+              acc.push(
+                customErrorMessage ?? JSON.stringify({ [key]: errors![key] })
+              );
+              break;
+
+            // The validator name is outside the range above, meaning this is a custom validator
+            // So we extract the message from ValidatorErrors keyValue pair
+            default:
+              acc.push(errors![key]);
+              break;
+          }
+
           return acc;
         }, [] as string[]);
       })
