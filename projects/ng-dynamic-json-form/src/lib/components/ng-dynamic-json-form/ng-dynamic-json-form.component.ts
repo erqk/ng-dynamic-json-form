@@ -3,7 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
-  SimpleChanges,
+  SimpleChanges
 } from '@angular/core';
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import {
@@ -30,10 +30,8 @@ import { FormStatusService } from '../../services/form-status.service';
 })
 export class NgDynamicJsonFormComponent {
   @Input() jsonString = '';
-  @Input() customValidators: {
-    name: string;
-    value: ValidatorFn;
-  } | null = null;
+  @Input() customValidators: { [key: string]: ValidatorFn } = {};
+
   @Output() formGet = new EventEmitter();
 
   form?: UntypedFormGroup;
@@ -75,24 +73,13 @@ export class NgDynamicJsonFormComponent {
     const config = this.parseJsonData();
     if (!config.length) return;
 
-    this.reload = true;
     this.reset$.next(null);
 
-    this.form = new UntypedFormGroup({});
+    this.formGeneratorService.customValidators = this.customValidators;
     this.form = this.formGeneratorService.generateFormGroup(config);
     this.formGet.emit(this.form);
 
-    // Initiate form on the next tick to prevent
-    // "There is no FormControl instance attached to form control element with name: XXX" error
-    requestAnimationFrame(() => {
-      this.reload = false;
-    });
-
-    // Set listener and apply changes on next tick after form is build
-    // Otherwise updateControlStatus() -> getElementById() will fail to work
-    requestAnimationFrame(() => {
-      this.listenFormChanges();
-    });
+    this.listenFormChanges();
   }
 
   private listenFormChanges(): void {
@@ -112,6 +99,7 @@ export class NgDynamicJsonFormComponent {
 
     const rootFormChanges$ = this.form!.valueChanges.pipe(
       startWith(this.form?.value),
+      debounceTime(0),
       tap((x) => this.formStatusService.updateFormErrors(this.form!))
     );
 
@@ -133,7 +121,7 @@ export class NgDynamicJsonFormComponent {
     });
 
     merge(rootFormChanges$, ...allControlChanges$)
-      .pipe(debounceTime(0), takeUntil(merge(this.reset$, this.onDestroy$)))
+      .pipe(takeUntil(merge(this.reset$, this.onDestroy$)))
       .subscribe();
   }
 

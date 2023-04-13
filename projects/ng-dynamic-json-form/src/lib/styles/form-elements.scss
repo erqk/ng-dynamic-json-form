@@ -48,8 +48,8 @@
   &:not(.nested-group) {
     + .form-control-container {
       border-top: solid 1px var(--primary-500);
-      padding-top: 2.5rem;
-      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
     }
   }
 }

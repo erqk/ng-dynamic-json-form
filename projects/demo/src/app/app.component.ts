@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { firstUppercaseValidator } from './custom-validators/first-uppercase.validator';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,10 @@ export class AppComponent {
   private _jsonString = '';
 
   form?: UntypedFormGroup;
+
+  customValidators = {
+    firstUppercase: firstUppercaseValidator,
+  };
 
   onJsonEditorChanged(value: string): void {
     this._jsonString = value;

@@ -3,7 +3,8 @@ import {
   AbstractControl,
   FormControl,
   UntypedFormArray,
-  UntypedFormGroup
+  UntypedFormGroup,
+  ValidatorFn,
 } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
@@ -15,6 +16,8 @@ import { getValidators } from '../utils/validator-generator';
 export class FormGeneratorService {
   reset$ = new Subject();
 
+  customValidators: { [key: string]: ValidatorFn } = {};
+
   generateFormGroup(data: NgDynamicJsonFormConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
@@ -23,7 +26,10 @@ export class FormGeneratorService {
       // form control
       if (!item.children && !item.formArray) {
         control = new FormControl(item.value, {
-          validators: getValidators(item.validators ?? []),
+          validators: getValidators(
+            item.validators ?? [],
+            this.customValidators
+          ),
         });
       }
 

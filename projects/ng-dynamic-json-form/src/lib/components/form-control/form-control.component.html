@@ -36,11 +36,7 @@
     <ng-container *ngSwitchCase="'radio'">
       <ng-container *ngFor="let item of data.options">
         <label class="option-button">
-          <input
-            type="radio"
-            [value]="item.value"
-            [formControl]="control"
-          />
+          <input type="radio" [value]="item.value" [formControl]="control" />
 
           <span class="marker"></span>
           <span>{{ item.label }}</span>
@@ -65,7 +61,9 @@
     </ng-container>
   </div>
 
-  <span *ngIf="control.errors">
-    {{ control.errors | json }}
-  </span>
+  <ng-container *ngIf="control.touched || control.value">
+    <ng-container *ngFor="let error of errors$ | async">
+      <div>{{ error }}</div>
+    </ng-container>
+  </ng-container>
 </ng-container>

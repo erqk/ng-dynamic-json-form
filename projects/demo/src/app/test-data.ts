@@ -19,9 +19,13 @@ export const testData: NgDynamicJsonFormConfig[] = [
             value: 4,
           },
           {
-            name: 'regex',
+            name: 'pattern',
             value: '\\D+',
           },
+          {
+            name: 'custom',
+            value: 'firstUppercase'
+          }
         ],
       },
       {
