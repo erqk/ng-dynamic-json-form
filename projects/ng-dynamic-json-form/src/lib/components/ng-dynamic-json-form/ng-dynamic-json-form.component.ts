@@ -84,6 +84,7 @@ export class NgDynamicJsonFormComponent {
     this.form = this.formGeneratorService.generateFormGroup(config);
     this.formGet.emit(this.form);
 
+    console.log(this.form);
     this.listenFormChanges();
   }
 
@@ -102,6 +103,16 @@ export class NgDynamicJsonFormComponent {
       );
     };
 
+    const controlPaths = (
+      input: NgDynamicJsonFormControlCondition[],
+      path: string[] = []
+    ): string[] => {
+      return input.reduce((acc, curr) => {
+        acc.push(curr.control);
+        return !curr.group?.length ? acc : controlPaths(curr.group, acc);
+      }, path);
+    };
+
     const rootFormChanges$ = this.form!.valueChanges.pipe(
       startWith(this.form?.value),
       debounceTime(0),
@@ -109,13 +120,14 @@ export class NgDynamicJsonFormComponent {
     );
 
     const allControlChanges$ = conditionData.map((data) => {
-      const controlsToListen = data.conditions
+      const controlsToListen = controlPaths(data.conditions)
         .reduce((a, b) => {
-          const isDuplicates = a.some((x) => x.control === b.control);
+          // prevent listening to same control multiple times
+          const isDuplicates = a.some((x) => x === b);
           if (!isDuplicates) a.push(b);
           return a;
-        }, [] as NgDynamicJsonFormControlCondition[])
-        .map((x) => this.form!.get(x.control))
+        }, [] as string[])
+        .map((x) => this.form!.get(x))
         .filter((x) => !!x);
 
       return combineLatest(

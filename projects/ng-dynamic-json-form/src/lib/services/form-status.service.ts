@@ -142,62 +142,54 @@ export class FormStatusService {
     if (!conditions.length) return undefined;
 
     const chainCondition = (
-      input: NgDynamicJsonFormControlCondition[],
-      chainOperator: 'AND' | 'OR' = 'OR'
+      input: NgDynamicJsonFormControlCondition
     ): boolean => {
-      return input.reduce((acc, curr) => {
-        const targetControl = form.get(curr.control);
-        const result = this.booleanEvaluation(
-          curr.operator,
-          targetControl?.value,
-          curr.controlValue
-        );
+      if (!input.group?.length) return false;
 
-        if (!!curr.children?.length) {
-          return chainCondition(curr.children, curr.childBoolOperator);
+      const group = input.group;
+      const parentResult = this.booleanEvaluation(form, input);
+
+      return group.reduce((acc, curr) => {
+        if (!!curr.group?.length) {
+          return chainCondition(curr);
         }
 
-        switch (chainOperator) {
+        const result = this.booleanEvaluation(form, curr);
+        switch (input.groupBooleanOperator) {
           case 'AND':
             return acc && result;
 
           case 'OR':
             return acc || result;
         }
-      }, false);
+
+        return acc;
+      }, parentResult);
     };
 
-    if (conditions.length === 1) {
+    // Only single condition and no group condition under it
+    if (conditions.length === 1 && !conditions[0].group?.length) {
       const config = conditions[0];
-      const targetControl = form.get(config.control);
-
-      return this.booleanEvaluation(
-        config.operator,
-        targetControl?.value,
-        config.controlValue
-      );
+      return this.booleanEvaluation(form, config);
     }
 
     return conditions.reduce((acc, curr) => {
-      const targetControl = form.get(curr.control);
-      const result = !!curr.children?.length
-        ? chainCondition(curr.children, curr.childBoolOperator)
-        : this.booleanEvaluation(
-            curr.operator,
-            targetControl?.value,
-            curr.controlValue
-          );
+      const result = !!curr.group?.length
+        ? chainCondition(curr)
+        : this.booleanEvaluation(form, curr);
 
       return acc || result;
     }, false);
   }
 
   private booleanEvaluation(
-    operator: string,
-    left: string,
-    right: string
+    form: FormGroup,
+    data: NgDynamicJsonFormControlCondition
   ): boolean {
-    switch (operator) {
+    const left = form.get(data.control)?.value;
+    const right = data.controlValue;
+
+    switch (data.operator) {
       case '===':
         return left === right;
 
@@ -216,7 +208,5 @@ export class FormStatusService {
       case '<':
         return left < right;
     }
-
-    return false;
   }
 }

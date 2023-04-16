@@ -10,9 +10,18 @@ export const testData: NgDynamicJsonFormConfig[] = [
         formControlName: 'name',
         value: 'Andrew',
         type: 'text',
+        conditions: [
+          {
+            name: 'required',
+            control: 'basicInfo.age',
+            controlValue: 20,
+            operator: '>=',
+          },
+        ],
         validators: [
           {
             name: 'required',
+            message: 'Please type your name',
           },
           {
             name: 'minLength',
@@ -51,6 +60,33 @@ export const testData: NgDynamicJsonFormConfig[] = [
         label: 'Custom Component',
         formControlName: 'customComponent',
         customComponent: 'custom-input',
+        conditions: [
+          {
+            name: 'disabled',
+            control: 'basicInfo.status',
+            controlValue: false,
+            operator: '===',
+          },
+          {
+            name: 'required',
+            control: 'basicInfo.age',
+            controlValue: 20,
+            operator: '>',
+            groupBooleanOperator: 'AND',
+            group: [
+              {
+                control: 'basicInfo.name',
+                controlValue: 'Andrew',
+                operator: '===',
+              },
+              {
+                control: 'basicInfo.status',
+                controlValue: true,
+                operator: '===',
+              },
+            ],
+          },
+        ],
       },
       {
         label: 'Gender',

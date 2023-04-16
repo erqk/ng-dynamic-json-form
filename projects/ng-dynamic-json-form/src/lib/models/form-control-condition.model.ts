@@ -1,10 +1,10 @@
 export interface NgDynamicJsonFormControlCondition {
-  name: 'required' | 'disabled' | 'hidden';
+  name?: 'required' | 'disabled' | 'hidden';
   control: string;
   controlValue: any;
   operator: '===' | '!==' | '>=' | '>' | '<=' | '<';
-  childBoolOperator?: 'OR' | 'AND';
-  children?: NgDynamicJsonFormControlCondition[];
+  groupBooleanOperator?: 'OR' | 'AND';
+  group?: NgDynamicJsonFormControlCondition[];
 }
 
 /**
