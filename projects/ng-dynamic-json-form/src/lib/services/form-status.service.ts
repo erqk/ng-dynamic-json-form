@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import {
   AbstractControl,
   FormGroup,
-  UntypedFormControl,
-  UntypedFormGroup,
   Validators,
+  isFormArray,
+  isFormControl,
+  isFormGroup
 } from '@angular/forms';
 import { Subject } from 'rxjs';
 import {
-  NgDynamicJsonFormControlConfig,
   NgDynamicJsonFormControlCondition,
+  NgDynamicJsonFormControlConfig,
 } from '../models';
 import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
 import { clearEmpties } from '../utils/clear-empties';
@@ -21,29 +22,39 @@ export class FormStatusService {
   reset$ = new Subject();
 
   updateFormErrors(form: FormGroup): void {
-    const getErrors = (input: UntypedFormControl | UntypedFormGroup) => {
-      const isFormGroup = 'controls' in input;
+    const getErrors = (input: AbstractControl) => {
+      let errors = null;
 
-      if (!isFormGroup) {
-        return JSON.parse(JSON.stringify(input.errors));
+      if (isFormControl(input)) {
+        errors = input.errors;
       }
 
-      const errors = Object.keys(input.controls).reduce((acc, key) => {
-        const formControlErrors = getErrors(
-          input.controls[key] as UntypedFormControl
-        );
+      if (isFormGroup(input)) {
+        errors = Object.keys(input.controls).reduce((acc, key) => {
+          const formControlErrors = getErrors(input.controls[key]);
 
-        if (!!formControlErrors) {
-          acc = {
-            ...acc,
-            [key]: formControlErrors,
-          };
-        }
+          if (!!formControlErrors) {
+            acc = {
+              ...acc,
+              [key]: formControlErrors,
+            };
+          }
 
-        return acc;
-      }, {});
+          return acc;
+        }, {});
+      }
 
-      return JSON.parse(JSON.stringify(errors));
+      if (isFormArray(input)) {
+        const parentErrors = input.errors;
+        const childrenErrors: any = input.controls.map(x => getErrors(x))
+
+        errors = {
+          ...parentErrors,
+          ...childrenErrors,
+        };
+      }
+
+      return errors ? JSON.parse(JSON.stringify(errors)) : null;
     };
 
     const errors = clearEmpties(getErrors(form));
