@@ -1,6 +1,12 @@
-<ng-container *ngIf="!customComponent && control && data">
+<ng-container *ngIf="data">
   <label class="input-label">{{ data.label }}</label>
+</ng-container>
 
+<!-- Custom component -->
+<ng-container dynamicComponentAnchor></ng-container>
+
+<!-- Built in form element -->
+<ng-container *ngIf="!customComponent && control && data">
   <ng-container *ngIf="!data.options?.length" [ngSwitch]="data.type">
     <!-- Switch button -->
     <ng-container *ngSwitchCase="'switch'">
@@ -68,16 +74,8 @@
   </div>
 
   <!-- Error messages -->
-  <ng-container *ngIf="control.touched || control.value">
-    <div class="errors-container">
-      <ng-container *ngFor="let error of errors$ | async">
-        <div class="error">{{ error }}</div>
-      </ng-container>
-    </div>
-  </ng-container>
+  <error-message
+    [control]="control"
+    [validators]="data.validators"
+  ></error-message>
 </ng-container>
-
-<ng-container *ngIf="customComponent && data">
-  <label class="input-label">{{ data.label }}</label>
-</ng-container>
-<ng-container dynamicComponentAnchor></ng-container>
