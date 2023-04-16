@@ -22,14 +22,15 @@ export class FormGeneratorService {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
       let control: AbstractControl | null = null;
+      const validators = getValidators(
+        item.validators ?? [],
+        this.customValidators
+      );
 
       // form control
       if (!item.children && !item.formArray) {
         control = new FormControl(item.value, {
-          validators: getValidators(
-            item.validators ?? [],
-            this.customValidators
-          ),
+          validators,
         });
       }
 
@@ -49,7 +50,11 @@ export class FormGeneratorService {
             ? item.value.length
             : item.formArray.length;
 
-        control = this.generateFormArray(item.formArray.template, arrayLength);
+        control = this.generateFormArray(
+          item.formArray.template,
+          arrayLength,
+          validators
+        );
         control.patchValue(item.value ?? []);
       }
 
@@ -65,9 +70,12 @@ export class FormGeneratorService {
 
   private generateFormArray(
     data: NgDynamicJsonFormConfig[],
-    count: number
+    count: number,
+    validators: ValidatorFn[]
   ): UntypedFormArray {
-    const formArray = new UntypedFormArray([]);
+    const formArray = new UntypedFormArray([], {
+      validators,
+    });
 
     for (let i = 0; i < count; i++) {
       const formGroup = this.generateFormGroup(data);
