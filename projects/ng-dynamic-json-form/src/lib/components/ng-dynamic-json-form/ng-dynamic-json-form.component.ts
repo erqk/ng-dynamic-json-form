@@ -17,7 +17,7 @@ import {
   tap,
 } from 'rxjs';
 import {
-  NgDynamicJsonFormConfig,
+  NgDynamicJsonFormControlConfig,
   NgDynamicJsonFormControlCondition,
 } from '../../models';
 import { NgDynamicJsonFormConditionExtracted } from '../../models/condition-extracted.model';
@@ -40,7 +40,7 @@ export class NgDynamicJsonFormComponent {
   @Output() formGet = new EventEmitter();
 
   form?: UntypedFormGroup;
-  jsonParsed: NgDynamicJsonFormConfig[] | null = null;
+  jsonParsed: NgDynamicJsonFormControlConfig[] | null = null;
   reload = false;
 
   reset$ = new Subject();
@@ -63,7 +63,7 @@ export class NgDynamicJsonFormComponent {
     this.reset$.complete();
   }
 
-  private parseJsonData(): NgDynamicJsonFormConfig[] {
+  private parseJsonData(): NgDynamicJsonFormControlConfig[] {
     if (!this.jsonString) return [];
 
     try {
@@ -144,7 +144,7 @@ export class NgDynamicJsonFormComponent {
 
   addFormGroup(
     formArray: FormArray,
-    template: NgDynamicJsonFormConfig[],
+    template: NgDynamicJsonFormControlConfig[],
     index?: number
   ): void {
     const formGroup = this.formGeneratorService.generateFormGroup(template);

@@ -3,7 +3,7 @@ import { NgDynamicJsonFormControlCondition } from './form-control-condition.mode
 import { NgDynamicJsonFormControlOptions } from './form-control-options.model';
 import { NgDynamicJsonFormValidatorConfig } from './form-validator-config.model';
 
-export interface NgDynamicJsonFormConfig {
+export interface NgDynamicJsonFormControlConfig {
   label: string;
   formControlName: string;
   value?: any;
@@ -22,7 +22,7 @@ export interface NgDynamicJsonFormConfig {
   conditions?: NgDynamicJsonFormControlCondition[];
   optionsLayout?: 'column' | 'row';
   options?: NgDynamicJsonFormControlOptions[];
-  children?: NgDynamicJsonFormConfig[];
+  children?: NgDynamicJsonFormControlConfig[];
   formArray?: NgDynamicJsonFormArrayConfig;
   gridRow?: string;
   gridColumn?: string;

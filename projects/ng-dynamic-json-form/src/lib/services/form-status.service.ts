@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Subject } from 'rxjs';
 import {
-  NgDynamicJsonFormConfig,
+  NgDynamicJsonFormControlConfig,
   NgDynamicJsonFormControlCondition,
 } from '../models';
 import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
@@ -106,7 +106,7 @@ export class FormStatusService {
   }
 
   extractConditions(
-    input: NgDynamicJsonFormConfig[],
+    input: NgDynamicJsonFormControlConfig[],
     parentControlName?: string,
     path?: NgDynamicJsonFormConditionExtracted[]
   ): NgDynamicJsonFormConditionExtracted[] {

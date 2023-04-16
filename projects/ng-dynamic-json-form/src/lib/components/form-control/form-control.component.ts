@@ -10,7 +10,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { NgDynamicJsonFormConfig } from '../../models/form-control-config.model';
+import { NgDynamicJsonFormControlConfig } from '../../models/form-control-config.model';
 import { DynamicComponentAnchorDirective } from '../../directives/dynamic-component-anchor.directive';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 
@@ -22,7 +22,7 @@ import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custo
   imports: [CommonModule, ReactiveFormsModule, DynamicComponentAnchorDirective],
 })
 export class FormControlComponent {
-  @Input() data: NgDynamicJsonFormConfig | null = null;
+  @Input() data: NgDynamicJsonFormControlConfig | null = null;
   @Input() control: UntypedFormControl | null = null;
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
 

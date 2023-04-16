@@ -7,7 +7,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
+import { NgDynamicJsonFormControlConfig } from '../models/form-control-config.model';
 import { getValidators } from '../utils/validator-generator';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class FormGeneratorService {
 
   customValidators: { [key: string]: ValidatorFn } = {};
 
-  generateFormGroup(data: NgDynamicJsonFormConfig[]): UntypedFormGroup {
+  generateFormGroup(data: NgDynamicJsonFormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
       let control: AbstractControl | null = null;
@@ -69,7 +69,7 @@ export class FormGeneratorService {
   }
 
   private generateFormArray(
-    data: NgDynamicJsonFormConfig[],
+    data: NgDynamicJsonFormControlConfig[],
     count: number,
     validators: ValidatorFn[]
   ): UntypedFormArray {
