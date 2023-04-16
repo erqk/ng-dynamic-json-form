@@ -9,7 +9,7 @@
         formGroupTemplate;
         context: {
           parentForm: form,
-          controlsData: jsonParsed
+          controlConfigs: jsonParsed
         }
       "
     ></ng-container>
@@ -20,7 +20,7 @@
   #formGroupTemplate
   let-label="label"
   let-parentForm="parentForm"
-  let-controlsData="controlsData"
+  let-controlConfigs="controlConfigs"
   let-isNested="isNested"
   let-parentId="parentId"
 >
@@ -28,7 +28,7 @@
 
   <div class="form-grid-container">
     <ng-container [formGroup]="parentForm">
-      <ng-container *ngFor="let control of controlsData">
+      <ng-container *ngFor="let control of controlConfigs">
         <!-- Form control -->
         <ng-container *ngIf="!control.children && !control.formArray">
           <grid-item-wrapper
@@ -57,7 +57,7 @@
               [ngTemplateOutlet]="formGroupTemplate"
               [ngTemplateOutletContext]="{
                 label: control.label,
-                controlsData: control.children,
+                controlConfigs: control.children,
                 parentId:
                   (parentId ? parentId + '.' : '') + control.formControlName,
                 parentForm: parentForm.controls[control.formControlName],
@@ -86,6 +86,7 @@
               [ngTemplateOutletContext]="{
                 label: control.label,
                 parentForm: parentForm,
+                validators: control.validators,
                 formArray: parentForm.controls[control.formControlName],
                 formArrayName: control.formControlName,
                 formArrayConfig: control.formArray
@@ -102,6 +103,7 @@
   #formArrayTemplate
   let-label="label"
   let-parentForm="parentForm"
+  let-validators="validators"
   let-formArray="formArray"
   let-formArrayName="formArrayName"
   let-formArrayConfig="formArrayConfig"
@@ -126,6 +128,11 @@
     </div>
 
     <ng-container formArrayName="{{ formArrayName }}">
+      <error-message
+        [control]="formArray"
+        [validators]="validators"
+      ></error-message>
+
       <ng-container *ngFor="let formGroup of formArray.controls; index as i">
         <div class="group">
           <div class="form-array-group-header">
@@ -159,7 +166,7 @@
                 parentId: formArrayName,
                 parentForm: formGroup,
                 isNested: true,
-                controlsData: formArrayConfig.template
+                controlConfigs: formArrayConfig.template
               }
             "
           ></ng-container>

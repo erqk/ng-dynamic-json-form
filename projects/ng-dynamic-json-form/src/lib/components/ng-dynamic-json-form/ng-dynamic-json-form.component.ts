@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   Output,
   SimpleChanges,
@@ -38,6 +39,11 @@ export class NgDynamicJsonFormComponent {
   } = {};
 
   @Output() formGet = new EventEmitter();
+
+  @HostBinding('class')
+  get hostClass() {
+    return 'ng-dynamic-json-form';
+  }
 
   form?: UntypedFormGroup;
   jsonParsed: NgDynamicJsonFormControlConfig[] | null = null;
@@ -84,7 +90,6 @@ export class NgDynamicJsonFormComponent {
     this.form = this.formGeneratorService.generateFormGroup(config);
     this.formGet.emit(this.form);
 
-    console.log(this.form);
     this.listenFormChanges();
   }
 
