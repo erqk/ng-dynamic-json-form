@@ -7,7 +7,16 @@ import {
   isFormControl,
   isFormGroup,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  debounceTime,
+  merge,
+  of,
+  startWith,
+  tap,
+} from 'rxjs';
 import {
   NgDynamicJsonFormControlCondition,
   NgDynamicJsonFormControlConfig,
@@ -21,7 +30,55 @@ import { clearEmpties } from '../utils/clear-empties';
 export class FormStatusService {
   reset$ = new Subject();
 
-  updateFormErrors(form: FormGroup): void {
+  formErrorEvent$(form: FormGroup): Observable<any> {
+    return form.valueChanges.pipe(
+      startWith(form.value),
+      debounceTime(0),
+      tap((x) => this.updateFormErrors(form))
+    );
+  }
+
+  formControlConditonsEvent$(
+    form: FormGroup,
+    config: NgDynamicJsonFormControlConfig[]
+  ): Observable<any> {
+    if (!config.length) return of(null);
+
+    const conditionData = this.extractConditions(config);
+    const controlPaths = (
+      input: NgDynamicJsonFormControlCondition[],
+      path: string[] = []
+    ): string[] => {
+      return input.reduce((acc, curr) => {
+        acc.push(curr.control);
+        return !curr.groupWith?.length
+          ? acc
+          : controlPaths(curr.groupWith, acc);
+      }, path);
+    };
+
+    const allControlChanges$ = conditionData.map((data) => {
+      const controlsToListen = controlPaths(data.conditions)
+        .reduce((a, b) => {
+          // prevent listening to same control multiple times
+          const isDuplicates = a.some((x) => x === b);
+          if (!isDuplicates) a.push(b);
+          return a;
+        }, [] as string[])
+        .map((x) => form.get(x))
+        .filter((x) => !!x);
+
+      return combineLatest(
+        controlsToListen.map((x) =>
+          x!.valueChanges.pipe(startWith(x?.value ?? ''))
+        )
+      ).pipe(tap((x) => this.updateControlStatus(form, data)));
+    });
+
+    return merge(...allControlChanges$);
+  }
+
+  private updateFormErrors(form: FormGroup): void {
     const getErrors = (input: AbstractControl) => {
       let errors = null;
 
@@ -61,7 +118,7 @@ export class FormStatusService {
     form.setErrors(!Object.keys(errors).length ? null : errors);
   }
 
-  updateControlStatus(
+  private updateControlStatus(
     form: FormGroup,
     data: NgDynamicJsonFormConditionExtracted
   ): void {

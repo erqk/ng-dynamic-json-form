@@ -6,9 +6,10 @@ import {
   UntypedFormGroup,
   ValidatorFn,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormControlConfig } from '../models/form-control-config.model';
 import { getValidators } from '../utils/validator-generator';
+import { FormStatusService } from './form-status.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,8 @@ export class FormGeneratorService {
   reset$ = new Subject();
 
   customValidators: { [key: string]: ValidatorFn } = {};
+
+  constructor(private formStatusService: FormStatusService) {}
 
   generateFormGroup(data: NgDynamicJsonFormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
@@ -77,9 +80,15 @@ export class FormGeneratorService {
       validators,
     });
 
+    this.reset$.next(null);
     for (let i = 0; i < count; i++) {
       const formGroup = this.generateFormGroup(data);
       formArray.push(formGroup);
+
+      this.formStatusService
+        .formControlConditonsEvent$(formGroup, data)
+        .pipe(takeUntil(this.reset$))
+        .subscribe();
     }
 
     return formArray;

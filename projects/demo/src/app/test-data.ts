@@ -253,6 +253,14 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
           label: 'Email',
           formControlName: 'email',
           value: '',
+          conditions: [
+            {
+              name: 'required',
+              control: 'name',
+              controlValue: '',
+              operator: '!==',
+            },
+          ],
           validators: [
             {
               name: 'email',

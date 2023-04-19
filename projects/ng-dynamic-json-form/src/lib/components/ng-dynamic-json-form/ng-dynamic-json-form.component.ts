@@ -90,54 +90,13 @@ export class NgDynamicJsonFormComponent {
     this.form = this.formGeneratorService.generateFormGroup(config);
     this.formGet.emit(this.form);
 
-    this.listenFormChanges();
-  }
-
-  private listenFormChanges(): void {
-    const config = this.parseJsonData();
-    if (!config.length) return;
-
-    const conditionData = this.formStatusService.extractConditions(config);
-
-    const updateControl = (data: NgDynamicJsonFormConditionExtracted) => {
-      this.formStatusService.updateControlStatus(this.form!, data);
-    };
-
-    const controlPaths = (
-      input: NgDynamicJsonFormControlCondition[],
-      path: string[] = []
-    ): string[] => {
-      return input.reduce((acc, curr) => {
-        acc.push(curr.control);
-        return !curr.groupWith?.length ? acc : controlPaths(curr.groupWith, acc);
-      }, path);
-    };
-
-    const rootFormChanges$ = this.form!.valueChanges.pipe(
-      startWith(this.form?.value),
-      debounceTime(0),
-      tap((x) => this.formStatusService.updateFormErrors(this.form!))
-    );
-
-    const allControlChanges$ = conditionData.map((data) => {
-      const controlsToListen = controlPaths(data.conditions)
-        .reduce((a, b) => {
-          // prevent listening to same control multiple times
-          const isDuplicates = a.some((x) => x === b);
-          if (!isDuplicates) a.push(b);
-          return a;
-        }, [] as string[])
-        .map((x) => this.form!.get(x))
-        .filter((x) => !!x);
-
-      return combineLatest(
-        controlsToListen.map((x) =>
-          x!.valueChanges.pipe(startWith(x?.value ?? ''))
-        )
-      ).pipe(tap((x) => updateControl(data)));
-    });
-
-    merge(rootFormChanges$, ...allControlChanges$)
+    merge(
+      this.formStatusService.formErrorEvent$(this.form!),
+      this.formStatusService.formControlConditonsEvent$(
+        this.form,
+        this.parseJsonData()
+      )
+    )
       .pipe(takeUntil(merge(this.reset$, this.onDestroy$)))
       .subscribe();
   }
