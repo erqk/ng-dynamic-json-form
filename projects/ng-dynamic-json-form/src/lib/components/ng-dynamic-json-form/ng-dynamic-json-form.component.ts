@@ -100,12 +100,7 @@ export class NgDynamicJsonFormComponent {
     const conditionData = this.formStatusService.extractConditions(config);
 
     const updateControl = (data: NgDynamicJsonFormConditionExtracted) => {
-      this.formStatusService.updateControlStatus(
-        this.form!,
-        this.form!.get(data.targetControlPath),
-        data.targetControlPath,
-        data.conditions
-      );
+      this.formStatusService.updateControlStatus(this.form!, data);
     };
 
     const controlPaths = (
@@ -114,7 +109,7 @@ export class NgDynamicJsonFormComponent {
     ): string[] => {
       return input.reduce((acc, curr) => {
         acc.push(curr.control);
-        return !curr.group?.length ? acc : controlPaths(curr.group, acc);
+        return !curr.groupWith?.length ? acc : controlPaths(curr.groupWith, acc);
       }, path);
     };
 

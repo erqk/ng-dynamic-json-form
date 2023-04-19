@@ -5,7 +5,7 @@ import {
   Validators,
   isFormArray,
   isFormControl,
-  isFormGroup
+  isFormGroup,
 } from '@angular/forms';
 import { Subject } from 'rxjs';
 import {
@@ -46,7 +46,7 @@ export class FormStatusService {
 
       if (isFormArray(input)) {
         const parentErrors = input.errors;
-        const childrenErrors: any = input.controls.map(x => getErrors(x))
+        const childrenErrors: any = input.controls.map((x) => getErrors(x));
 
         errors = {
           ...parentErrors,
@@ -63,21 +63,23 @@ export class FormStatusService {
 
   updateControlStatus(
     form: FormGroup,
-    control: AbstractControl | null,
-    controlPath: string,
-    conditions: NgDynamicJsonFormControlCondition[]
+    data: NgDynamicJsonFormConditionExtracted
   ): void {
-    if (!conditions.length) return;
+    const conditions = data.conditions;
+    const controlPath = data.targetControlPath;
+    const control = form.get(controlPath);
 
-    const conditionsFiltered = (type: 'hidden' | 'disabled' | 'required') =>
+    if (!control || !conditions.length) return;
+
+    // Pick only first level condition type, to prevent complexity goes up
+    const conditionsFiltered = (type: string) =>
       conditions.filter((x) => x.name === type);
 
-    const result = (type: 'hidden' | 'disabled' | 'required') =>
-      this.getConditionResult(form, conditionsFiltered(type));
+    const result = (type: string) =>
+      conditionsFiltered(type).length > 0
+        ? this.getConditionResult(form, conditionsFiltered(type))
+        : undefined;
 
-    const controlRequired = result('required');
-    const disableControl = result('disabled');
-    const hideControl = result('hidden');
     const getElement$ = new Promise<HTMLElement | null>((resolve, reject) => {
       requestAnimationFrame(() => {
         const element = document.querySelector(
@@ -91,28 +93,40 @@ export class FormStatusService {
       });
     });
 
-    if (!control) return;
-
-    if (controlRequired !== undefined) {
-      if (controlRequired) control.addValidators(Validators.required);
-      else control.removeValidators(Validators.required);
+    enum conditionTypeEnum {
+      HIDDEN = 'hidden',
+      DISABLED = 'disabled',
+      REQUIRED = 'required',
     }
 
-    if (disableControl !== undefined) {
-      if (disableControl) control.disable();
-      else control.enable();
-    }
+    const setControlStatus = (type: string) => {
+      const bool = result(type);
+      if (bool === undefined) return;
 
-    if (hideControl !== undefined) {
-      if (hideControl) {
-        getElement$.then((x) => x?.setAttribute('style', 'display:none'));
-        control.disable();
-      } else {
-        getElement$.then((x) => x?.setAttribute('style', 'display:block'));
-        control.enable();
+      switch (type) {
+        case conditionTypeEnum.HIDDEN:
+          if (bool) {
+            getElement$.then((x) => x?.setAttribute('style', 'display:none'));
+            control.disable();
+          } else {
+            getElement$.then((x) => x?.setAttribute('style', 'display:block'));
+            control.enable();
+          }
+          break;
+
+        case conditionTypeEnum.DISABLED:
+          if (bool) control.disable();
+          else control.enable();
+          break;
+
+        case conditionTypeEnum.REQUIRED:
+          if (bool) control.addValidators(Validators.required);
+          else control.removeValidators(Validators.required);
+          break;
       }
-    }
+    };
 
+    Object.values(conditionTypeEnum).forEach((x) => setControlStatus(x));
     control.updateValueAndValidity();
   }
 
@@ -146,54 +160,40 @@ export class FormStatusService {
     return path;
   }
 
+  /**Solved by ChatGPT (with some modification) */
   private getConditionResult(
     form: FormGroup,
-    conditions: NgDynamicJsonFormControlCondition[]
-  ): boolean | undefined {
-    if (!conditions.length) return undefined;
-
-    const chainCondition = (
+    conditions: NgDynamicJsonFormControlCondition[],
+    groupOperator?: '&&' | '||'
+  ): boolean {
+    const evaluateExpression = (
       input: NgDynamicJsonFormControlCondition
     ): boolean => {
-      if (!input.group?.length) return false;
+      if (input.groupOperator && input.groupWith) {
+        const result = this.booleanResult(form, input);
+        const operator = input.groupOperator;
+        const groupWith = input.groupWith;
+        const groupResults = groupWith.map(evaluateExpression);
 
-      const group = input.group;
-      const parentResult = this.booleanEvaluation(form, input);
+        switch (operator) {
+          case '&&':
+            return result && groupResults.every((x) => x);
 
-      return group.reduce((acc, curr) => {
-        if (!!curr.group?.length) {
-          return chainCondition(curr);
+          case '||':
+            return result || groupResults.some((x) => x);
+
+          default:
+            throw new Error(`Unknown group operator ${groupOperator}`);
         }
-
-        const result = this.booleanEvaluation(form, curr);
-        switch (input.groupBooleanOperator) {
-          case 'AND':
-            return acc && result;
-
-          case 'OR':
-            return acc || result;
-        }
-
-        return acc;
-      }, parentResult);
+      } else {
+        return this.booleanResult(form, input);
+      }
     };
 
-    // Only single condition and no group condition under it
-    if (conditions.length === 1 && !conditions[0].group?.length) {
-      const config = conditions[0];
-      return this.booleanEvaluation(form, config);
-    }
-
-    return conditions.reduce((acc, curr) => {
-      const result = !!curr.group?.length
-        ? chainCondition(curr)
-        : this.booleanEvaluation(form, curr);
-
-      return acc || result;
-    }, false);
+    return conditions.map(evaluateExpression).some((x) => x);
   }
 
-  private booleanEvaluation(
+  private booleanResult(
     form: FormGroup,
     data: NgDynamicJsonFormControlCondition
   ): boolean {

@@ -67,13 +67,21 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
             controlValue: false,
             operator: '===',
           },
+        ],
+      },
+      {
+        label:
+          "Required If (name==='Andrew' && age > 20 && (status===false || gender==='0') )",
+        formControlName: 'multiConditionInput',
+        type: 'text',
+        conditions: [
           {
             name: 'required',
             control: 'basicInfo.age',
             controlValue: 20,
             operator: '>',
-            groupBooleanOperator: 'AND',
-            group: [
+            groupOperator: '&&',
+            groupWith: [
               {
                 control: 'basicInfo.name',
                 controlValue: 'Andrew',
@@ -81,8 +89,16 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
               },
               {
                 control: 'basicInfo.status',
-                controlValue: true,
+                controlValue: false,
                 operator: '===',
+                groupOperator: '||',
+                groupWith: [
+                  {
+                    control: 'basicInfo.gender',
+                    controlValue: '0',
+                    operator: '===',
+                  },
+                ],
               },
             ],
           },
