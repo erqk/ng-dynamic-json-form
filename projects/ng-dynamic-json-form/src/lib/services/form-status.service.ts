@@ -25,7 +25,6 @@ import {
 } from '../models';
 import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
 import { clearEmpties } from '../utils/clear-empties';
-import { getValidators } from '../utils/validator-generator';
 import { FormValidatorService } from './form-validator.service';
 
 @Injectable({

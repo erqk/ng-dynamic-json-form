@@ -13,13 +13,11 @@ import {
   merge,
   takeUntil
 } from 'rxjs';
-import {
-  NgDynamicJsonFormControlConfig
-} from '../../models';
-import { FormGeneratorService } from '../../services/form-generator.service';
-import { FormStatusService } from '../../services/form-status.service';
-import { FormValidatorService } from '../../services/form-validator.service';
-import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
+import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
+import { NgDynamicJsonFormControlConfig } from './models';
+import { FormGeneratorService } from './services/form-generator.service';
+import { FormStatusService } from './services/form-status.service';
+import { FormValidatorService } from './services/form-validator.service';
 
 @Component({
   selector: 'ng-dynamic-json-form',
