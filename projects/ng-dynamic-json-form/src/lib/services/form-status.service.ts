@@ -17,18 +17,24 @@ import {
   startWith,
   tap,
 } from 'rxjs';
+import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import {
   NgDynamicJsonFormControlCondition,
   NgDynamicJsonFormControlConfig,
+  NgDynamicJsonFormValidatorConfig,
 } from '../models';
 import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
 import { clearEmpties } from '../utils/clear-empties';
+import { getValidators } from '../utils/validator-generator';
+import { FormValidatorService } from './form-validator.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormStatusService {
   reset$ = new Subject();
+
+  constructor(private formValidatorService: FormValidatorService) {}
 
   formErrorEvent$(form: FormGroup): Observable<any> {
     return form.valueChanges.pipe(
@@ -150,18 +156,12 @@ export class FormStatusService {
       });
     });
 
-    enum conditionTypeEnum {
-      HIDDEN = 'hidden',
-      DISABLED = 'disabled',
-      REQUIRED = 'required',
-    }
-
     const setControlStatus = (type: string) => {
       const bool = result(type);
       if (bool === undefined) return;
 
       switch (type) {
-        case conditionTypeEnum.HIDDEN:
+        case ValidatorAndConditionTypes.HIDDEN:
           if (bool) {
             getElement$.then((x) => x?.setAttribute('style', 'display:none'));
             control.disable();
@@ -171,23 +171,39 @@ export class FormStatusService {
           }
           break;
 
-        case conditionTypeEnum.DISABLED:
+        case ValidatorAndConditionTypes.DISABLED:
           if (bool) control.disable();
           else control.enable();
           break;
-
-        case conditionTypeEnum.REQUIRED:
-          if (bool) control.addValidators(Validators.required);
-          else control.removeValidators(Validators.required);
+          
+        default:
+          this.toggleValidators(control, bool, type, data.validators);
           break;
       }
     };
 
-    Object.values(conditionTypeEnum).forEach((x) => setControlStatus(x));
+    Object.values(ValidatorAndConditionTypes).forEach((x) =>
+      setControlStatus(x)
+    );
     control.updateValueAndValidity();
   }
 
-  extractConditions(
+  private toggleValidators(
+    control: AbstractControl,
+    bool: boolean,
+    type: string,
+    validators: NgDynamicJsonFormValidatorConfig[]
+  ): void {
+    const allValidators = this.formValidatorService.getValidators(validators);
+    const otherValidators = this.formValidatorService.getValidators(
+      validators.filter((x) => x.name !== type)
+    );
+
+    if (bool) control.setValidators(allValidators);
+    else control.setValidators(otherValidators);
+  }
+
+  private extractConditions(
     input: NgDynamicJsonFormControlConfig[],
     parentControlName?: string,
     path?: NgDynamicJsonFormConditionExtracted[]
@@ -203,6 +219,7 @@ export class FormStatusService {
             ? `${parentControlName}.${curr.formControlName}`
             : curr.formControlName,
           conditions: curr.conditions,
+          validators: curr.validators || [],
         });
       }
 
@@ -211,7 +228,7 @@ export class FormStatusService {
       }
 
       return acc;
-    }, [] as any[]);
+    }, [] as NgDynamicJsonFormConditionExtracted[]);
 
     path.push(...result);
     return path;

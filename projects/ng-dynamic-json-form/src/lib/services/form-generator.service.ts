@@ -8,8 +8,8 @@ import {
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormControlConfig } from '../models/form-control-config.model';
-import { getValidators } from '../utils/validator-generator';
 import { FormStatusService } from './form-status.service';
+import { FormValidatorService } from './form-validator.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,17 +17,17 @@ import { FormStatusService } from './form-status.service';
 export class FormGeneratorService {
   reset$ = new Subject();
 
-  customValidators: { [key: string]: ValidatorFn } = {};
-
-  constructor(private formStatusService: FormStatusService) {}
+  constructor(
+    private formStatusService: FormStatusService,
+    private formValidatorService: FormValidatorService
+  ) {}
 
   generateFormGroup(data: NgDynamicJsonFormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
       let control: AbstractControl | null = null;
-      const validators = getValidators(
-        item.validators ?? [],
-        this.customValidators
+      const validators = this.formValidatorService.getValidators(
+        item.validators ?? []
       );
 
       // form control

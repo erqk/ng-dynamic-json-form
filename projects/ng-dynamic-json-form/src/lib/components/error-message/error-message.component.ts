@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Observable, debounceTime, map, of, startWith, switchMap } from 'rxjs';
 import { NgDynamicJsonFormValidatorConfig } from '../../models';
+import { ValidatorAndConditionTypes } from '../../enums/validator-and-condition-types.enum';
 
 @Component({
   selector: 'error-message',
@@ -29,7 +30,7 @@ export class ErrorMessageComponent {
       switchMap((x) => this.getErrors$())
     );
   }
-  
+
   private getErrors$(): Observable<string[]> {
     return of(this.control?.errors).pipe(
       map((errors) => {
@@ -37,14 +38,14 @@ export class ErrorMessageComponent {
 
         return Object.keys(errors!).reduce((acc, key) => {
           switch (key.toLocaleLowerCase()) {
-            case 'required':
-            case 'min':
-            case 'max':
-            case 'minlength':
-            case 'maxlength':
-            case 'pattern':
-            case 'email':
-            case 'requiredTrue':
+            case ValidatorAndConditionTypes.REQUIRED.toLowerCase():
+            case ValidatorAndConditionTypes.REQUIRED_TRUE.toLowerCase():
+            case ValidatorAndConditionTypes.MIN.toLowerCase():
+            case ValidatorAndConditionTypes.MAX.toLowerCase():
+            case ValidatorAndConditionTypes.MIN_LENGTH.toLowerCase():
+            case ValidatorAndConditionTypes.MAX_LENGTH.toLowerCase():
+            case ValidatorAndConditionTypes.PATTERN.toLowerCase():
+            case ValidatorAndConditionTypes.EMAIL.toLowerCase():
               const customErrorMessage = this.validators?.find(
                 (x) => x.name.toLocaleLowerCase() === key.toLocaleLowerCase()
               )?.message;

@@ -10,20 +10,15 @@ import {
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import {
   Subject,
-  combineLatest,
-  debounceTime,
   merge,
-  startWith,
-  takeUntil,
-  tap,
+  takeUntil
 } from 'rxjs';
 import {
-  NgDynamicJsonFormControlConfig,
-  NgDynamicJsonFormControlCondition,
+  NgDynamicJsonFormControlConfig
 } from '../../models';
-import { NgDynamicJsonFormConditionExtracted } from '../../models/condition-extracted.model';
 import { FormGeneratorService } from '../../services/form-generator.service';
 import { FormStatusService } from '../../services/form-status.service';
+import { FormValidatorService } from '../../services/form-validator.service';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 
 @Component({
@@ -54,7 +49,8 @@ export class NgDynamicJsonFormComponent {
 
   constructor(
     private formGeneratorService: FormGeneratorService,
-    private formStatusService: FormStatusService
+    private formStatusService: FormStatusService,
+    private formValidatorService: FormValidatorService
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
@@ -86,7 +82,7 @@ export class NgDynamicJsonFormComponent {
 
     this.reset$.next(null);
 
-    this.formGeneratorService.customValidators = this.customValidators;
+    this.formValidatorService.customValidators = this.customValidators;
     this.form = this.formGeneratorService.generateFormGroup(config);
     this.formGet.emit(this.form);
 

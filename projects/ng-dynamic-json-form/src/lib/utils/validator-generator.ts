@@ -5,6 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgDynamicJsonFormValidatorConfig } from '../models/form-validator-config.model';
+import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 
 export function getValidators(
   input: NgDynamicJsonFormValidatorConfig[],
@@ -14,40 +15,40 @@ export function getValidators(
     let validator: ValidatorFn = Validators.nullValidator;
 
     switch (item.name) {
-      case 'required':
+      case ValidatorAndConditionTypes.REQUIRED:
         validator = Validators.required;
         break;
 
-      case 'requiredTrue':
+      case ValidatorAndConditionTypes.REQUIRED_TRUE:
         validator = Validators.requiredTrue;
         break;
 
-      case 'email':
+      case ValidatorAndConditionTypes.EMAIL:
         validator = emailValidator;
         break;
 
-      case 'pattern':
+      case ValidatorAndConditionTypes.PATTERN:
         validator = Validators.pattern(item.value);
         break;
 
-      case 'min':
+      case ValidatorAndConditionTypes.MIN:
         validator = Validators.min(item.value);
         break;
 
-      case 'max':
+      case ValidatorAndConditionTypes.MAX:
         validator = Validators.max(item.value);
         break;
 
-      case 'minLength':
+      case ValidatorAndConditionTypes.MIN_LENGTH:
         validator = Validators.minLength(item.value);
         break;
 
-      case 'maxLength':
+      case ValidatorAndConditionTypes.MAX_LENGTH:
         validator = Validators.maxLength(item.value);
         break;
 
-      case 'custom':
-        validator = customValidators[item.value];
+      case ValidatorAndConditionTypes.CUSTOM:
+        validator = customValidators[item.value] || Validators.nullValidator;
         break;
     }
 
