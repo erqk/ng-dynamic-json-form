@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Type, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  Type,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import { DynamicComponentAnchorDirective } from '../../directives/dynamic-component-anchor.directive';
 import { NgDynamicJsonFormControlConfig } from '../../models/form-control-config.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -11,32 +16,26 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   templateUrl: './form-control.component.html',
   styles: [],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DynamicComponentAnchorDirective,
-    ErrorMessageComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, ErrorMessageComponent],
 })
 export class FormControlComponent {
   @Input() data: NgDynamicJsonFormControlConfig | null = null;
   @Input() control: UntypedFormControl | null = null;
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
 
-  @ViewChild(DynamicComponentAnchorDirective, { static: true })
-  dynamicComponentAnchor?: DynamicComponentAnchorDirective;
+  @ViewChild('customComponentAnchor', { read: ViewContainerRef, static: true })
+  customComponentAnchor?: ViewContainerRef;
 
   ngOnInit(): void {
     this.injectCustomComponent();
   }
 
   private injectCustomComponent(): void {
-    if (!this.customComponent || !this.dynamicComponentAnchor) return;
+    if (!this.customComponent || !this.customComponentAnchor) return;
 
-    const componentRef =
-      this.dynamicComponentAnchor.viewContainerRef.createComponent(
-        this.customComponent
-      );
+    const componentRef = this.customComponentAnchor.createComponent(
+      this.customComponent
+    );
     componentRef.instance.control = this.control;
     componentRef.instance.data = this.data;
   }
