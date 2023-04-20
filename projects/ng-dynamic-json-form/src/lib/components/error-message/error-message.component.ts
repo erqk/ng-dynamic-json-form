@@ -46,9 +46,9 @@ export class ErrorMessageComponent {
             case ValidatorAndConditionTypes.MAX_LENGTH.toLowerCase():
             case ValidatorAndConditionTypes.PATTERN.toLowerCase():
             case ValidatorAndConditionTypes.EMAIL.toLowerCase():
-              const customErrorMessage = this.validators?.find(
-                (x) => x.name.toLocaleLowerCase() === key.toLocaleLowerCase()
-              )?.message;
+              const customErrorMessage = this.validators
+                ?.find((x) => x.name.toLocaleLowerCase() === key)
+                ?.message?.replace(/{{value}}/g, this.control?.value || '');
 
               acc.push(
                 customErrorMessage ?? JSON.stringify({ [key]: errors![key] })
