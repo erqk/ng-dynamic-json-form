@@ -74,6 +74,11 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
           "Required If (name==='Andrew' && age > 20 && (status===false || gender==='0') )",
         formControlName: 'multiConditionInput',
         type: 'text',
+        validators: [
+          {
+            name: 'required',
+          },
+        ],
         conditions: [
           {
             name: 'required',
