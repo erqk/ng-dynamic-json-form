@@ -12,9 +12,6 @@ import { UiBasicSwitchComponent } from './ui-basic-switch/ui-basic-switch.compon
 @Component({
   selector: 'ui-basic',
   templateUrl: './ui-basic.component.html',
-  styles: [
-    ':host, .ui-basic { display: flex; flex-direction: column; width: 100%;}',
-  ],
   standalone: true,
   imports: [
     CommonModule,

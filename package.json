@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^15.2.8",
     "@angular/router": "^15.2.8",
     "jsoneditor": "^9.10.0",
+    "primeflex": "^3.3.0",
     "primeng": "^15.4.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

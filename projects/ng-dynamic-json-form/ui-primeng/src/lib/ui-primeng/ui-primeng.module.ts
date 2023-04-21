@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { CalendarModule } from 'primeng/calendar';
-import { UiPrimengComponent } from './ui-primeng.component';
 import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
+import { UiPrimengComponent } from './ui-primeng.component';
 
 @NgModule({
-  declarations: [UiPrimengComponent],
-  imports: [CommonModule, NgDynamicJsonFormModule, CalendarModule],
+  declarations: [],
+  imports: [
+    CommonModule,
+    NgDynamicJsonFormModule,
+    UiPrimengComponent
+  ],
   exports: [UiPrimengComponent],
 })
 export class NgDynamicJsonFormPrimeNgModule {}

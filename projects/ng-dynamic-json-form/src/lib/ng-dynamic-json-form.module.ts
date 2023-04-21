@@ -16,6 +16,6 @@ import { FormControlLoaderDirective } from './directives/form-control-loader.dir
     GridItemWrapperComponent,
     ErrorMessageComponent,
   ],
-  exports: [NgDynamicJsonFormComponent, UiBasicComponent],
+  exports: [NgDynamicJsonFormComponent, ErrorMessageComponent],
 })
 export class NgDynamicJsonFormModule {}

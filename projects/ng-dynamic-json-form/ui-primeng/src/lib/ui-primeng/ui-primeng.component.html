@@ -1,0 +1,65 @@
+<ng-container *ngIf="data">
+  <label class="input-label">{{ data.label }}</label>
+</ng-container>
+
+<ng-container *ngIf="control && data" [ngSwitch]="data.type">
+  <!-- Checkboxes -->
+  <ng-container *ngSwitchCase="'checkbox'">
+    <ui-primeng-checkbox
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-checkbox>
+  </ng-container>
+
+  <!-- Dropdown -->
+  <ng-container *ngSwitchCase="'dropdown'">
+    <ui-primeng-dropdown
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-dropdown>
+  </ng-container>
+
+  <!-- Radio buttons -->
+  <ng-container *ngSwitchCase="'radio'">
+    <ui-primeng-radio
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-radio>
+  </ng-container>
+
+  <!-- Switch button -->
+  <ng-container *ngSwitchCase="'switch'">
+    <ui-primeng-switch
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-switch>
+  </ng-container>
+
+  <!-- Textarea -->
+  <ng-container *ngSwitchCase="'textarea'">
+    <ui-primeng-textarea
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-textarea>
+  </ng-container>
+
+  <!-- Default (Input field) -->
+  <ng-container *ngSwitchDefault>
+    <ui-primeng-input
+      class="ui-primeng"
+      [control]="control"
+      [data]="data"
+    ></ui-primeng-input>
+  </ng-container>
+
+  <!-- Error messages -->
+  <error-message
+    [control]="control"
+    [validators]="data.validators"
+  ></error-message>
+</ng-container>

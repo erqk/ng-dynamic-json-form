@@ -64,6 +64,9 @@
             ],
             "styles": [
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeflex/primeflex.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "dist/ng-dynamic-json-form/lib/styles/form-elements.scss",
               "projects/demo/src/styles.scss"
             ],

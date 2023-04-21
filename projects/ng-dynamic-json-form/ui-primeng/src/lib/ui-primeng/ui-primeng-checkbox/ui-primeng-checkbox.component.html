@@ -1,0 +1,21 @@
+<ng-container *ngIf="control && data">
+  <div
+    class="flex"
+    [ngClass]="{
+      'flex-column': data.optionsLayout === 'column'
+    }"
+  >
+    <ng-container *ngFor="let item of data.options">
+      <div class="field-checkbox">
+        <p-checkbox
+          [(ngModel)]="selectedItems"
+          [name]="'group'"
+          [value]="item.value"
+          [inputId]="item.value"
+          (onChange)="onChanged($event)"
+        ></p-checkbox>
+        <label [for]="item.value">{{ item.label }}</label>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

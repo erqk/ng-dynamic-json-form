@@ -1,0 +1,17 @@
+<ng-container *ngIf="control && data">
+  <div
+    class="flex gap-3"
+    [ngStyle]="{
+      'flex-column': data.optionsLayout === 'column'
+    }"
+  >
+    <div *ngFor="let item of data.options" class="field-checkbox">
+      <p-radioButton
+        [inputId]="item.value"
+        [value]="item.value"
+        [formControl]="control"
+      ></p-radioButton>
+      <label [for]="item.value" class="ml-2">{{ item.label }}</label>
+    </div>
+  </div>
+</ng-container>
