@@ -8,16 +8,13 @@ import {
   Type,
 } from '@angular/core';
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
-import {
-  Subject,
-  merge,
-  takeUntil
-} from 'rxjs';
+import { Subject, merge, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
 import { NgDynamicJsonFormControlConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
+import { FormControlComponent } from './components/form-control/form-control.component';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -26,6 +23,7 @@ import { FormValidatorService } from './services/form-validator.service';
 })
 export class NgDynamicJsonFormComponent {
   @Input() jsonString = '';
+  @Input() customFormControl?: Type<NgDynamicJsonFormCustomComponent>;
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
   @Input() customComponents: {
     [key: string]: Type<NgDynamicJsonFormCustomComponent>;
@@ -37,6 +35,8 @@ export class NgDynamicJsonFormComponent {
   get hostClass() {
     return 'ng-dynamic-json-form';
   }
+
+  basicFormControl = FormControlComponent;
 
   form?: UntypedFormGroup;
   jsonParsed: NgDynamicJsonFormControlConfig[] | null = null;

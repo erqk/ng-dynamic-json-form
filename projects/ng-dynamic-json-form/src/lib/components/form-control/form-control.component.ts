@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Input,
-  Type,
-  ViewChild,
-  ViewContainerRef,
+  Type
 } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { NgDynamicJsonFormControlConfig } from '../../models/form-control-config.model';
@@ -14,7 +12,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 @Component({
   selector: 'app-form-control',
   templateUrl: './form-control.component.html',
-  styles: [],
+  styles: [':host { display: flex; flex-direction: column;}'],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ErrorMessageComponent],
 })
@@ -22,23 +20,6 @@ export class FormControlComponent {
   @Input() data: NgDynamicJsonFormControlConfig | null = null;
   @Input() control: UntypedFormControl | null = null;
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
-
-  @ViewChild('customComponentAnchor', { read: ViewContainerRef, static: true })
-  customComponentAnchor?: ViewContainerRef;
-
-  ngOnInit(): void {
-    this.injectCustomComponent();
-  }
-
-  private injectCustomComponent(): void {
-    if (!this.customComponent || !this.customComponentAnchor) return;
-
-    const componentRef = this.customComponentAnchor.createComponent(
-      this.customComponent
-    );
-    componentRef.instance.control = this.control;
-    componentRef.instance.data = this.data;
-  }
 
   onCheckboxChange(e: Event): void {
     const input = e.target as HTMLInputElement;

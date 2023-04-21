@@ -36,12 +36,12 @@
             [class]="'form-control-container'"
             [data]="control"
           >
-            <app-form-control
-              style="display: flex; flex-direction: column"
-              [data]="control"
+            <ng-container
+              formControlLoader
+              [component]="customComponents[control.customComponent] ?? customFormControl ?? basicFormControl"
+              [config]="control"
               [control]="parentForm.controls[control.formControlName]"
-              [customComponent]="customComponents[control.customComponent]"
-            ></app-form-control>
+            ></ng-container>
           </grid-item-wrapper>
         </ng-container>
 

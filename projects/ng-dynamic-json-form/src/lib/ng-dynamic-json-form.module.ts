@@ -5,9 +5,10 @@ import { FormControlComponent } from './components/form-control/form-control.com
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { NgDynamicJsonFormComponent } from './ng-dynamic-json-form.component';
+import { FormControlLoaderDirective } from './directives/form-control-loader.directive';
 
 @NgModule({
-  declarations: [NgDynamicJsonFormComponent],
+  declarations: [NgDynamicJsonFormComponent, FormControlLoaderDirective],
   imports: [
     CommonModule,
     ReactiveFormsModule,
