@@ -1,0 +1,56 @@
+<ng-container *ngIf="data">
+  <label class="input-label">{{ data.label }}</label>
+</ng-container>
+
+<ng-container *ngIf="control && data" [ngSwitch]="data.type">
+  <!-- Dropdown -->
+  <ng-container *ngSwitchCase="'dropdown'">
+    <ui-basic-dropdown
+      class="ui-basic"
+      [data]="data"
+      [control]="control"
+    ></ui-basic-dropdown>
+  </ng-container>
+
+  <!-- Radio buttons -->
+  <ng-container *ngSwitchCase="'radio'">
+    <ui-basic-radio
+      class="ui-basic"
+      [data]="data"
+      [control]="control"
+    ></ui-basic-radio>
+  </ng-container>
+
+  <!-- Checkboxes -->
+  <ng-container *ngSwitchCase="'checkbox'">
+    <ui-basic-checkbox
+      class="ui-basic"
+      [data]="data"
+      [control]="control"
+    ></ui-basic-checkbox>
+  </ng-container>
+
+  <!-- Switch button -->
+  <ng-container *ngSwitchCase="'switch'">
+    <ui-basic-switch
+      class="ui-basic"
+      [data]="data"
+      [control]="control"
+    ></ui-basic-switch>
+  </ng-container>
+
+  <!-- Default (Input field) -->
+  <ng-container *ngSwitchDefault>
+    <ui-basic-input
+      class="ui-basic"
+      [data]="data"
+      [control]="control"
+    ></ui-basic-input>
+  </ng-container>
+
+  <!-- Error messages -->
+  <error-message
+    [control]="control"
+    [validators]="data.validators"
+  ></error-message>
+</ng-container>

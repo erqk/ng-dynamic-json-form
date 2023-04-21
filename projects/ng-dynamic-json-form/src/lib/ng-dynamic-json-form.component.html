@@ -38,7 +38,11 @@
           >
             <ng-container
               formControlLoader
-              [component]="customComponents[control.customComponent] ?? customFormControl ?? basicFormControl"
+              [component]="
+                customComponents[control.customComponent] ||
+                customUIComponent ||
+                basicFormControl
+              "
               [config]="control"
               [control]="parentForm.controls[control.formControlName]"
             ></ng-container>

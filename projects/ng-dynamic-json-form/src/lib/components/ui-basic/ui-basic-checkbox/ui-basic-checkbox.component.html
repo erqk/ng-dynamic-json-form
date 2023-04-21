@@ -1,0 +1,22 @@
+<ng-container *ngIf="control && data">
+  <div
+    class="group-buttons"
+    [ngStyle]="{
+      'flex-direction': data.optionsLayout
+    }"
+  >
+    <ng-container *ngFor="let item of data.options">
+      <label class="option-button">
+        <input
+          type="checkbox"
+          [value]="item.value"
+          [checked]="control.value.includes(item.value)"
+          (change)="onCheckboxChange($event)"
+        />
+
+        <span class="marker"></span>
+        <span>{{ item.label }}</span>
+      </label>
+    </ng-container>
+  </div>
+</ng-container>

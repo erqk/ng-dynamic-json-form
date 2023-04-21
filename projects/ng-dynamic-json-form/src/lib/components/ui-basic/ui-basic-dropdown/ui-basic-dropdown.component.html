@@ -1,0 +1,14 @@
+<ng-container *ngIf="control && data">
+  <div
+    class="group-buttons"
+    [ngStyle]="{
+      'flex-direction': data.optionsLayout
+    }"
+  >
+    <select [formControl]="control">
+      <option *ngFor="let item of data.options" [value]="item.value">
+        {{ item.label }}
+      </option>
+    </select>
+  </div>
+</ng-container>
