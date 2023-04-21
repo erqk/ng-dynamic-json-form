@@ -2,7 +2,6 @@
   "peerDependencies": {
     "@angular/common": "^15.0.0",
     "@angular/core": "^15.0.0",
-    "ng-dynamic-json-form": "^0.0.1",
     "primeng": "^15.0.0"
   }
 }

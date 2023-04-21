@@ -240,6 +240,16 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
     ],
   },
   {
+    label: 'Textarea',
+    formControlName: 'textarea',
+    type: 'textarea',
+    customData: {
+      rows: 3,
+      cols: 30,
+      autoResize: true,
+    },
+  },
+  {
     label: 'Family member info',
     formControlName: 'familyMemberInfo',
     value: [],

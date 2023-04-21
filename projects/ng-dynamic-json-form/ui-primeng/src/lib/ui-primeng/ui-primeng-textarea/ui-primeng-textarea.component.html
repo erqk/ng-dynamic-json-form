@@ -1,8 +1,9 @@
 <ng-container *ngIf="control && data">
   <textarea
-    rows="5"
-    cols="30"
     pInputTextarea
+    [rows]="data.customData?.['rows'] || 5"
+    [cols]="data.customData?.['cols'] || 30"
     [formControl]="control"
+    [autoResize]="data.customData?.['autoResize'] === true"
   ></textarea>
 </ng-container>
