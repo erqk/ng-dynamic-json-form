@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/ng-dynamic-json-form",
       "sourceRoot": "projects/ng-dynamic-json-form/src",
-      "prefix": "ng",
+      "prefix": "",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

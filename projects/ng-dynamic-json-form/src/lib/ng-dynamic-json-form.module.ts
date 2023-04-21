@@ -15,6 +15,6 @@ import { NgDynamicJsonFormComponent } from './ng-dynamic-json-form.component';
     GridItemWrapperComponent,
     ErrorMessageComponent,
   ],
-  exports: [NgDynamicJsonFormComponent],
+  exports: [NgDynamicJsonFormComponent, FormControlComponent],
 })
 export class NgDynamicJsonFormModule {}
