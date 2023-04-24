@@ -6,16 +6,18 @@ import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-it
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { NgDynamicJsonFormComponent } from './ng-dynamic-json-form.component';
 import { FormControlLoaderDirective } from './directives/form-control-loader.directive';
+import { FormControlComponent } from './components/form-control/form-control.component';
 
 @NgModule({
   declarations: [NgDynamicJsonFormComponent, FormControlLoaderDirective],
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormControlComponent,
     UiBasicComponent,
     GridItemWrapperComponent,
     ErrorMessageComponent,
   ],
-  exports: [NgDynamicJsonFormComponent, ErrorMessageComponent],
+  exports: [NgDynamicJsonFormComponent],
 })
 export class NgDynamicJsonFormModule {}

@@ -10,7 +10,7 @@ import {
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
-import { UiBasicComponent } from './components/ui-basic/ui-basic.component';
+import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { NgDynamicJsonFormControlConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
@@ -33,7 +33,9 @@ export class NgDynamicJsonFormComponent {
   } = {};
 
   /**Form control components built with other libraries */
-  @Input() customUIComponent?: Type<NgDynamicJsonFormCustomComponent>;
+  @Input() customUIComponentList?: {
+    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
+  };
 
   @Output() formGet = new EventEmitter();
 
@@ -42,7 +44,7 @@ export class NgDynamicJsonFormComponent {
     return 'ng-dynamic-json-form';
   }
 
-  basicFormControl = UiBasicComponent;
+  basicComponentList = UI_BASIC_COMPONENTS;
 
   form?: UntypedFormGroup;
   reload = false;

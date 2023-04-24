@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { firstUppercaseValidator } from './custom-validators/first-uppercase.validator';
 import { CustomInputComponent } from './components/custom-input/custom-input.component';
-import { UiPrimengComponent } from 'ng-dynamic-json-form/ui-primeng';
+import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { NgDynamicJsonFormControlConfig } from 'ng-dynamic-json-form';
 
 @Component({
@@ -26,7 +26,7 @@ export class AppComponent {
     'custom-input': CustomInputComponent,
   };
 
-  customUIComponent = UiPrimengComponent;
+  customUIComponentList = UI_PRIMENG_COMPONENTS;
 
   onJsonEditorChanged(value: string): void {
     this._jsonString = value;

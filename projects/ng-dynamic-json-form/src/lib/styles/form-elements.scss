@@ -39,10 +39,9 @@
       flex-wrap: wrap;
     }
 
-    [class^='ui-'] {
+    form-control > * {
       display: flex;
       flex-direction: column;
-      width: 100%;
     }
   }
 
