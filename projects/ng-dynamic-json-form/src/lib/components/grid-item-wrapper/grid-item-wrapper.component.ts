@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  Renderer2
+} from '@angular/core';
 import { NgDynamicJsonFormControlConfig } from '../../models';
 
 @Component({
@@ -10,40 +15,51 @@ import { NgDynamicJsonFormControlConfig } from '../../models';
   imports: [CommonModule],
 })
 export class GridItemWrapperComponent {
-  @Input() class = '';
   @Input() parentId = '';
-  @Input() data: NgDynamicJsonFormControlConfig = {} as NgDynamicJsonFormControlConfig;
+  @Input() data: NgDynamicJsonFormControlConfig =
+    {} as NgDynamicJsonFormControlConfig;
   @Input() isNested = false;
 
-  @HostBinding('id')
-  get hostId() {
+  get hostId(): string {
     return this.parentId
       ? `${this.parentId}.${this.data.formControlName}`
       : this.data.formControlName;
   }
 
-  @HostBinding('class')
-  get hostClass() {
-    return this.class;
+  get isGridLayout(): boolean {
+    return !!this.data?.cssGrid?.gridColumn || !!this.data?.cssGrid?.gridRow;
   }
 
-  @HostBinding('class.grid-layout')
-  get isGridLayout() {
-    return this.data?.gridColumn || this.data?.gridRow;
+  get gridRow(): string {
+    return this.data?.cssGrid?.gridRow ?? '';
   }
 
-  @HostBinding('class.nested-group')
-  get isNestedGroup() {
-    return this.isNested;
+  get gridColumn(): string {
+    return this.data?.cssGrid?.gridColumn ?? '';
   }
 
-  @HostBinding('style.grid-row')
-  get getGridRow() {
-    return this.data?.gridRow ?? '';
+  constructor(private el: ElementRef, private renderer2: Renderer2) {}
+
+  ngOnInit(): void {
+    this.setHostAttributes();
   }
 
-  @HostBinding('style.grid-column')
-  get getGridColumn() {
-    return this.data?.gridColumn ?? '';
+  setHostAttributes(): void {
+    const hostElement = this.el.nativeElement as HTMLElement;
+
+    if (this.isGridLayout) this.renderer2.addClass(hostElement, 'grid-layout');
+    if (this.isNested) this.renderer2.addClass(hostElement, 'nested-group');
+
+    this.renderer2.setAttribute(hostElement, 'id', this.hostId);
+    this.renderer2.setAttribute(
+      hostElement,
+      'style',
+      `grid-row: ${this.gridRow}`
+    );
+    this.renderer2.setAttribute(
+      hostElement,
+      'style',
+      `grid-column: ${this.gridColumn}`
+    );
   }
 }

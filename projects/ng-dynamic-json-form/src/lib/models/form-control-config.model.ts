@@ -24,12 +24,15 @@ export interface NgDynamicJsonFormControlConfig {
 
   /**Custom data for this control. Example:
    *  @example
-   * <textarea rows="5" cols="30"
+   *  <textarea
    *    pInputTextarea
-   *    [autoResize]="data.customData?.['autoResize'] === true">
-   * </textarea>
+   *    [rows]="data.extra?.['rows'] || 5"
+   *    [cols]="data.extra?.['cols'] || 30"
+   *    [formControl]="control"
+   *    [autoResize]="data.extra?.['autoResize'] === true"
+   *  ></textarea>
    */
-  customData?: { [key: string]: any };
+  extra?: { [key: string]: any };
 
   /**Validators to add to this form control */
   validators?: NgDynamicJsonFormValidatorConfig[];
@@ -54,9 +57,10 @@ export interface NgDynamicJsonFormControlConfig {
   /**Make this control as a FormArray */
   formArray?: NgDynamicJsonFormArrayConfig;
 
-  /**CSS grid-row */
-  gridRow?: string;
-
-  /**CSS grid-column */
-  gridColumn?: string;
+  /**CSS Grid */
+  cssGrid?: {
+    gridRow?: string;
+    gridColumn?: string;
+    gridTemplateColumns?: string;
+  };
 }

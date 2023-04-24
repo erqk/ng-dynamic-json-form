@@ -22,7 +22,7 @@ import { FormValidatorService } from './services/form-validator.service';
   styles: [],
 })
 export class NgDynamicJsonFormComponent {
-  @Input() jsonString = '';
+  @Input() jsonData: NgDynamicJsonFormControlConfig[] = [];
 
   /**User defined custom valiators */
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
@@ -45,7 +45,6 @@ export class NgDynamicJsonFormComponent {
   basicFormControl = UiBasicComponent;
 
   form?: UntypedFormGroup;
-  jsonParsed: NgDynamicJsonFormControlConfig[] | null = null;
   reload = false;
 
   reset$ = new Subject();
@@ -58,7 +57,7 @@ export class NgDynamicJsonFormComponent {
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (simpleChanges['jsonString']) {
+    if (simpleChanges['jsonData']) {
       this.buildForm();
     }
   }
@@ -69,32 +68,21 @@ export class NgDynamicJsonFormComponent {
     this.reset$.complete();
   }
 
-  private parseJsonData(): NgDynamicJsonFormControlConfig[] {
-    if (!this.jsonString) return [];
-
-    try {
-      this.jsonParsed = JSON.parse(this.jsonString);
-      return this.jsonParsed!;
-    } catch (e) {
-      throw 'JSON data invalid';
-    }
-  }
-
   private buildForm(): void {
-    const config = this.parseJsonData();
-    if (!config.length) return;
+    if (!this.jsonData || !this.jsonData.length) return;
 
     this.reset$.next(null);
 
+    this.formGeneratorService.setGridColumn(this.jsonData);
     this.formValidatorService.customValidators = this.customValidators;
-    this.form = this.formGeneratorService.generateFormGroup(config);
+    this.form = this.formGeneratorService.generateFormGroup(this.jsonData);
     this.formGet.emit(this.form);
 
     merge(
       this.formStatusService.formErrorEvent$(this.form!),
       this.formStatusService.formControlConditonsEvent$(
         this.form,
-        this.parseJsonData()
+        this.jsonData
       )
     )
       .pipe(takeUntil(merge(this.reset$, this.onDestroy$)))

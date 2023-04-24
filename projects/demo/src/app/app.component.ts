@@ -3,6 +3,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { firstUppercaseValidator } from './custom-validators/first-uppercase.validator';
 import { CustomInputComponent } from './components/custom-input/custom-input.component';
 import { UiPrimengComponent } from 'ng-dynamic-json-form/ui-primeng';
+import { NgDynamicJsonFormControlConfig } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import { UiPrimengComponent } from 'ng-dynamic-json-form/ui-primeng';
 export class AppComponent {
   title = 'NgDynamicJsonForm Demo';
 
-  jsonString = '';
+  jsonData: NgDynamicJsonFormControlConfig[] = [];
   private _jsonString = '';
 
   form?: UntypedFormGroup;
@@ -37,7 +38,11 @@ export class AppComponent {
 
   // Update form manually to prevent form binding errors when JSON is invalid
   generateForm(): void {
-    this.jsonString = this._jsonString;
+    try {
+      this.jsonData = JSON.parse(this._jsonString);
+    } catch {
+      throw 'Invalid JSON';
+    }
   }
 
   patchForm(): void {

@@ -161,20 +161,20 @@ export class FormStatusService {
 
       switch (type) {
         case ValidatorAndConditionTypes.HIDDEN:
-          if (bool) {
-            getElement$.then((x) => x?.setAttribute('style', 'display:none'));
-            control.disable();
-          } else {
-            getElement$.then((x) => x?.setAttribute('style', 'display:block'));
-            control.enable();
-          }
+          getElement$.then((x) => {
+            if (!x) return;
+            if (bool) this.setElementStyle(x, 'display', 'none');
+            else this.setElementStyle(x, 'display', 'block');
+          });
+
+          bool ? control.disable() : control.enable();
           break;
 
         case ValidatorAndConditionTypes.DISABLED:
           if (bool) control.disable();
           else control.enable();
           break;
-          
+
         default:
           this.toggleValidators(control, bool, type, data.validators);
           break;
@@ -185,6 +185,28 @@ export class FormStatusService {
       setControlStatus(x)
     );
     control.updateValueAndValidity();
+  }
+
+  /**
+   *
+   * @param el HTMLELement
+   * @param name the attribute name (ex: display, opacity, visibility...)
+   * @param value the attribute's value (ex: none, 0, hidden...)
+   */
+  private setElementStyle(el: HTMLElement, name: string, value: string): void {
+    const oldStyles = el.getAttribute('style') || '';
+    const currentStyle = oldStyles.match(new RegExp(`${name}:\\w+`));
+
+    if (!currentStyle) {
+      // Append the new style attribute if there's no existing value.
+      el.setAttribute('style', `${oldStyles}; ${name}:${value}`);
+    } else {
+      // Replace the existing style attribute with the new one.
+      el.setAttribute(
+        'style',
+        oldStyles.replace(currentStyle[0], `${name}:${value}`)
+      );
+    }
   }
 
   private toggleValidators(

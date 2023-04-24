@@ -1,15 +1,13 @@
-<ng-container *ngIf="!jsonString">
-  Please pass in your JSON string
-</ng-container>
+<ng-container *ngIf="!jsonData"> Please pass in your JSON string </ng-container>
 
-<ng-container *ngIf="jsonParsed && !!form && !reload">
+<ng-container *ngIf="!!jsonData.length && !!form && !reload">
   <form action="POST" [formGroup]="form">
     <ng-container
       *ngTemplateOutlet="
         formGroupTemplate;
         context: {
           parentForm: form,
-          controlConfigs: jsonParsed
+          controlConfigs: jsonData
         }
       "
     ></ng-container>
@@ -23,17 +21,23 @@
   let-controlConfigs="controlConfigs"
   let-isNested="isNested"
   let-parentId="parentId"
+  let-gridTemplateColumns="gridTemplateColumns"
 >
   <span *ngIf="label" class="form-label">{{ label }}</span>
 
-  <div class="form-grid-container">
+  <div
+    class="form-grid-container"
+    [ngStyle]="{
+      'grid-template-columns': gridTemplateColumns
+    }"
+  >
     <ng-container [formGroup]="parentForm">
       <ng-container *ngFor="let control of controlConfigs">
         <!-- Form control -->
         <ng-container *ngIf="!control.children && !control.formArray">
           <grid-item-wrapper
+            class="form-control-container"
             [parentId]="parentId"
-            [class]="'form-control-container'"
             [data]="control"
           >
             <ng-container
@@ -52,8 +56,8 @@
         <!-- Form group -->
         <ng-container *ngIf="!!control.children && !control.formArray">
           <grid-item-wrapper
+            class="form-group-container"
             [parentId]="parentId"
-            [class]="'form-group-container'"
             [data]="control"
             [isNested]="isNested === true"
           >
@@ -65,7 +69,8 @@
                 parentId:
                   (parentId ? parentId + '.' : '') + control.formControlName,
                 parentForm: parentForm.controls[control.formControlName],
-                isNested: true
+                isNested: true,
+                gridTemplateColumns: control?.cssGrid?.gridTemplateColumns
               }"
             ></ng-container>
           </grid-item-wrapper>
@@ -80,8 +85,8 @@
           "
         >
           <grid-item-wrapper
+            class="form-array-container"
             [parentId]="parentId"
-            [class]="'form-array-container'"
             [data]="control"
             [isNested]="isNested === true"
           >

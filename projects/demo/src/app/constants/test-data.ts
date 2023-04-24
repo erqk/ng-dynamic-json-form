@@ -221,21 +221,24 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
         formControlName: 'country',
         value: 'country name',
         type: 'text',
-        gridRow: '1/2',
+        cssGrid: {
+          gridColumn: '1',
+        },
       },
       {
         label: 'State',
         formControlName: 'state',
         value: 'State name',
         type: 'text',
-        gridRow: '1/2',
+        cssGrid: {
+          gridColumn: '2',
+        },
       },
       {
         label: 'Postcode',
         formControlName: 'postcode',
         value: '00000',
         type: 'text',
-        gridColumn: 'span 2',
       },
     ],
   },
@@ -243,7 +246,7 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
     label: 'Textarea',
     formControlName: 'textarea',
     type: 'textarea',
-    customData: {
+    extra: {
       rows: 3,
       cols: 30,
       autoResize: true,
@@ -285,21 +288,24 @@ export const testData: NgDynamicJsonFormControlConfig[] = [
               formControlName: 'country',
               value: 'country name',
               type: 'text',
-              gridRow: '1/2',
+              cssGrid: {
+                gridColumn: '1',
+              },
             },
             {
               label: 'State',
               formControlName: 'state',
               value: 'State name',
               type: 'text',
-              gridRow: '1/2',
+              cssGrid: {
+                gridColumn: '2',
+              },
             },
             {
               label: 'Postcode',
               formControlName: 'postcode',
               value: '00000',
               type: 'text',
-              gridColumn: 'span 2',
             },
           ],
         },
