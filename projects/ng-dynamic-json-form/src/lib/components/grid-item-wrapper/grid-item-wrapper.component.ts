@@ -50,6 +50,7 @@ export class GridItemWrapperComponent {
     if (this.isGridLayout) this.renderer2.addClass(hostElement, 'grid-layout');
     if (this.isNested) this.renderer2.addClass(hostElement, 'nested-group');
 
+    // Set `id` to this component so that `querySelector` can find it correctly.
     this.renderer2.setAttribute(hostElement, 'id', this.hostId);
     this.renderer2.setAttribute(
       hostElement,
