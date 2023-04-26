@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import {
   AbstractControl,
   FormGroup,
-  Validators,
+  ValidationErrors,
   isFormArray,
   isFormControl,
   isFormGroup,
 } from '@angular/forms';
 import {
   Observable,
-  Subject,
   combineLatest,
   debounceTime,
   merge,
@@ -31,7 +30,8 @@ import { FormValidatorService } from './form-validator.service';
   providedIn: 'root',
 })
 export class FormStatusService {
-  reset$ = new Subject();
+  /**To differentiate the host element if there is multiple ng-dynamic-json-form */
+  hostIndex = 0;
 
   constructor(private formValidatorService: FormValidatorService) {}
 
@@ -39,51 +39,47 @@ export class FormStatusService {
     return form.valueChanges.pipe(
       startWith(form.value),
       debounceTime(0),
-      tap((x) => this.updateFormErrors(form))
+      tap((x) => {
+        const errors = this.getFormErrors(form);
+        form.setErrors(errors);
+      })
     );
   }
 
+  /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
+   * @param form The root form
+   * @param configs The JSON data
+   */
   formControlConditonsEvent$(
     form: FormGroup,
-    config: NgDynamicJsonFormControlConfig[]
+    configs: NgDynamicJsonFormControlConfig[]
   ): Observable<any> {
-    if (!config.length) return of(null);
+    if (!configs.length) return of(null);
 
-    const conditionData = this.extractConditions(config);
-    const controlPaths = (
-      input: NgDynamicJsonFormControlCondition[],
-      path: string[] = []
-    ): string[] => {
-      return input.reduce((acc, curr) => {
-        acc.push(curr.control);
-        return !curr.groupWith?.length
-          ? acc
-          : controlPaths(curr.groupWith, acc);
-      }, path);
-    };
+    const conditionsExtracted = this.extractConditions(form, configs);
+    const allControlChanges$ = conditionsExtracted.map((conditionData) => {
+      const valueChanges$ = conditionData.controlsToListen.map((x) =>
+        x.valueChanges.pipe(startWith(x.value))
+      );
 
-    const allControlChanges$ = conditionData.map((data) => {
-      const controlsToListen = controlPaths(data.conditions)
-        .reduce((a, b) => {
-          // prevent listening to same control multiple times
-          const isDuplicates = a.some((x) => x === b);
-          if (!isDuplicates) a.push(b);
-          return a;
-        }, [] as string[])
-        .map((x) => form.get(x))
-        .filter((x) => !!x);
-
-      return combineLatest(
-        controlsToListen.map((x) =>
-          x!.valueChanges.pipe(startWith(x?.value ?? ''))
-        )
-      ).pipe(tap((x) => this.updateControlStatus(form, data)));
+      return combineLatest(valueChanges$).pipe(
+        tap((x) => this.updateControlStatus(form, conditionData))
+      );
     });
 
     return merge(...allControlChanges$);
   }
 
-  private updateFormErrors(form: FormGroup): void {
+  /**Get all the errors under this `FormGroup` following the hierachy
+   * @example
+   * root: {
+   *  control1: ValidationErrors,
+   *  control2: {
+   *    childA: ValidationErrors
+   *  }
+   * }
+   */
+  private getFormErrors(form: FormGroup): ValidationErrors | null {
     const getErrors = (input: AbstractControl) => {
       let errors = null;
 
@@ -93,16 +89,13 @@ export class FormStatusService {
 
       if (isFormGroup(input)) {
         errors = Object.keys(input.controls).reduce((acc, key) => {
-          const formControlErrors = getErrors(input.controls[key]);
+          const formControlErrors: any = getErrors(input.controls[key]);
+          if (!formControlErrors) return acc;
 
-          if (!!formControlErrors) {
-            acc = {
-              ...acc,
-              [key]: formControlErrors,
-            };
-          }
-
-          return acc;
+          return {
+            ...acc,
+            [key]: formControlErrors,
+          };
         }, {});
       }
 
@@ -120,7 +113,7 @@ export class FormStatusService {
     };
 
     const errors = clearEmpties(getErrors(form));
-    form.setErrors(!Object.keys(errors).length ? null : errors);
+    return !Object.keys(errors).length ? null : errors;
   }
 
   private updateControlStatus(
@@ -128,40 +121,23 @@ export class FormStatusService {
     data: NgDynamicJsonFormConditionExtracted
   ): void {
     const conditions = data.conditions;
-    const controlPath = data.targetControlPath;
-    const control = form.get(controlPath);
+    const control = data.targetControl;
 
-    if (!control || !conditions.length) return;
+    const result = (type: string) => {
+      // Pick only first level condition type, to prevent complexity goes up
+      const targetConditions = conditions.filter((x) => x.name === type);
+      if (!targetConditions.length) return undefined;
 
-    // Pick only first level condition type, to prevent complexity goes up
-    const conditionsFiltered = (type: string) =>
-      conditions.filter((x) => x.name === type);
+      return this.getConditionResult(form, targetConditions);
+    };
 
-    const result = (type: string) =>
-      conditionsFiltered(type).length > 0
-        ? this.getConditionResult(form, conditionsFiltered(type))
-        : undefined;
-
-    const getElement$ = new Promise<HTMLElement | null>((resolve, reject) => {
-      requestAnimationFrame(() => {
-        const element = document.querySelector(
-          `ng-dynamic-json-form grid-item-wrapper#${controlPath.replace(
-            '.',
-            '\\.'
-          )}`
-        ) as HTMLElement | null;
-
-        resolve(element);
-      });
-    });
-
-    const setControlStatus = (type: string) => {
+    const setStatus = (type: string) => {
       const bool = result(type);
       if (bool === undefined) return;
 
       switch (type) {
         case ValidatorAndConditionTypes.HIDDEN:
-          getElement$.then((x) => {
+          this.targetElement$(data.targetControlPath).then((x) => {
             if (!x) return;
             if (bool) this.setElementStyle(x, 'display', 'none');
             else this.setElementStyle(x, 'display', 'block');
@@ -181,10 +157,26 @@ export class FormStatusService {
       }
     };
 
-    Object.values(ValidatorAndConditionTypes).forEach((x) =>
-      setControlStatus(x)
-    );
+    Object.values(ValidatorAndConditionTypes).forEach((x) => setStatus(x));
     control.updateValueAndValidity();
+  }
+
+  /**Get the target element by using:
+   * - `hostIndex` on each `ng-dynamic-json-form`
+   * - `id` on each `grid-item-wrapper`
+   */
+  private targetElement$(controlPath: string): Promise<HTMLElement | null> {
+    return new Promise<HTMLElement | null>((resolve, reject) => {
+      requestAnimationFrame(() => {
+        const hostClass = `ng-dynamic-json-form.index-${this.hostIndex}`;
+        const element = document.querySelector(
+          // Must escape the "." character so that querySelector will work correctly
+          `${hostClass} grid-item-wrapper#${controlPath.replace('.', '\\.')}`
+        ) as HTMLElement | null;
+
+        resolve(element);
+      });
+    });
   }
 
   /**
@@ -224,8 +216,32 @@ export class FormStatusService {
     else control.setValidators(otherValidators);
   }
 
-  private extractConditions(
-    input: NgDynamicJsonFormControlConfig[],
+  /**Get all the `AbstractControl` to listen from conditions
+   *
+   * @example
+   * [...controls from A conditions]
+   */
+  private getControlsToListen(
+    form: FormGroup,
+    conditions: NgDynamicJsonFormControlCondition[],
+    path: AbstractControl[] = []
+  ): AbstractControl[] {
+    return conditions.reduce((acc, curr) => {
+      const control = form.get(curr.control);
+      !!control && acc.push(control);
+
+      return !curr.groupWith?.length
+        ? acc
+        : this.getControlsToListen(form, curr.groupWith, acc);
+    }, path);
+  }
+
+  /**Extract all the conditions from JSON data and flatten them,
+   * then output to an array of `NgDynamicJsonFormConditionExtracted`
+   */
+  extractConditions(
+    form: FormGroup,
+    configs: NgDynamicJsonFormControlConfig[],
     parentControlName?: string,
     path?: NgDynamicJsonFormConditionExtracted[]
   ): NgDynamicJsonFormConditionExtracted[] {
@@ -233,19 +249,31 @@ export class FormStatusService {
       path = [];
     }
 
-    const result = input.reduce((acc, curr) => {
+    const result = configs.reduce((acc, curr) => {
       if (!curr.children?.length && !!curr.conditions?.length) {
+        const targetControlPath = parentControlName
+          ? `${parentControlName}.${curr.formControlName}`
+          : curr.formControlName;
+
+        const targetControl = form.get(targetControlPath);
+        if (!targetControl) return acc;
+
         acc.push({
-          targetControlPath: parentControlName
-            ? `${parentControlName}.${curr.formControlName}`
-            : curr.formControlName,
+          targetControl,
+          targetControlPath,
+          controlsToListen: this.getControlsToListen(form, curr.conditions),
           conditions: curr.conditions,
           validators: curr.validators || [],
         });
       }
 
       if (!!curr.children?.length && !curr.conditions?.length) {
-        return this.extractConditions(curr.children, curr.formControlName, acc);
+        return this.extractConditions(
+          form,
+          curr.children,
+          curr.formControlName,
+          acc
+        );
       }
 
       return acc;
@@ -255,7 +283,9 @@ export class FormStatusService {
     return path;
   }
 
-  /**Solved by ChatGPT (with some modification) */
+  /**Evaluate the boolean result from the condition given.
+   * Solved by ChatGPT (with some modification)
+   */
   private getConditionResult(
     form: FormGroup,
     conditions: NgDynamicJsonFormControlCondition[],
