@@ -8,17 +8,25 @@ import {
 import { CommonModule } from '@angular/common';
 import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ErrorMessageComponent],
   template: `
     <ng-container *ngIf="data">
       <label class="input-label">{{ data.label }}</label>
     </ng-container>
 
     <ng-container #componentAnchor></ng-container>
+
+    <ng-container *ngIf="control && data">
+      <error-message
+        [control]="control"
+        [validators]="data.validators"
+      ></error-message>
+    </ng-container>
   `,
   styles: [':host {display: flex; flex-direction: column; width: 100%}'],
 })
