@@ -6,7 +6,7 @@ import {
   Output,
   Renderer2,
   SimpleChanges,
-  Type
+  Type,
 } from '@angular/core';
 import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
@@ -16,12 +16,13 @@ import { NgDynamicJsonFormControlConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
+import { GridLayoutService } from './services/grid-layout.service';
 
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
   styles: [],
-  providers: [FormStatusService]
+  providers: [FormStatusService],
 })
 export class NgDynamicJsonFormComponent {
   @Input() jsonData: NgDynamicJsonFormControlConfig[] = [];
@@ -53,7 +54,8 @@ export class NgDynamicJsonFormComponent {
     private renderer2: Renderer2,
     private formGeneratorService: FormGeneratorService,
     private formStatusService: FormStatusService,
-    private formValidatorService: FormValidatorService
+    private formValidatorService: FormValidatorService,
+    private gridLayoutService: GridLayoutService
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
@@ -85,7 +87,7 @@ export class NgDynamicJsonFormComponent {
   private buildForm(): void {
     if (!this.jsonData || !this.jsonData.length) return;
 
-    this.formGeneratorService.setGridColumn(this.jsonData);
+    this.gridLayoutService.setGridColumn(this.jsonData);
     this.formValidatorService.customValidators = this.customValidators;
     this.form = this.formGeneratorService.generateFormGroup(this.jsonData);
     this.formGet.emit(this.form);
