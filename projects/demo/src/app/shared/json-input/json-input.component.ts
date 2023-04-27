@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { testData } from '../../constants/test-data';
+import { testData } from '../../example/constants/test-data';
 
 @Component({
   selector: 'app-json-input',

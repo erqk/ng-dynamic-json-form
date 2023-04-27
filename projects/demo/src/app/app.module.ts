@@ -6,7 +6,7 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 import { CheckboxModule } from 'primeng/checkbox';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { JsonInputComponent } from './components/json-input/json-input.component';
+import { JsonInputComponent } from './shared/json-input/json-input.component';
 
 
 @NgModule({

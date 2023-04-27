@@ -1,0 +1,34 @@
+
+<div class="json-input">
+    <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
+  </div>
+
+  <div class="form-generated">
+    <button (click)="generateForm()">Generate form</button>
+    <br />
+    <br />
+
+    <ng-dynamic-json-form
+      [jsonData]="jsonData"
+      [customValidators]="customValidators"
+      [customComponents]="customComponents"
+      [customUIComponentList]="customUIComponentList"
+      (formGet)="onFormGet($event)"
+    ></ng-dynamic-json-form>
+  </div>
+
+  <div>
+    <div class="debug-info">
+      <code>
+        <strong>STATUS: {{ form?.status }}</strong>
+        <br />
+        {{ form?.value | json }}
+        <hr />
+        <strong>ERRORS:</strong>
+        <br />
+        {{ form?.errors | json }}
+      </code>
+
+      <code></code>
+    </div>
+  </div>
