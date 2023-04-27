@@ -16,15 +16,12 @@
 
 <ng-template
   #formGroupTemplate
-  let-label="label"
   let-parentForm="parentForm"
   let-controlConfigs="controlConfigs"
   let-isNested="isNested"
   let-parentId="parentId"
   let-gridTemplateColumns="gridTemplateColumns"
 >
-  <span *ngIf="label" class="form-label">{{ label }}</span>
-
   <div
     class="form-grid-container"
     [ngStyle]="{
@@ -37,6 +34,9 @@
         <ng-container *ngIf="!control.children && !control.formArray">
           <grid-item-wrapper
             class="form-control-container"
+            [ngClass]="{
+              'level-1': isNested !== true
+            }"
             [parentId]="parentId"
             [data]="control"
           >
@@ -53,14 +53,19 @@
         <ng-container *ngIf="!!control.children && !control.formArray">
           <grid-item-wrapper
             class="form-group-container"
+            [ngClass]="{
+              'is-nested': isNested === true
+            }"
             [parentId]="parentId"
             [data]="control"
-            [isNested]="isNested === true"
           >
+            <span *ngIf="control.label" class="form-title">{{
+              control.label
+            }}</span>
+
             <ng-container
               [ngTemplateOutlet]="formGroupTemplate"
               [ngTemplateOutletContext]="{
-                label: control.label,
                 controlConfigs: control.children,
                 parentId:
                   (parentId ? parentId + '.' : '') + control.formControlName,
@@ -82,9 +87,11 @@
         >
           <grid-item-wrapper
             class="form-array-container"
+            [ngClass]="{
+              'is-nested': isNested === true
+            }"
             [parentId]="parentId"
             [data]="control"
-            [isNested]="isNested === true"
           >
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
@@ -115,7 +122,7 @@
   let-isNested="isNested"
 >
   <ng-container [formGroup]="parentForm">
-    <label class="form-label">{{ label }}</label>
+    <label class="form-title">{{ label }}</label>
 
     <!-- Show add button when form array is empty -->
     <div

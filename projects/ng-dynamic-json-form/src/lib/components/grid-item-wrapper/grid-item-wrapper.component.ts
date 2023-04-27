@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  Input,
-  Renderer2
-} from '@angular/core';
+import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 import { NgDynamicJsonFormControlConfig } from '../../models';
 
 @Component({
@@ -18,7 +13,6 @@ export class GridItemWrapperComponent {
   @Input() parentId = '';
   @Input() data: NgDynamicJsonFormControlConfig =
     {} as NgDynamicJsonFormControlConfig;
-  @Input() isNested = false;
 
   get hostId(): string {
     return this.parentId
@@ -47,8 +41,9 @@ export class GridItemWrapperComponent {
   setHostAttributes(): void {
     const hostElement = this.el.nativeElement as HTMLElement;
 
-    if (this.isGridLayout) this.renderer2.addClass(hostElement, 'grid-layout');
-    if (this.isNested) this.renderer2.addClass(hostElement, 'nested-group');
+    if (this.isGridLayout) {
+      this.renderer2.addClass(hostElement, 'grid-layout');
+    }
 
     // Set `id` to this component so that `querySelector` can find it correctly.
     this.renderer2.setAttribute(hostElement, 'id', this.hostId);
