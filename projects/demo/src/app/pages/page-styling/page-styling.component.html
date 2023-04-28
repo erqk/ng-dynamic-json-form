@@ -1,1 +1,78 @@
-<p>page-styling works!</p>
+<app-content-wrapper>
+  <markdown [src]="'assets/docs/styling.md'"></markdown>
+
+  <markdown> ## Form layout </markdown>
+
+  <markdown
+    >These are some examples show how different value inside `cssGrid` can
+    change the layout of your form:</markdown
+  >
+
+  <markdown>### Example 1</markdown>
+  <div class="example-wrapper">
+    <div class="css-grid-example">
+      <div class="form-group">
+        <div class="form-control" style="grid-column: 1">Control 1</div>
+        <div class="form-control" style="grid-column: 2">Control 2</div>
+        <div class="form-control" style="grid-column: span 2">Control 3</div>
+      </div>
+    </div>
+
+    <markdown
+      [src]="'assets/docs/css-grid-example/css-grid-example-1.md'"
+    ></markdown>
+  </div>
+
+  <markdown>### Example 2</markdown>
+  <div class="example-wrapper">
+    <div class="css-grid-example">
+      <div class="form-group">
+        <div class="form-control" style="grid-column: 1">Control 1</div>
+        <div class="form-control" style="grid-column: span 5">Control 2</div>
+        <div class="form-control" style="grid-column: span 6">Control 3</div>
+        <div class="form-control" style="grid-column: span 3">Control 4</div>
+        <div class="form-control" style="grid-column: span 3">Control 5</div>
+      </div>
+    </div>
+
+    <markdown
+      [src]="'assets/docs/css-grid-example/css-grid-example-2.md'"
+    ></markdown>
+  </div>
+
+  <markdown>### Example 3</markdown>
+  <div class="example-wrapper">
+    <div class="css-grid-example">
+      <div class="form-group" style="grid-template-columns: repeat(2, 1fr)">
+        <div class="form-control">Control 1</div>
+        <div class="form-control">Control 2</div>
+        <div class="form-control">Control 3</div>
+        <div class="form-control">Control 4</div>
+        <div class="form-control">Control 5</div>
+        <div class="form-control">Control 6</div>
+      </div>
+    </div>
+
+    <markdown
+      [src]="'assets/docs/css-grid-example/css-grid-example-3.md'"
+    ></markdown>
+  </div>
+
+  <markdown>### Example 4</markdown>
+  <div class="example-wrapper">
+    <div class="css-grid-example">
+      <div class="form-group" style="grid-template-columns: repeat(2, 1fr)">
+        <div class="form-control" style="grid-column: 1">Control 1</div>
+        <div class="form-control" style="grid-column: 2; grid-row: 1/3">
+          Control 2
+        </div>
+        <div class="form-control">Control 3</div>
+        <div class="form-control" style="grid-column: span 2">Control 4</div>
+      </div>
+    </div>
+
+    <markdown
+      [src]="'assets/docs/css-grid-example/css-grid-example-4.md'"
+    ></markdown>
+  </div>
+</app-content-wrapper>

@@ -1,0 +1,45 @@
+.example-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+/* From https://css.glass */
+.glassmorphism-effect {
+  background: rgb(255, 204, 133);
+  background: linear-gradient(
+    333deg,
+    rgb(108 235 235 / 15%) 0%,
+    rgb(251 197 255 / 25%) 100%
+  );
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(7.8px);
+  -webkit-backdrop-filter: blur(7.8px);
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
+.css-grid-example {
+  .form-group {
+    display: grid;
+    row-gap: 1.5rem;
+    column-gap: 0.85rem;
+    grid-auto-rows: max-content;
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+
+    @extend .glassmorphism-effect;
+  }
+
+  .form-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+
+    @extend .glassmorphism-effect;
+  }
+}
