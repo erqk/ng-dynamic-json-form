@@ -1,9 +1,9 @@
 import { NgDynamicJsonFormArrayConfig } from './form-array-config.model';
-import { NgDynamicJsonFormControlCondition } from './form-control-condition.model';
+import { NgDynamicJsonFormCondition } from './form-control-condition.model';
 import { NgDynamicJsonFormControlOptions } from './form-control-options.model';
 import { NgDynamicJsonFormValidatorConfig } from './form-validator-config.model';
 
-export interface NgDynamicJsonFormControlConfig {
+export interface NgDynamicJsonFormConfig {
   label: string;
   formControlName: string;
   value?: any;
@@ -38,7 +38,7 @@ export interface NgDynamicJsonFormControlConfig {
   validators?: NgDynamicJsonFormValidatorConfig[];
 
   /**Change state or toggle validators when condition met */
-  conditions?: NgDynamicJsonFormControlCondition[];
+  conditions?: NgDynamicJsonFormCondition[];
 
   /**Display options using row or column (options must not be empty) */
   optionsLayout?: 'column' | 'row';
@@ -52,7 +52,7 @@ export interface NgDynamicJsonFormControlConfig {
   options?: NgDynamicJsonFormControlOptions[];
 
   /**Make this control as a FormGroup */
-  children?: NgDynamicJsonFormControlConfig[];
+  children?: NgDynamicJsonFormConfig[];
 
   /**Make this control as a FormArray */
   formArray?: NgDynamicJsonFormArrayConfig;

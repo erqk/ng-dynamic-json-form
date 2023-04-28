@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UntypedFormGroup } from '@angular/forms';
-import { NgDynamicJsonFormControlConfig, NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
+import { NgDynamicJsonFormConfig, NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
@@ -16,7 +16,7 @@ import { JsonInputComponent } from '../../shared/json-input/json-input.component
 })
 export class PagePlaygroundComponent {
 
-  jsonData: NgDynamicJsonFormControlConfig[] = [];
+  jsonData: NgDynamicJsonFormConfig[] = [];
   private _jsonString = '';
 
   form?: UntypedFormGroup;

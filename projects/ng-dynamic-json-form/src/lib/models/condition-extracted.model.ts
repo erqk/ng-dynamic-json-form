@@ -1,4 +1,4 @@
-import { NgDynamicJsonFormControlCondition } from './form-control-condition.model';
+import { NgDynamicJsonFormCondition } from './form-control-condition.model';
 import { NgDynamicJsonFormValidatorConfig } from './form-validator-config.model';
 import { AbstractControl } from '@angular/forms';
 
@@ -12,6 +12,6 @@ export interface NgDynamicJsonFormConditionExtracted {
   /**A list of `AbstractControl` where their valueChanges will affect `targetControl` */
   controlsToListen: AbstractControl[];
 
-  conditions: NgDynamicJsonFormControlCondition[];
+  conditions: NgDynamicJsonFormCondition[];
   validators: NgDynamicJsonFormValidatorConfig[];
 }

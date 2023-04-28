@@ -12,7 +12,7 @@ import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
-import { NgDynamicJsonFormControlConfig } from './models';
+import { NgDynamicJsonFormConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
@@ -25,7 +25,7 @@ import { GridLayoutService } from './services/grid-layout.service';
   providers: [FormStatusService],
 })
 export class NgDynamicJsonFormComponent {
-  @Input() jsonData: NgDynamicJsonFormControlConfig[] = [];
+  @Input() jsonData: NgDynamicJsonFormConfig[] = [];
 
   /**User defined custom valiators */
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
@@ -106,7 +106,7 @@ export class NgDynamicJsonFormComponent {
 
   addFormGroup(
     formArray: FormArray,
-    template: NgDynamicJsonFormControlConfig[],
+    template: NgDynamicJsonFormConfig[],
     index?: number
   ): void {
     const formGroup = this.formGeneratorService.generateFormGroup(template);

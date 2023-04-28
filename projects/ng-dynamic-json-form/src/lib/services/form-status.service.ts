@@ -18,8 +18,8 @@ import {
 } from 'rxjs';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import {
-  NgDynamicJsonFormControlCondition,
-  NgDynamicJsonFormControlConfig,
+  NgDynamicJsonFormCondition,
+  NgDynamicJsonFormConfig,
   NgDynamicJsonFormValidatorConfig,
 } from '../models';
 import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
@@ -52,7 +52,7 @@ export class FormStatusService {
    */
   formControlConditonsEvent$(
     form: FormGroup,
-    configs: NgDynamicJsonFormControlConfig[]
+    configs: NgDynamicJsonFormConfig[]
   ): Observable<any> {
     if (!configs.length) return of(null);
 
@@ -223,7 +223,7 @@ export class FormStatusService {
    */
   private getControlsToListen(
     form: FormGroup,
-    conditions: NgDynamicJsonFormControlCondition[],
+    conditions: NgDynamicJsonFormCondition[],
     path: AbstractControl[] = []
   ): AbstractControl[] {
     return conditions.reduce((acc, curr) => {
@@ -241,7 +241,7 @@ export class FormStatusService {
    */
   extractConditions(
     form: FormGroup,
-    configs: NgDynamicJsonFormControlConfig[],
+    configs: NgDynamicJsonFormConfig[],
     parentControlName?: string,
     path?: NgDynamicJsonFormConditionExtracted[]
   ): NgDynamicJsonFormConditionExtracted[] {
@@ -288,11 +288,11 @@ export class FormStatusService {
    */
   private getConditionResult(
     form: FormGroup,
-    conditions: NgDynamicJsonFormControlCondition[],
+    conditions: NgDynamicJsonFormCondition[],
     groupOperator?: '&&' | '||'
   ): boolean {
     const evaluateExpression = (
-      input: NgDynamicJsonFormControlCondition
+      input: NgDynamicJsonFormCondition
     ): boolean => {
       if (input.groupOperator && input.groupWith) {
         const result = this.booleanResult(form, input);
@@ -320,7 +320,7 @@ export class FormStatusService {
 
   private booleanResult(
     form: FormGroup,
-    data: NgDynamicJsonFormControlCondition
+    data: NgDynamicJsonFormCondition
   ): boolean {
     const left = form.get(data.control)?.value;
     const right = data.controlValue;
