@@ -8,4 +8,29 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'NgDynamicJsonForm Demo';
 
+  links: {
+    route: string;
+    label: string;
+  }[] = [
+    {
+      route: '',
+      label: 'Introduction'
+    },
+    {
+      route: 'getting-started',
+      label: 'Getting started'
+    },
+    {
+      route: 'api',
+      label: 'API'
+    },
+    {
+      route: 'styling',
+      label: 'Styling'
+    },
+    {
+      route: 'playground',
+      label: 'Playground'
+    }
+  ]
 }

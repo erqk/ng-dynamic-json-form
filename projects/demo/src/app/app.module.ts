@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TabBarComponent } from './shared/tab-bar/tab-bar.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +16,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     AppRoutingModule,
     MarkdownModule.forRoot({ loader: HttpClient }),
+    TabBarComponent
   ],
   providers: [],
   bootstrap: [AppComponent],
