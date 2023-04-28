@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
-import { NgDynamicJsonFormConfig } from '../../models';
+import { FormControlConfig } from '../../models';
 
 @Component({
   selector: 'grid-item-wrapper',
@@ -11,8 +11,8 @@ import { NgDynamicJsonFormConfig } from '../../models';
 })
 export class GridItemWrapperComponent {
   @Input() parentId = '';
-  @Input() data: NgDynamicJsonFormConfig =
-    {} as NgDynamicJsonFormConfig;
+  @Input() data: FormControlConfig =
+    {} as FormControlConfig;
 
   get hostId(): string {
     return this.parentId

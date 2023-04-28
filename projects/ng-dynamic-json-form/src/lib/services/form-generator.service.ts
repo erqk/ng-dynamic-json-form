@@ -7,7 +7,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { NgDynamicJsonFormConfig } from '../models/form-control-config.model';
+import { FormControlConfig } from '../models/form-control-config.model';
 import { FormStatusService } from './form-status.service';
 import { FormValidatorService } from './form-validator.service';
 
@@ -22,7 +22,7 @@ export class FormGeneratorService {
     private formValidatorService: FormValidatorService
   ) {}
 
-  generateFormGroup(data: NgDynamicJsonFormConfig[]): UntypedFormGroup {
+  generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
       let control: AbstractControl | null = null;
@@ -72,7 +72,7 @@ export class FormGeneratorService {
   }
 
   private generateFormArray(
-    data: NgDynamicJsonFormConfig[],
+    data: FormControlConfig[],
     count: number,
     validators: ValidatorFn[]
   ): UntypedFormArray {

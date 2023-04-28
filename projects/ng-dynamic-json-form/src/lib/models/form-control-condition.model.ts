@@ -1,8 +1,8 @@
-export interface NgDynamicJsonFormCondition {
+export interface FormControlCondition {
   name?: 'required' | 'disabled' | 'hidden';
   control: string;
   controlValue: any;
   operator: '===' | '!==' | '>=' | '>' | '<=' | '<';
   groupOperator?: '||' | '&&';
-  groupWith?: NgDynamicJsonFormCondition[];
+  groupWith?: FormControlCondition[];
 }

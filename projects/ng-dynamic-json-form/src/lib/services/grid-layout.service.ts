@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NgDynamicJsonFormConfig } from '../models';
+import { FormControlConfig } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class GridLayoutService {
    * so that the grid layout will not shift.
    */
   setGridColumn(
-    data: NgDynamicJsonFormConfig[],
+    data: FormControlConfig[],
     parentTemplateColumns?: string
   ): void {
     const columnCount = !!parentTemplateColumns
@@ -46,7 +46,7 @@ export class GridLayoutService {
   }
 
   /**Find the max `gridColumn` value */
-  private maxGridColumn(data: NgDynamicJsonFormConfig[]): number {
+  private maxGridColumn(data: FormControlConfig[]): number {
     /**Find all the `gridColumn` items that is set to `"span N"` || `"N"` */
     const gridColumnItems = data.filter((x) => {
       const hasGridColumnSet = !!x.cssGrid && !!x.cssGrid.gridColumn;
