@@ -1,6 +1,6 @@
-## Getting started
+# Getting started
 
-### Installation
+## Installation
 
 Install `ng-dynamic-json-form` from npm:
 
@@ -23,7 +23,7 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 })
 ```
 
-### Usage
+## Usage
 
 Now you can use `ng-dynamic-json-form` and pass the data in.
 
@@ -38,7 +38,9 @@ Now you can use `ng-dynamic-json-form` and pass the data in.
 ></ng-dynamic-json-form>
 ```
 
-### Inputs
+<br>
+
+## Inputs
 
 `jsonData`
 
@@ -67,6 +69,8 @@ jsonData: NgDynamicJsonFormControlConfig[] = [
 ]
 ```
 
+<br>
+
 `customValidators`
 
 A list of custom built validators. The `key` is use to match with `value` you set in `validators` of your JSON data.
@@ -77,6 +81,8 @@ customValidators = {
 };
 ```
 
+<br>
+
 `customComponents`
 
 List of custom built components. It must be type of `NgDynamicJsonFormCustomComponent`. The `key` is use to match with the `customComponent` in your JSON data.
@@ -86,6 +92,8 @@ customComponents = {
   [key: string]: Type<NgDynamicJsonFormCustomComponent>
 }
 ```
+
+<br>
 
 `customUIComponentList`
 
@@ -101,7 +109,10 @@ See [Custom UI component](#custom-ui-component).
 >
 > It's imposibble to cover everyone needs, so `ng-dynamic-json-form` give you ability to build your own, even to mix different libraries together! [Import form pre-built package](#import-from-pre-built-package)
 
-### Events
+
+<br>
+
+## Events
 
 `formGet`
 
