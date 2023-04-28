@@ -51,7 +51,7 @@ export class FormGeneratorService {
         const arrayLength =
           Array.isArray(item.value) && !!item.value.length
             ? item.value.length
-            : item.formArray.length;
+            : item.formArray.length || 0;
 
         control = this.generateFormArray(
           item.formArray.template,
@@ -79,6 +79,8 @@ export class FormGeneratorService {
     const formArray = new UntypedFormArray([], {
       validators,
     });
+
+    if (!count) formArray;
 
     this.reset$.next(null);
     for (let i = 0; i < count; i++) {

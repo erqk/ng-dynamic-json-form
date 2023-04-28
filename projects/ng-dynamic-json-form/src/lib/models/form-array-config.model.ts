@@ -1,9 +1,9 @@
 import { FormControlConfig as FormControlConfig } from './form-control-config.model';
 
 export interface FormArrayConfig {
-  length: number;
   templateLabel: string;
   template: FormControlConfig[];
+  length?: number;
   editable?: boolean;
   minLength?: number;
   maxLength?: number;
