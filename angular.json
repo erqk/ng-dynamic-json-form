@@ -55,12 +55,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets",
-              {
-                "glob": "**.md",
-                "input": "projects/demo/src/app/docs",
-                "output": "docs/"
-              }
+              "projects/demo/src/assets"
             ],
             "styles": [
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
@@ -69,7 +64,8 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "dist/ng-dynamic-json-form/lib/styles/form-elements.scss",
-              "projects/demo/src/styles.scss"
+              "projects/demo/src/styles/prism-vsc-dark-plus.css",
+              "projects/demo/src/styles/styles.scss"
             ],
             "scripts": [
               "node_modules/marked/marked.min.js",
