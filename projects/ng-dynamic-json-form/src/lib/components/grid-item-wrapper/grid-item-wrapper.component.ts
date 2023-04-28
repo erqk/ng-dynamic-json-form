@@ -11,8 +11,7 @@ import { FormControlConfig } from '../../models';
 })
 export class GridItemWrapperComponent {
   @Input() parentId = '';
-  @Input() data: FormControlConfig =
-    {} as FormControlConfig;
+  @Input() data: FormControlConfig = {} as FormControlConfig;
 
   get hostId(): string {
     return this.parentId
@@ -47,15 +46,16 @@ export class GridItemWrapperComponent {
 
     // Set `id` to this component so that `querySelector` can find it correctly.
     this.renderer2.setAttribute(hostElement, 'id', this.hostId);
+
+    const styles: { [key: string]: string } = {
+      ...(this.gridRow && { 'grid-row': this.gridRow }),
+      ...(this.gridColumn && { 'grid-column': this.gridColumn }),
+    };
+
     this.renderer2.setAttribute(
       hostElement,
       'style',
-      `grid-row: ${this.gridRow}`
-    );
-    this.renderer2.setAttribute(
-      hostElement,
-      'style',
-      `grid-column: ${this.gridColumn}`
+      Object.keys(styles).reduce((a, key) => `${a}${key}:${styles[key]};`, '')
     );
   }
 }
