@@ -24,13 +24,6 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'json-format',
-    loadComponent: () =>
-      import('./pages/page-json-format/page-json-format.component').then(
-        (c) => c.PageJsonFormatComponent
-      ),
-  },
-  {
     path: 'playground',
     loadComponent: () =>
       import('./pages/page-playground/page-playground.component').then(
