@@ -13,10 +13,6 @@ export class AppComponent {
     label: string;
   }[] = [
     {
-      route: '',
-      label: 'Introduction'
-    },
-    {
       route: 'getting-started',
       label: 'Getting started'
     },
