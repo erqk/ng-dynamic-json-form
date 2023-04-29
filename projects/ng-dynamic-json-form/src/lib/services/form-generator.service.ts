@@ -32,7 +32,7 @@ export class FormGeneratorService {
 
       // form control
       if (!item.children && !item.formArray) {
-        control = new FormControl(item.value, {
+        control = new FormControl(item.value ?? '', {
           validators,
         });
       }
