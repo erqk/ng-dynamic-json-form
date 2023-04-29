@@ -107,7 +107,7 @@ For more complex form, you can add your own custom validators and custom compone
 
 ```javascript
 /**
- * The `key` will be use to match with `value` of which name is "custom":
+ * The `key` will be use to match with `value` of validator named "custom":
  * @example
  * {
  *  //...

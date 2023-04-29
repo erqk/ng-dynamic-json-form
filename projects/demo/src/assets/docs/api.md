@@ -24,7 +24,7 @@ jsonData: FormControlConfig[] = [
 ```
 
 | key             | Description                                                  |
-| --------------- | ------------------------------------------------------------ |
+| :-------------- | :----------------------------------------------------------- |
 | label           | Label for this input element.                                |
 | formControlName | Name for this `AbstractControl`.                             |
 | value           | Use as the initial value of the `AbstractControl`.           |
@@ -81,17 +81,17 @@ See **Styling** section to checkout some example.
 
 - ### `gridTemplateColumns`
 
-  Set the `grid-template-columns` for this element, to specify how children elements will be placed. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns" target="_blank">grid-template-columns
+  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns" target="_blank">grid-template-columns
   </a>.
 
 - ### `gridColumn`
 
-  Determine how many spaces will be taken horizontally by this element. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column" target="_blank">grid-column
+  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column" target="_blank">grid-column
   </a>.
 
 - ### `gridRow`
 
-  Determine how many spaces will be taken vertically, and also the visual ordering of element. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row" target="_blank">grid-row
+  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row" target="_blank">grid-row
   </a>.
 
 ## Extra
@@ -197,7 +197,7 @@ If you need to add `conditions` in the `formArray`'s `template`, the starting po
 A list of validators to add to this `control`.
 
 | name         | description                                                              |
-| ------------ | ------------------------------------------------------------------------ |
+| :----------- | :----------------------------------------------------------------------- |
 | required     | `Validators.required`                                                    |
 | requiredTrue | `Validators.requiredTrue`                                                |
 | min          | `Validators.min(value)`                                                  |
@@ -313,7 +313,7 @@ Provide your conditions like this:
   These are the condition name you can set:
 
   | name               | description                                           |
-  | ------------------ | ----------------------------------------------------- |
+  | :----------------- | :---------------------------------------------------- |
   | hidden             | Show or hide this input element.                      |
   | disabled           | Set `disable()` or `enable()` to this `control`.      |
   | `validator's name` | Toggle the matches validators from `validators` list. |

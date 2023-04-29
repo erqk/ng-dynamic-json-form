@@ -29,7 +29,7 @@ export class NgDynamicJsonFormComponent {
 
   /**User defined custom valiators
    *
-   * The `key` will be use to match with `value` of which name is "custom":
+   * The `key` will be use to match with `value` of validator named "custom":
    * @example
    * {
    *  //...
