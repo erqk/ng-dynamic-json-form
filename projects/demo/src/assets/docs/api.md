@@ -2,6 +2,27 @@
 
 ## JSON data keys
 
+```javascript
+jsonData: FormControlConfig[] = [
+  {
+    label: ...,
+    formControlName: ...,
+    value: ...,
+    type: ...,
+    validators: [],
+    conditions: [],
+    options: [],
+    optionsLayout: ...,
+    cssGrid: {},
+    children: [],
+    formArray: {},
+    customComponent: ...,
+    extra: {}
+  }
+  //...
+]
+```
+
 | key             | Description                                                  |
 | --------------- | ------------------------------------------------------------ |
 | label           | Label for this input element.                                |
@@ -221,7 +242,7 @@ A list of validators to add to this `control`.
 
 ## Custom validators
 
-You can build your own powerful custom validators, and putting them into an object of:
+You can build your own powerful custom validators, and putting them into a constant:
 
 ```javascript
 /**
@@ -235,13 +256,13 @@ customValidators = {
 };
 ```
 
-Then, in your template, bind the variable:
+Then, in your template, bind it to the input `customValidators`:
 
 ```HTML
 <!-- prettier-ignore -->
 <ng-dynamic-json-form
  ...
- [customComponents]="customComponents"
+ [customValidators]="customValidators"
 ></ng-dynamic-json-form>
 ```
 
@@ -557,8 +578,7 @@ Then pass it to the `ng-dynamic-json-form`:
 
 ```json
 {
-  "label": "Custom Component",
-  "formControlName": "customComponent",
+  //...
   "customComponent": "custom-input",
   //...
 },

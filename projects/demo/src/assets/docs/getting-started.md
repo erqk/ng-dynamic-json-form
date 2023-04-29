@@ -23,102 +23,67 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 })
 ```
 
-## Usage
+## Basic usage
 
-Now you can use `ng-dynamic-json-form` and pass the data in.
+Provide `jsonData` that inherit interface `FormControlConfig` and bind it to the template.
+
+> The form will generate instantly when the data is provided.
 
 ```html
 <!-- prettier-ignore -->
 <ng-dynamic-json-form
   [jsonData]="jsonData"
-  [customValidators]="customValidators"
-  [customComponents]="customComponents"
-  [customUIComponentList]="customUIComponentList"
   (formGet)="onFormGet($event)"
 ></ng-dynamic-json-form>
 ```
 
-<br>
-
-## Inputs
-
-`jsonData`
-
-Provide your JSON data with the following key values. You can use the built in `NgDynamicJsonFormControlConfig` interface.
-
-> The form will generate instantly when the data is provided.
-
 ```javascript
-jsonData: NgDynamicJsonFormControlConfig[] = [
+jsonData: FormControlConfig[] = [
   {
-    label: ...,
-    formControlName: ...,
-    value: ...,
-    type: ...,
-    validators: [],
-    conditions: [],
-    options: [],
-    optionsLayout: ...,
-    cssGrid: {},
-    children: [],
-    formArray: {},
-    customComponent: ,
-    extra: {}
+    label: 'Name',
+    formControlName: 'name',
+    value: 'Default Name',
+    type: 'text',
+    validators: [
+      {
+        name: 'required'
+      }
+    ],
+  },
+  {
+    label: 'Email',
+    formControlName: 'email',
+    type: 'email',
+    validators: [
+      {
+        name: 'required'
+      },
+      {
+        name: 'email'
+      }
+    ],
   }
-  //...
 ]
 ```
 
-<br>
-
-`customValidators`
-
-A list of custom built validators. The `key` is use to match with `value` you set in `validators` of your JSON data.
+Then, to get your generated form you bind to the `formGet` output event.
 
 ```javascript
-customValidators = {
-  [key: string]: ValidatorFn
-};
-```
-
-<br>
-
-`customComponents`
-
-List of custom built components. It must be type of `NgDynamicJsonFormCustomComponent`. The `key` is use to match with the `customComponent` in your JSON data.
-
-```javascript
-customComponents = {
-  [key: string]: Type<NgDynamicJsonFormCustomComponent>
+onFormGet(e: UntypedFormGroup): void {
+  this.form = e;
 }
+
+console.log(this.form?.value);
+// {
+//   "name": "Default Name",
+//   "email": ""
+// }
+
+console.log(this.form?.status);
+// INVALID
 ```
 
-<br>
-
-`customUIComponentList`
-
-To use form elements from other UI library. List of supported libraries:
-
-| Library | Package                           |
-| ------- | --------------------------------- |
-| PrimeNg | `ng-dynamic-json-form/ui-primeng` |
-
-See [Custom UI component](#custom-ui-component).
-
-> Currently there's only one library supported. I'll add other library soon.
->
-> It's imposibble to cover everyone needs, so `ng-dynamic-json-form` give you ability to build your own, even to mix different libraries together! [Import form pre-built package](#import-from-pre-built-package)
-
-
-<br>
-
-## Events
-
-`formGet`
-
-The event when the form is built. It will emit a `FormGroup`, after that you can have full control on this form and get the `status` of this form.
-
-Besides, you can access the `form.errors` to see if any of the `control` inside this form has `errors`.
+Access the `form.errors` to see if any of the `control` inside this form has `errors`.
 
 ```json
 {
@@ -129,6 +94,63 @@ Besides, you can access the `form.errors` to see if any of the `control` inside 
         "actual": "1"
       }
     }
+  },
+  "email": {
+    "email": "Invalid email format"
   }
 }
 ```
+
+## Advanced usage
+
+For more complex form, you can add your own custom validators and custom components to fit your needs. See **API** for more detail.
+
+```javascript
+/**
+ * The `key` will be use to match with `value` of which name is "custom":
+ * @example
+ * {
+ *  //...
+ *  "validators": [
+ *    { "name": "custom", "value": "..." }
+ *  ]
+ * }
+ */
+customValidators = {
+  [key: string]: ValidatorFn
+};
+
+/**
+ * The `key` will be use to match with `customComponent`:
+ * @example
+ * {
+ *  //...
+ *  "customComponent": "..."
+ * }
+ */
+customComponents = {
+  [key: string]: Type<NgDynamicJsonFormCustomComponent>
+}
+```
+
+```html
+<!-- prettier-ignore -->
+<ng-dynamic-json-form
+  [jsonData]="jsonData"
+  [customValidators]="customValidators"
+  [customComponents]="customComponents"
+  (formGet)="onFormGet($event)"
+></ng-dynamic-json-form>
+```
+
+## UI library support
+
+To use form elements from other UI library. You can install the pre-built packages, or build your own list of components, even to mix with different libraries together! 🎉
+
+| Library | Package                           |
+| ------- | --------------------------------- |
+| PrimeNg | `ng-dynamic-json-form/ui-primeng` |
+
+> Currently there's only one library supported. I'll add other library soon.
+
+See custom UI component in **API** section for more.
