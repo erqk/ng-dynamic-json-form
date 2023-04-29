@@ -62,8 +62,7 @@
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/prismjs/themes/prism-okaidia.css",
-              "dist/ng-dynamic-json-form/lib/styles/form-elements.scss",
+              "dist/ng-dynamic-json-form/lib/styles/styles.scss",
               "projects/demo/src/styles/prism-vsc-dark-plus.css",
               "projects/demo/src/styles/styles.scss"
             ],
