@@ -6,7 +6,6 @@ import { FormControlConfig } from '../models';
 })
 export class GridLayoutService {
   /**
-   * @description
    * Auto set the other fields `gridColumn` when there's one or more field with `gridColumn` is specified.
    * By doing this, the other input fields will auto expand and their layout is not affected.
    * If there's children with `gridColumn` attribute found, set the parent's `gridTemplateColumns` attribute as well,

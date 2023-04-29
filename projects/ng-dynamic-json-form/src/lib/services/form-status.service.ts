@@ -116,10 +116,7 @@ export class FormStatusService {
     return !Object.keys(errors).length ? null : errors;
   }
 
-  private updateControlStatus(
-    form: FormGroup,
-    data: ConditionExtracted
-  ): void {
+  private updateControlStatus(form: FormGroup, data: ConditionExtracted): void {
     const conditions = data.conditions;
     const control = data.targetControl;
 
@@ -237,7 +234,7 @@ export class FormStatusService {
   }
 
   /**Extract all the conditions from JSON data and flatten them,
-   * then output to an array of `NgDynamicJsonFormConditionExtracted`
+   * then output to an array of `ConditionExtracted`
    */
   extractConditions(
     form: FormGroup,
@@ -291,9 +288,7 @@ export class FormStatusService {
     conditions: FormControlCondition[],
     groupOperator?: '&&' | '||'
   ): boolean {
-    const evaluateExpression = (
-      input: FormControlCondition
-    ): boolean => {
+    const evaluateExpression = (input: FormControlCondition): boolean => {
       if (input.groupOperator && input.groupWith) {
         const result = this.booleanResult(form, input);
         const operator = input.groupOperator;
@@ -318,10 +313,7 @@ export class FormStatusService {
     return conditions.map(evaluateExpression).some((x) => x);
   }
 
-  private booleanResult(
-    form: FormGroup,
-    data: FormControlCondition
-  ): boolean {
+  private booleanResult(form: FormGroup, data: FormControlCondition): boolean {
     const left = form.get(data.control)?.value;
     const right = data.controlValue;
 

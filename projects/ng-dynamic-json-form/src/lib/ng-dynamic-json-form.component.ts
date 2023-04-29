@@ -27,10 +27,27 @@ import { GridLayoutService } from './services/grid-layout.service';
 export class NgDynamicJsonFormComponent {
   @Input() jsonData: FormControlConfig[] = [];
 
-  /**User defined custom valiators */
+  /**User defined custom valiators
+   *
+   * The `key` will be use to match with `value` of which name is "custom":
+   * @example
+   * {
+   *  //...
+   *  "validators": [
+   *    { "name": "custom", "value": "..." }
+   *  ]
+   * }
+   */
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
 
-  /**User defined custom components */
+  /**User defined custom components
+   * The `key` will be use to match with `customComponent`:
+   * @example
+   * {
+   *  //...
+   *  "customComponent": "..."
+   * }
+   */
   @Input() customComponents: {
     [key: string]: Type<NgDynamicJsonFormCustomComponent>;
   } = {};
