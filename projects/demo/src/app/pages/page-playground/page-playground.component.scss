@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  --headerHeight: 0px;
+
+  height: calc(100vh - var(--headerHeight));
+}
+
+.input,
+.result {
+  position: sticky;
+  top: var(--headerHeight);
+  height: calc(100vh - var(--headerHeight));
+}
+
+.result {
+  white-space: pre;
+  overflow: hidden;
+
+  code {
+    overflow: auto;
+  }
+}
+
+
+.split-content {
+    position: relative;
+
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        padding: 0.5rem 0;
+        background-color: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+
+        > * {
+            margin: 0.2rem
+        };
+    }
+}

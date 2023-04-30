@@ -1,20 +1,32 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UntypedFormGroup } from '@angular/forms';
-import { FormControlConfig, NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
+import {
+  FormControlConfig,
+  NgDynamicJsonFormModule,
+} from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
 import { JsonInputComponent } from '../../shared/json-input/json-input.component';
-
+import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { AngularSplitModule } from 'angular-split';
 @Component({
   selector: 'app-page-playground',
   standalone: true,
-  imports: [CommonModule, JsonInputComponent, NgDynamicJsonFormModule],
+  imports: [
+    CommonModule,
+    JsonInputComponent,
+    NgDynamicJsonFormModule,
+    ContentWrapperComponent,
+    AngularSplitModule,
+  ],
   templateUrl: './page-playground.component.html',
-  styleUrls: ['./page-playground.component.scss']
+  styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent {
+  headerHeight = 0;
+  resultItemOpened: number[] = [];
 
   jsonData: FormControlConfig[] = [];
   private _jsonString = '';
@@ -30,6 +42,12 @@ export class PagePlaygroundComponent {
   };
 
   customUIComponentList = UI_PRIMENG_COMPONENTS;
+
+  ngAfterViewInit(): void {
+    requestAnimationFrame(() => {
+      this.headerHeight = document.querySelector('.header')?.clientHeight || 0;
+    });
+  }
 
   onJsonEditorChanged(value: string): void {
     this._jsonString = value;

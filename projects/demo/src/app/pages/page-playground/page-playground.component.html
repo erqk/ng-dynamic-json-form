@@ -1,34 +1,60 @@
+<div
+  class="main-content"
+  [style.--headerHeight.px]="headerHeight + 1"
+>
+  <as-split direction="horizontal">
+    <as-split-area [size]="30">
+      <app-json-input
+        (onChanged)="onJsonEditorChanged($event)"
+      ></app-json-input>
+    </as-split-area>
 
-<div class="json-input">
-    <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
-  </div>
+    <as-split-area [size]="40">
+      <app-content-wrapper [maxWidth]="'40rem'">
+        <button (click)="generateForm()">Generate form</button>
+        <div class="p-2">
+          <ng-dynamic-json-form
+            [jsonData]="jsonData"
+            [customValidators]="customValidators"
+            [customComponents]="customComponents"
+            [customUIComponentList]="customUIComponentList"
+            (formGet)="onFormGet($event)"
+          ></ng-dynamic-json-form>
+        </div>
+      </app-content-wrapper>
+    </as-split-area>
 
-  <div class="form-generated">
-    <button (click)="generateForm()">Generate form</button>
-    <br />
-    <br />
+    <as-split-area [size]="30">
+      <as-split direction="vertical">
+        <as-split-area [size]="10">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>Form status</h4>
+            </div>
+            <span>{{ form?.status }}</span>
+          </div>
+        </as-split-area>
 
-    <ng-dynamic-json-form
-      [jsonData]="jsonData"
-      [customValidators]="customValidators"
-      [customComponents]="customComponents"
-      [customUIComponentList]="customUIComponentList"
-      (formGet)="onFormGet($event)"
-    ></ng-dynamic-json-form>
-  </div>
+        <as-split-area [size]="60">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>Form value</h4>
+            </div>
+            <code>{{ form?.value | json }}</code>
+          </div>
+        </as-split-area>
 
-  <div>
-    <div class="debug-info">
-      <code>
-        <strong>STATUS: {{ form?.status }}</strong>
-        <br />
-        {{ form?.value | json }}
-        <hr />
-        <strong>ERRORS:</strong>
-        <br />
-        {{ form?.errors | json }}
-      </code>
-
-      <code></code>
-    </div>
-  </div>
+        <as-split-area [size]="30">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>ERRORS</h4>
+            </div>
+            <code>
+              {{ form?.errors | json }}
+            </code>
+          </div>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
+</div>
