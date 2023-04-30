@@ -4,7 +4,7 @@ import { animate } from '@angular/animations';
 import { transition } from '@angular/animations';
 import { trigger } from '@angular/animations';
 
-export const FadeUpAnimation = trigger('fade-up', [
+export const fadeUpAnimation = trigger('fade-up', [
   transition(
     'void => *',
     animate(
