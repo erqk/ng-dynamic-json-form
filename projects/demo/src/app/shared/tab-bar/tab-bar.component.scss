@@ -7,6 +7,7 @@
 a {
   display: inline-flex;
   text-decoration: none;
+  color: inherit;
   padding: 0.75rem 1rem;
   opacity: 0.5;
   transition-property: opacity;
@@ -15,6 +16,10 @@ a {
   &:hover,
   &.active {
     opacity: 1;
+  }
+
+  &::after {
+    content: none;
   }
 }
 
@@ -25,6 +30,6 @@ a {
   display: block;
   height: 4px;
   border-radius: 1rem;
-  background-color: gray;
-  transition: 0.5s cubic-bezier(0, 1.09, 0.59, 1.03);
+  background-color: var(--primary);
+  transition: 0.5s cubic-bezier(0.54, -0.49, 0, 1.32);
 }

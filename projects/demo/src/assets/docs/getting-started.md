@@ -148,7 +148,7 @@ customComponents = {
 To use form elements from other UI library. You can install the pre-built packages, or build your own list of components, even to mix with different libraries together! 🎉
 
 | Library | Package                           |
-| ------- | --------------------------------- |
+| :------- | :--------------------------------- |
 | PrimeNg | `ng-dynamic-json-form/ui-primeng` |
 
 > Currently there's only one library supported. I'll add other library soon.

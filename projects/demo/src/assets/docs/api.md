@@ -361,7 +361,7 @@ Provide your conditions like this:
 - ### `groupOperator` (optional)
 
   Operator to evaluate all the conditions inside `groupWith` together with the current one.
-  | value | description |
+  | Group Operator | Description |
   |--|--|
   | && | Check every conditions of [`current`, ...`groupWith`] is met |
   | \|\| | Check some conditions of [`current`, ...`groupWith`] is met |
