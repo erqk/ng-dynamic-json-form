@@ -1,5 +1,9 @@
 <app-content-wrapper>
-  <markdown [src]="'assets/docs/styling.md'"></markdown>
+  <markdown
+    class="md-file"
+    [src]="'assets/docs/styling.md'"
+    (ready)="onReady()"
+  ></markdown>
 
   <markdown> ## Form layout </markdown>
 
@@ -19,7 +23,9 @@
     </div>
 
     <markdown
+      class="md-file"
       [src]="'assets/docs/css-grid-example/css-grid-example-1.md'"
+      (ready)="onReady()"
     ></markdown>
   </div>
 
@@ -36,7 +42,9 @@
     </div>
 
     <markdown
+      class="md-file"
       [src]="'assets/docs/css-grid-example/css-grid-example-2.md'"
+      (ready)="onReady()"
     ></markdown>
   </div>
 
@@ -54,7 +62,9 @@
     </div>
 
     <markdown
+      class="md-file"
       [src]="'assets/docs/css-grid-example/css-grid-example-3.md'"
+      (ready)="onReady()"
     ></markdown>
   </div>
 
@@ -72,7 +82,9 @@
     </div>
 
     <markdown
+      class="md-file"
       [src]="'assets/docs/css-grid-example/css-grid-example-4.md'"
+      (ready)="onReady()"
     ></markdown>
   </div>
 </app-content-wrapper>

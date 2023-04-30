@@ -1,0 +1,38 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    position: relative;
+    padding: 0.65rem;
+    padding-left: 1.5rem;
+    text-decoration: none;
+    color: rgba(128, 128, 128, 0.65);
+    z-index: 0;
+    transition: 0.2s;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        background-color: rgba(128, 128, 128, 0.25);
+    }
+
+    &::after {
+        content: none;
+    }
+
+    &:hover,
+    &.active {
+        color: var(--primary);
+        opacity: 1;
+
+        &::before {
+            background-color: var(--primary);
+        }
+    }
+}

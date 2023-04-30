@@ -8,6 +8,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TabBarComponent } from './shared/tab-bar/tab-bar.component';
 import { ContentWrapperComponent } from './shared/content-wrapper/content-wrapper.component';
+import { SideNavigationPaneComponent } from './shared/side-navigation-pane/side-navigation-pane.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { ContentWrapperComponent } from './shared/content-wrapper/content-wrappe
     MarkdownModule.forRoot({ loader: HttpClient }),
     TabBarComponent,
     ContentWrapperComponent,
+    SideNavigationPaneComponent
   ],
   providers: [],
   bootstrap: [AppComponent],

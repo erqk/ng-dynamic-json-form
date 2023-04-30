@@ -456,7 +456,7 @@ if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.status === >
 }
 ```
 
-## <a name="custom-component"></a>Custom component
+## Custom component
 
 ### Build
 
@@ -584,7 +584,7 @@ Then pass it to the `ng-dynamic-json-form`:
 },
 ```
 
-## <a name="custom-ui-component"></a>Custom UI component
+## Custom UI component
 
 ### Build
 
@@ -625,7 +625,7 @@ myComponentList = MY_UI_COMPONENTS;
 ></ng-dynamic-json-form>
 ```
 
-### <a name="import-from-pre-built-package"></a> Import from pre-built package
+### Import from pre-built package
 
 Install pre-built package from npm:
 

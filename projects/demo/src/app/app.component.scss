@@ -1,4 +1,6 @@
 :host {
+  --sidePaneWidth: 16rem;
+
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -11,7 +13,7 @@
   backdrop-filter: blur(8px);
   border-bottom: solid 1px white;
   box-shadow: 0 1px 0px rgba(0, 0, 0, 0.1);
-  padding-top: 1rem;
+  padding: 1rem 2rem 0;
   z-index: 999;
 
   .tab-bar {
@@ -26,5 +28,17 @@
         content: none;
       }
     }
+  }
+}
+
+.main {
+  flex-direction: row;
+  align-items: flex-start;
+
+  .side-pane {
+    position: sticky;
+    top: 100px;
+    width: var(--sidePaneWidth);
+    margin: 0 2rem;
   }
 }

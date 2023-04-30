@@ -1,5 +1,5 @@
 <div class="header">
-  <app-content-wrapper class="tab-bar">
+  <app-content-wrapper class="tab-bar" [maxWidth]="'85rem'">
     <a [routerLink]="'/'" class="logo">
       <img src="assets/logo.svg" alt="" />
     </a>
@@ -8,4 +8,9 @@
   </app-content-wrapper>
 </div>
 
-<router-outlet></router-outlet>
+<app-content-wrapper class="main" [maxWidth]="'85rem'">
+  <app-side-navigation-pane class="side-pane"></app-side-navigation-pane>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</app-content-wrapper>
