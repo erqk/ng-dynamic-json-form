@@ -153,4 +153,4 @@ To use form elements from other UI library. You can install the pre-built packag
 
 > Currently there's only one library supported. I'll add other library soon.
 
-See custom UI component in **API** section for more.
+See **Custom UI component** in **API** section for more.

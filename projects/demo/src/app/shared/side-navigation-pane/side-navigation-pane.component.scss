@@ -28,11 +28,11 @@ a {
 
     &:hover,
     &.active {
-        color: var(--primary);
+        color: var(--primary-500);
         opacity: 1;
 
         &::before {
-            background-color: var(--primary);
+            background-color: var(--primary-500);
         }
     }
 }

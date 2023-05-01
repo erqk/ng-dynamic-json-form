@@ -23,19 +23,19 @@ jsonData: FormControlConfig[] = [
 ]
 ```
 
-| key             | Description                                                  |
-| :-------------- | :----------------------------------------------------------- |
-| label           | Label for this input element.                                |
-| formControlName | Name for this `AbstractControl`.                             |
-| value           | Use as the initial value of the `AbstractControl`.           |
-| type            | Type of input element to create                              |
-| options         | An array with `label` and `value`,                           |
-| optionsLayout   | `row` \|\| `column`. Use together with `options`             |
-| cssGrid         | CSS grid options to layout form.                             |
-| customComponent | Key of the target component in `customComponents` list       |
-| extra           | Extra information for the input element                      |
-| children        | Create this `AbstractControl` as `FormGroup`.                |
-| formArray       | Create this `AbstractControl` as `FormArray`. See FormArray. |
+| key             | Description                                            |
+| :-------------- | :----------------------------------------------------- |
+| label           | Label for this input element.                          |
+| formControlName | Name for this `AbstractControl`.                       |
+| value           | Use as the initial value of the `AbstractControl`.     |
+| type            | Type of input element to create                        |
+| options         | An array with `label` and `value`,                     |
+| optionsLayout   | `row` \|\| `column`. Use together with `options`       |
+| cssGrid         | CSS grid options to layout form.                       |
+| customComponent | Key of the target component in `customComponents` list |
+| extra           | Extra information for the input element                |
+| children        | Provide to create as `FormGroup`.                      |
+| formArray       | Provide to create as `FormArray`.                      |
 
 ## Types of input element
 
@@ -47,7 +47,7 @@ Currently there are only elements built for these `type`s. You can have value ot
 
 ## Options
 
-If your input element need to provide a list of option to select, you can insert them into `options`. Each option is consist of `label` and `value`.
+If your input element need to provide a list of option to select, you can insert them into `options`. Each option must consist of `label` and `value`.
 
 > You need to provide this if type is `radio`, `checkbox`, `dropdown`.
 
@@ -64,7 +64,7 @@ If your input element need to provide a list of option to select, you can insert
 ## CSS Grid
 
 The form generated is using
-<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout" target="_blank">CSS Grid layout</a>. Provide these data to make your input field layout differently:
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout" target="_blank">CSS Grid layout</a>. Hence every input field in the form can size differently by setting the following properties.
 
 ```json
 {
@@ -77,22 +77,18 @@ The form generated is using
 }
 ```
 
-See **Styling** section to checkout some example.
+| key                   | description                                            |
+| :-------------------- | :----------------------------------------------------- |
+| `gridTemplateColumns` | Equivalant to `grid-template-columns` property in CSS. |
+| `gridColumn`          | Equivalant to `grid-column` property in CSS.           |
+| `gridRow`             | Equivalant to `grid-template-columns` property in CSS. |
 
-- ### `gridTemplateColumns`
-
-  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns" target="_blank">grid-template-columns
-  </a>.
-
-- ### `gridColumn`
-
-  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column" target="_blank">grid-column
-  </a>.
-
-- ### `gridRow`
-
-  See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row" target="_blank">grid-row
-  </a>.
+> For documentation and example for each of the property, see <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns" target="_blank">grid-template-columns
+> </a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column" target="_blank">grid-column
+> </a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row" target="_blank">grid-row
+> </a>.
+>
+> Navigate to **Styling** section to see some examples.
 
 ## Extra
 
@@ -163,38 +159,9 @@ You might want to build `FormArray` for some input element. Then you can use `fo
 - ### `maxLength` (optional)
   Maximum length of this `FormArray` is allowed.
 
-### Form Array conditions
-
-If you need to add `conditions` in the `formArray`'s `template`, the starting point of the path of `control` is the current template.
-
-```json
-{
-  //...
-  "formControlName": "parentControl",
-  "formArray": {
-    //...
-    "template": [
-      {
-        //...
-        "formControlName": "name"
-      },
-      {
-        //...
-        "conditions": [
-          {
-            "control": "name" // ==> use "name", not "parentControl.name"
-            //...
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
 ## Validators
 
-A list of validators to add to this `control`.
+A list of validators to add to this `AbstractControl`.
 
 | name         | description                                                              |
 | :----------- | :----------------------------------------------------------------------- |
@@ -206,7 +173,7 @@ A list of validators to add to this `control`.
 | maxLength    | `Validators.maxLength(value)`                                            |
 | pattern      | `Validators.pattern(value)`                                              |
 | email        | Custom validator using pattern `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` |
-| custom       | Find validator from `customValidators` using `value` as the key          |
+| custom       | To use `customValidators` with `value` as the key                        |
 
 ```json
 //...
@@ -229,7 +196,7 @@ A list of validators to add to this `control`.
 
 - ### `message` (optional)
 
-  Custom validation message. Support template `{{value}}` to display current value of this `control`.
+  Custom validation message. Support template `{{value}}` to display current value of this `AbstractControl`.
 
   ```javascript
   {
@@ -312,13 +279,13 @@ Provide your conditions like this:
 
   These are the condition name you can set:
 
-  | name               | description                                           |
-  | :----------------- | :---------------------------------------------------- |
-  | hidden             | Show or hide this input element.                      |
-  | disabled           | Set `disable()` or `enable()` to this `control`.      |
-  | `validator's name` | Toggle the matches validators from `validators` list. |
+  | name               | description                                        |
+  | :----------------- | :------------------------------------------------- |
+  | hidden             | Hide this input element.                           |
+  | disabled           | Set `disable()` to this `AbstractControl`.         |
+  | `validator's name` | Add the matches validators from `validators` list. |
 
-  If the condition is nested inside `groupWith`, then the parent `name` will be used.
+  If the item is nested inside `groupWith`, then the parent `name` will be used.
 
   If the name is validator's name, then it will find the validator in `validators` list, and toggle the target validator if condition is met.
 
@@ -341,18 +308,19 @@ Provide your conditions like this:
 
 - ### `control`
 
-  Path to the target `control` to listen. You can get it from `formControlName`. If it's nested, join them using dot separator.
+  Path to the target `AbstractControl` to listen. You can get it from `formControlName` in your data. If it's nested, join them using dot separator.
 
-  > Path of `basicInfo` control is `"basicInfo"`.<br>
+  > Path of `basicInfo` control is `"basicInfo"`.
+  >
   > Path of `age` control under `basicInfo` is `"basicInfo.age"`.
 
 - ### `controlValue`
 
-  Value of the target `control` to evaluate using `operator`.
+  Value of the target `AbstractControl` to evaluate using `operator`.
 
 - ### `operator`
 
-  Operator to evaluate the target `control`'s value using `controlValue`.
+  Operator to evaluate the target `AbstractControl`'s value using `controlValue`.
 
   ```
   "===" | "!==" | ">=" | ">" | "<=" | "<"
@@ -370,7 +338,36 @@ Provide your conditions like this:
 
   Nested conditions to evaluate together with the current one.
 
-  > All the fist level conditions will be evaluated as "OR". If you need "AND" operator, then use `groupWith`. See example below for more details.
+  > All the fist level conditions will be evaluated as "||". If you need "&&" operator, then use `groupWith`. See example below for more details.
+
+### Form Array conditions
+
+If you need to add `conditions` in the `formArray`'s `template`, the starting point of the path of `AbstractControl` is the current template.
+
+```json
+{
+  //...
+  "formControlName": "parentControl",
+  "formArray": {
+    //...
+    "template": [
+      {
+        //...
+        "formControlName": "name"
+      },
+      {
+        //...
+        "conditions": [
+          {
+            "control": "name" // ==> use "name", not "parentControl.name"
+            //...
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
 ### Example (simple condition)
 
@@ -403,12 +400,12 @@ Provide your conditions like this:
 
 //...will be evaluated as below:
 
-// simpleCondition is required
 if (basicInfo.age > 18 || basicInfo.name !== "") {
+  // simpleCondition is required
 }
 
-// simpleCondition is hidden
 if (basicInfo.email !== "") {
+  // hide simpleCondition
 }
 ```
 
@@ -565,7 +562,7 @@ customComponents = {
 };
 ```
 
-Then pass it to the `ng-dynamic-json-form`:
+Then bind it to the `customComponents`:
 
 ```HTML
 <ng-dynamic-json-form
@@ -593,15 +590,15 @@ It's the same to build your custom UI component as building `customComponent`. Y
 After buildling all your components for each type of input, then you put them all in one constant:
 
 ```javascript
-export const MY_UI_COMPONENTS = [
+export const MY_UI_COMPONENTS = {
   input: MyInputComponent,
   radio: MyRadioComponent,
   checkbox: MyCheckboxComponent,
   //...
-];
+};
 ```
 
-> You can view the available `key` from the `type`. It's fine to use the key outside the range, as long as they match later.
+> You can view the available keys from the `type`. It's fine to use the key outside the range, as long as they match later.
 
 > The following `type`s will use the component set for `input`:
 >
@@ -612,7 +609,7 @@ export const MY_UI_COMPONENTS = [
 
 ### Usage
 
-After you finish building all your components, just declare the constant in a variable and bind it to the template.
+Declare a variable to put our custom component list and bind it to the template.
 
 ```javascript
 myComponentList = MY_UI_COMPONENTS;

@@ -1,10 +1,10 @@
-# Styling
+# 樣式
 
-## Form styling
+## 表單樣式
 
-### CSS variables
+### CSS 變數
 
-These are the predefined CSS variables, you can overwrite them with your desire value.
+以下是定義好的 CSS 變數，你可以覆寫為其他想要的值。
 
 ```css
 .ng-dynamic-json-form {
@@ -21,15 +21,23 @@ These are the predefined CSS variables, you can overwrite them with your desire 
 }
 ```
 
-## Form layout
+## 表單版型
 
-`cssGrid` provide 3 different value to set:
-- `gridTemplateColumns`
+`cssGrid` provide the following values to set:
+
+| key                   | description                                   |
+| :-------------------- | :-------------------------------------------- |
+| `gridTemplateColumns` | Equivalant to `grid-template-columns` in CSS. |
+| `gridColumn`          | Equivalant to `grid-column` in CSS.           |
+| `gridRow`             | Equivalant to `grid-template-columns` in CSS. |
+
+- `gridTemplateColumns` _ grid-template-columns_
 - `gridColumn`
 - `gridRow`
 
-These are some examples show how different value inside `cssGrid` can
-change the layout of your form:
+It's exactly the same as CSS grid
+
+使用 `cssGrid` 內的欄位值所組合的表單版型：
 
 ### Example 1
 
