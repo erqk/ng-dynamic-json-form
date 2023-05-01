@@ -12,20 +12,10 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
   styleUrls: ['./page-styling.component.scss'],
 })
 export class PageStylingComponent {
-  loadingItemCount = 0;
-
   constructor(private sideNavigationPaneService: SideNavigationPaneService) {}
 
-  ngAfterViewInit(): void {
-    this.loadingItemCount = document.querySelectorAll('markdown.md-file').length;
-  }
-
   onReady(): void {
-    this.loadingItemCount -= 1;
-
-    if (this.loadingItemCount === 0) {
-      const h2 = document.querySelectorAll('markdown h2');
-      this.sideNavigationPaneService.h2$.next(Array.from(h2));
-    }
+    const h2 = document.querySelectorAll('markdown h2');
+    this.sideNavigationPaneService.h2$.next(Array.from(h2));
   }
 }

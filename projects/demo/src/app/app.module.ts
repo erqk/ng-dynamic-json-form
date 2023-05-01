@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -17,7 +17,7 @@ import { TabBarComponent } from './shared/tab-bar/tab-bar.component';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    MarkdownModule.forRoot({ loader: HttpClient }),
+    MarkdownModule.forRoot({ loader: HttpClient, sanitize: SecurityContext.NONE }),
     TabBarComponent,
     ContentWrapperComponent,
     SideNavigationPaneComponent

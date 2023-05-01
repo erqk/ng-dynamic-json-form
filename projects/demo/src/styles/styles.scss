@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap");
 
 @import "./form-elements";
+@import "./page-styling";
 
 :root {
-  --primary: #5f43ff;
-  --primaryLight: #f4f3fa;
-
   --primary-100: #efecff;
   --primary-200: #cfc7ff;
   --primary-300: #afa1ff;
@@ -67,7 +65,7 @@ code {
     margin: 0.1rem;
     font-size: 0.9rem;
     background-color: rgba(0, 0, 0, 0.05);
-    color: var(--primary);
+    color: var(--primary-500);
     border-radius: 3px;
   }
 }
