@@ -1,18 +1,17 @@
-<div
-  class="main-content"
-  [style.--headerHeight.px]="headerHeight + 1"
->
+<div class="main-content" [style.--headerHeight.px]="headerHeight + 1">
   <as-split direction="horizontal">
-    <as-split-area [size]="30">
-      <app-json-input
-        (onChanged)="onJsonEditorChanged($event)"
-      ></app-json-input>
+    <as-split-area [size]="25">
+      <div class="json-input">
+        <app-json-input
+          (onChanged)="onJsonEditorChanged($event)"
+        ></app-json-input>
+        <button (click)="generateForm()">Generate form</button>
+      </div>
     </as-split-area>
 
-    <as-split-area [size]="40">
+    <as-split-area [size]="50">
       <app-content-wrapper [maxWidth]="'40rem'">
-        <button (click)="generateForm()">Generate form</button>
-        <div class="p-2">
+        <div class="p-5">
           <ng-dynamic-json-form
             [jsonData]="jsonData"
             [customValidators]="customValidators"
@@ -24,21 +23,22 @@
       </app-content-wrapper>
     </as-split-area>
 
-    <as-split-area [size]="30">
+    <as-split-area [size]="25">
       <as-split direction="vertical">
-        <as-split-area [size]="10">
+        <as-split-area [size]="10" [minSize]="10">
           <div class="split-content">
             <div class="sticky-header">
-              <h4>Form status</h4>
+              <h4>STATUS</h4>
+              <span>{{ form?.status ?? "--" }}</span>
             </div>
-            <span>{{ form?.status }}</span>
+            <span></span>
           </div>
         </as-split-area>
 
         <as-split-area [size]="60">
           <div class="split-content">
             <div class="sticky-header">
-              <h4>Form value</h4>
+              <h4>VALUE</h4>
             </div>
             <code>{{ form?.value | json }}</code>
           </div>

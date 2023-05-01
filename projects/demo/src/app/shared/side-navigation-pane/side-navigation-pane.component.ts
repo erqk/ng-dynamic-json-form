@@ -1,15 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import {
-  Subject,
-  filter,
-  fromEvent,
-  map,
-  merge,
-  takeUntil,
-  tap
-} from 'rxjs';
+import { Subject, filter, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { SideNavigationPaneService } from './side-navigation-pane.service';
 
@@ -32,21 +24,16 @@ export class SideNavigationPaneComponent {
 
   links$ = this.sideNavigationPaneService.h2$.pipe(
     map((x) => x.map((x) => x.innerHTML)),
-    tap((x) => {
-      this.findActiveIndex();
-      if (!x.length) this.renderer2.addClass(this.el.nativeElement, 'hidden');
-      else this.renderer2.removeClass(this.el.nativeElement, 'hidden');
-    })
+    tap((x) => this.findActiveIndex())
   );
 
   scrolling = false;
   scrollingTimeout: number = 0;
-  onRouteChange$ = new Subject();
+  reset$ = new Subject();
   onDestroy$ = new Subject();
 
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,
-    private el: ElementRef,
     private renderer2: Renderer2,
     private router: Router
   ) {}
@@ -65,9 +52,9 @@ export class SideNavigationPaneComponent {
       .pipe(
         filter((x) => x instanceof NavigationEnd),
         tap((x) => {
-          this.onRouteChange$.next(null);
           this.sideNavigationPaneService.h2$.next([]);
           this.activeIndex = 0;
+          this.findActiveIndex();
         }),
         takeUntil(this.onDestroy$)
       )
@@ -80,6 +67,7 @@ export class SideNavigationPaneComponent {
     const h2 = Array.from(document.querySelectorAll('markdown h2'));
     const rect = (input: Element) => input.getBoundingClientRect();
 
+    this.reset$.next(null);
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
         tap((x) => {
@@ -111,7 +99,7 @@ export class SideNavigationPaneComponent {
 
           lastScrollPosition = window.scrollY;
         }),
-        takeUntil(merge(this.onDestroy$, this.onRouteChange$))
+        takeUntil(merge(this.onDestroy$, this.reset$))
       )
       .subscribe();
   }

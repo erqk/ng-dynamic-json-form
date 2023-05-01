@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LayoutComponent } from './layout/layout.component';
 
 const routes: Routes = [
   {
@@ -10,18 +11,31 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'getting-started',
-    loadComponent: () =>
-      import(
-        './pages/page-getting-started/page-getting-started.component'
-      ).then((c) => c.PageGettingStartedComponent),
-  },
-  {
-    path: 'api',
-    loadComponent: () =>
-      import('./pages/page-api/page-api.component').then(
-        (c) => c.PageApiComponent
-      ),
+    path: '',
+    component: LayoutComponent,
+    children: [
+      {
+        path: 'getting-started',
+        loadComponent: () =>
+          import(
+            './pages/page-getting-started/page-getting-started.component'
+          ).then((c) => c.PageGettingStartedComponent),
+      },
+      {
+        path: 'api',
+        loadComponent: () =>
+          import('./pages/page-api/page-api.component').then(
+            (c) => c.PageApiComponent
+          ),
+      },
+      {
+        path: 'styling',
+        loadComponent: () =>
+          import('./pages/page-styling/page-styling.component').then(
+            (c) => c.PageStylingComponent
+          ),
+      },
+    ],
   },
   {
     path: 'playground',
@@ -30,19 +44,14 @@ const routes: Routes = [
         (c) => c.PagePlaygroundComponent
       ),
   },
-  {
-    path: 'styling',
-    loadComponent: () =>
-      import('./pages/page-styling/page-styling.component').then(
-        (c) => c.PageStylingComponent
-      ),
-  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    scrollPositionRestoration: 'enabled'
-  })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

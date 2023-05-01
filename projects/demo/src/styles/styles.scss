@@ -5,6 +5,16 @@
 :root {
   --primary: #5f43ff;
   --primaryLight: #f4f3fa;
+
+  --primary-100: #efecff;
+  --primary-200: #cfc7ff;
+  --primary-300: #afa1ff;
+  --primary-400: #8f7bff;
+  --primary-500: #5f43ff;
+  --primary-600: #4c36cc;
+  --primary-700: #392899;
+  --primary-800: #261b66;
+  --primary-900: #130d33;
 }
 
 html {
@@ -22,7 +32,7 @@ body {
 
 a {
   position: relative;
-  color: var(--primary);
+  color: var(--primary-500);
   z-index: 0;
 
   &:hover {
@@ -41,7 +51,7 @@ a {
     left: 0;
     height: 2px;
     width: 0;
-    background-color: var(--primary);
+    background-color: var(--primary-500);
   }
 }
 
@@ -67,9 +77,9 @@ blockquote {
   padding-left: 1rem;
   margin-block: 1rem;
   margin-inline: 1rem;
-  border-left: solid 8px var(--primary);
+  border-left: solid 8px var(--primary-500);
   border-radius: 0.2rem;
-  background-color: var(--primaryLight);
+  background-color: var(--primary-100);
 
   p {
     margin-block: 0.25rem;

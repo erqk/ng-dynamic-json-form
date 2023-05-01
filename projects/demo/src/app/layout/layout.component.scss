@@ -1,0 +1,15 @@
+.main {
+  flex-direction: row;
+  align-items: flex-start;
+
+  .side-pane {
+    position: sticky;
+    top: 100px;
+    width: var(--sidePaneWidth);
+    margin: 0 2rem;
+  }
+
+  .content {
+    width: 100%;
+  }
+}
