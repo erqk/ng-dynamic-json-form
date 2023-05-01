@@ -14,11 +14,14 @@
   flex-direction: column;
   height: 100%;
 
-  app-json-input {
-    flex: 1;
+  .json-editor {
+    --jse-theme-color: var(--primary-500);
+
+    height: calc(100% - 3.5rem);
   }
 
   button {
+    height: 3.5rem;
     padding: 1.25rem;
     color: white;
     border-radius: 0;
