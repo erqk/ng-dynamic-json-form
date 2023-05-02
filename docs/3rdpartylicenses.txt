@@ -269,6 +269,7 @@ This software is provided by the copyright holders and contributors “as is” 
 
 
 ng-dynamic-json-form
+MIT
 
 ngx-markdown
 MIT

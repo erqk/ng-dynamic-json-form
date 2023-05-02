@@ -23,6 +23,17 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 })
 ```
 
+Lastly, add the styles into your `angular.json`:
+
+```javascript
+//...
+  "styles": [
+    "node_modules/ng-dynamic-json-form/lib/styles/styles.scss",
+    //...
+  ],
+//...
+```
+
 ## Basic usage
 
 Provide `jsonData` that inherit interface `FormControlConfig` and bind it to the template.
@@ -148,7 +159,7 @@ customComponents = {
 To use form elements from other UI library. You can install the pre-built packages, or build your own list of components, even to mix with different libraries together! 🎉
 
 | Library | Package                           |
-| :------- | :--------------------------------- |
+| :------ | :-------------------------------- |
 | PrimeNg | `ng-dynamic-json-form/ui-primeng` |
 
 > Currently there's only one library supported. I'll add other library soon.
