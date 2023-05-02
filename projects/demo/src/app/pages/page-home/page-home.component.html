@@ -6,7 +6,7 @@
   <h1>NgDynamicJsonForm</h1>
   <p>{{ languageData$.value.introduction.brief }}</p>
 
-  <button class="btn-start">{{ languageData$.value.menu.getting_started }}</button>
+  <button class="btn-start" [routerLink]="'/getting-started'">{{ languageData$.value.menu.getting_started }}</button>
 </div>
 
 
