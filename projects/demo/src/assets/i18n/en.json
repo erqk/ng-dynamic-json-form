@@ -1,0 +1,12 @@
+{
+  "menu": {
+    "getting_started": "Getting started",
+    "api": "API",
+    "styling": "Styling",
+    "playground": "Playground"
+  },
+  "playground": {
+    "generate_form": "Generate form",
+    "click_to_start": "Click the 'Generate form' button to start"
+  }
+}

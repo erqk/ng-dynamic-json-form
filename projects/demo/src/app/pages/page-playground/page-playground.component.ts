@@ -12,6 +12,7 @@ import { CustomInputComponent } from '../../example/components/custom-input/cust
 import { testData } from '../../example/constants/test-data';
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { LanguageDataService } from '../../features/language/services/language-data.service';
 @Component({
   selector: 'app-page-playground',
   standalone: true,
@@ -41,6 +42,10 @@ export class PagePlaygroundComponent {
   };
 
   customUIComponentList = UI_PRIMENG_COMPONENTS;
+
+  languageData$ = this.languageDataService.languageData$;
+
+  constructor(private languageDataService: LanguageDataService) {}
 
   ngOnInit(): void {
     this.initJsonEditor();

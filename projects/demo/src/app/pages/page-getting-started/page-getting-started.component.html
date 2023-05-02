@@ -1,6 +1,8 @@
 <app-content-wrapper>
   <markdown
-    [src]="'assets/docs/getting-started/getting-started.md'"
+    [src]="
+      'assets/docs/getting-started/getting-started_' + language$.value + '.md'
+    "
     (ready)="onReady()"
   ></markdown>
 </app-content-wrapper>

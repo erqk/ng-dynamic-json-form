@@ -1,3 +1,5 @@
 <app-content-wrapper>
-  <markdown [src]="'assets/docs/introduction.md'"></markdown>
+  <markdown
+    [src]="'assets/docs/introduction/introduction_' + language$.value + '.md'"
+  ></markdown>
 </app-content-wrapper>

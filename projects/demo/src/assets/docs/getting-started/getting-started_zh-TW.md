@@ -23,7 +23,7 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 })
 ```
 
-## 基本使用方式
+## 基本用法
 
 將 `FormControlConfig[]` 型別的資料傳入 `jsonData`。
 
@@ -101,7 +101,7 @@ console.log(this.form?.status);
 }
 ```
 
-## 進階使用方式
+## 進階用法
 
 對於更複雜的表單，你可以加入自定驗證器、自定元件來完成更複雜的需求。更多說明請轉到 **API** 頁面。
 

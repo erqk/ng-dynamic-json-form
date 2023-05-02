@@ -3,7 +3,9 @@
     <as-split-area [size]="25">
       <div class="json-input">
         <div class="json-editor"></div>
-        <button (click)="generateForm()">Generate form</button>
+        <button (click)="generateForm()">
+          {{ languageData$.value.playground.generate_form }}
+        </button>
       </div>
     </as-split-area>
 
@@ -11,7 +13,7 @@
       <app-content-wrapper [maxWidth]="'40rem'">
         <div class="p-5">
           <ng-container *ngIf="!jsonData.length">
-            Click the "Generate form" button to start
+            {{ languageData$.value.playground.click_to_start }}
           </ng-container>
           <ng-dynamic-json-form
             [jsonData]="jsonData"

@@ -257,7 +257,7 @@ customValidators = {
 
 `ng-dynamic-json-form` 能為你將上述需求自動完成，只需在 JSON 資料內設定好條件即可！😁
 
-### 使用方式
+### 用法
 
 設定 `conditions`：
 
@@ -552,7 +552,7 @@ this.control?.valueChanges
   .subscribe();
 ```
 
-### 使用方式
+### 用法
 
 宣告一個變數，將你建立的自定元件都放一起：
 
@@ -607,7 +607,7 @@ export const MY_UI_COMPONENTS = {
 > - password
 > - email
 
-### 使用方式
+### 用法
 
 宣告一個變數來存放我們的自定元件列表，然後傳入 template。
 
