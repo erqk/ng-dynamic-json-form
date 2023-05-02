@@ -17,7 +17,7 @@
             <select
               [disabled]="!jsonData.length"
               [value]="formUI"
-              (change)="setUI($event)"
+              (change)="onUIChange($event)"
             >
               <option value="ui-basic">
                 {{ languageData$.value.playground.ui_library.native_html }}

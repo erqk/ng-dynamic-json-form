@@ -48,11 +48,11 @@ export class PagePlaygroundComponent {
   customUIComponentList: any = UI_PRIMENG_COMPONENTS;
 
   languageData$ = this.languageDataService.languageData$;
-  
+
   constructor(private languageDataService: LanguageDataService) {}
 
   ngOnInit(): void {
-    this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
+    this.loadUI();
     this.initJsonEditor();
   }
 
@@ -121,11 +121,18 @@ export class PagePlaygroundComponent {
     } catch (e) {}
   }
 
-  setUI(e: Event): void {
-    if (!this.jsonData.length) return;
-
+  onUIChange(e: Event): void {
     const select = e.target as HTMLSelectElement;
-    switch (select.value) {
+    this.setUI(select.value);
+  }
+
+  private loadUI(): void {
+    this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
+    this.setUI(this.formUI);
+  }
+
+  private setUI(type: string): void {
+    switch (type) {
       case 'ui-basic':
         this.customUIComponentList = null;
         break;
@@ -135,7 +142,7 @@ export class PagePlaygroundComponent {
         break;
     }
 
-    this.formUI = select.value;
+    this.formUI = type;
     window.localStorage.setItem('form-ui', this.formUI);
     this.generateForm();
   }
