@@ -626,17 +626,20 @@ myComponentList = MY_UI_COMPONENTS;
 ></ng-dynamic-json-form>
 ```
 
-### 從現有的 package 引入
+### 從現有的常數引入
 
-從 npm 安裝已製作好的 UI 元件：
+以下是使用 UI 套件製作好的常數：
 
-```
-ng-dynamic-json-form/ui-{{library}}
-```
+| UI 套件 | 常數                  | 路徑                              |
+| :------ | :-------------------- | :-------------------------------- |
+| PrimeNg | UI_PRIMENG_COMPONENTS | `ng-dynamic-json-form/ui-primeng` |
 
-然後，你可以將製作好的常數，綁定到 template。
+你可以將製作好的常數引入，並綁定到 template。
 
 ```javascript
+import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
+
+//...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 

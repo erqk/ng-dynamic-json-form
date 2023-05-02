@@ -156,12 +156,12 @@ customComponents = {
 
 ## 第三方 UI 套件
 
-`ng-dynamic-json-form` 允許表單使用第三方 UI 套件的輸入元件。你可以直接安裝已製作好的 package 或者自己製作一個，甚至可以在一個表單內使用不同的 UI 套件！🎉
+`ng-dynamic-json-form` 允許表單使用第三方 UI 套件的輸入元件。你可以直接套用已製作好的常數或自己製作一個，甚至可以在一個表單內使用不同的 UI 套件！🎉
 
-| UI 套件 | Package                           |
-| :------ | :-------------------------------- |
-| PrimeNg | `ng-dynamic-json-form/ui-primeng` |
+以下第三方 UI 套件已有製作好的 UI 元件：
 
-> 目前僅有一個製作好的 package，其他的 UI 套件會陸續加入
+- PrimeNg
+
+> 目前僅有一個套件，其他的 UI 套件會陸續加入
 
 請到 **API** 內的 **自定 UI 元件** 查看更多。

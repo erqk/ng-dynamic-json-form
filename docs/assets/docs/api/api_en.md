@@ -626,17 +626,20 @@ myComponentList = MY_UI_COMPONENTS;
 ></ng-dynamic-json-form>
 ```
 
-### Import from pre-built package
+### Import from the pre-built constant
 
-Install pre-built package from npm:
+This is the pre-built constant for each UI libraries:
 
-```
-ng-dynamic-json-form/ui-{{library}}
-```
+| Library | Constant              | Path                              |
+| :------ | :-------------------- | :-------------------------------- |
+| PrimeNg | UI_PRIMENG_COMPONENTS | `ng-dynamic-json-form/ui-primeng` |
 
-Then, you can use the constant of pre-built components from the package and bind it.
+You can import the constant of pre-built components and bind it.
 
 ```javascript
+import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
+
+//...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 
