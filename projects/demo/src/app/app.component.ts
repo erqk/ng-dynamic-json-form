@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Subject, map, takeUntil, tap } from 'rxjs';
 import { LanguageDataService } from './features/language/services/language-data.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -37,12 +36,10 @@ export class AppComponent {
   onDestroy$ = new Subject();
 
   constructor(
-    private router: Router,
     private languageDataService: LanguageDataService
   ) {}
 
   ngOnInit(): void {
-    this.navigateToPath();
     this.languageDataService.language$
       .pipe(
         tap((x) => {
@@ -57,13 +54,5 @@ export class AppComponent {
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
-  }
-
-  private navigateToPath(): void {
-    const path = window.sessionStorage.getItem('path');
-    if (!path) return;
-
-    window.sessionStorage.removeItem('path');
-    this.router.navigateByUrl(path);
   }
 }
