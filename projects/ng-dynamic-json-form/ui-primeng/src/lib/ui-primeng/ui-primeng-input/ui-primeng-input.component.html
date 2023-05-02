@@ -1,3 +1,8 @@
 <ng-container *ngIf="control && data">
-  <input type="text" pInputText [formControl]="control" />
+  <input
+    type="{{ data.type ?? 'text' }}"
+    placeholder="{{ data.placeholder }}"
+    pInputText
+    [formControl]="control"
+  />
 </ng-container>

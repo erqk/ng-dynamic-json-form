@@ -1,3 +1,7 @@
 <ng-container *ngIf="control && data">
-  <input [attr.type]="data.type ?? null" [formControl]="control" />
+  <input
+    [attr.type]="data.type ?? 'text'"
+    [placeholder]="data.placeholder"
+    [formControl]="control"
+  />
 </ng-container>

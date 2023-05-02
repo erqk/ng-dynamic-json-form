@@ -17,6 +17,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   template: `
     <ng-container *ngIf="data">
       <label class="input-label">{{ data.label }}</label>
+      <span class="input-description">{{ data.description }}</span>
     </ng-container>
 
     <ng-container #componentAnchor></ng-container>

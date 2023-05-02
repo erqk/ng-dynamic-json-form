@@ -8,6 +8,8 @@ jsonData: FormControlConfig[] = [
     label: ...,
     formControlName: ...,
     value: ...,
+    placeholder: ...,
+    description: ...,
     type: ...,
     validators: [],
     conditions: [],
@@ -28,6 +30,8 @@ jsonData: FormControlConfig[] = [
 | label           | Label for this input element.                          |
 | formControlName | Name for this `AbstractControl`.                       |
 | value           | Use as the initial value of the `AbstractControl`.     |
+| placeholder     | Placeholder for the input.                             |
+| description     | Description under label of this input element.         |
 | type            | Type of input element to create                        |
 | options         | An array with `label` and `value`,                     |
 | optionsLayout   | `row` \|\| `column`. Use together with `options`       |

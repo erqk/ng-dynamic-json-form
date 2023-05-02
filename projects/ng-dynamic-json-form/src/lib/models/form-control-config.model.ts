@@ -7,6 +7,8 @@ export interface FormControlConfig {
   label: string;
   formControlName: string;
   value?: any;
+  placeholder?: string;
+  description?: string;
   type?:
     | 'text'
     | 'textarea'

@@ -8,6 +8,8 @@ jsonData: FormControlConfig[] = [
     label: ...,
     formControlName: ...,
     value: ...,
+    placeholder: ...,
+    description: ...,
     type: ...,
     validators: [],
     conditions: [],
@@ -27,7 +29,9 @@ jsonData: FormControlConfig[] = [
 | :-------------- | :------------------------------------------ |
 | label           | 欄位標題。                                  |
 | formControlName | `AbstractControl` 名稱。                    |
-| value           | 預設值                                      |
+| value           | 預設值。                                    |
+| placeholder     | 輸入框的提示文字。                          |
+| description     | 欄位標題下的說明文字。                      |
 | type            | 輸入元件類型                                |
 | options         | 由 `label` 和 `value` 構成的陣列,           |
 | optionsLayout   | `row` \|\| `column`. 和 `options` 搭配使用  |

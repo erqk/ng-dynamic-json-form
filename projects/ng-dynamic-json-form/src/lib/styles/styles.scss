@@ -84,6 +84,11 @@
       font-size: var(--font-size-subtitle);
     }
 
+    .input-description {
+      margin: 0.25rem 0;
+      color: gray;
+    }
+
     // Wrapper for checkboxes, radio buttons
     .group-buttons {
       display: flex;
