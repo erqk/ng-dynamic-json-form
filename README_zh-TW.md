@@ -6,3 +6,7 @@
 - 基於 CSS Grid 的表單版型
 - 支援自定元件
 - 支援第三方 UI 套件
+
+## 文件和說明
+
+https://erqk.github.io/ng-dynamic-json-form/

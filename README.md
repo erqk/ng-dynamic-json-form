@@ -13,6 +13,4 @@ Generate Angular reactive form with just using JSON data. Your form can be very 
 
 ## Documentation and demo
 
-```
 https://erqk.github.io/ng-dynamic-json-form/
-```
