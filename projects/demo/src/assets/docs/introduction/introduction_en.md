@@ -1,4 +1,4 @@
-## Features:
+## Features
 
 - Create `FormControl`, `FormGroup` and `FormArray`, with as many nested level as you wish.
 - Support Angular built in validators and your own build custom validators.
