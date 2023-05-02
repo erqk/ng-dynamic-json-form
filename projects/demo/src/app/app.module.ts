@@ -11,6 +11,7 @@ import { SideNavigationPaneComponent } from './shared/side-navigation-pane/side-
 import { TabBarComponent } from './shared/tab-bar/tab-bar.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
 import { LanguageSelectorComponent } from './features/language/components/language-selector/language-selector.component';
+import { ThemeSwitcherComponent } from './features/theme/theme-switcher/theme-switcher.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +28,7 @@ import { LanguageSelectorComponent } from './features/language/components/langua
     ContentWrapperComponent,
     SideNavigationPaneComponent,
     LanguageSelectorComponent,
+    ThemeSwitcherComponent,
   ],
   providers: [
     {

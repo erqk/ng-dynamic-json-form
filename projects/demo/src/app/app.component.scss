@@ -20,17 +20,21 @@
     flex-direction: row;
 
     .logo {
-      display: block;
-      width: 2rem;
-      margin-right: 1rem;
+      display: flex;
+      width: 3rem;
+      margin-right: 0.5rem;
+      padding: 0.5rem;
 
       &::after {
         content: none;
       }
     }
 
-    .info {
+    .settings {
+      display: flex;
+      align-items: center;
       margin-left: auto;
+      gap: 1rem;
     }
   }
 }
