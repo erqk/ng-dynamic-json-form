@@ -55,7 +55,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets"
+              "projects/demo/src/assets",
+              "projects/demo/src/favicon.png"
             ],
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
