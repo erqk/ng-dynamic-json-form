@@ -1,3 +1,20 @@
+input {
+  padding: 0.5rem 0.75rem;
+  font-size: inherit;
+  border: solid 1px lightgray;
+  border-radius: 0.5rem;
+  outline: none;
+
+  &:hover {
+    border-color: var(--primary-500);
+  }
+
+  &:focus {
+    border-color: var(--primary-600);
+    box-shadow: 0 0 2px 1px var(--primary-300);
+  }
+}
+
 select {
   width: 100%;
   padding: 0.5rem;
