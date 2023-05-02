@@ -2,6 +2,10 @@
   --color-primary: rgb(83, 72, 236);
   --color-primary-lighter: rgb(115, 106, 243);
 
+  * {
+    box-sizing: border-box;
+  }
+
   input {
     padding: 0.5rem 0.75rem;
     font-size: inherit;
