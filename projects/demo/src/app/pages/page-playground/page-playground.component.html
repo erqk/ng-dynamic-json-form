@@ -10,11 +10,30 @@
     </as-split-area>
 
     <as-split-area [size]="50">
+      <ng-container *ngIf="!!jsonData.length">
+        <div class="ui-selector">
+          <app-content-wrapper [maxWidth]="'40rem'">
+            {{ languageData$.value.playground.ui_library.title }}:
+            <select
+              [disabled]="!jsonData.length"
+              [value]="formUI"
+              (change)="setUI($event)"
+            >
+              <option value="ui-basic">
+                {{ languageData$.value.playground.ui_library.native_html }}
+              </option>
+              <option value="ui-primeng">PrimeNg</option>
+            </select>
+          </app-content-wrapper>
+        </div>
+      </ng-container>
+
       <app-content-wrapper [maxWidth]="'40rem'">
         <div class="p-5">
           <ng-container *ngIf="!jsonData.length">
             {{ languageData$.value.playground.click_to_start }}
           </ng-container>
+
           <ng-dynamic-json-form
             [jsonData]="jsonData"
             [customValidators]="customValidators"

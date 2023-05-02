@@ -32,6 +32,8 @@ export class PagePlaygroundComponent {
   jsonEditor: JSONEditor | null = null;
   jsonData: FormControlConfig[] = [];
 
+  formUI = 'ui-basic';
+
   form?: UntypedFormGroup;
 
   customValidators = {
@@ -40,16 +42,17 @@ export class PagePlaygroundComponent {
 
   customComponents = {
     'custom-input': CustomInputComponent,
-    'custom-input-group': CustomInputGroupComponent
+    'custom-input-group': CustomInputGroupComponent,
   };
 
-  customUIComponentList = UI_PRIMENG_COMPONENTS;
+  customUIComponentList: any = UI_PRIMENG_COMPONENTS;
 
   languageData$ = this.languageDataService.languageData$;
-
+  
   constructor(private languageDataService: LanguageDataService) {}
 
   ngOnInit(): void {
+    this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
     this.initJsonEditor();
   }
 
@@ -116,5 +119,24 @@ export class PagePlaygroundComponent {
     try {
       this.jsonData = JSON.parse(content);
     } catch (e) {}
+  }
+
+  setUI(e: Event): void {
+    if (!this.jsonData.length) return;
+
+    const select = e.target as HTMLSelectElement;
+    switch (select.value) {
+      case 'ui-basic':
+        this.customUIComponentList = null;
+        break;
+
+      case 'ui-primeng':
+        this.customUIComponentList = UI_PRIMENG_COMPONENTS;
+        break;
+    }
+
+    this.formUI = select.value;
+    window.localStorage.setItem('form-ui', this.formUI);
+    this.generateForm();
   }
 }

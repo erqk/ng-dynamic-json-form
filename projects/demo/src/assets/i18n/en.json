@@ -10,6 +10,10 @@
   },
   "playground": {
     "generate_form": "Generate form",
-    "click_to_start": "Click the 'Generate form' button to start"
+    "click_to_start": "Click the 'Generate form' button to start",
+    "ui_library": {
+      "title": "UI library",
+      "native_html": "Native HTML"
+    }
   }
 }
