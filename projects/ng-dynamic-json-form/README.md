@@ -1,24 +1,18 @@
 # NgDynamicJsonForm
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.0.
+Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!
 
-## Code scaffolding
+## Features
 
-Run `ng generate component component-name --project ng-dynamic-json-form` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-dynamic-json-form`.
-> Note: Don't forget to add `--project ng-dynamic-json-form` or else it will be added to the default project in your `angular.json` file. 
+- Create `FormControl`, `FormGroup` and `FormArray`, with as many nested level as you wish.
+- Support Angular built in validators and your own build custom validators.
+- Toggle specific `AbstractControl` status (hidden or disabled) and validators depends on other `AbstractControl`'s value.
+- Flexible input field layout using the CSS grid.
+- Support custom component.
+- Support other UI libraries.
 
-## Build
+## Documentation and demo
 
-Run `ng build ng-dynamic-json-form` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ng-dynamic-json-form`, go to the dist folder `cd dist/ng-dynamic-json-form` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ng-dynamic-json-form` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+https://erqk.github.io/ng-dynamic-json-form/
+```
