@@ -87,6 +87,7 @@ export class NgDynamicJsonFormComponent {
 
   ngOnInit(): void {
     this.initHostClass();
+    this.setHostUiClass();
   }
 
   ngOnDestroy(): void {
