@@ -13,6 +13,7 @@ import { LanguageDataService } from '../../features/language/services/language-d
 })
 export class PageHomeComponent {
   language$ = this.languageDataService.language$;
+  languageData$ = this.languageDataService.languageData$;
   
   constructor(private languageDataService: LanguageDataService) {}
 }

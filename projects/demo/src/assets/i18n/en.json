@@ -5,6 +5,9 @@
     "styling": "Styling",
     "playground": "Playground"
   },
+  "introduction": {
+    "brief": "Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!"
+  },
   "playground": {
     "generate_form": "Generate form",
     "click_to_start": "Click the 'Generate form' button to start"

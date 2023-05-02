@@ -1,3 +1,15 @@
+<div class="banner">
+  <div class="logo">
+    <img src="assets/logo.svg" />
+  </div>
+
+  <h1>NgDynamicJsonForm</h1>
+  <p>{{ languageData$.value.introduction.brief }}</p>
+
+  <button class="btn-start">{{ languageData$.value.menu.getting_started }}</button>
+</div>
+
+
 <app-content-wrapper>
   <markdown
     [src]="'assets/docs/introduction/introduction_' + language$.value + '.md'"
