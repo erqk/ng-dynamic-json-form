@@ -19,11 +19,17 @@ These are the predefined CSS variables, you can overwrite them with your desire 
   --form-array-aroup-divider-weight: 1px;
   --form-array-group-divider-spacing: 2rem;
 }
+
+.ng-dynamic-json-form.ui-basic {
+  --color-primary: rgb(83, 72, 236);
+  --color-primary-lighter: rgb(115, 106, 243);
+}
 ```
 
 ## Form layout
 
 `cssGrid` provide 3 different value to set:
+
 - `gridTemplateColumns`
 - `gridColumn`
 - `gridRow`

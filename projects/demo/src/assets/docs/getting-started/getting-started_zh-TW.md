@@ -23,6 +23,17 @@ import { NgDynamicJsonFormModule } from 'ng-dynamic-json-form';
 })
 ```
 
+最後，將樣式檔加入 `angular.json`:
+
+```javascript
+//...
+  "styles": [
+    "node_modules/ng-dynamic-json-form/lib/styles/styles.scss",
+    //...
+  ],
+//...
+```
+
 ## 基本用法
 
 將 `FormControlConfig[]` 型別的資料傳入 `jsonData`。
@@ -148,7 +159,7 @@ customComponents = {
 `ng-dynamic-json-form` 允許表單使用第三方 UI 套件的輸入元件。你可以直接安裝已製作好的 package 或者自己製作一個，甚至可以在一個表單內使用不同的 UI 套件！🎉
 
 | UI 套件 | Package                           |
-| :------- | :--------------------------------- |
+| :------ | :-------------------------------- |
 | PrimeNg | `ng-dynamic-json-form/ui-primeng` |
 
 > 目前僅有一個製作好的 package，其他的 UI 套件會陸續加入
