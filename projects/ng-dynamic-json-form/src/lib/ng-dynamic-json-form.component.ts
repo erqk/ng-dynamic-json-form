@@ -79,10 +79,14 @@ export class NgDynamicJsonFormComponent {
     if (simpleChanges['jsonData']) {
       this.buildForm();
     }
+
+    if (simpleChanges['customUIComponentList']) {
+      this.setHostUiClass();
+    }
   }
 
   ngOnInit(): void {
-    this.setHostAttributes();
+    this.initHostClass();
   }
 
   ngOnDestroy(): void {
@@ -91,7 +95,7 @@ export class NgDynamicJsonFormComponent {
     this.reset$.complete();
   }
 
-  private setHostAttributes(): void {
+  private initHostClass(): void {
     const hostEl = this.el.nativeElement as HTMLElement;
     const dynamicFormsFound = document.querySelectorAll('ng-dynamic-json-form');
     const hostIndex = Array.from(dynamicFormsFound).indexOf(hostEl);
@@ -99,6 +103,16 @@ export class NgDynamicJsonFormComponent {
     this.renderer2.addClass(hostEl, 'ng-dynamic-json-form');
     this.renderer2.addClass(hostEl, `index-${hostIndex}`);
     this.formStatusService.hostIndex = hostIndex;
+  }
+
+  private setHostUiClass(): void {
+    const hostEl = this.el.nativeElement as HTMLElement;
+
+    if (!this.customUIComponentList) {
+      this.renderer2.addClass(hostEl, 'ui-basic');
+    } else {
+      this.renderer2.removeClass(hostEl, 'ui-basic');
+    }
   }
 
   private buildForm(): void {

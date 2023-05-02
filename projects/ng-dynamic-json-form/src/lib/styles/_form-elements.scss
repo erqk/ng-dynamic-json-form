@@ -1,0 +1,179 @@
+.ng-dynamic-json-form.ui-basic {
+  --color-primary: rgb(83, 72, 236);
+  --color-primary-lighter: rgb(115, 106, 243);
+
+  input {
+    padding: 0.5rem 0.75rem;
+    font-size: inherit;
+    border: solid 1px lightgray;
+    border-radius: 0.5rem;
+    outline: none;
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 2px 1px var(--color-primary-lighter);
+    }
+  }
+
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: inherit;
+    border-radius: 0.5rem;
+    border: solid 1px lightgray;
+    outline: none;
+
+    &:hover,
+    &:focus {
+      border: solid 1px var(--color-primary);
+      box-shadow: 0 0 2px 1px var(--color-primary-lighter);
+    }
+  }
+
+  .option-button {
+    --markerSize: 1rem;
+
+    display: flex;
+    align-items: center;
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+
+    &:hover {
+      .marker {
+        box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    input[type="radio"] {
+      display: none;
+
+      &:checked {
+        ~ .marker {
+          background-color: var(--color-primary);
+
+          &::before {
+            width: 60%;
+            height: 60%;
+            background-color: white;
+          }
+        }
+      }
+
+      ~ .marker {
+        border: solid 2px var(--color-primary);
+        border-radius: 50%;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 0px;
+          height: 0px;
+          border-radius: 50%;
+          transition: 0.25s;
+        }
+      }
+    }
+
+    input[type="checkbox"] {
+      display: none;
+
+      &:checked {
+        ~ .marker {
+          background-color: var(--color-primary);
+
+          &::before {
+            opacity: 1;
+          }
+        }
+      }
+
+      ~ .marker {
+        border: solid 2px var(--color-primary);
+        border-radius: 0.25rem;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: calc(50% - 0.1rem);
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(45deg);
+          width: 30%;
+          height: 60%;
+          border: solid 2px white;
+          border-left: none;
+          border-top: none;
+          opacity: 0;
+          transition: 0.1s;
+        }
+      }
+    }
+
+    .marker {
+      position: relative;
+      display: block;
+      width: var(--markerSize);
+      height: var(--markerSize);
+      margin-right: 0.5rem;
+      cursor: pointer;
+      transition: 0.25s;
+      z-index: 0;
+    }
+  }
+
+  .switch-button {
+    --buttonWidth: 2.5rem;
+    --buttonHeight: 1.5rem;
+
+    position: relative;
+    width: var(--buttonWidth);
+    height: var(--buttonHeight);
+    border-radius: var(--buttonWidth);
+    background-color: var(--color-primary);
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 0;
+
+    &:hover {
+      background-color: var(--color-primary);
+      box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    input[type="checkbox"] {
+      display: none;
+
+      &:checked {
+        ~ .marker {
+          left: calc(
+            var(--buttonWidth) - var(--markerPadding) - var(--markerSize)
+          );
+        }
+      }
+    }
+
+    .marker {
+      --markerSize: calc(var(--buttonHeight) * 0.65);
+      --markerPadding: calc((var(--buttonHeight) - var(--markerSize)) * 0.5);
+
+      position: absolute;
+      top: 50%;
+      left: var(--markerPadding);
+      transform: translate(0, -50%);
+      width: var(--markerSize);
+      height: var(--markerSize);
+      border-radius: 50%;
+      background-color: white;
+      transition: 0.25s;
+    }
+  }
+}

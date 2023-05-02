@@ -1,5 +1,7 @@
 @use "./form-array-group-header-buttons";
 
+@import "./form-elements";
+
 .ng-dynamic-json-form {
   --font-size-title: 1.2rem;
   --font-size-subtitle: 1rem;
