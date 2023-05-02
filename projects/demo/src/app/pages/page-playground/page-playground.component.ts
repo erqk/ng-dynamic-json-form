@@ -79,6 +79,7 @@ export class PagePlaygroundComponent {
     this.jsonEditor = new JSONEditor({
       target: el,
       props: {
+        mainMenuBar: false,
         mode: Mode.text,
         content: {
           json,
