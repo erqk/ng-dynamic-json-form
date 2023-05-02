@@ -10,7 +10,7 @@
   },
   "exports": {
     "./styles": {
-      "sass": "./src/lib/styles/form-elements.scss"
+      "sass": "./src/lib/styles/styles.scss"
     }
   }
 }

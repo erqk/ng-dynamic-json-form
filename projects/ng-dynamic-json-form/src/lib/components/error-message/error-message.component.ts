@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Observable, debounceTime, map, of, startWith, switchMap } from 'rxjs';
-import { NgDynamicJsonFormValidatorConfig } from '../../models';
+import { ValidatorConfig } from '../../models';
 import { ValidatorAndConditionTypes } from '../../enums/validator-and-condition-types.enum';
 
 @Component({
@@ -19,7 +19,7 @@ import { ValidatorAndConditionTypes } from '../../enums/validator-and-condition-
 })
 export class ErrorMessageComponent {
   @Input() control?: AbstractControl;
-  @Input() validators?: NgDynamicJsonFormValidatorConfig[];
+  @Input() validators?: ValidatorConfig[];
 
   errors$?: Observable<string[]>;
 

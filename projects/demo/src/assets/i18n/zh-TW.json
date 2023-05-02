@@ -1,0 +1,15 @@
+{
+  "menu": {
+    "getting_started": "開始",
+    "api": "API",
+    "styling": "樣式",
+    "playground": "演示區域"
+  },
+  "introduction": {
+    "brief": "從 JSON 資料動態生成 Angular 表單。從簡單的表單到擁有複雜的狀態監聽表單都可以，並且支援第三方 UI 套件！"
+  },
+  "playground": {
+    "generate_form": "生成表單",
+    "click_to_start": "點擊 '生成表單' 按鈕來開始"
+  }
+}

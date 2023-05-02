@@ -12,7 +12,7 @@ import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
-import { NgDynamicJsonFormControlConfig } from './models';
+import { FormControlConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
@@ -25,12 +25,29 @@ import { GridLayoutService } from './services/grid-layout.service';
   providers: [FormStatusService],
 })
 export class NgDynamicJsonFormComponent {
-  @Input() jsonData: NgDynamicJsonFormControlConfig[] = [];
+  @Input() jsonData: FormControlConfig[] = [];
 
-  /**User defined custom valiators */
+  /**User defined custom valiators
+   *
+   * The `key` will be use to match with `value` of validator named "custom":
+   * @example
+   * {
+   *  //...
+   *  "validators": [
+   *    { "name": "custom", "value": "..." }
+   *  ]
+   * }
+   */
   @Input() customValidators: { [key: string]: ValidatorFn } = {};
 
-  /**User defined custom components */
+  /**User defined custom components
+   * The `key` will be use to match with `customComponent`:
+   * @example
+   * {
+   *  //...
+   *  "customComponent": "..."
+   * }
+   */
   @Input() customComponents: {
     [key: string]: Type<NgDynamicJsonFormCustomComponent>;
   } = {};
@@ -106,7 +123,7 @@ export class NgDynamicJsonFormComponent {
 
   addFormGroup(
     formArray: FormArray,
-    template: NgDynamicJsonFormControlConfig[],
+    template: FormControlConfig[],
     index?: number
   ): void {
     const formGroup = this.formGeneratorService.generateFormGroup(template);

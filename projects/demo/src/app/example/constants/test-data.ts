@@ -1,6 +1,6 @@
-import { NgDynamicJsonFormControlConfig } from 'ng-dynamic-json-form';
+import { FormControlConfig } from "ng-dynamic-json-form";
 
-export const testData: NgDynamicJsonFormControlConfig[] = [
+export const testData: FormControlConfig[] = [
   {
     label: 'Basic Info',
     formControlName: 'basicInfo',

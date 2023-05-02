@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { NgDynamicJsonFormControlConfig } from '../../models';
+import { FormControlConfig } from '../../models';
 
 @Component({
   selector: 'ng-dynamic-component-base',
@@ -9,5 +9,5 @@ import { NgDynamicJsonFormControlConfig } from '../../models';
 })
 export class NgDynamicJsonFormCustomComponent {
   @Input() control: UntypedFormControl | null = null;
-  @Input() data: NgDynamicJsonFormControlConfig | null = null;
+  @Input() data: FormControlConfig | null = null;
 }

@@ -1,0 +1,63 @@
+<div class="main-content" [style.--headerHeight.px]="headerHeight + 1">
+  <as-split direction="horizontal">
+    <as-split-area [size]="25">
+      <div class="json-input">
+        <div class="json-editor"></div>
+        <button (click)="generateForm()">
+          {{ languageData$.value.playground.generate_form }}
+        </button>
+      </div>
+    </as-split-area>
+
+    <as-split-area [size]="50">
+      <app-content-wrapper [maxWidth]="'40rem'">
+        <div class="p-5">
+          <ng-container *ngIf="!jsonData.length">
+            {{ languageData$.value.playground.click_to_start }}
+          </ng-container>
+          <ng-dynamic-json-form
+            [jsonData]="jsonData"
+            [customValidators]="customValidators"
+            [customComponents]="customComponents"
+            [customUIComponentList]="customUIComponentList"
+            (formGet)="onFormGet($event)"
+          ></ng-dynamic-json-form>
+        </div>
+      </app-content-wrapper>
+    </as-split-area>
+
+    <as-split-area [size]="25">
+      <as-split direction="vertical">
+        <as-split-area [size]="10" [minSize]="10">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>STATUS</h4>
+              <span>{{ form?.status ?? "--" }}</span>
+            </div>
+            <span></span>
+          </div>
+        </as-split-area>
+
+        <as-split-area [size]="60">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>VALUE</h4>
+            </div>
+            <code>{{ form?.value | json }}</code>
+          </div>
+        </as-split-area>
+
+        <as-split-area [size]="30">
+          <div class="split-content">
+            <div class="sticky-header">
+              <h4>ERRORS</h4>
+            </div>
+            <code>
+              {{ form?.errors | json }}
+            </code>
+          </div>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
+</div>

@@ -1,55 +1,19 @@
-<div class="page-header">
-  <h1 class="page-title">Angular dynamic form</h1>
+<div class="header">
+  <app-content-wrapper class="tab-bar" [maxWidth]="'85rem'">
+    <a [routerLink]="'/'" class="logo">
+      <img src="assets/logo.svg" alt="" />
+    </a>
 
-  <div class="step-container">
-    <div>
-      <span>1</span>
-      <h4 class="section-title">Insert json data</h4>
+    <ng-container *ngIf="!reload">
+      <ng-container *ngIf="links$ | async as links">
+        <app-tab-bar [links]="links"></app-tab-bar>
+      </ng-container>
+    </ng-container>
+    
+    <div class="info">
+      <app-language-selector></app-language-selector>
     </div>
-    <div>
-      <span>2</span>
-      <h4 class="section-title">Generate form</h4>
-    </div>
-    <div>
-      <span>3</span>
-      <h4 class="section-title">Final result</h4>
-    </div>
-  </div>
+  </app-content-wrapper>
 </div>
 
-<div class="main-content">
-  <div class="json-input">
-    <app-json-input (onChanged)="onJsonEditorChanged($event)"></app-json-input>
-  </div>
-
-  <div class="form-generated">
-    <button (click)="generateForm()">Generate form</button>
-    <button (click)="patchForm()">Patch form</button>
-    <br />
-    <br />
-
-    <ng-dynamic-json-form
-      [jsonData]="jsonData"
-      [customValidators]="customValidators"
-      [customComponents]="customComponents"
-      [customUIComponentList]="customUIComponentList"
-      (formGet)="onFormGet($event)"
-    ></ng-dynamic-json-form>
-  </div>
-
-  <div>
-    <div class="debug-info">
-      <code>
-        <strong>STATUS: {{ form?.status }}</strong>
-        <br />
-        {{ form?.value | json }}
-        <hr />
-        <strong>ERRORS:</strong>
-        <br />
-        {{ form?.errors | json }}
-      </code>
-
-      <code></code>
-    </div>
-  </div>
-</div>
+<router-outlet></router-outlet>

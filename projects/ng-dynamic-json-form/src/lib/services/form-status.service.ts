@@ -18,11 +18,11 @@ import {
 } from 'rxjs';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import {
-  NgDynamicJsonFormControlCondition,
-  NgDynamicJsonFormControlConfig,
-  NgDynamicJsonFormValidatorConfig,
+  FormControlCondition,
+  FormControlConfig,
+  ValidatorConfig,
 } from '../models';
-import { NgDynamicJsonFormConditionExtracted } from '../models/condition-extracted.model';
+import { ConditionExtracted } from '../models/condition-extracted.model';
 import { clearEmpties } from '../utils/clear-empties';
 import { FormValidatorService } from './form-validator.service';
 
@@ -52,7 +52,7 @@ export class FormStatusService {
    */
   formControlConditonsEvent$(
     form: FormGroup,
-    configs: NgDynamicJsonFormControlConfig[]
+    configs: FormControlConfig[]
   ): Observable<any> {
     if (!configs.length) return of(null);
 
@@ -116,10 +116,7 @@ export class FormStatusService {
     return !Object.keys(errors).length ? null : errors;
   }
 
-  private updateControlStatus(
-    form: FormGroup,
-    data: NgDynamicJsonFormConditionExtracted
-  ): void {
+  private updateControlStatus(form: FormGroup, data: ConditionExtracted): void {
     const conditions = data.conditions;
     const control = data.targetControl;
 
@@ -205,7 +202,7 @@ export class FormStatusService {
     control: AbstractControl,
     bool: boolean,
     type: string,
-    validators: NgDynamicJsonFormValidatorConfig[]
+    validators: ValidatorConfig[]
   ): void {
     const allValidators = this.formValidatorService.getValidators(validators);
     const otherValidators = this.formValidatorService.getValidators(
@@ -223,7 +220,7 @@ export class FormStatusService {
    */
   private getControlsToListen(
     form: FormGroup,
-    conditions: NgDynamicJsonFormControlCondition[],
+    conditions: FormControlCondition[],
     path: AbstractControl[] = []
   ): AbstractControl[] {
     return conditions.reduce((acc, curr) => {
@@ -237,14 +234,14 @@ export class FormStatusService {
   }
 
   /**Extract all the conditions from JSON data and flatten them,
-   * then output to an array of `NgDynamicJsonFormConditionExtracted`
+   * then output to an array of `ConditionExtracted`
    */
   extractConditions(
     form: FormGroup,
-    configs: NgDynamicJsonFormControlConfig[],
+    configs: FormControlConfig[],
     parentControlName?: string,
-    path?: NgDynamicJsonFormConditionExtracted[]
-  ): NgDynamicJsonFormConditionExtracted[] {
+    path?: ConditionExtracted[]
+  ): ConditionExtracted[] {
     if (path === undefined) {
       path = [];
     }
@@ -277,7 +274,7 @@ export class FormStatusService {
       }
 
       return acc;
-    }, [] as NgDynamicJsonFormConditionExtracted[]);
+    }, [] as ConditionExtracted[]);
 
     path.push(...result);
     return path;
@@ -288,12 +285,10 @@ export class FormStatusService {
    */
   private getConditionResult(
     form: FormGroup,
-    conditions: NgDynamicJsonFormControlCondition[],
+    conditions: FormControlCondition[],
     groupOperator?: '&&' | '||'
   ): boolean {
-    const evaluateExpression = (
-      input: NgDynamicJsonFormControlCondition
-    ): boolean => {
+    const evaluateExpression = (input: FormControlCondition): boolean => {
       if (input.groupOperator && input.groupWith) {
         const result = this.booleanResult(form, input);
         const operator = input.groupOperator;
@@ -318,10 +313,7 @@ export class FormStatusService {
     return conditions.map(evaluateExpression).some((x) => x);
   }
 
-  private booleanResult(
-    form: FormGroup,
-    data: NgDynamicJsonFormControlCondition
-  ): boolean {
+  private booleanResult(form: FormGroup, data: FormControlCondition): boolean {
     const left = form.get(data.control)?.value;
     const right = data.controlValue;
 

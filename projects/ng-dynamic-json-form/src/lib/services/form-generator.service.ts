@@ -7,7 +7,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { NgDynamicJsonFormControlConfig } from '../models/form-control-config.model';
+import { FormControlConfig } from '../models/form-control-config.model';
 import { FormStatusService } from './form-status.service';
 import { FormValidatorService } from './form-validator.service';
 
@@ -22,7 +22,7 @@ export class FormGeneratorService {
     private formValidatorService: FormValidatorService
   ) {}
 
-  generateFormGroup(data: NgDynamicJsonFormControlConfig[]): UntypedFormGroup {
+  generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
     for (const item of data) {
       let control: AbstractControl | null = null;
@@ -32,7 +32,7 @@ export class FormGeneratorService {
 
       // form control
       if (!item.children && !item.formArray) {
-        control = new FormControl(item.value, {
+        control = new FormControl(item.value ?? '', {
           validators,
         });
       }
@@ -51,7 +51,7 @@ export class FormGeneratorService {
         const arrayLength =
           Array.isArray(item.value) && !!item.value.length
             ? item.value.length
-            : item.formArray.length;
+            : item.formArray.length || 0;
 
         control = this.generateFormArray(
           item.formArray.template,
@@ -72,13 +72,15 @@ export class FormGeneratorService {
   }
 
   private generateFormArray(
-    data: NgDynamicJsonFormControlConfig[],
+    data: FormControlConfig[],
     count: number,
     validators: ValidatorFn[]
   ): UntypedFormArray {
     const formArray = new UntypedFormArray([], {
       validators,
     });
+
+    if (!count) formArray;
 
     this.reset$.next(null);
     for (let i = 0; i < count; i++) {

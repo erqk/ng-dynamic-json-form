@@ -1,0 +1,7 @@
+<app-content-wrapper>
+  <markdown
+    class="md-file"
+    [src]="'assets/docs/styling/styling_' + language$.value + '.md'"
+    (ready)="onReady()"
+  ></markdown>
+</app-content-wrapper>

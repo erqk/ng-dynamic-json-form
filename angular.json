@@ -28,10 +28,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ng-dynamic-json-form/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         }
       }
@@ -53,9 +50,7 @@
             "outputPath": "dist/demo",
             "index": "projects/demo/src/index.html",
             "main": "projects/demo/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "projects/demo/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -63,14 +58,19 @@
               "projects/demo/src/assets"
             ],
             "styles": [
-              "node_modules/jsoneditor/dist/jsoneditor.min.css",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "dist/ng-dynamic-json-form/lib/styles/form-elements.scss",
-              "projects/demo/src/styles.scss"
+              "node_modules/vanilla-jsoneditor/themes/jse-theme-dark.css",
+              "dist/ng-dynamic-json-form/lib/styles/styles.scss",
+              "projects/demo/src/styles/prism-vsc-dark-plus.css",
+              "projects/demo/src/styles/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/marked/marked.min.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-css.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -120,19 +120,14 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/demo/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo/src/favicon.ico",
               "projects/demo/src/assets"
             ],
-            "styles": [
-              "projects/demo/src/styles.scss"
-            ],
+            "styles": ["projects/demo/src/styles.scss"],
             "scripts": []
           }
         }

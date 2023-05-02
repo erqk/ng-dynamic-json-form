@@ -1,4 +1,4 @@
-export interface NgDynamicJsonFormControlOptions {
+export interface FormControlOptions {
   label: string;
   value: any;
 }

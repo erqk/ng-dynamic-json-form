@@ -6,7 +6,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
-import { NgDynamicJsonFormValidatorConfig } from '../models';
+import { ValidatorConfig } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ import { NgDynamicJsonFormValidatorConfig } from '../models';
 export class FormValidatorService {
   customValidators: { [key: string]: ValidatorFn } = {};
 
-  getValidators(input: NgDynamicJsonFormValidatorConfig[]): ValidatorFn[] {
+  getValidators(input: ValidatorConfig[]): ValidatorFn[] {
     return input.map((item) => {
       let validator: ValidatorFn = Validators.nullValidator;
 

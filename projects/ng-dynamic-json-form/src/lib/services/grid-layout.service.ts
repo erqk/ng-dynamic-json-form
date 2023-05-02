@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { NgDynamicJsonFormControlConfig } from '../models';
+import { FormControlConfig } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GridLayoutService {
   /**
-   * @description
    * Auto set the other fields `gridColumn` when there's one or more field with `gridColumn` is specified.
    * By doing this, the other input fields will auto expand and their layout is not affected.
    * If there's children with `gridColumn` attribute found, set the parent's `gridTemplateColumns` attribute as well,
    * so that the grid layout will not shift.
    */
   setGridColumn(
-    data: NgDynamicJsonFormControlConfig[],
+    data: FormControlConfig[],
     parentTemplateColumns?: string
   ): void {
     const columnCount = !!parentTemplateColumns
@@ -46,7 +45,7 @@ export class GridLayoutService {
   }
 
   /**Find the max `gridColumn` value */
-  private maxGridColumn(data: NgDynamicJsonFormControlConfig[]): number {
+  private maxGridColumn(data: FormControlConfig[]): number {
     /**Find all the `gridColumn` items that is set to `"span N"` || `"N"` */
     const gridColumnItems = data.filter((x) => {
       const hasGridColumnSet = !!x.cssGrid && !!x.cssGrid.gridColumn;

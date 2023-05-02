@@ -1,0 +1,53 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  --headerHeight: 0px;
+
+  height: calc(100vh - var(--headerHeight));
+}
+
+.json-input {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .json-editor {
+    --jse-theme-color: var(--primary-500);
+
+    height: calc(100% - 3.5rem);
+  }
+
+  button {
+    height: 3.5rem;
+    padding: 1.25rem;
+    color: white;
+    border-radius: 0;
+  }
+}
+
+code {
+  width: 100%;
+  background-color: transparent;
+  white-space: pre;
+  color: rgb(80, 80, 80);
+  overflow: auto;
+}
+
+.split-content {
+  position: relative;
+
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    padding: 0.5rem 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+
+    > * {
+      margin: 0.2rem;
+    }
+  }
+}

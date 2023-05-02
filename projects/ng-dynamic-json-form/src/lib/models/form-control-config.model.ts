@@ -1,9 +1,9 @@
-import { NgDynamicJsonFormArrayConfig } from './form-array-config.model';
-import { NgDynamicJsonFormControlCondition } from './form-control-condition.model';
-import { NgDynamicJsonFormControlOptions } from './form-control-options.model';
-import { NgDynamicJsonFormValidatorConfig } from './form-validator-config.model';
+import { FormArrayConfig } from './form-array-config.model';
+import { FormControlCondition } from './form-control-condition.model';
+import { FormControlOptions } from './form-control-options.model';
+import { ValidatorConfig } from './form-validator-config.model';
 
-export interface NgDynamicJsonFormControlConfig {
+export interface FormControlConfig {
   label: string;
   formControlName: string;
   value?: any;
@@ -35,10 +35,10 @@ export interface NgDynamicJsonFormControlConfig {
   extra?: { [key: string]: any };
 
   /**Validators to add to this form control */
-  validators?: NgDynamicJsonFormValidatorConfig[];
+  validators?: ValidatorConfig[];
 
   /**Change state or toggle validators when condition met */
-  conditions?: NgDynamicJsonFormControlCondition[];
+  conditions?: FormControlCondition[];
 
   /**Display options using row or column (options must not be empty) */
   optionsLayout?: 'column' | 'row';
@@ -49,13 +49,13 @@ export interface NgDynamicJsonFormControlConfig {
    * - Multi select checkboxes
    * - ...etc
    */
-  options?: NgDynamicJsonFormControlOptions[];
+  options?: FormControlOptions[];
 
   /**Make this control as a FormGroup */
-  children?: NgDynamicJsonFormControlConfig[];
+  children?: FormControlConfig[];
 
   /**Make this control as a FormArray */
-  formArray?: NgDynamicJsonFormArrayConfig;
+  formArray?: FormArrayConfig;
 
   /**CSS Grid */
   cssGrid?: {
