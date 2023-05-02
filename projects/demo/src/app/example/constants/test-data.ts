@@ -1,4 +1,4 @@
-import { FormControlConfig } from "ng-dynamic-json-form";
+import { FormControlConfig } from 'ng-dynamic-json-form';
 
 export const testData: FormControlConfig[] = [
   {
@@ -57,20 +57,8 @@ export const testData: FormControlConfig[] = [
         ],
       },
       {
-        label: 'Custom Component',
-        formControlName: 'customComponent',
-        customComponent: 'custom-input',
-        conditions: [
-          {
-            name: 'disabled',
-            control: 'basicInfo.status',
-            controlValue: false,
-            operator: '===',
-          },
-        ],
-      },
-      {
-        label:
+        label: 'Multi condition input',
+        description:
           "Required If (name==='Andrew' && age > 20 && (status===false || gender==='0') )",
         formControlName: 'multiConditionInput',
         type: 'text',
@@ -146,14 +134,6 @@ export const testData: FormControlConfig[] = [
         formControlName: 'email',
         value: 'emailaddress@example.com',
         type: 'email',
-        conditions: [
-          {
-            name: 'hidden',
-            control: 'basicInfo.status',
-            controlValue: false,
-            operator: '===',
-          },
-        ],
         validators: [
           {
             name: 'required',
@@ -253,18 +233,28 @@ export const testData: FormControlConfig[] = [
     },
   },
   {
+    label: 'Custom Component (FormControl)',
+    formControlName: 'customComponentControl',
+    customComponent: 'custom-input',
+  },
+  {
+    label: 'Custom Component (FormGroup)',
+    formControlName: 'customComponentGroup',
+    customComponent: 'custom-input-group',
+  },
+  {
     label: 'Family member info',
     formControlName: 'familyMemberInfo',
     value: [],
     formArray: {
-      length: 5,
+      length: 1,
       editable: true,
       templateLabel: 'Member',
       template: [
         {
           label: 'Name',
           formControlName: 'name',
-          value: '111',
+          value: 'Name',
           type: 'text',
         },
         {

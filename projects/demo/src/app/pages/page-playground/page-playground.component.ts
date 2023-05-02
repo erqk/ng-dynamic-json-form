@@ -13,6 +13,7 @@ import { testData } from '../../example/constants/test-data';
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
+import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
 @Component({
   selector: 'app-page-playground',
   standalone: true,
@@ -39,6 +40,7 @@ export class PagePlaygroundComponent {
 
   customComponents = {
     'custom-input': CustomInputComponent,
+    'custom-input-group': CustomInputGroupComponent
   };
 
   customUIComponentList = UI_PRIMENG_COMPONENTS;
