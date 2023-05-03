@@ -634,6 +634,8 @@ This is the pre-built constant for each UI libraries:
 | :------ | :-------------------- | :-------------------------------- |
 | PrimeNg | UI_PRIMENG_COMPONENTS | `ng-dynamic-json-form/ui-primeng` |
 
+> You need to install the corresponding library in order to use the pre-built components.
+
 You can import the constant of pre-built components and bind it.
 
 ```javascript

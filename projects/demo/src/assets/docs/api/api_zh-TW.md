@@ -634,6 +634,8 @@ myComponentList = MY_UI_COMPONENTS;
 | :------ | :-------------------- | :-------------------------------- |
 | PrimeNg | UI_PRIMENG_COMPONENTS | `ng-dynamic-json-form/ui-primeng` |
 
+> 要使用製作好的元件，你得先安裝相關的 UI 套件。
+
 你可以將製作好的常數引入，並綁定到 template。
 
 ```javascript
