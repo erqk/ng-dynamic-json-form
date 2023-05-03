@@ -19,7 +19,8 @@ export interface FormControlConfig {
     | 'radio'
     | 'checkbox'
     | 'dropdown'
-    | 'range';
+    | 'range'
+    | (string & {});
 
   /**Custom component to use on this control */
   customComponent?: string;

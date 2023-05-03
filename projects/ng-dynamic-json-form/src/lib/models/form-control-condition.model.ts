@@ -1,5 +1,5 @@
 export interface FormControlCondition {
-  name?: 'required' | 'disabled' | 'hidden';
+  name?: 'required' | 'disabled' | 'hidden' | (string & {});
   control: string;
   controlValue: any;
   operator: '===' | '!==' | '>=' | '>' | '<=' | '<';
