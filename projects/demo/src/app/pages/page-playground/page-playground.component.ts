@@ -104,7 +104,7 @@ export class PagePlaygroundComponent {
   reloadTestData(): void {
     const content: any = { json: testData };
     this.jsonEditor?.set(content);
-    window.sessionStorage.setItem('jsonEditorContent', JSON.stringify(content));
+    window.sessionStorage.setItem('jsonEditorContent', JSON.stringify(content.json));
   }
 
   private initJsonEditor(): void {
