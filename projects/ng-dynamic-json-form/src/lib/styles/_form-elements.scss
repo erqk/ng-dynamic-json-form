@@ -1,6 +1,6 @@
 .ng-dynamic-json-form.ui-basic {
-  --color-primary: rgb(83, 72, 236);
-  --color-primary-lighter: rgb(115, 106, 243);
+  --color-primary: #3b82f6;
+  --color-primary-lighter: #bfdbfe;
 
   * {
     box-sizing: border-box;
@@ -19,7 +19,7 @@
 
     &:focus {
       border-color: var(--color-primary);
-      box-shadow: 0 0 2px 1px var(--color-primary-lighter);
+      box-shadow: 0 0 0 3px var(--color-primary-lighter);
     }
   }
 
@@ -34,12 +34,12 @@
     &:hover,
     &:focus {
       border: solid 1px var(--color-primary);
-      box-shadow: 0 0 2px 1px var(--color-primary-lighter);
+      box-shadow: 0 0 0 3px var(--color-primary-lighter);
     }
   }
 
   .option-button {
-    --markerSize: 1rem;
+    --markerSize: 1.35rem;
 
     display: flex;
     align-items: center;
