@@ -9,9 +9,9 @@
 .header {
   position: sticky;
   top: 0;
-  background-color: rgba(255, 255, 255, 0.925);
+  background-color: rgba(var(--bg-color-rgb), 0.925);
   backdrop-filter: blur(8px);
-  border-bottom: solid 1px white;
+  border-bottom: solid 1px rgb(var(--bg-color-rgb));
   box-shadow: 0 1px 0px rgba(0, 0, 0, 0.1);
   padding: 1rem 2rem 0;
   z-index: 999;

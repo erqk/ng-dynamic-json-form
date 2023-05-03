@@ -16,6 +16,7 @@ a {
   &:hover,
   &.active {
     opacity: 1;
+    font-weight: bold;
   }
 
   &::after {

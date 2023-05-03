@@ -1,0 +1,28 @@
+@mixin rootVariables {
+  --primary-900: #efecff;
+  --primary-800: #cfc7ff;
+  --primary-700: #afa1ff;
+  --primary-600: #8f7bff;
+  --primary-500: #5f43ff;
+  --primary-400: #4c36cc;
+  --primary-300: #392899;
+  --primary-200: #261b66;
+  --primary-100: #130d33;
+
+  --body-bg-color: rgb(20, 20, 20);
+  --bg-color-rgb: 40, 40, 40;
+  --text-color-rgb: 200, 200, 200;
+}
+
+@mixin html {
+  code {
+    &:not([class*="lang"]) {
+      color: var(--primary-700);
+    }
+  }
+}
+
+@mixin as-split-gutter {
+  background-color: rgb(var(--body-bg-color)) !important;
+}
+

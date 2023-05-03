@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-theme-switcher',
@@ -62,22 +63,33 @@ export class ThemeSwitcherComponent {
   showMenu = false;
   currentTheme = this.themeIcons[0];
 
-  constructor(private domSanitizer: DomSanitizer, private el: ElementRef) {}
+  constructor(
+    private domSanitizer: DomSanitizer,
+    private el: ElementRef,
+    private themeService: ThemeService
+  ) {}
 
   ngOnInit(): void {
-    this.switchTheme('auto');
+    this.initTheme();
+  }
+
+  private initTheme(): void {
+    const themeSaved = window.localStorage.getItem('theme') || 'auto';
+    this.switchTheme(themeSaved);
   }
 
   switchTheme(name: string): void {
+    const html = document.querySelector('html');
+
+    html?.setAttribute('class', '');
+    html?.classList.add(name);
+
     this.currentTheme =
       this.themeIcons.find((x) => x.name === name) || this.themeIcons[0];
-
-    const html = document.querySelector('html');
-    
-    html?.setAttribute('class', '');
-    html?.classList.add(this.currentTheme.name);
-
     this.showMenu = false;
+
+    window.localStorage.setItem('theme', name);
+    this.themeService.theme$.next(name);
   }
 
   toggleMenu(): void {
