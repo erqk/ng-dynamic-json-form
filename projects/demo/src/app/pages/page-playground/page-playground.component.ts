@@ -7,24 +7,23 @@ import {
   NgDynamicJsonFormModule,
 } from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
-import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
-import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
-import { testData } from '../../example/constants/test-data';
-import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
-import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
-import { ThemeService } from '../../features/theme/services/theme.service';
 import {
   Subject,
   combineLatest,
   debounceTime,
-  fromEvent,
   map,
   of,
   takeUntil,
-  tap,
+  tap
 } from 'rxjs';
+import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
+import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
+import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
+import { testData } from '../../example/constants/test-data';
+import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
+import { LanguageDataService } from '../../features/language/services/language-data.service';
+import { ThemeService } from '../../features/theme/services/theme.service';
+import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
 @Component({
   selector: 'app-page-playground',
   standalone: true,
