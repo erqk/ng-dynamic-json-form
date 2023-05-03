@@ -28,23 +28,9 @@
 
 ## 表單版型
 
-`cssGrid` provide the following values to set:
+以下是一些使用了 `cssGrid` 內不同的值所組合出來的表單版型範例：
 
-| key                   | description                                   |
-| :-------------------- | :-------------------------------------------- |
-| `gridTemplateColumns` | Equivalant to `grid-template-columns` in CSS. |
-| `gridColumn`          | Equivalant to `grid-column` in CSS.           |
-| `gridRow`             | Equivalant to `grid-template-columns` in CSS. |
-
-- `gridTemplateColumns` _ grid-template-columns_
-- `gridColumn`
-- `gridRow`
-
-It's exactly the same as CSS grid
-
-使用 `cssGrid` 內的欄位值所組合的表單版型：
-
-### Example 1
+### 範例 1
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -67,7 +53,7 @@ It's exactly the same as CSS grid
 
 </div>
 
-### Example 2
+### 範例 2
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -101,7 +87,7 @@ It's exactly the same as CSS grid
 
 </div>
 
-### Example 3
+### 範例 3
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -134,7 +120,7 @@ It's exactly the same as CSS grid
 
 </div>
 
-### Example 4
+### 範例 4
 
 <div class="example-wrapper">
   <div class="css-grid-example">

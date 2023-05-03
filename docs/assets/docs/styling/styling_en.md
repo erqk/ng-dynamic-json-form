@@ -28,12 +28,6 @@ These are the predefined CSS variables, you can overwrite them with your desire 
 
 ## Form layout
 
-`cssGrid` provide 3 different value to set:
-
-- `gridTemplateColumns`
-- `gridColumn`
-- `gridRow`
-
 These are some examples show how different value inside `cssGrid` can
 change the layout of your form:
 
