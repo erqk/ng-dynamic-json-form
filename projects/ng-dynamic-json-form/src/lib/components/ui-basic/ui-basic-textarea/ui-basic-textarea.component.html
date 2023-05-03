@@ -1,0 +1,8 @@
+<ng-container *ngIf="control && data">
+  <textarea
+    [attr.name]="data.extra?.['name'] ?? null"
+    [attr.id]="data.extra?.['id'] ?? null"
+    [attr.cols]="data.extra?.['cols'] ?? 30"
+    [attr.rows]="data.extra?.['rows'] ?? 10"
+  ></textarea>
+</ng-container>

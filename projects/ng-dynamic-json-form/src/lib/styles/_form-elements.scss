@@ -6,7 +6,8 @@
     box-sizing: border-box;
   }
 
-  input {
+  input,
+  textarea {
     padding: 0.5rem 0.75rem;
     font-size: inherit;
     border: solid 1px lightgray;
@@ -21,6 +22,10 @@
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px var(--color-primary-lighter);
     }
+  }
+
+  textarea {
+    resize: vertical;
   }
 
   select {

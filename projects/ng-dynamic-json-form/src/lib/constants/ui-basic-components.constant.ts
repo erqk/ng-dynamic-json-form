@@ -3,6 +3,7 @@ import { UiBasicDropdownComponent } from '../components/ui-basic/ui-basic-dropdo
 import { UiBasicInputComponent } from '../components/ui-basic/ui-basic-input/ui-basic-input.component';
 import { UiBasicRadioComponent } from '../components/ui-basic/ui-basic-radio/ui-basic-radio.component';
 import { UiBasicSwitchComponent } from '../components/ui-basic/ui-basic-switch/ui-basic-switch.component';
+import { UiBasicTextareaComponent } from '../components/ui-basic/ui-basic-textarea/ui-basic-textarea.component';
 
 export const UI_BASIC_COMPONENTS = {
   checkbox: UiBasicCheckboxComponent,
@@ -10,4 +11,5 @@ export const UI_BASIC_COMPONENTS = {
   input: UiBasicInputComponent,
   radio: UiBasicRadioComponent,
   switch: UiBasicSwitchComponent,
+  textarea: UiBasicTextareaComponent,
 };
