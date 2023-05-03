@@ -1,3 +1,8 @@
+.ng-dynamic-json-form.ui-basic {
+  --color-primary: var(--primary-500);
+  --color-primary-lighter: var(--primary-200);
+}
+
 input,
 .ng-dynamic-json-form.ui-basic input {
   padding: 0.5rem 0.75rem;
