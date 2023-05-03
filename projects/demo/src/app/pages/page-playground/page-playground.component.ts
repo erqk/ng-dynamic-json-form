@@ -14,7 +14,7 @@ import {
   map,
   of,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
@@ -101,6 +101,12 @@ export class PagePlaygroundComponent {
     this.setUI(select.value);
   }
 
+  reloadTestData(): void {
+    const content: any = { json: testData };
+    this.jsonEditor?.set(content);
+    window.sessionStorage.setItem('jsonEditorContent', JSON.stringify(content));
+  }
+
   private initJsonEditor(): void {
     const el = document.querySelector('.json-editor') as HTMLElement;
     const content =
@@ -118,7 +124,6 @@ export class PagePlaygroundComponent {
     this.jsonEditor = new JSONEditor({
       target: el,
       props: {
-        mainMenuBar: false,
         mode: Mode.text,
         content: {
           json,

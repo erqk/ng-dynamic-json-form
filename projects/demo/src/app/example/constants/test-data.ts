@@ -134,6 +134,14 @@ export const testData: FormControlConfig[] = [
         formControlName: 'email',
         value: 'emailaddress@example.com',
         type: 'email',
+        conditions: [
+          {
+            name: 'hidden',
+            control: 'basicInfo.status',
+            controlValue: false,
+            operator: '==='
+          }
+        ],
         validators: [
           {
             name: 'required',

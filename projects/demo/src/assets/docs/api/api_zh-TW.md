@@ -146,7 +146,7 @@ jsonData: FormControlConfig[] = [
 
 - ### `template`
 
-  陣列內 `FormGroup` 的模板，使用 `FormControlConfig` 作為 interface。
+  陣列內 `FormGroup` 的模板，使用 `FormControlConfig` 型別。
 
 - ### `length` (選填)
 
@@ -462,14 +462,14 @@ if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.status === >
 
 ### 建立
 
-建立一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。此 component 內擁有必要的參數。
+建立一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。此元件內擁有必要的參數。
 
 ```javascript
 //...
 export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 ```
 
-> 若不繼承 `NgDynamicJsonFormCustomComponent`, 請確認你的 component 擁有 `control` 和 `data` 這兩個 `@Input`。
+> `NgDynamicJsonFormCustomComponent` 內的參數如下：
 >
 > ```javascript
 > export class NgDynamicJsonFormCustomComponent {

@@ -17,14 +17,37 @@
   .json-editor {
     --jse-theme-color: var(--primary-500);
 
-    height: calc(100% - 3.5rem);
+    height: calc(100% - 3.5rem - 2px);
   }
 
-  button {
-    height: 3.5rem;
-    padding: 1.25rem;
-    color: white;
-    border-radius: 0;
+  .toolbar {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 1px;
+    background-color: var(--primary-700);
+    border: solid 1px var(--primary-700);
+
+    button {
+      height: 3.5rem;
+      padding: 1.25rem;
+      color: white;
+      border-radius: 0;
+      font-size: 1.15rem;
+      padding: 0.5rem;
+    }
+
+    .btn-reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.5rem;
+      padding: 0;
+      font-size: 1.5rem;
+
+      > * {
+        transform: rotate(45deg);
+      }
+    }
   }
 }
 

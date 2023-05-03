@@ -469,7 +469,7 @@ This component have parameters for your custom component to work.
 export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 ```
 
-> If you don't extends `NgDynamicJsonFormCustomComponent`, make sure your custom component have `@Input()`s of `control` and `data`.
+> Parameters inside `NgDynamicJsonFormCustomComponent`:
 >
 > ```javascript
 > export class NgDynamicJsonFormCustomComponent {
