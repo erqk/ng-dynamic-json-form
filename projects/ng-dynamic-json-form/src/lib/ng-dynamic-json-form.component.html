@@ -1,5 +1,4 @@
 <ng-container *ngIf="!jsonData"> Please pass in your JSON string </ng-container>
-
 <ng-container *ngIf="!!jsonData.length && !!form">
   <form action="POST" [formGroup]="form">
     <ng-container

@@ -26,9 +26,7 @@ import { ConditionExtracted } from '../models/condition-extracted.model';
 import { clearEmpties } from '../utils/clear-empties';
 import { FormValidatorService } from './form-validator.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FormStatusService {
   /**To differentiate the host element if there is multiple ng-dynamic-json-form */
   hostIndex = 0;

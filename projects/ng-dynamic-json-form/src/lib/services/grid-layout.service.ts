@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControlConfig } from '../models';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class GridLayoutService {
   /**
    * Auto set the other fields `gridColumn` when there's one or more field with `gridColumn` is specified.

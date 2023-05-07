@@ -11,9 +11,7 @@ import { FormControlConfig } from '../models/form-control-config.model';
 import { FormStatusService } from './form-status.service';
 import { FormValidatorService } from './form-validator.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FormGeneratorService {
   reset$ = new Subject();
 

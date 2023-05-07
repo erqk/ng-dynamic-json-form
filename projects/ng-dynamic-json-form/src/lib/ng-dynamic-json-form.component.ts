@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -8,9 +9,17 @@ import {
   SimpleChanges,
   Type,
 } from '@angular/core';
-import { FormArray, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import {
+  FormArray,
+  ReactiveFormsModule,
+  UntypedFormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { FormControlComponent } from './components/form-control/form-control.component';
+import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { FormControlConfig } from './models';
 import { FormGeneratorService } from './services/form-generator.service';
@@ -21,8 +30,20 @@ import { GridLayoutService } from './services/grid-layout.service';
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
-  styles: [],
-  providers: [FormStatusService],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormControlComponent,
+    GridItemWrapperComponent,
+    ErrorMessageComponent,
+  ],
+  providers: [
+    FormGeneratorService,
+    FormValidatorService,
+    FormStatusService,
+    GridLayoutService,
+  ],
 })
 export class NgDynamicJsonFormComponent {
   @Input() jsonData: FormControlConfig[] = [];

@@ -8,9 +8,7 @@ import {
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import { ValidatorConfig } from '../models';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FormValidatorService {
   customValidators: { [key: string]: ValidatorFn } = {};
 

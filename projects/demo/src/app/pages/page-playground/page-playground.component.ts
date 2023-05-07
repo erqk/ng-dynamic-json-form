@@ -4,7 +4,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import {
   FormControlConfig,
-  NgDynamicJsonFormModule,
+  NgDynamicJsonFormComponent
 } from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import {
@@ -29,7 +29,7 @@ import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wr
   standalone: true,
   imports: [
     CommonModule,
-    NgDynamicJsonFormModule,
+    NgDynamicJsonFormComponent,
     ContentWrapperComponent,
     AngularSplitModule,
   ],
