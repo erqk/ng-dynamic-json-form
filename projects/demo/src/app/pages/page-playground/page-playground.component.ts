@@ -55,7 +55,7 @@ export class PagePlaygroundComponent {
     'custom-input-group': CustomInputGroupComponent,
   };
 
-  customUIComponentList: any = UI_PRIMENG_COMPONENTS;
+  customUIComponents: any = UI_PRIMENG_COMPONENTS;
 
   languageData$ = this.languageDataService.languageData$;
   onDestroy$ = new Subject();
@@ -160,11 +160,11 @@ export class PagePlaygroundComponent {
   private setUI(type: string): void {
     switch (type) {
       case 'ui-basic':
-        this.customUIComponentList = null;
+        this.customUIComponents = null;
         break;
 
       case 'ui-primeng':
-        this.customUIComponentList = UI_PRIMENG_COMPONENTS;
+        this.customUIComponents = UI_PRIMENG_COMPONENTS;
         break;
     }
 

@@ -43,7 +43,7 @@
               [data]="control"
               [control]="parentForm.controls[control.formControlName]"
               [customComponent]="customComponents[control.customComponent]"
-              [componentList]="customUIComponentList || basicComponentList"
+              [uiComponents]="uiComponents || basicUIComponents"
             ></form-control>
           </grid-item-wrapper>
         </ng-container>

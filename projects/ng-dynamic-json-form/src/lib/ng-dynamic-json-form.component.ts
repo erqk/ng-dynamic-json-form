@@ -74,13 +74,13 @@ export class NgDynamicJsonFormComponent {
   } = {};
 
   /**Form control components built with other libraries */
-  @Input() customUIComponentList?: {
+  @Input() uiComponents?: {
     [key: string]: Type<NgDynamicJsonFormCustomComponent>;
   };
 
   @Output() formGet = new EventEmitter();
 
-  basicComponentList = UI_BASIC_COMPONENTS;
+  basicUIComponents = UI_BASIC_COMPONENTS;
 
   form?: UntypedFormGroup;
 
@@ -130,7 +130,7 @@ export class NgDynamicJsonFormComponent {
   private setHostUiClass(): void {
     const hostEl = this.el.nativeElement as HTMLElement;
 
-    if (!this.customUIComponentList) {
+    if (!this.uiComponents) {
       this.renderer2.addClass(hostEl, 'ui-basic');
     } else {
       this.renderer2.removeClass(hostEl, 'ui-basic');

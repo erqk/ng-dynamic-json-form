@@ -32,7 +32,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   styles: [':host {display: flex; flex-direction: column; width: 100%}'],
 })
 export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
-  @Input() componentList: {
+  @Input() uiComponents: {
     [key: string]: Type<NgDynamicJsonFormCustomComponent>;
   } = {};
 
@@ -44,7 +44,7 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
   ngOnInit(): void {
     const inputComponent =
       this.customComponent ||
-      this.componentList[this.inputType] ||
+      this.uiComponents[this.inputType] ||
       UiBasicInputComponent;
 
     const componentRef = this.componentAnchor.createComponent(inputComponent);
