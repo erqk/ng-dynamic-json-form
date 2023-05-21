@@ -40,23 +40,23 @@
           "style": "scss"
         }
       },
-      "root": "projects/demo",
-      "sourceRoot": "projects/demo/src",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "docs",
-            "index": "projects/demo/src/index.html",
-            "main": "projects/demo/src/main.ts",
+            "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "projects/demo/tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets",
-              "projects/demo/src/favicon.png"
+              "src/favicon.ico",
+              "src/assets",
+              "src/favicon.png"
             ],
             "styles": [
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
@@ -64,8 +64,8 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/vanilla-jsoneditor/themes/jse-theme-dark.css",
               "dist/ng-dynamic-json-form/lib/styles/styles.scss",
-              "projects/demo/src/styles/prism-vsc-dark-plus.css",
-              "projects/demo/src/styles/styles.scss"
+              "src/styles/prism-vsc-dark-plus.css",
+              "src/styles/styles.scss"
             ],
             "scripts": [
               "node_modules/marked/marked.min.js",
@@ -122,13 +122,13 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "projects/demo/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/demo/src/favicon.ico",
-              "projects/demo/src/assets"
+              "src/favicon.ico",
+              "src/assets"
             ],
-            "styles": ["projects/demo/src/styles.scss"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         }
