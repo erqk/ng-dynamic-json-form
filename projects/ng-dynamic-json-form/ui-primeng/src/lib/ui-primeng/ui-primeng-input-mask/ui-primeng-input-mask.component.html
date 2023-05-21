@@ -1,0 +1,27 @@
+<ng-container *ngIf="control && data">
+  <input
+    type="{{ data.type ?? 'text' }}"
+    pInputText
+    [attr.placeholder]="data.placeholder ?? null"
+    [formControl]="control"
+    [mask]="data.ngxMaskConfig?.mask ?? ''"
+    [validation]="false"
+    [prefix]="data.ngxMaskConfig?.prefix ?? ''"
+    [suffix]="data.ngxMaskConfig?.suffix ?? ''"
+    [thousandSeparator]="data.ngxMaskConfig?.thousandSeparator ?? ''"
+    [decimalMarker]="data.ngxMaskConfig?.decimalMarker ?? '.'"
+    [clearIfNotMatch]="data.ngxMaskConfig?.clearIfNotMatch ?? null"
+    [showTemplate]="data.ngxMaskConfig?.showTemplate ?? null"
+    [showMaskTyped]="data.ngxMaskConfig?.showMaskTyped ?? null"
+    [placeHolderCharacter]="data.ngxMaskConfig?.placeHolderCharacter ?? null"
+    [shownMaskExpression]="data.ngxMaskConfig?.shownMaskExpression ?? null"
+    [dropSpecialCharacters]="data.ngxMaskConfig?.dropSpecialCharacters ?? null"
+    [specialCharacters]="data.ngxMaskConfig?.specialCharacters!"
+    [hiddenInput]="data.ngxMaskConfig?.hiddenInput"
+    [separatorLimit]="data.ngxMaskConfig?.separatorLimit ?? null"
+    [allowNegativeNumbers]="data.ngxMaskConfig?.allowNegativeNumbers ?? null"
+    [leadZeroDateTime]="data.ngxMaskConfig?.leadZeroDateTime ?? null"
+    [triggerOnMaskChange]="data.ngxMaskConfig?.triggerOnMaskChange ?? null"
+    [patterns]="data.ngxMaskConfig!.patterns!"
+  />
+</ng-container>
