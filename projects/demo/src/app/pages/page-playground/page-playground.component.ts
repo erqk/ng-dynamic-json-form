@@ -4,7 +4,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import {
   FormControlConfig,
-  NgDynamicJsonFormComponent
+  NgDynamicJsonFormComponent,
 } from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import {
@@ -19,7 +19,7 @@ import {
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
 import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
-import { testData } from '../../example/constants/test-data';
+import { testData } from '../../example/constants/json-editor-default.constant';
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { ThemeService } from '../../features/theme/services/theme.service';
@@ -104,7 +104,10 @@ export class PagePlaygroundComponent {
   reloadTestData(): void {
     const content: any = { json: testData };
     this.jsonEditor?.set(content);
-    window.sessionStorage.setItem('jsonEditorContent', JSON.stringify(content.json));
+    window.sessionStorage.setItem(
+      'jsonEditorContent',
+      JSON.stringify(content.json)
+    );
   }
 
   private initJsonEditor(): void {

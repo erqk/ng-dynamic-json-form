@@ -22,6 +22,7 @@ import { FormControlComponent } from './components/form-control/form-control.com
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { FormControlConfig } from './models';
+import { FormConfigInitService } from './services/form-config-init.service';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
@@ -39,6 +40,7 @@ import { GridLayoutService } from './services/grid-layout.service';
     ErrorMessageComponent,
   ],
   providers: [
+    FormConfigInitService,
     FormGeneratorService,
     FormValidatorService,
     FormStatusService,
@@ -90,10 +92,10 @@ export class NgDynamicJsonFormComponent {
   constructor(
     private el: ElementRef,
     private renderer2: Renderer2,
+    private formConfigInitService: FormConfigInitService,
     private formGeneratorService: FormGeneratorService,
     private formStatusService: FormStatusService,
     private formValidatorService: FormValidatorService,
-    private gridLayoutService: GridLayoutService
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
@@ -140,7 +142,8 @@ export class NgDynamicJsonFormComponent {
   private buildForm(): void {
     if (!this.jsonData || !this.jsonData.length) return;
 
-    this.gridLayoutService.setGridColumn(this.jsonData);
+    this.formConfigInitService.init(this.jsonData);
+
     this.formValidatorService.customValidators = this.customValidators;
     this.form = this.formGeneratorService.generateFormGroup(this.jsonData);
     this.formGet.emit(this.form);

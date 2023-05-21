@@ -19,7 +19,8 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^15.0.0",
-    "@angular/core": "^15.0.0"
+    "@angular/core": "^15.0.0",
+    "ngx-mask": "^15.1.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"

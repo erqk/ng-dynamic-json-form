@@ -42,6 +42,9 @@ export const testData: FormControlConfig[] = [
         formControlName: 'age',
         value: '18',
         type: 'number',
+        ngxMaskConfig: {
+          mask: '00'
+        },
         validators: [
           {
             name: 'required',
@@ -139,8 +142,8 @@ export const testData: FormControlConfig[] = [
             name: 'hidden',
             control: 'basicInfo.status',
             controlValue: false,
-            operator: '==='
-          }
+            operator: '===',
+          },
         ],
         validators: [
           {

@@ -22,6 +22,7 @@
     "angular-split": "^15.0.0",
     "marked": "^4.3.0",
     "ngx-markdown": "^15.1.2",
+    "ngx-mask": "^15.1.2",
     "primeflex": "^3.3.0",
     "primeng": "^15.4.0",
     "prismjs": "^1.29.0",
