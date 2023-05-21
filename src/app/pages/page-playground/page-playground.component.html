@@ -24,7 +24,6 @@
           <app-content-wrapper [maxWidth]="'40rem'">
             {{ languageData$.value.playground.ui_library.title }}:
             <select
-              [disabled]="!jsonData.length"
               [value]="formUI"
               (change)="onUIChange($event)"
             >

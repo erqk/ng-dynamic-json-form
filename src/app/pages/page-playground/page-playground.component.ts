@@ -40,21 +40,18 @@ export class PagePlaygroundComponent {
   headerHeight = 0;
 
   jsonEditor: JSONEditor | null = null;
-  jsonData: FormControlConfig[] = [];
+  jsonData: FormControlConfig[] | string = [];
 
   formUI = 'ui-basic';
-
   form?: UntypedFormGroup;
 
   customValidators = {
     firstUppercase: firstUppercaseValidator,
   };
-
   customComponents = {
     'custom-input': CustomInputComponent,
     'custom-input-group': CustomInputGroupComponent,
   };
-
   customUIComponents: any = UI_PRIMENG_COMPONENTS;
 
   languageData$ = this.languageDataService.languageData$;
@@ -91,9 +88,8 @@ export class PagePlaygroundComponent {
     const content = this.getContent(this.jsonEditor?.get());
     if (!content) return;
 
-    try {
-      this.jsonData = JSON.parse(content);
-    } catch (e) {}
+    this.jsonData = '';
+    requestAnimationFrame(() => this.jsonData = content)
   }
 
   onUIChange(e: Event): void {

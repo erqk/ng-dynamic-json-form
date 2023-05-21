@@ -1,12 +1,12 @@
 <ng-container *ngIf="!jsonData"> Please pass in your JSON string </ng-container>
-<ng-container *ngIf="!!jsonData.length && !!form">
+<ng-container *ngIf="!!config.length && !!form">
   <form action="POST" [formGroup]="form">
     <ng-container
       *ngTemplateOutlet="
         formGroupTemplate;
         context: {
           parentForm: form,
-          controlConfigs: jsonData
+          controlConfigs: config
         }
       "
     ></ng-container>

@@ -48,7 +48,7 @@ import { GridLayoutService } from './services/grid-layout.service';
   ],
 })
 export class NgDynamicJsonFormComponent {
-  @Input() jsonData: FormControlConfig[] = [];
+  @Input() jsonData: FormControlConfig[] | string = [];
 
   /**User defined custom valiators
    *
@@ -82,10 +82,10 @@ export class NgDynamicJsonFormComponent {
 
   @Output() formGet = new EventEmitter();
 
+  form?: UntypedFormGroup;
   basicUIComponents = UI_BASIC_COMPONENTS;
 
-  form?: UntypedFormGroup;
-
+  config: FormControlConfig[] = [];
   private reset$ = new Subject();
   private onDestroy$ = new Subject();
 
@@ -95,15 +95,17 @@ export class NgDynamicJsonFormComponent {
     private formConfigInitService: FormConfigInitService,
     private formGeneratorService: FormGeneratorService,
     private formStatusService: FormStatusService,
-    private formValidatorService: FormValidatorService,
+    private formValidatorService: FormValidatorService
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (simpleChanges['jsonData']) {
+    const { jsonData, uiComponents } = simpleChanges;
+    
+    if (jsonData) {
       this.buildForm();
     }
 
-    if (simpleChanges['customUIComponentList']) {
+    if (uiComponents) {
       this.setHostUiClass();
     }
   }
@@ -139,22 +141,39 @@ export class NgDynamicJsonFormComponent {
     }
   }
 
-  private buildForm(): void {
-    if (!this.jsonData || !this.jsonData.length) return;
+  private get jsonDataValid(): boolean {
+    if (!this.jsonData) return false;
 
-    this.formConfigInitService.init(this.jsonData);
+    if (Array.isArray(this.jsonData)) {
+      return !!this.jsonData.length;
+    }
+
+    if (typeof this.jsonData === 'string') {
+      try {
+        this.config = JSON.parse(this.jsonData);
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
+    return false;
+  }
+
+  private buildForm(): void {
+    if (!this.jsonDataValid) return;
+
+    this.formConfigInitService.init(this.config);
 
     this.formValidatorService.customValidators = this.customValidators;
-    this.form = this.formGeneratorService.generateFormGroup(this.jsonData);
+    this.form = this.formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
     this.reset$.next(null);
     merge(
       this.formStatusService.formErrorEvent$(this.form),
-      this.formStatusService.formControlConditonsEvent$(
-        this.form,
-        this.jsonData
-      )
+      this.formStatusService.formControlConditonsEvent$(this.form, this.config)
     )
       .pipe(takeUntil(merge(this.reset$, this.onDestroy$)))
       .subscribe();
