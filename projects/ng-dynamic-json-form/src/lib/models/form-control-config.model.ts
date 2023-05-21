@@ -1,7 +1,9 @@
 import { FormArrayConfig } from './form-array-config.model';
 import { FormControlCondition } from './form-control-condition.model';
 import { FormControlOptions } from './form-control-options.model';
+import { FormControlType } from './form-control-type.model';
 import { ValidatorConfig } from './form-validator-config.model';
+import { NgxMaskConfig } from './ngx-mask-config.model';
 
 export interface FormControlConfig {
   label: string;
@@ -9,18 +11,8 @@ export interface FormControlConfig {
   value?: any;
   placeholder?: string;
   description?: string;
-  type?:
-    | 'text'
-    | 'textarea'
-    | 'password'
-    | 'number'
-    | 'email'
-    | 'switch'
-    | 'radio'
-    | 'checkbox'
-    | 'dropdown'
-    | 'range'
-    | (string & {});
+  type?: FormControlType;
+  ngxMaskConfig?: Partial<NgxMaskConfig>;
 
   /**Custom component to use on this control */
   customComponent?: string;

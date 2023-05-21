@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Input,
@@ -5,10 +6,10 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
+import { UiComponents } from '../../models/ui-components-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
 
 @Component({
   selector: 'form-control',
@@ -32,10 +33,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   styles: [':host {display: flex; flex-direction: column; width: 100%}'],
 })
 export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
-  @Input() uiComponents: {
-    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
-  } = {};
-
+  @Input() uiComponents: UiComponents = {};
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef, static: true })
@@ -53,15 +51,17 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
     componentRef.instance.control = this.control;
   }
 
-  get inputType(): string {
-    if (!this.data?.type) return 'input';
+  private get inputType(): string {
+    // If `ngxMaskConfig` is specified, we use input with mask
+    const defaultInput = !this.data?.ngxMaskConfig ? 'text' : 'textMask';
+
+    // Fallback to text input if `type` is not specified.
+    if (!this.data?.type) return defaultInput;
 
     switch (this.data?.type) {
-      case 'email':
       case 'number':
-      case 'password':
       case 'text':
-        return 'input';
+        return defaultInput;
 
       default:
         return this.data.type;
