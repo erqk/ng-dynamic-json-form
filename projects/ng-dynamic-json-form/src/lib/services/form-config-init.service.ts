@@ -81,8 +81,8 @@ export class FormConfigInitService {
         ? null
         : Object.keys(patterns).reduce((obj, key) => {
             // Type can be string if config is come from parsed JSON
-            const patternRegex = patterns[key].pattern as RegExp | string;
-            
+            const patternRegex = obj[key].pattern as RegExp | string;
+
             obj[key].pattern =
               typeof patternRegex === 'string'
                 ? new RegExp(patternRegex)
@@ -91,14 +91,25 @@ export class FormConfigInitService {
             return obj;
           }, patterns);
 
-      // Default patterns and specialCharcters will be overwrite when pass in custom data.
-      // So we must set the fallback value
-      item.ngxMaskConfig = {
-        ...item.ngxMaskConfig,
-        specialCharacters:
-          specialCharacters ?? this.maskDefaultSpecialCharacters,
-        patterns: patternsMapped ?? this.maskDefaultPatterns,
-      };
+      // If one of the `specialCharacters` or `patterns` is provided in `ngxMaskConfig`,
+      // we need to set all the default value because they will be overwritten by ngx-mask
+      if (item.ngxMaskConfig) {
+        if (item.ngxMaskConfig.specialCharacters) {
+          item.ngxMaskConfig = {
+            ...item.ngxMaskConfig,
+            specialCharacters:
+              specialCharacters ?? this.maskDefaultSpecialCharacters,
+          };
+        }
+
+        if (item.ngxMaskConfig.patterns) {
+          item.ngxMaskConfig = {
+            ...item.ngxMaskConfig,
+            patterns: patternsMapped ?? this.maskDefaultPatterns,
+            specialCharacters: this.maskDefaultSpecialCharacters
+          };
+        }
+      }
 
       if (!!item.children?.length) {
         this.initNgxMaskPatterns(item.children);
