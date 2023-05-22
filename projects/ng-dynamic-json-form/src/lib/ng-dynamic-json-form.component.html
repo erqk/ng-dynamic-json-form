@@ -121,7 +121,9 @@
   let-isNested="isNested"
 >
   <ng-container [formGroup]="parentForm">
-    <label class="form-title">{{ label }}</label>
+    <ng-container *ngIf="label">
+      <label class="form-title">{{ label }}</label>
+    </ng-container>
 
     <!-- Show add button when form array is empty -->
     <div

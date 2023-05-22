@@ -17,20 +17,27 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
   imports: [CommonModule, ErrorMessageComponent],
   template: `
     <ng-container *ngIf="data">
-      <label class="input-label">{{ data.label }}</label>
-      <span class="input-description">{{ data.description }}</span>
+      <ng-container *ngIf="data.label">
+        <label *ngIf="data.label" class="input-label">{{ data.label }}</label>
+      </ng-container>
+
+      <ng-container *ngIf="data.description">
+        <span class="input-description">{{ data.description }}</span>
+      </ng-container>
     </ng-container>
 
     <ng-container #componentAnchor></ng-container>
 
-    <ng-container *ngIf="control && data">
+    <ng-container *ngIf="control && data && control.errors">
       <error-message
         [control]="control"
         [validators]="data.validators"
       ></error-message>
     </ng-container>
   `,
-  styles: [':host {display: flex; flex-direction: column; width: 100%}'],
+  styles: [
+    ':host {display: flex; flex-direction: column; gap: 0.35rem; width: 100%}',
+  ],
 })
 export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
   @Input() uiComponents: UiComponents = {};
