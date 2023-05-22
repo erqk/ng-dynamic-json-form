@@ -1,3 +1,3 @@
 <app-content-wrapper>
-  <markdown [src]="'assets/docs/api/api_' + language$.value + '.md'" (ready)="onReady()"></markdown>
+  <markdown [data]="markdownContent$ | async" (ready)="onReady()"></markdown>
 </app-content-wrapper>
