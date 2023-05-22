@@ -2,28 +2,65 @@
 
 ## JSON data keys
 
+You can provide your data as:
+
+1. JSON string
+2. `FormControlConfig[]`
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
 ```javascript
+// Provide your data as JSON
+[
+  // prettier-ignore
+  {
+    "label": "...",
+    "formControlName": "...",
+    "value": "...",
+    "placeholder": "...",
+    "description": "...",
+    "type": "...",
+    "ngxMaskConfig": {},
+    "validators": [],
+    "conditions": [],
+    "options": [],
+    "optionsLayout": "...",
+    "cssGrid": {},
+    "children": [],
+    "formArray": {},
+    "customComponent": "...",
+    "extra": {},
+  },
+  //...
+];
+```
+
+```javascript
+// Provide your data as `FormControlConfig[]`
 jsonData: FormControlConfig[] = [
   {
-    label: ...,
-    formControlName: ...,
-    value: ...,
-    placeholder: ...,
-    description: ...,
-    type: ...,
+    label: "...",
+    formControlName: "...",
+    value: "...",
+    placeholder: "...",
+    description: "...",
+    type: "...",
+    ngxMaskConfig: {},
     validators: [],
     conditions: [],
     options: [],
-    optionsLayout: ...,
+    optionsLayout: "...",
     cssGrid: {},
     children: [],
     formArray: {},
-    customComponent: ...,
+    customComponent: "...",
     extra: {}
   }
   //...
 ]
 ```
+
+</div>
 
 | key             | Description                                            |
 | :-------------- | :----------------------------------------------------- |
@@ -33,6 +70,7 @@ jsonData: FormControlConfig[] = [
 | placeholder     | Placeholder for the input.                             |
 | description     | Description under label of this input element.         |
 | type            | Type of input element to create                        |
+| ngxMaskConfig   | Config for ngx-mask                                    |
 | options         | An array with `label` and `value`,                     |
 | optionsLayout   | `row` \|\| `column`. Use together with `options`       |
 | cssGrid         | CSS grid options to layout form.                       |
@@ -43,36 +81,85 @@ jsonData: FormControlConfig[] = [
 
 ## Types of input element
 
-Currently there are only elements built for these `type`s. You can have value other than this, and match it with your own custom component.
+Currently there are only elements built for these types. You can have value other than this, so you can use it inside your custom component.
 
+- checkbox
+- dropdown
+- email
+- number
+- password
+- radio
+- switch
+- text
+- textarea
+- ...your custom type here
+
+## Input mask
+
+> This feature requires ngx-mask to be installed.
+
+When you set `ngxMaskConfig`, the text input component with `mask` directive will be used.
+
+```javascript
+{
+  "ngxMaskConfig": {
+    "mask": "",
+    //...Partial<IConfig> (Please refer to ngx-mask docs for all configs)
+  }
+}
 ```
-'text' | 'textarea' | 'password' | 'number' | 'email' | 'switch'| 'radio'| 'checkbox'| 'dropdown'
+
+If you pass JSON string into `jsonData`, you may notice the property `pattern` only accepts type `RegExp`, which is not allowed in a valid JSON.
+
+```javascript
+patterns: {
+  [character: string]: {
+    pattern: RegExp;
+    optional?: boolean;
+    symbol?: string;
+  };
+}
+```
+
+So in order to make your custom `pattern` works, pass only regex string:
+
+```javascript
+{
+  "patterns": {
+    "0": {
+      "pattern": "\\D+"
+    };
+  }
+}
 ```
 
 ## Options
 
-If your input element need to provide a list of option to select, you can insert them into `options`. Each option must consist of `label` and `value`.
-
-> You need to provide this if type is `radio`, `checkbox`, `dropdown`.
->
-> You can set `row` or `column` to the `optionsLayout` if type is `radio` and `checkbox`.
+If your input element need to provide a list of option to select, you can insert them into `options`. Each option consists of a `label` and a `value`.
 
 ```javascript
 //...
 "options": [
   {
-    "label": "...", //string
-    "value": "..." //any
+    "label": "...",
+    "value": "..."
   }
 ]
 ```
+
+> You need to provide this if type is `radio`, `checkbox`, `dropdown`.
+>
+> You can set `row` or `column` to the `optionsLayout` if type is `radio` and `checkbox`.
+
+### Binary checkbox
+If `type` is `checkbox`, the defualt checkbox is multi-select checkbox. If you need binary checkbox, then provide only one option, and you can omit `value` because the value will bind to the value of the `AbstractControl`.
 
 ## CSS Grid
 
 The form generated is using
 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout" target="_blank">CSS Grid layout</a>. Hence every input field in the form can size differently by setting the following properties.
 
-```json
+```javascript
 {
   //...
   "cssGrid": {
@@ -118,7 +205,7 @@ Example:
 
 You might want to build `FormArray` for some input element. Then you can use `formArray` to tell `ng-dynamic-json-form` how to construct it.
 
-```json
+```javascript
 {
   // ...
   "formControlName": "...",
@@ -181,7 +268,7 @@ A list of validators to add to this `AbstractControl`.
 | email        | Custom validator using pattern `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` |
 | custom       | To use `customValidators` with `value` as the key                        |
 
-```json
+```javascript
 //...
 "validators": [
   {
@@ -206,8 +293,8 @@ A list of validators to add to this `AbstractControl`.
 
   ```javascript
   {
-  //...
-  "message": "Your id: {{value}} is invalid"
+    //...
+    "message": "Your id: {{value}} is invalid"
   }
 
   // Output: Your id: 123456 is invalid
@@ -241,7 +328,7 @@ Then, in your template, bind it to the input `customValidators`:
 
 Finally, you can choose which custom validator to use by specify the `value` to match the `key` inside `customValidators` we create just now.
 
-```json
+```javascript
 {
   //...
   "validators": [
@@ -267,7 +354,7 @@ Guess what, `ng-dynamic-json-form` can do it all for you automatically, just usi
 
 Provide your conditions like this:
 
-```json
+```javascript
 //...
 "conditions": [
   {
@@ -295,7 +382,7 @@ Provide your conditions like this:
 
   If the name is validator's name, then it will find the validator in `validators` list, and toggle the target validator if condition is met.
 
-  ```json
+  ```javascript
   //...
   "validators": [
     {
@@ -350,7 +437,7 @@ Provide your conditions like this:
 
 If you need to add `conditions` in the `formArray`'s `template`, the starting point of the path of `AbstractControl` is the current template.
 
-```json
+```javascript
 {
   //...
   "formControlName": "parentControl",
@@ -579,7 +666,7 @@ Then bind it to the `customComponents`:
 
 `ng-dynamic-json-form` will find the matching component using `customComponent` in the JSON data:
 
-```json
+```javascript
 {
   //...
   "customComponent": "custom-input",
@@ -596,22 +683,15 @@ It's the same to build your custom UI component as building `customComponent`. Y
 After buildling all your components for each type of input, then you put them all in one constant:
 
 ```javascript
-export const MY_UI_COMPONENTS = {
-  input: MyInputComponent,
+export const MY_UI_COMPONENTS: UiComponents = {
+  text: MyInputComponent,
   radio: MyRadioComponent,
   checkbox: MyCheckboxComponent,
   //...
 };
 ```
 
-> You can view the available keys from the `type`. It's fine to use the key outside the range, as long as they match later.
-
-> The following `type`s will use the component set for `input`:
->
-> - text
-> - number
-> - password
-> - email
+> Your can inherit `UiComponents` to easily get all the available types(keys). It's fine to use the key outside the range, as long as they match later.
 
 ### Usage
 
@@ -638,7 +718,7 @@ This is the pre-built constant for each UI libraries:
 
 > You need to install the corresponding library in order to use the pre-built components.
 
-You can import the constant of pre-built components and bind it.
+Just import the constant of pre-built components and bind it.
 
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
@@ -657,8 +737,8 @@ customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 Since `UI_PRIMENG_COMPONENTS` is a constant, meaning that you can override it, extends it or even mix it with other library 😊
 
 ```javascript
-yourList = [
+yourList = {
   ...UI_PRIMENG_COMPONENTS,
   ...MY_UI_COMPONENTS, // extends the other input types
-];
+};
 ```

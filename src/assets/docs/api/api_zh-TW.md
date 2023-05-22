@@ -2,28 +2,65 @@
 
 ## JSON 資料欄位
 
+可以以下兩種方式提供：
+
+1. JSON 字串
+2. `FormControlConfig[]`
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
 ```javascript
+// 以 JSON 方式提供
+[
+  // prettier-ignore
+  {
+    "label": "...",
+    "formControlName": "...",
+    "value": "...",
+    "placeholder": "...",
+    "description": "...",
+    "type": "...",
+    "ngxMaskConfig": {},
+    "validators": [],
+    "conditions": [],
+    "options": [],
+    "optionsLayout": "...",
+    "cssGrid": {},
+    "children": [],
+    "formArray": {},
+    "customComponent": "...",
+    "extra": {},
+  },
+  //...
+];
+```
+
+```javascript
+// 以 `FormControlConfig[]` 提供
 jsonData: FormControlConfig[] = [
   {
-    label: ...,
-    formControlName: ...,
-    value: ...,
-    placeholder: ...,
-    description: ...,
-    type: ...,
+    label: "...",
+    formControlName: "...",
+    value: "...",
+    placeholder: "...",
+    description: "...",
+    type: "...",
+    ngxMaskConfig: {},
     validators: [],
     conditions: [],
     options: [],
-    optionsLayout: ...,
+    optionsLayout: "...",
     cssGrid: {},
     children: [],
     formArray: {},
-    customComponent: ...,
+    customComponent: "...",
     extra: {}
   }
   //...
 ]
 ```
+
+</div>
 
 | 欄位            | 說明                                        |
 | :-------------- | :------------------------------------------ |
@@ -33,6 +70,7 @@ jsonData: FormControlConfig[] = [
 | placeholder     | 輸入框的提示文字。                          |
 | description     | 欄位標題下的說明文字。                      |
 | type            | 輸入元件類型                                |
+| ngxMaskConfig   | ngx-mask 設定                               |
 | options         | 由 `label` 和 `value` 構成的陣列,           |
 | optionsLayout   | `row` \|\| `column`. 和 `options` 搭配使用  |
 | cssGrid         | CSS grid 屬性，用於設定表單內的版型         |
@@ -41,22 +79,61 @@ jsonData: FormControlConfig[] = [
 | children        | 用於製作 `FormGroup`。                      |
 | formArray       | 用於製作 `FormArray`。                      |
 
-## 輸入欄位的類型 (types)
+## 輸入元件的類型
 
-以下為內建的輸入元件類型。你可以建立此列表以外的元件，只需要在 `type` 指定對應的值。
+以下為輸入元件類型的列表。你也可以使用以下列表以外的值，讓你建立的自訂元件使用。
 
+- checkbox
+- dropdown
+- email
+- number
+- password
+- radio
+- switch
+- text
+- textarea
+- ...自訂的類型
+
+## 輸入遮罩
+
+> 須安裝 ngx-mask 以使用此功能
+
+只需設定 `ngxMaskConfig`，會自動使用帶遮罩的輸入元件。
+
+```javascript
+{
+  "ngxMaskConfig": {
+    "mask": "",
+    //...Partial<IConfig> (完整參數列表請參考 ngx-mask 文件)
+  }
+}
 ```
-'text' | 'textarea' | 'password' | 'number' | 'email' | 'switch'| 'radio'| 'checkbox'| 'dropdown'
-```
 
+如果你傳入 `jsonData` 的值是 JSON 字串，你會發現 `pattern` 的型別爲 `RegExp`，這不是合法的 JSON 值。
+
+```javascript
+patterns: {
+  [character: string]: {
+    pattern: RegExp;
+    optional?: boolean;
+    symbol?: string;
+  };
+}
+```
+因此你只需要傳入正則表達式字串:
+
+```javascript
+{
+  "patterns": {
+    "0": {
+      "pattern": "\\D+"
+    };
+  }
+}
+```
 ## 選項列表 (options)
 
-如果輸入元件需要提供用戶選項做選擇，你可以將選項塞入 `options` 內。每一個物件內必須是由 `label` 和 `value` 組成。
-此陣列資料用於一些需要選項的元件，例如 `radio`, `checkbox`, `dropdown`。
-
-> 如果 `type` 是 `radio`, `checkbox`, `dropdown` 則必須提供此列表。
->
-> 如果 `type` 是 `radio`, `checkbox`，你可以設定 `optionsLayout` 為 `row` 或 `column`。
+如果輸入元件需要提供用戶選項做選擇，你可以將選項塞入 `options` 內。每一個物件是由 `label` 和 `value` 組成。
 
 ```javascript
 //...
@@ -67,6 +144,14 @@ jsonData: FormControlConfig[] = [
   }
 ]
 ```
+
+> 如果 `type` 是 `radio`, `checkbox`, `dropdown` 則必須提供此列表。
+>
+> 如果 `type` 是 `radio`, `checkbox`，你可以設定 `optionsLayout` 為 `row` 或 `column`。
+
+### 二元複選框
+如果 `type` 是 `checkbox`, 預設的複選框行為是多選。如果你需要二元複選框，則只傳入一個 `option`，可不傳 `value`，因為輸入框的值會和 `AbstractControl` 的值綁定。
+
 
 ## CSS Grid
 
@@ -178,7 +263,7 @@ jsonData: FormControlConfig[] = [
 | minLength    | `Validators.minLength(value)`                                   |
 | maxLength    | `Validators.maxLength(value)`                                   |
 | pattern      | `Validators.pattern(value)`                                     |
-| email        | 使用正則 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 的自定驗證器 |
+| email        | 使用正則 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 的自訂驗證器 |
 | custom       | 從 `customValidators` 內用 `value` 尋找對應的驗證器             |
 
 ```json
@@ -202,7 +287,7 @@ jsonData: FormControlConfig[] = [
 
 - ### `message` (選填)
 
-  自定義驗證訊息。可使用 `{{value}}` 來顯示目前輸入的值。
+  自訂義驗證訊息。可使用 `{{value}}` 來顯示目前輸入的值。
 
   ```javascript
   {
@@ -213,7 +298,7 @@ jsonData: FormControlConfig[] = [
   // Output: 你的 id: 123456 格式不正確
   ```
 
-## 自定義驗證器
+## 自訂義驗證器
 
 你可以自己建立更強大的驗證器，並將它們放到一個常數內：
 
@@ -239,7 +324,7 @@ customValidators = {
 ></ng-dynamic-json-form>
 ```
 
-現在，你可以在 JSON 資料內，針對特定的 `AbstractControl` 來設定要使用的自定驗證器。`value` 需對應到剛剛建立好的常數 `key`。
+現在，你可以在 JSON 資料內，針對特定的 `AbstractControl` 來設定要使用的自訂驗證器。`value` 需對應到剛剛建立好的常數 `key`。
 
 ```json
 {
@@ -460,7 +545,7 @@ if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.status === >
 }
 ```
 
-## 自定元件
+## 自訂元件
 
 ### 建立
 
@@ -482,7 +567,7 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 
 好了，你現在可以建立任意類型的輸入元件了！
 
-### 自定複選框
+### 自訂複選框
 
 像這種比較簡單的輸入元件，你可以這樣做：
 
@@ -525,7 +610,7 @@ onChanged(e: { checked: any[]; originalEvent: Event }): void {
 }
 ```
 
-### FormGroup 類型的自定元件
+### FormGroup 類型的自訂元件
 
 或者，你也可以建立一個複雜的，使用 `FormGroup` 的輸入元件：
 
@@ -560,7 +645,7 @@ this.control?.valueChanges
 
 ### 用法
 
-宣告一個變數，將你建立的自定元件都放一起：
+宣告一個變數，將你建立的自訂元件都放一起：
 
 ```javascript
 customComponents = {
@@ -587,35 +672,28 @@ customComponents = {
 },
 ```
 
-## 自定 UI 元件
+## 自訂 UI 元件
 
 ### 建立
 
-和建立自定元件一樣，你需要新增一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。
+和建立自訂元件一樣，你需要新增一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。
 
-當所有自定的 UI 元件建立完成，將他們放入一個常數內：
+當所有自訂的 UI 元件建立完成，將他們放入一個常數內：
 
 ```javascript
-export const MY_UI_COMPONENTS = {
-  input: MyInputComponent,
+export const MY_UI_COMPONENTS: UiComponents = {
+  text: MyInputComponent,
   radio: MyRadioComponent,
   checkbox: MyCheckboxComponent,
   //...
 };
 ```
 
-> 你可以從 `type` 列表內取得所有的 key。當然，也可以使用列表之外的 key，只要最終比對的上。
-
-> 以下的 `type` 類型會使用設定為 `input` 的元件:
->
-> - text
-> - number
-> - password
-> - email
+> 你可以繼承 `UiComponents` 來獲取現有的類型 (keys)。當然，也可以使用列表之外的 key，只要最終比對的上。
 
 ### 用法
 
-宣告一個變數來存放我們的自定元件列表，然後傳入 template。
+宣告一個變數來存放我們的自訂元件列表，然後傳入 template。
 
 ```javascript
 myComponentList = MY_UI_COMPONENTS;
@@ -638,7 +716,7 @@ myComponentList = MY_UI_COMPONENTS;
 
 > 要使用製作好的元件，你得先安裝相關的 UI 套件。
 
-你可以將製作好的常數引入，並綁定到 template。
+你可以直接引入製作好的常數，並綁定到 template。
 
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
@@ -657,8 +735,8 @@ customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 因為 `UI_PRIMENG_COMPONENTS` 是一個常數, 代表你可以根據需求去擴展、覆蓋甚至和其他的 UI 套件合併使用 😊
 
 ```javascript
-yourList = [
+yourList = {
   ...UI_PRIMENG_COMPONENTS,
   ...MY_UI_COMPONENTS, // 擴展其他的 type
-];
+};
 ```
