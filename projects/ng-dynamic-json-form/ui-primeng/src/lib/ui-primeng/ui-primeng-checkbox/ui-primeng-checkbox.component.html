@@ -10,10 +10,10 @@
       <div class="field-checkbox">
         <p-checkbox
           [binary]="true"
-          [inputId]="data.formControlName"
+          [inputId]="data.formControlName + '0'"
           [formControl]="control"
         ></p-checkbox>
-        <label [for]="data.formControlName">{{ data.options[0].label }}</label>
+        <label [for]="data.formControlName + '0'">{{ data.options[0].label }}</label>
       </div>
     </ng-container>
 

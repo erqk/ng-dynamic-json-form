@@ -43,7 +43,7 @@ export const testData: FormControlConfig[] = [
         value: '18',
         type: 'number',
         ngxMaskConfig: {
-          mask: '00'
+          mask: '00',
         },
         validators: [
           {
@@ -122,8 +122,8 @@ export const testData: FormControlConfig[] = [
         ],
       },
       {
-        label: 'Is married',
-        formControlName: 'status',
+        label: 'Show email',
+        formControlName: 'showEmail',
         value: false,
         type: 'switch',
         validators: [
@@ -140,7 +140,7 @@ export const testData: FormControlConfig[] = [
         conditions: [
           {
             name: 'hidden',
-            control: 'basicInfo.status',
+            control: 'basicInfo.showEmail',
             controlValue: false,
             operator: '===',
           },
@@ -153,6 +153,16 @@ export const testData: FormControlConfig[] = [
             name: 'email',
           },
         ],
+      },
+    ],
+  },
+  {
+    formControlName: 'binaryCheckbox',
+    value: false,
+    type: 'checkbox',
+    options: [
+      {
+        label: 'I\'m a binary checkbox',
       },
     ],
   },
