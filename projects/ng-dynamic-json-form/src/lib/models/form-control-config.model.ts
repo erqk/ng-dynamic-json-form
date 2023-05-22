@@ -6,7 +6,7 @@ import { ValidatorConfig } from './form-validator-config.model';
 import { NgxMaskConfig } from './ngx-mask-config.model';
 
 export interface FormControlConfig {
-  label: string;
+  label?: string;
   formControlName: string;
   value?: any;
   placeholder?: string;
