@@ -5,18 +5,30 @@
       'flex-direction': data.optionsLayout
     }"
   >
-    <ng-container *ngFor="let item of data.options">
+    <!-- Only one option, we use binary checkbox -->
+    <ng-container *ngIf="data.options && data.options.length === 1">
       <label class="option-button">
-        <input
-          type="checkbox"
-          [value]="item.value"
-          [checked]="control.value.includes(item.value)"
-          (change)="onCheckboxChange($event)"
-        />
-
+        <input type="checkbox" [formControl]="control" />
         <span class="marker"></span>
-        <span>{{ item.label }}</span>
+        <span>{{ data.options[0].label }}</span>
       </label>
+    </ng-container>
+
+    <!-- If multiple option is provided, we use muli-select checkbox -->
+    <ng-container *ngIf="data.options && data.options.length > 1">
+      <ng-container *ngFor="let item of data.options">
+        <label class="option-button">
+          <input
+            type="checkbox"
+            [value]="item.value ?? false"
+            [checked]="control.value.includes(item.value)"
+            (change)="onCheckboxChange($event)"
+          />
+
+          <span class="marker"></span>
+          <span>{{ item.label }}</span>
+        </label>
+      </ng-container>
     </ng-container>
   </div>
 </ng-container>

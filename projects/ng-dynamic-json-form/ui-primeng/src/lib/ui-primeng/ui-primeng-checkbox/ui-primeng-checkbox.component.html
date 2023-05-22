@@ -5,17 +5,32 @@
       'flex-column': data.optionsLayout === 'column'
     }"
   >
-    <ng-container *ngFor="let item of data.options">
+    <!-- Only one option, we use binary checkbox -->
+    <ng-container *ngIf="data.options && data.options.length === 1">
       <div class="field-checkbox">
         <p-checkbox
-          [(ngModel)]="selectedItems"
-          [name]="'group'"
-          [value]="item.value"
-          [inputId]="item.value"
-          (onChange)="onChanged($event)"
+          [binary]="true"
+          [inputId]="data.formControlName"
+          [formControl]="control"
         ></p-checkbox>
-        <label [for]="item.value">{{ item.label }}</label>
+        <label [for]="data.formControlName">{{ data.options[0].label }}</label>
       </div>
+    </ng-container>
+
+    <!-- If multiple option is provided, we use muli-select checkbox -->
+    <ng-container *ngIf="data.options && data.options.length > 1">
+      <ng-container *ngFor="let item of data.options">
+        <div class="field-checkbox">
+          <p-checkbox
+            [(ngModel)]="selectedItems"
+            [name]="'group'"
+            [value]="item.value"
+            [inputId]="data.formControlName + '-' + item.label"
+            (onChange)="onChanged($event)"
+          ></p-checkbox>
+          <label [for]="data.formControlName + '-' + item.label">{{ item.label }}</label>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 </ng-container>
