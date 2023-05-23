@@ -24,6 +24,7 @@ import { firstUppercaseValidator } from '../../example/validators/first-uppercas
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { ThemeService } from '../../features/theme/services/theme.service';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 @Component({
   selector: 'app-page-playground',
   standalone: true,
@@ -66,6 +67,7 @@ export class PagePlaygroundComponent {
     this.loadUI();
     this.initJsonEditor();
     this.darkThemeEvent();
+    this.generateForm();
   }
 
   ngAfterViewInit(): void {
@@ -89,7 +91,7 @@ export class PagePlaygroundComponent {
     if (!content) return;
 
     this.jsonData = '';
-    requestAnimationFrame(() => this.jsonData = content)
+    requestAnimationFrame(() => (this.jsonData = content));
   }
 
   onUIChange(e: Event): void {
@@ -158,12 +160,16 @@ export class PagePlaygroundComponent {
 
   private setUI(type: string): void {
     switch (type) {
-      case 'ui-basic':
-        this.customUIComponents = null;
-        break;
-
       case 'ui-primeng':
         this.customUIComponents = UI_PRIMENG_COMPONENTS;
+        break;
+
+      case 'ui-material':
+        this.customUIComponents = UI_MATERIAL_COMPONENTS;
+        break;
+
+      default:
+        this.customUIComponents = null;
         break;
     }
 

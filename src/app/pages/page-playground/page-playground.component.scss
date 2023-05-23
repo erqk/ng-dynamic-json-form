@@ -17,15 +17,14 @@
   .json-editor {
     --jse-theme-color: var(--primary-500);
 
-    height: calc(100% - 3.5rem - 2px);
+    height: calc(100% - 3.5rem);
   }
 
   .toolbar {
     display: grid;
     grid-template-columns: 3.5rem 1fr;
     gap: 1px;
-    background-color: var(--primary-700);
-    border: solid 1px var(--primary-700);
+    background-color: var(--primary-100);
 
     button {
       height: 3.5rem;

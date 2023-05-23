@@ -1,4 +1,4 @@
-.ng-dynamic-json-form.ui-basic {
+.ng-dynamic-json-form {
   --color-primary: var(--primary-500);
   --color-primary-lighter: var(--primary-200);
 }
@@ -19,7 +19,6 @@ input,
 
   &:focus {
     border-color: var(--primary-600);
-    box-shadow: 0 0 2px 1px var(--primary-300);
   }
 }
 
@@ -37,6 +36,5 @@ select,
   &:hover,
   &:focus {
     border: solid 1px var(--primary-600);
-    box-shadow: 0 0 2px 1px var(--primary-300);
   }
 }

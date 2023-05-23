@@ -164,6 +164,10 @@ export class NgDynamicJsonFormComponent {
   private buildForm(): void {
     if (!this.jsonDataValid) return;
 
+    if (Array.isArray(this.jsonData)) {
+      this.config = this.jsonData;
+    }
+
     this.formConfigInitService.init(this.config);
 
     this.formValidatorService.customValidators = this.customValidators;

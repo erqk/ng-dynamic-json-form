@@ -10,7 +10,6 @@
   },
   "playground": {
     "generate_form": "生成表單",
-    "click_to_start": "點擊 '生成表單' 按鈕來開始",
     "ui_library": {
       "title": "UI 套件",
       "native_html": "原生 HTML"

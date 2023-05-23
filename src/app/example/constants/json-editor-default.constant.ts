@@ -62,7 +62,7 @@ export const testData: FormControlConfig[] = [
       {
         label: 'Multi condition input',
         description:
-          "Required If (name==='Andrew' && age > 20 && (status===false || gender==='0') )",
+          "Required If (name==='Andrew' && age > 20 && (showEmail===false || gender==='0') )",
         formControlName: 'multiConditionInput',
         type: 'text',
         validators: [
@@ -84,7 +84,7 @@ export const testData: FormControlConfig[] = [
                 operator: '===',
               },
               {
-                control: 'basicInfo.status',
+                control: 'basicInfo.showEmail',
                 controlValue: false,
                 operator: '===',
                 groupOperator: '||',
