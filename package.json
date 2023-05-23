@@ -15,6 +15,7 @@
     "@angular/compiler": "^16.0.2",
     "@angular/core": "^16.0.2",
     "@angular/forms": "^16.0.2",
+    "@angular/material": "^16.0.1",
     "@angular/platform-browser": "^16.0.2",
     "@angular/platform-browser-dynamic": "^16.0.2",
     "@angular/router": "^16.0.2",
@@ -26,7 +27,7 @@
     "primeflex": "^3.3.0",
     "primeng": "^16.0.0-rc.2",
     "prismjs": "^1.29.0",
-    "rxjs": "~7.5.0",
+    "rxjs": "^7.8.1",
     "tslib": "^2.5.2",
     "vanilla-jsoneditor": "^0.17.1",
     "zone.js": "~0.13.0"
