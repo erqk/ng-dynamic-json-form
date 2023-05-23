@@ -1,1 +1,1 @@
-export * from './src/ui-primeng-components.constant';
+export * from './lib/ui-primeng-components.constant';

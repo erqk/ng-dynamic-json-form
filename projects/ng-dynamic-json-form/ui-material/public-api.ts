@@ -1,1 +1,1 @@
-export * from './src/ui-material-components.constant';
+export * from './lib/ui-material-components.constant';
