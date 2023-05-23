@@ -1,8 +1,11 @@
 @use "./form-array-group-header-buttons";
 
-@import "./form-elements";
+@import "./ui-basic";
 
 .ng-dynamic-json-form {
+  --color-primary: #3b82f6;
+  --color-primary-lighter: #bfdbfe;
+  
   --font-size-title: 1.2rem;
   --font-size-subtitle: 1rem;
 
