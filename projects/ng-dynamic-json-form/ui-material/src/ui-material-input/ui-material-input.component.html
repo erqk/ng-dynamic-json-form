@@ -1,0 +1,13 @@
+<ng-container *ngIf="control && data">
+  <mat-form-field>
+    <mat-label>{{ data.label }}</mat-label>
+
+    <input
+      matInput
+      placeholder="{{ data.placeholder }}"
+      [formControl]="control"
+    />
+
+    <mat-error>{{ errors$ | async }}</mat-error>
+  </mat-form-field>
+</ng-container>

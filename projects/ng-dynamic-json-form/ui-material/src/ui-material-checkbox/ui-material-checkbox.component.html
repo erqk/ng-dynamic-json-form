@@ -1,0 +1,27 @@
+<ng-container *ngIf="control && data">
+  <div
+    class="group-buttons"
+    [ngStyle]="{
+      'flex-direction': data.optionsLayout
+    }"
+  >
+    <!-- binary checkbox -->
+    <ng-container *ngIf="data.options && data.options.length === 1">
+      <mat-checkbox [formControl]="control">{{
+        data.options[0].label
+      }}</mat-checkbox>
+    </ng-container>
+
+    <!-- muli-select checkbox -->
+    <ng-container *ngIf="data.options && data.options.length > 1">
+      <ng-container *ngFor="let item of data.options">
+        <mat-checkbox
+          [value]="item.value ?? false"
+          [checked]="control.value.includes(item.value)"
+          (change)="onCheckboxChange($event)"
+          >{{ item.label }}</mat-checkbox
+        >
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>

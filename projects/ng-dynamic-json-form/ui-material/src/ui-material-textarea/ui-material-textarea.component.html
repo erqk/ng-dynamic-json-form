@@ -1,0 +1,10 @@
+<ng-container *ngIf="control && data">
+  <mat-form-field class="example-full-width">
+    <mat-label>{{ data.label }}</mat-label>
+    <textarea
+      matInput
+      [attr.placeholder]="data.placeholder ?? null"
+      [formControl]="control"
+    ></textarea>
+  </mat-form-field>
+</ng-container>

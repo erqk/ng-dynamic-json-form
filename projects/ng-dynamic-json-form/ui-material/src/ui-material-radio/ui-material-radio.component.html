@@ -1,0 +1,16 @@
+<ng-container *ngIf="control && data">
+  <mat-radio-group [formControl]="control">
+    <div
+      class="group-buttons"
+      [ngStyle]="{
+        'flex-direction': data.optionsLayout
+      }"
+    >
+      <ng-container *ngFor="let item of data.options">
+        <mat-radio-button [value]="item.value">{{
+          item.label
+        }}</mat-radio-button>
+      </ng-container>
+    </div>
+  </mat-radio-group>
+</ng-container>
