@@ -1,4 +1,4 @@
-import { UiComponents } from 'ng-dynamic-json-form/lib/models/ui-components-type.model';
+import { UiComponents } from 'ng-dynamic-json-form';
 import { UiPrimengCheckboxComponent } from '../ui-primeng/ui-primeng-checkbox/ui-primeng-checkbox.component';
 import { UiPrimengDropdownComponent } from '../ui-primeng/ui-primeng-dropdown/ui-primeng-dropdown.component';
 import { UiPrimengInputComponent } from '../ui-primeng/ui-primeng-input/ui-primeng-input.component';

@@ -4,7 +4,7 @@ import {
   Input,
   Type,
   ViewChild,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import { UiComponents } from '../../models/ui-components-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
@@ -47,15 +47,7 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
   componentAnchor!: ViewContainerRef;
 
   ngOnInit(): void {
-    const inputComponent =
-      this.customComponent ||
-      this.uiComponents[this.inputType] ||
-      UiBasicInputComponent;
-
-    const componentRef = this.componentAnchor.createComponent(inputComponent);
-
-    componentRef.instance.data = this.data;
-    componentRef.instance.control = this.control;
+    this.injectComponent();
   }
 
   private get inputType(): string {
@@ -73,5 +65,17 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
       default:
         return this.data.type;
     }
+  }
+
+  private injectComponent(): void {
+    const inputComponent =
+      this.customComponent ||
+      this.uiComponents[this.inputType] ||
+      UiBasicInputComponent;
+
+    const componentRef = this.componentAnchor.createComponent(inputComponent);
+
+    componentRef.instance.data = this.data;
+    componentRef.instance.control = this.control;
   }
 }

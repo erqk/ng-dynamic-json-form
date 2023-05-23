@@ -13,13 +13,14 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
 export class UiBasicCheckboxComponent extends NgDynamicJsonFormCustomComponent {
   onCheckboxChange(e: Event): void {
     const input = e.target as HTMLInputElement;
+    let currentValue = (this.control?.value as any[]) || [];
 
-    if (!input.checked || this.control?.value.includes(input.value)) {
-      this.control?.setValue(
-        this.control.value.filter((x: any) => x !== input.value)
-      );
+    if (!input.checked || currentValue.includes(input.value)) {
+      currentValue = currentValue.filter((x) => x !== input.value);
     } else {
-      this.control?.setValue([...this.control.value, input.value]);
+      currentValue.push(input.value);
     }
+
+    this.control?.setValue(currentValue);
   }
 }

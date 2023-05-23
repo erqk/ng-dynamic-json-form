@@ -5,7 +5,7 @@
       'flex-direction': data.optionsLayout
     }"
   >
-    <!-- Only one option, we use binary checkbox -->
+    <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
       <label class="option-button">
         <input type="checkbox" [formControl]="control" />
@@ -14,7 +14,7 @@
       </label>
     </ng-container>
 
-    <!-- If multiple option is provided, we use muli-select checkbox -->
+    <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
         <label class="option-button">

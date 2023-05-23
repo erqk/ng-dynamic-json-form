@@ -5,7 +5,7 @@
       'flex-column': data.optionsLayout === 'column'
     }"
   >
-    <!-- Only one option, we use binary checkbox -->
+    <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
       <div class="field-checkbox">
         <p-checkbox
@@ -17,7 +17,7 @@
       </div>
     </ng-container>
 
-    <!-- If multiple option is provided, we use muli-select checkbox -->
+    <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
         <div class="field-checkbox">
