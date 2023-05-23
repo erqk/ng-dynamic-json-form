@@ -2,9 +2,13 @@
 
 ### Feature
 - Implement masked input with ngx-mask
+- `jsonData` input can accepts JSON string
+- Add Angular Material UI components
 
 ### Chore
+- Upgrade to Angular 16
 - Rename input field `customUIComponentList` to `uiComponents`
+- Add `UiComponents` type
 
 
 # 1.0.0
