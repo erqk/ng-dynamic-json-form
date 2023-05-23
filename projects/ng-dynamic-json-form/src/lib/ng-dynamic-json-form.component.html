@@ -58,9 +58,13 @@
             [parentId]="parentId"
             [data]="control"
           >
-            <span *ngIf="control.label" class="form-title">{{
-              control.label
-            }}</span>
+            <ng-container *ngIf="control.label">
+              <span class="form-title">{{ control.label }}</span>
+            </ng-container>
+
+            <ng-container *ngIf="control.description">
+              <span class="form-description">{{ control.description }}</span>
+            </ng-container>
 
             <ng-container
               [ngTemplateOutlet]="formGroupTemplate"
@@ -96,6 +100,7 @@
               [ngTemplateOutlet]="formArrayTemplate"
               [ngTemplateOutletContext]="{
                 label: control.label,
+                description: control.description,
                 parentForm: parentForm,
                 validators: control.validators,
                 formArray: parentForm.controls[control.formControlName],
@@ -113,6 +118,7 @@
 <ng-template
   #formArrayTemplate
   let-label="label"
+  let-description="description"
   let-parentForm="parentForm"
   let-validators="validators"
   let-formArray="formArray"
@@ -125,6 +131,10 @@
       <label class="form-title">{{ label }}</label>
     </ng-container>
 
+    <ng-container *ngIf="description">
+      <span class="form-description">{{ description }}</span>
+    </ng-container>
+    
     <!-- Show add button when form array is empty -->
     <div
       *ngIf="formArray.controls.length === 0"

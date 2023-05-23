@@ -4,7 +4,7 @@ import {
   Input,
   Type,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
 import { UiComponents } from '../../models/ui-components-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
@@ -15,26 +15,7 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
   selector: 'form-control',
   standalone: true,
   imports: [CommonModule, ErrorMessageComponent],
-  template: `
-    <ng-container *ngIf="data">
-      <ng-container *ngIf="data.label">
-        <label *ngIf="data.label" class="input-label">{{ data.label }}</label>
-      </ng-container>
-
-      <ng-container *ngIf="data.description">
-        <span class="input-description">{{ data.description }}</span>
-      </ng-container>
-    </ng-container>
-
-    <ng-container #componentAnchor></ng-container>
-
-    <ng-container *ngIf="control && data && control.errors">
-      <error-message
-        [control]="control"
-        [validators]="data.validators"
-      ></error-message>
-    </ng-container>
-  `,
+  templateUrl: './form-control.component.html',
   styles: [
     ':host {display: flex; flex-direction: column; gap: 0.35rem; width: 100%}',
   ],
@@ -43,8 +24,10 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
   @Input() uiComponents: UiComponents = {};
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
 
-  @ViewChild('componentAnchor', { read: ViewContainerRef, static: true })
+  @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;
+
+  isMaterial = false;
 
   ngOnInit(): void {
     this.injectComponent();
@@ -73,9 +56,12 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
       this.uiComponents[this.inputType] ||
       UiBasicInputComponent;
 
-    const componentRef = this.componentAnchor.createComponent(inputComponent);
+    this.isMaterial = inputComponent.name.includes('UiMaterial');
 
-    componentRef.instance.data = this.data;
-    componentRef.instance.control = this.control;
+    setTimeout(() => {
+      const componentRef = this.componentAnchor.createComponent(inputComponent);
+      componentRef.instance.data = this.data;
+      componentRef.instance.control = this.control;
+    }, 0);
   }
 }

@@ -1,0 +1,18 @@
+<ng-container *ngIf="data">
+  <ng-container *ngIf="data.label">
+    <label class="input-label">{{ data.label }}</label>
+  </ng-container>
+
+  <ng-container *ngIf="data.description">
+    <span class="input-description">{{ data.description }}</span>
+  </ng-container>
+</ng-container>
+
+<ng-container #componentAnchor></ng-container>
+
+<ng-container *ngIf="!isMaterial && control && data && control.errors">
+  <error-message
+    [control]="control"
+    [validators]="data.validators"
+  ></error-message>
+</ng-container>

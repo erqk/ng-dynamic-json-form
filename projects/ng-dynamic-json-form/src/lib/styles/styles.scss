@@ -37,6 +37,12 @@
     font-size: var(--font-size-title);
     font-weight: 700;
   }
+  
+  .form-description,
+  .input-description {
+    margin-bottom: 0.5rem;
+    color: gray;
+  }
 
   .form-group-container,
   .form-array-container {
@@ -86,11 +92,6 @@
       display: block;
       font-weight: 500;
       font-size: var(--font-size-subtitle);
-    }
-
-    .input-description {
-      margin-bottom: 0.5rem;
-      color: gray;
     }
 
     // Wrapper for checkboxes, radio buttons
