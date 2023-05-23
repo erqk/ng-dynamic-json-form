@@ -1,3 +1,9 @@
+# 2.0.1
+
+### Fix
+- add the missing description field in form group and form array
+- hide error message if it's Angular Material
+
 # 2.0.0
 
 ### Feature
