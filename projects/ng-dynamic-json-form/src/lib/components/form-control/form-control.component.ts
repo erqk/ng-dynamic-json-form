@@ -10,6 +10,7 @@ import { UiComponents } from '../../models/ui-components-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
+import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
 
 @Component({
   selector: 'form-control',
@@ -53,10 +54,13 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
   private injectComponent(): void {
     const inputComponent =
       this.customComponent ||
-      this.uiComponents[this.inputType] ||
+      this.uiComponents[this.inputType]?.component ||
+      UI_BASIC_COMPONENTS[this.inputType]?.component ||
       UiBasicInputComponent;
 
-    this.isMaterial = inputComponent.name.includes('UiMaterial');
+    if (this.uiComponents[this.inputType]) {
+      this.isMaterial = this.uiComponents[this.inputType]?.type === 'material';
+    }
 
     setTimeout(() => {
       const componentRef = this.componentAnchor.createComponent(inputComponent);

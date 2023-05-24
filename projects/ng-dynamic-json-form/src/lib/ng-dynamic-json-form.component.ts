@@ -21,7 +21,7 @@ import { ErrorMessageComponent } from './components/error-message/error-message.
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
-import { FormControlConfig } from './models';
+import { FormControlConfig, UiComponents } from './models';
 import { FormConfigInitService } from './services/form-config-init.service';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
@@ -76,9 +76,7 @@ export class NgDynamicJsonFormComponent {
   } = {};
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: {
-    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
-  };
+  @Input() uiComponents?: UiComponents;
 
   @Output() formGet = new EventEmitter();
 
@@ -100,7 +98,7 @@ export class NgDynamicJsonFormComponent {
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { jsonData, uiComponents } = simpleChanges;
-    
+
     if (jsonData) {
       this.buildForm();
     }

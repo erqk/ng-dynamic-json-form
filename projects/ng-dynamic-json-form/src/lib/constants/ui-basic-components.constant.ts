@@ -8,14 +8,14 @@ import { UiBasicTextareaComponent } from '../components/ui-basic/ui-basic-textar
 import { UiComponents } from '../models/ui-components-type.model';
 
 export const UI_BASIC_COMPONENTS: UiComponents = {
-  checkbox: UiBasicCheckboxComponent,
-  dropdown: UiBasicDropdownComponent,
-  password: UiBasicInputComponent,
-  number: UiBasicInputComponent,
-  email: UiBasicInputComponent,
-  radio: UiBasicRadioComponent,
-  switch: UiBasicSwitchComponent,
-  text: UiBasicInputComponent,
-  textMask: UiBasicInputMaskComponent,
-  textarea: UiBasicTextareaComponent,
+  checkbox: { type: 'basic', component: UiBasicCheckboxComponent },
+  dropdown: { type: 'basic', component: UiBasicDropdownComponent },
+  password: { type: 'basic', component: UiBasicInputComponent },
+  number: { type: 'basic', component: UiBasicInputComponent },
+  email: { type: 'basic', component: UiBasicInputComponent },
+  radio: { type: 'basic', component: UiBasicRadioComponent },
+  switch: { type: 'basic', component: UiBasicSwitchComponent },
+  text: { type: 'basic', component: UiBasicInputComponent },
+  textMask: { type: 'basic', component: UiBasicInputMaskComponent },
+  textarea: { type: 'basic', component: UiBasicTextareaComponent },
 };

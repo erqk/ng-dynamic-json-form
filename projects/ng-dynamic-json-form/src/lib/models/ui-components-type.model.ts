@@ -3,5 +3,8 @@ import { FormControlType } from './form-control-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../components/custom-component-base/custom-component-base.component';
 
 export type UiComponents = {
-  [K in FormControlType]?: Type<NgDynamicJsonFormCustomComponent>;
+  [K in FormControlType]?: {
+    type: 'basic' | 'primeng' | 'material' | 'custom';
+    component: Type<NgDynamicJsonFormCustomComponent>;
+  };
 };
