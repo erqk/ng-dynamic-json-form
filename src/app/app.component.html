@@ -1,20 +1,3 @@
-<div class="header">
-  <app-content-wrapper class="tab-bar" [maxWidth]="'85rem'">
-    <a [routerLink]="'/'" class="logo">
-      <img src="assets/logo.svg" alt="" />
-    </a>
-
-    <ng-container *ngIf="!reload">
-      <ng-container *ngIf="links$ | async as links">
-        <app-tab-bar [links]="links"></app-tab-bar>
-      </ng-container>
-    </ng-container>
-    
-    <div class="settings">
-      <app-theme-switcher></app-theme-switcher>
-      <app-language-selector></app-language-selector>
-    </div>
-  </app-content-wrapper>
-</div>
+<app-header></app-header>
 
 <router-outlet></router-outlet>

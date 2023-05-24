@@ -6,12 +6,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MarkdownModule } from 'ngx-markdown';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ContentWrapperComponent } from './shared/content-wrapper/content-wrapper.component';
-import { SideNavigationPaneComponent } from './shared/side-navigation-pane/side-navigation-pane.component';
-import { TabBarComponent } from './shared/tab-bar/tab-bar.component';
+import { HeaderComponent } from './features/header/components/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
-import { LanguageSelectorComponent } from './features/language/components/language-selector/language-selector.component';
-import { ThemeSwitcherComponent } from './features/theme/components/theme-switcher/theme-switcher.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,11 +20,7 @@ import { ThemeSwitcherComponent } from './features/theme/components/theme-switch
       loader: HttpClient,
       sanitize: SecurityContext.NONE,
     }),
-    TabBarComponent,
-    ContentWrapperComponent,
-    SideNavigationPaneComponent,
-    LanguageSelectorComponent,
-    ThemeSwitcherComponent,
+    HeaderComponent,
   ],
   providers: [
     {
