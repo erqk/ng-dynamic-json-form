@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
-import { Subject, map, takeUntil, tap } from 'rxjs';
-import { LanguageDataService } from './features/language/services/language-data.service';
+import { Component, inject } from '@angular/core';
+import {
+  RouteConfigLoadEnd,
+  RouteConfigLoadStart,
+  Router,
+} from '@angular/router';
+import { tap } from 'rxjs/operators';
+import { DocumentLoaderService } from './features/document/services/document-loader.service';
 
 @Component({
   selector: 'app-root',
@@ -8,51 +13,27 @@ import { LanguageDataService } from './features/language/services/language-data.
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'NgDynamicJsonForm Demo';
+  router = inject(Router);
+  documentLoaderService = inject(DocumentLoaderService);
 
-  reload = false;
-
-  links$ = this.languageDataService.languageData$.pipe(
-    map((x) => [
-      {
-        route: 'getting-started',
-        label: `${x['menu']['getting_started']}`,
-      },
-      {
-        route: 'api',
-        label: `${x['menu']['api']}`,
-      },
-      {
-        route: 'styling',
-        label: `${x['menu']['styling']}`,
-      },
-      {
-        route: 'playground',
-        label: `${x['menu']['playground']}`,
-      },
-    ])
-  );
-
-  onDestroy$ = new Subject();
-
-  constructor(
-    private languageDataService: LanguageDataService
-  ) {}
+  title = 'NgDynamicJsonForm';
+  routeLoading = false;
 
   ngOnInit(): void {
-    this.languageDataService.language$
+    // No need to use `takeUntil()` because this is the root of the app
+    // And this is one time action, no repeated subscription
+    this.router.events
       .pipe(
         tap((x) => {
-          this.reload = true;
-          requestAnimationFrame(() => (this.reload = false));
-        }),
-        takeUntil(this.onDestroy$)
+          if (x instanceof RouteConfigLoadStart) {
+            this.routeLoading = true;
+          }
+
+          if (x instanceof RouteConfigLoadEnd) {
+            this.routeLoading = false;
+          }
+        })
       )
       .subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
   }
 }

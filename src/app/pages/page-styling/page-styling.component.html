@@ -1,7 +1,5 @@
-<app-content-wrapper>
-  <markdown
-    class="md-file"
-    [src]="'assets/docs/styling/styling_' + language$.value + '.md'"
-    (ready)="onReady()"
-  ></markdown>
-</app-content-wrapper>
+<ng-container *ngIf="content$ | async as content">
+  <app-content-wrapper>
+    <markdown [data]="content" (ready)="onReady()"></markdown>
+  </app-content-wrapper>
+</ng-container>

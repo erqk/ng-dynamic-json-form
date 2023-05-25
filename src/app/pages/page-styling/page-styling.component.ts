@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
+import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
 import { SideNavigationPaneService } from '../../shared/side-navigation-pane/side-navigation-pane.service';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
 
 @Component({
   selector: 'app-page-styling',
@@ -13,11 +13,11 @@ import { LanguageDataService } from '../../features/language/services/language-d
   styleUrls: ['./page-styling.component.scss'],
 })
 export class PageStylingComponent {
-  language$ = this.languageDataService.language$;
-  
+  content$ = this.documentLoaderService.getDocumentContent$(['styling']);
+
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,
-    private languageDataService: LanguageDataService
+    private documentLoaderService: DocumentLoaderService
   ) {}
 
   onReady(): void {

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { PagePlaygroundComponent } from './pages/page-playground/page-playground.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
   },
   {
     path: 'playground',
+    // component: PagePlaygroundComponent,
     loadComponent: () =>
       import('./pages/page-playground/page-playground.component').then(
         (c) => c.PagePlaygroundComponent

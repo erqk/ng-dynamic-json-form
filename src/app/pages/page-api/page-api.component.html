@@ -1,3 +1,5 @@
-<app-content-wrapper>
-  <markdown [data]="markdownContent$ | async" (ready)="onReady()"></markdown>
-</app-content-wrapper>
+<ng-container *ngIf="content$ | async as content">
+  <app-content-wrapper>
+    <markdown [data]="content" (ready)="onReady()"></markdown>
+  </app-content-wrapper>
+</ng-container>

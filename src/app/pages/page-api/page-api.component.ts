@@ -1,18 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
-import {
-  Observable,
-  concatMap,
-  from,
-  map,
-  switchMap,
-  toArray
-} from 'rxjs';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
+import { Observable, switchMap, tap } from 'rxjs';
+import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
 import { SideNavigationPaneService } from '../../shared/side-navigation-pane/side-navigation-pane.service';
+import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
 
 @Component({
   selector: 'app-page-api',
@@ -22,47 +16,27 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
     HttpClientModule,
     MarkdownModule,
     ContentWrapperComponent,
+    LoadingIndicatorComponent,
   ],
   templateUrl: './page-api.component.html',
   styleUrls: ['./page-api.component.scss'],
 })
 export class PageApiComponent {
-  markdownContent$ = this.getContent$();
+  content$ = this.getContent$();
 
   constructor(
-    private http: HttpClient,
     private sideNavigationPaneService: SideNavigationPaneService,
-    private languageDataService: LanguageDataService
+    private documentLoaderService: DocumentLoaderService
   ) {}
 
   getContent$(): Observable<string> {
-    const contentSequence = [
-      'form-config',
-      'input-type',
-      'input-mask',
-      'options',
-      'css-grid',
-      'extra',
-      'form-array',
-      'validators',
-      'custom-validators',
-      'conditions',
-      'custom-component',
-      'custom-ui-component',
-    ];
-
-    const content$ = from(contentSequence).pipe(
-      concatMap((x) => {
-        const filePath = `assets/docs/api/api-${x}/api-${x}_${this.languageDataService.language$.value}.md`;
-        return this.http.get(filePath, {
-          responseType: 'text',
-        });
-      }),
-      toArray(),
-      map((x) => x.join(''))
+    const tableOfContent$ =
+      this.documentLoaderService.getTableOfContent$('api');
+    const content$ = tableOfContent$.pipe(
+      switchMap((x) => this.documentLoaderService.getDocumentContent$(x, 'api'))
     );
 
-    return this.languageDataService.language$.pipe(switchMap(() => content$));
+    return content$;
   }
 
   onReady(): void {
