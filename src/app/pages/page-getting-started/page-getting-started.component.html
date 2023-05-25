@@ -1,8 +1,5 @@
-<app-content-wrapper>
-  <markdown
-    [src]="
-      'assets/docs/getting-started/getting-started_' + language$.value + '.md'
-    "
-    (ready)="onReady()"
-  ></markdown>
-</app-content-wrapper>
+<ng-container *ngIf="content$ | async as content">
+  <app-content-wrapper>
+    <markdown [data]="content" (ready)="onReady()"></markdown>
+  </app-content-wrapper>
+</ng-container>

@@ -8,6 +8,7 @@ import { TabBarComponent } from 'src/app/shared/tab-bar/tab-bar.component';
 import { LanguageSelectorComponent } from '../../language/components/language-selector/language-selector.component';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { ThemeSwitcherComponent } from '../../theme/components/theme-switcher/theme-switcher.component';
+import { DocumentVersionSelectorComponent } from '../../document/components/document-version-selector/document-version-selector.component';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,7 @@ import { ThemeSwitcherComponent } from '../../theme/components/theme-switcher/th
     TabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
+    DocumentVersionSelectorComponent,
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],

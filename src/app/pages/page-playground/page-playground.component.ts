@@ -85,7 +85,6 @@ export class PagePlaygroundComponent {
     this.form = e;
   }
 
-  // Update form manually to prevent form binding errors when JSON is invalid
   generateForm(): void {
     const content = this.getContent(this.jsonEditor?.get());
     if (!content) return;

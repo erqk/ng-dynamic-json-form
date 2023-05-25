@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { Subject, filter, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { Subject, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
+import { fadeUpAnimation } from 'src/app/animations/fade-up.animation';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { SideNavigationPaneService } from './side-navigation-pane.service';
 
@@ -11,6 +12,7 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
   imports: [CommonModule, ContentWrapperComponent],
   template: ` <ng-container *ngFor="let item of links$ | async; index as i">
     <a
+      [@fade-up]
       href="javascript:void(0)"
       [class.active]="activeIndex === i"
       (click)="scrollToTitle(i)"
@@ -18,6 +20,7 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
     >
   </ng-container>`,
   styleUrls: ['./side-navigation-pane.component.scss'],
+  animations: [fadeUpAnimation],
 })
 export class SideNavigationPaneComponent {
   activeIndex = 0;
@@ -50,11 +53,15 @@ export class SideNavigationPaneComponent {
   private onRouteChange(): void {
     this.router.events
       .pipe(
-        filter((x) => x instanceof NavigationEnd),
         tap((x) => {
-          this.sideNavigationPaneService.h2$.next([]);
-          this.activeIndex = 0;
-          this.findActiveIndex();
+          if (x instanceof NavigationStart) {
+            this.sideNavigationPaneService.h2$.next([]);
+          }
+
+          if (x instanceof NavigationEnd) {
+            this.activeIndex = 0;
+            this.findActiveIndex();
+          }
         }),
         takeUntil(this.onDestroy$)
       )
