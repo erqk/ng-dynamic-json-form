@@ -1,3 +1,5 @@
+@use "src/styles/scrollbar" as scrollbar;
+
 :host {
   position: relative;
   display: flex;
@@ -9,6 +11,8 @@ a {
   text-decoration: none;
   color: inherit;
   padding: 0.75rem 1rem;
+  word-break: keep-all;
+  white-space: nowrap;
   opacity: 0.5;
   transition-property: opacity;
   transition-duration: 0.2s;
@@ -33,4 +37,15 @@ a {
   border-radius: 1rem;
   background-color: var(--primary-500);
   transition: 0.5s cubic-bezier(0.54, -0.49, 0, 1.32);
+}
+
+@media screen and (max-width: 992px) {
+  :host {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      @include scrollbar.mixin-hidden-scrollbar();
+    }
+  }
 }

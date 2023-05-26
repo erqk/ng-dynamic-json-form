@@ -22,22 +22,12 @@ import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/load
   styleUrls: ['./page-api.component.scss'],
 })
 export class PageApiComponent {
-  content$ = this.getContent$();
-
+  content$ = this.documentLoaderService.getDocumentContent$('api', true);
+  
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,
     private documentLoaderService: DocumentLoaderService
   ) {}
-
-  getContent$(): Observable<string> {
-    const tableOfContent$ =
-      this.documentLoaderService.getTableOfContent$('api');
-    const content$ = tableOfContent$.pipe(
-      switchMap((x) => this.documentLoaderService.getDocumentContent$(x, 'api'))
-    );
-
-    return content$;
-  }
 
   onReady(): void {
     const h2 = document.querySelectorAll('markdown h2');

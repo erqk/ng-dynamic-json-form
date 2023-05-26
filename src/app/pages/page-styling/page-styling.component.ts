@@ -13,7 +13,7 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
   styleUrls: ['./page-styling.component.scss'],
 })
 export class PageStylingComponent {
-  content$ = this.documentLoaderService.getDocumentContent$(['styling']);
+  content$ = this.documentLoaderService.getDocumentContent$('styling');
 
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,

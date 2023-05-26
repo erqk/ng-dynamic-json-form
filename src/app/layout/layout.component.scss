@@ -14,11 +14,26 @@
     position: sticky;
     top: 100px;
     width: var(--sidePaneWidth);
+    z-index: 0;
   }
 
   .content {
     width: 100%;
     padding: 1rem 2rem 10rem;
     overflow: hidden;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .main {
+    flex-direction: column;
+
+    .side-pane {
+      display: none;
+    }
+
+    .content {
+      padding: 1rem 1rem 5rem;
+    }
   }
 }

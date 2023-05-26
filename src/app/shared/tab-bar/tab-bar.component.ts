@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  Renderer2,
+  SimpleChanges,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 
@@ -24,7 +30,11 @@ export class TabBarComponent {
     private renderer2: Renderer2
   ) {}
 
-  ngOnInit(): void {}
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    const { links } = simpleChanges;
+
+    links && this.setIndicatorStyle();
+  }
 
   ngAfterViewInit(): void {
     this.onRouteChange();
@@ -55,7 +65,11 @@ export class TabBarComponent {
     requestAnimationFrame(() => {
       const indicator = this.findElement('.indicator');
       const activeTab = this.findElement('a.active');
-      if (!indicator || !activeTab) {
+      if (!indicator) {
+        return;
+      }
+
+      if (!activeTab) {
         this.renderer2.setStyle(indicator, 'opacity', '0');
         return;
       }
@@ -66,6 +80,10 @@ export class TabBarComponent {
 
       const indicatorWidth = activeTab.clientWidth * 0.8;
       const leftOffset = (activeTab.clientWidth - indicatorWidth) / 2;
+
+      activeTab.scrollIntoView({
+        inline: 'center'
+      });
 
       this.renderer2.setStyle(indicator, 'opacity', '1');
       this.renderer2.setStyle(indicator, 'left', `${left + leftOffset}px`);

@@ -1,14 +1,10 @@
 <div class="header">
-  <app-content-wrapper class="tab-bar" [maxWidth]="'85rem'">
+  <app-content-wrapper class="content-wrapper" [maxWidth]="'85rem'">
     <a [routerLink]="'/'" class="logo">
       <img src="assets/logo.svg" alt="" />
     </a>
 
-    <ng-container *ngIf="!reload">
-      <ng-container *ngIf="links$ | async as links">
-        <app-tab-bar [links]="links"></app-tab-bar>
-      </ng-container>
-    </ng-container>
+    <app-tab-bar class="tab-bar" [links]="links"></app-tab-bar>
 
     <div class="settings">
       <app-theme-switcher></app-theme-switcher>

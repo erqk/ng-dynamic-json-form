@@ -6,7 +6,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MarkdownModule } from 'ngx-markdown';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './features/header/components/header.component';
+import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
 import { LoadingIndicatorComponent } from './shared/loading-indicator/loading-indicator.component';
 

@@ -1,10 +1,46 @@
-::-webkit-scrollbar {
-    background-color: rgb(var(--bg-color-rgb));
+@mixin mixin-scrollbar {
+  background-color: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-    background-color: gray;
-    border-radius: 1rem;
-    background-clip: content-box;
-    border: solid 4px transparent;
+@mixin mixin-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 1rem;
+  background-clip: content-box;
+  border: solid 4px transparent;
+}
+
+@mixin mixin-hidden-scrollbar {
+  display: none;
+  height: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.beauty-scrollbar {
+  ::-webkit-scrollbar,
+  &::-webkit-scrollbar {
+    @include mixin-scrollbar();
+  }
+
+  ::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb {
+    @include mixin-scrollbar-thumb();
+  }
+}
+
+.hidden-scrollbar {
+  &::-webkit-scrollbar {
+    @include mixin-hidden-scrollbar();
+  }
+}
+
+
+body {
+  &::-webkit-scrollbar {
+    @include mixin-scrollbar();
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @include mixin-scrollbar-thumb();
+  }
 }

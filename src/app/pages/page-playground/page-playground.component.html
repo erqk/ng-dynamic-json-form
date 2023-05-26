@@ -1,4 +1,7 @@
-<div class="main-content" [style.--headerHeight.px]="headerHeight + 1">
+<div
+  class="main-content beauty-scrollbar"
+  [style.--headerHeight.px]="headerHeight + 1"
+>
   <as-split direction="horizontal">
     <as-split-area [size]="25">
       <div class="json-input">
@@ -22,10 +25,7 @@
       <div class="ui-selector">
         <app-content-wrapper [maxWidth]="'40rem'">
           {{ languageData$.value.playground.ui_library.title }}:
-          <select
-            [value]="formUI"
-            (change)="onUIChange($event)"
-          >
+          <select [value]="formUI" (change)="onUIChange($event)">
             <option value="ui-basic">
               {{ languageData$.value.playground.ui_library.native_html }}
             </option>

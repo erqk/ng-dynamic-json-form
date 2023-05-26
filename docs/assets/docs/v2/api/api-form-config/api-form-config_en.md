@@ -5,7 +5,7 @@ You can provide your data as:
 1. JSON string
 2. `FormControlConfig[]`
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div class="multi-column" style="--column-count: 2">
 
 ```javascript
 // Provide your data as JSON

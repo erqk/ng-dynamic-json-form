@@ -6,12 +6,15 @@
   <h1>NgDynamicJsonForm</h1>
   <p>{{ languageData$.value.introduction.brief }}</p>
 
-  <button class="btn-start" [routerLink]="'/getting-started'">{{ languageData$.value.menu.getting_started }}</button>
+  <button class="btn-start" [routerLink]="'/getting-started'">
+    {{ languageData$.value.menu.getting_started }}
+  </button>
 </div>
 
-
-<app-content-wrapper>
-  <markdown
-    [src]="'assets/docs/introduction/introduction_' + language$.value + '.md'"
-  ></markdown>
+<app-content-wrapper *ngIf="features$ | async as features; else loadingTemplate">
+  <markdown [data]="features"></markdown>
 </app-content-wrapper>
+
+<ng-template #loadingTemplate>
+  <app-loading-indicator #loadingIndicator></app-loading-indicator>
+</ng-template>

@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import {
+  NavigationEnd,
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
   Router,
@@ -13,8 +14,8 @@ import { DocumentLoaderService } from './features/document/services/document-loa
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  router = inject(Router);
   documentLoaderService = inject(DocumentLoaderService);
+  private router = inject(Router);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
@@ -31,6 +32,10 @@ export class AppComponent {
 
           if (x instanceof RouteConfigLoadEnd) {
             this.routeLoading = false;
+          }
+
+          if (x instanceof NavigationEnd) {
+            this.documentLoaderService.documentLoading$.next(false)
           }
         })
       )
