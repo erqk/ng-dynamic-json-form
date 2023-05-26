@@ -1,0 +1,19 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+app-header-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  app-header-desktop {
+    display: none;
+  }
+
+  app-header-mobile {
+    display: block;
+  }
+}

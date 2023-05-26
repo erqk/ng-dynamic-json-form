@@ -1,0 +1,168 @@
+:host {
+  --settings-height: 4.5rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  height: var(--header-height);
+  background-color: rgb(var(--bg-color-rgb));
+  padding: 0 1rem;
+}
+
+.logo {
+  display: block;
+  width: 2rem;
+  text-decoration: none;
+
+  &::after {
+    content: none;
+  }
+}
+
+.btn-menu {
+  --line-weight: 3px;
+  --line-color: gray;
+
+  position: relative;
+  width: 2rem;
+  height: var(--line-weight);
+  padding: 0;
+  background-color: var(--line-color);
+  border-radius: 2rem;
+  z-index: 0;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: var(--line-weight);
+    background-color: var(--line-color);
+    border-radius: 2rem;
+  }
+
+  &::before {
+    top: -0.5rem;
+  }
+
+  &::after {
+    top: 0.5rem;
+  }
+}
+
+.btn-navigation {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
+  font-size: 1.5rem;
+  z-index: 2;
+}
+
+.gradient-mask {
+  --angle: 0deg;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3rem;
+  width: 100%;
+  background: linear-gradient(
+    var(--angle),
+    rgb(var(--bg-color-rgb)),
+    rgba(var(--bg-color-rgb), 0)
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.navigation-pane {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 16rem;
+  height: calc(100vh - var(--header-height));
+  background-color: rgb(var(--bg-color-rgb));
+  box-shadow: 0 2rem 2rem rgba(0, 0, 0, 0.35);
+  transform: translateX(-100vw);
+  transition-property: transform, height;
+  transition-duration: 0.35s, 0.1s;
+  overflow: auto;
+  z-index: 1;
+
+  &.active {
+    transform: translateX(0);
+  }
+
+  &.settings-open {
+    height: calc(100vh - var(--header-height) - var(--settings-height));
+  }
+
+  &::before {
+    @extend .gradient-mask;
+
+    --angle: 180deg;
+    content: "";
+  }
+
+  app-side-navigation-pane {
+    padding: 1rem 0 3rem;
+    overflow: auto;
+  }
+
+  .spacer {
+    position: relative;
+    height: 12rem;
+    z-index: 0;
+
+    &::before {
+      @extend .gradient-mask;
+
+      content: "";
+      top: unset;
+      bottom: 100%;
+    }
+  }
+}
+
+.settings {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.65rem;
+  height: 0;
+  padding: 0 1rem;
+  background-color: rgb(var(--bg-color-rgb));
+  overflow: hidden;
+  transition: 0.1s;
+  z-index: 0;
+
+  &.active {
+    height: var(--settings-height);
+    padding: 1rem;
+    overflow: unset;
+    
+    > * {
+      opacity: 1;
+    }
+  }
+
+  > * {
+    opacity: 0;
+    transition: 0.25s;
+  }
+}

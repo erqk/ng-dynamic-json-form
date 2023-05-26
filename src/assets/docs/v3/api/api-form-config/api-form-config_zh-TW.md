@@ -5,7 +5,7 @@
 1. JSON 字串
 2. `FormControlConfig[]`
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div class="multi-column" style="--column-count: 2">
 
 ```javascript
 // 以 JSON 方式提供

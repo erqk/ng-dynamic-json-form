@@ -15,7 +15,7 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
       [@fade-up]
       href="javascript:void(0)"
       [class.active]="activeIndex === i"
-      (click)="scrollToTitle(i)"
+      (click)="onLinkClick($event, i)"
       >{{ item }}</a
     >
   </ng-container>`,
@@ -48,6 +48,15 @@ export class SideNavigationPaneComponent {
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
+  }
+
+  onLinkClick(e: Event, index: number): void {
+    const el = e.target as HTMLElement;
+    el.scrollIntoView({
+      block: 'center'
+    });
+    
+    this.scrollToContent(index);
   }
 
   private onRouteChange(): void {
@@ -111,7 +120,7 @@ export class SideNavigationPaneComponent {
       .subscribe();
   }
 
-  scrollToTitle(index: number): void {
+  private scrollToContent(index: number): void {
     const target = Array.from(document.querySelectorAll('markdown h2'))[index];
     const header = document.querySelector('.header');
 

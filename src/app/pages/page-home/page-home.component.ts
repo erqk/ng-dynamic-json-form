@@ -6,6 +6,7 @@ import { LanguageDataService } from '../../features/language/services/language-d
 import { RouterModule } from '@angular/router';
 import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
 import { HttpClient } from '@angular/common/http';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-page-home',
@@ -25,10 +26,13 @@ export class PageHomeComponent {
   private languageDataService = inject(LanguageDataService);
   isLoading = false;
 
-  features$ = this.http.get(
-    `assets/docs/introduction/introduction_${this.languageDataService.language$.value}.md`,
-    { responseType: 'text' }
+  features$ = this.languageDataService.language$.pipe(
+    switchMap((language) =>
+      this.http.get(`assets/docs/introduction/introduction_${language}.md`, {
+        responseType: 'text',
+      })
+    )
   );
-  
+
   languageData$ = this.languageDataService.languageData$;
 }
