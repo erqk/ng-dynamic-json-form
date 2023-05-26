@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { RouterModule } from '@angular/router';
+import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-page-home',
@@ -13,13 +15,20 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     MarkdownModule,
     ContentWrapperComponent,
+    LoadingIndicatorComponent,
   ],
   templateUrl: './page-home.component.html',
   styleUrls: ['./page-home.component.scss'],
 })
 export class PageHomeComponent {
-  language$ = this.languageDataService.language$;
-  languageData$ = this.languageDataService.languageData$;
+  private http = inject(HttpClient);
+  private languageDataService = inject(LanguageDataService);
+  isLoading = false;
 
-  constructor(private languageDataService: LanguageDataService) {}
+  features$ = this.http.get(
+    `assets/docs/introduction/introduction_${this.languageDataService.language$.value}.md`,
+    { responseType: 'text' }
+  );
+  
+  languageData$ = this.languageDataService.languageData$;
 }

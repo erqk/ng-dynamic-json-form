@@ -1,9 +1,4 @@
 <div class="route-loading-bar" *ngIf="routeLoading"></div>
 
 <app-header></app-header>
-
-<app-loading-indicator
-  *ngIf="documentLoaderService.documentLoading$.value === true"
-></app-loading-indicator>
-
 <router-outlet> </router-outlet>

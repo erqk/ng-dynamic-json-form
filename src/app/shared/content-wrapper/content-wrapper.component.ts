@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding, Input } from '@angular/core';
-import { fadeUpAnimation } from '../../animations/fade-up.animation';
+import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
 
 @Component({
   selector: 'app-content-wrapper',
   standalone: true,
   imports: [CommonModule],
   template: ` <ng-content></ng-content> `,
-  animations: [fadeUpAnimation],
+  animations: [FADE_UP_ANIMATION],
   styles: [
     ':host {display: flex; flex-direction: column; width: 100%; margin: 0 auto}',
   ],

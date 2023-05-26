@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Subject, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
-import { fadeUpAnimation } from 'src/app/animations/fade-up.animation';
+import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { SideNavigationPaneService } from './side-navigation-pane.service';
 
@@ -20,7 +20,7 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
     >
   </ng-container>`,
   styleUrls: ['./side-navigation-pane.component.scss'],
-  animations: [fadeUpAnimation],
+  animations: [FADE_UP_ANIMATION],
 })
 export class SideNavigationPaneComponent {
   activeIndex = 0;

@@ -3,12 +3,12 @@ import { Injectable, inject } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
-  combineLatest,
-  finalize,
+  delay,
   from,
   map,
+  merge,
   mergeMap,
-  reduce,
+  of,
   switchMap,
   tap,
   toArray,
@@ -26,7 +26,44 @@ export class DocumentLoaderService {
 
   documentLoading$ = new BehaviorSubject<boolean>(false);
 
-  getTableOfContent$(parentDirectory: string): Observable<string[]> {
+  getDocumentContent$(
+    parentDirectory: string,
+    hasTableOfContent = false
+  ): Observable<string> {
+    const content$ = (tableOfContent: string[]) =>
+      from(tableOfContent).pipe(
+        mergeMap((x, i) => {
+          const basePath = `assets/docs/v${
+            this.documentVersionService.currentVersion$.value
+          }${hasTableOfContent ? '/' + parentDirectory : ''}`;
+          const filePath = `${basePath}/${x}/${x}_${this.languageDataService.language$.value}.md`;
+
+          return this.http
+            .get(filePath, { responseType: 'text' })
+            .pipe(map((x) => ({ index: i, content: x })));
+        }),
+        toArray(),
+        map((x) =>
+          x
+            .sort((a, b) => a.index - b.index)
+            .map((x) => x.content)
+            .join('')
+        )
+      );
+
+    return this.showLoading$.pipe(
+      switchMap(() => this.settings$),
+      switchMap(() =>
+        hasTableOfContent
+          ? this.getTableOfContent$(parentDirectory)
+          : of([parentDirectory])
+      ),
+      switchMap((x) => content$(x)),
+      tap(() => this.documentLoading$.next(false))
+    );
+  }
+
+  private getTableOfContent$(parentDirectory: string): Observable<string[]> {
     const basePath = `assets/docs/v${this.documentVersionService.currentVersion$.value}/${parentDirectory}`;
     const filePath = `${basePath}/table-of-content.json`;
 
@@ -35,37 +72,16 @@ export class DocumentLoaderService {
       .pipe(map((x) => JSON.parse(x)));
   }
 
-  getDocumentContent$(
-    tableOfContent: string[],
-    parentDirectory?: string
-  ): Observable<string> {
-    const content$ = from(tableOfContent).pipe(
-      mergeMap((x, i) => {
-        const basePath = `assets/docs/v${
-          this.documentVersionService.currentVersion$.value
-        }${parentDirectory ? '/' + parentDirectory : ''}`;
-        const filePath = `${basePath}/${x}/${x}_${this.languageDataService.language$.value}.md`;
+  private get showLoading$(): Observable<null> {
+    // https://github.com/angular/angular/issues/23522#issuecomment-385015819
+    // Use of(null) and add delay(0) before set the `documentLoading$` value to avoid NG0100
+    return of(null).pipe(delay(0));
+  }
 
-        return this.http
-          .get(filePath, { responseType: 'text' })
-          .pipe(map((x) => ({ index: i, content: x })));
-      }),
-      toArray(),
-      map((x) =>
-        x
-          .sort((a, b) => a.index - b.index)
-          .map((x) => x.content)
-          .join('')
-      )
-    );
-
-    this.documentLoading$.next(true);
-    return combineLatest([
-      this.documentVersionService.currentVersion$,
+  private get settings$(): Observable<any> {
+    return merge(
       this.languageDataService.language$,
-    ]).pipe(
-      switchMap((x) => content$),
-      tap(() => this.documentLoading$.next(false))
+      this.documentVersionService.currentVersion$
     );
   }
 }
