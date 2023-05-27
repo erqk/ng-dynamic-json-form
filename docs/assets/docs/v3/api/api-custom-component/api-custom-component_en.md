@@ -6,8 +6,9 @@ To build your own custom input element, create a new component and extends it us
 This component have parameters for your custom component to work.
 
 ```javascript
-//...
+...
 export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
+...
 ```
 
 > Parameters inside `NgDynamicJsonFormCustomComponent`:
@@ -120,8 +121,7 @@ Then bind it to the `customComponents`:
 
 ```javascript
 {
-  //...
   "customComponent": "custom-input",
-  //...
+  ...
 },
 ```

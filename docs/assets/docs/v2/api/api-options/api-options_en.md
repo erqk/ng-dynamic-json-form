@@ -3,13 +3,15 @@
 If your input element need to provide a list of option to select, you can insert them into `options`. Each option consists of a `label` and a `value`.
 
 ```javascript
-//...
-"options": [
-  {
-    "label": "...",
-    "value": "..."
-  }
-]
+{
+  "options": [
+    {
+      "label": "...", //string
+      "value": "..." //any
+    }
+  ],
+  ...
+}
 ```
 
 > You need to provide this if type is `radio`, `checkbox`, `dropdown`.

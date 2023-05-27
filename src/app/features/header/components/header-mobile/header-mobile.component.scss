@@ -6,10 +6,10 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   height: var(--header-height);
   background-color: rgb(var(--bg-color-rgb));
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
 .logo {
@@ -23,7 +23,7 @@
 }
 
 .btn-menu {
-  --line-weight: 3px;
+  --line-weight: 4px;
   --line-color: gray;
 
   position: relative;
@@ -61,8 +61,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 3.5rem;
+  height: 3.5rem;
   padding: 0;
   border-radius: 50%;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
@@ -120,7 +120,7 @@
   }
 
   app-side-navigation-pane {
-    padding: 1rem 0 3rem;
+    padding: 2rem 0;
     overflow: auto;
   }
 

@@ -48,7 +48,7 @@
 {
   cssGrid: { gridColumn: "2" }, // Control 2
 },
-//...
+...
 ```
 
 </div>
@@ -82,7 +82,7 @@
 {
   cssGrid: { gridColumn: "span 3" }, // Control 5
 },
-//...
+...
 ```
 
 </div>
@@ -114,8 +114,8 @@
     // control 5,
     // control 6
   ]
-}
-//...
+},
+...
 ```
 
 </div>
@@ -143,8 +143,8 @@
 },
 {
   cssGrid: { gridColumn: "1", gridRow: "2/3" }, // Control 3
-}
-//...
+},
+...
 ```
 
   </div>

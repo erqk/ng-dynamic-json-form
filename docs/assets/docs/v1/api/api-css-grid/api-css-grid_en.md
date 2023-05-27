@@ -3,14 +3,14 @@
 The form generated is using
 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout" target="_blank">CSS Grid layout</a>. Hence every input field in the form can size differently by setting the following properties.
 
-```json
+```javascript
 {
-  //...
   "cssGrid": {
     "gridTemplateColumns": "...",
     "gridColumn": "...",
     "gridRow": "..."
-  }
+  },
+  ...
 }
 ```
 

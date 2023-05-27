@@ -74,15 +74,21 @@ export class TabBarComponent {
         return;
       }
 
-      const screenLeft =
-        this.findElement('a')?.getBoundingClientRect().left || 0;
-      const left = activeTab.getBoundingClientRect().x - screenLeft;
+      const containerPaddingLeft = this.findElement('.content')
+        ? parseFloat(
+            window.getComputedStyle(this.findElement('.content')!).paddingLeft
+          )
+        : 0;
 
+      const leftStart =
+        (this.findElement('a')?.getBoundingClientRect().x || 0) -
+        containerPaddingLeft;
+      const left = activeTab.getBoundingClientRect().x - leftStart;
       const indicatorWidth = activeTab.clientWidth * 0.8;
       const leftOffset = (activeTab.clientWidth - indicatorWidth) / 2;
 
       activeTab.scrollIntoView({
-        inline: 'center'
+        inline: 'center',
       });
 
       this.renderer2.setStyle(indicator, 'opacity', '1');

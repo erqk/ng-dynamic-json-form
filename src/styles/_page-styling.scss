@@ -3,6 +3,7 @@
   grid-template-columns: 1fr 2fr;
   gap: 2rem;
   margin-bottom: 3.5rem;
+  color: rgb(var(--text-color-rgb));
 }
 
 /* From https://css.glass */
@@ -10,13 +11,12 @@
   background: rgb(255, 204, 133);
   background: linear-gradient(
     333deg,
-    rgb(108 235 235 / 15%) 0%,
-    rgb(251 197 255 / 25%) 100%
+    rgb(177 248 248 / 60%) 0%,
+    rgb(252 209 255 / 60%) 100%
   );
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(7.8px);
   -webkit-backdrop-filter: blur(7.8px);
-  border: 1px solid rgba(255, 255, 255, 1);
 }
 
 .css-grid-example {
@@ -39,7 +39,38 @@
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.5);
+    border: 2px solid white;
 
     @extend .glassmorphism-effect;
+  }
+}
+
+@mixin darkStyle {
+  .glassmorphism-effect {
+    background: linear-gradient(
+      333deg,
+      rgb(14 78 144 / 60%) 0%,
+      rgb(84 36 85) 100%
+    );
+  }
+
+  .css-grid-example {
+    .form-control {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+html.dark {
+  @include darkStyle();
+}
+
+@media (prefers-color-scheme: dark) {
+  @include darkStyle();
+}
+
+@media screen and (max-width: 992px) {
+  .example-wrapper {
+    grid-template-columns: 1fr;
   }
 }

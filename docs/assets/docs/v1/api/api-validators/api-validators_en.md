@@ -14,15 +14,18 @@ A list of validators to add to this `AbstractControl`.
 | email        | Custom validator using pattern `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` |
 | custom       | To use `customValidators` with `value` as the key                        |
 
-```json
-//...
-"validators": [
-  {
-    "name": "...",
-    "value": "...",
-    "message": "..."
-  }
-]
+```javascript
+{
+  "validators": [
+    {
+      "name": "...",
+      "value": "...",
+      "message": "..."
+    },
+    ...
+  ],
+  ...
+}
 ```
 
 - ### `name`
@@ -39,8 +42,14 @@ A list of validators to add to this `AbstractControl`.
 
   ```javascript
   {
-  //...
-  "message": "Your id: {{value}} is invalid"
+    "validators": [
+      {
+        "name": "pattern",
+        "value": "\\d+",
+        "message": "Your id: {{value}} is invalid"
+      }
+    ],
+    ...
   }
 
   // Output: Your id: 123456 is invalid

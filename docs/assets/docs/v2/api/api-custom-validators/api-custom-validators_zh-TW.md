@@ -26,14 +26,14 @@ customValidators = {
 
 現在，你可以在 JSON 資料內，針對特定的 `AbstractControl` 來設定要使用的自訂驗證器。`value` 需對應到剛剛建立好的常數 `key`。
 
-```json
+```javascript
 {
-  //...
   "validators": [
     {
       "name": "custom",
       "value": "firstUppercase"
     }
-  ]
+  ],
+  ...
 }
 ```

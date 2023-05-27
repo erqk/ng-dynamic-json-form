@@ -11,18 +11,21 @@
 | minLength    | `Validators.minLength(value)`                                   |
 | maxLength    | `Validators.maxLength(value)`                                   |
 | pattern      | `Validators.pattern(value)`                                     |
-| email        | 使用正則 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 的自定驗證器 |
+| email        | 使用正則 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 的自訂驗證器 |
 | custom       | 從 `customValidators` 內用 `value` 尋找對應的驗證器             |
 
-```json
-//...
-"validators": [
-  {
-    "name": "...",
-    "value": "...",
-    "message": "..."
-  }
-]
+```javascript
+{
+  "validators": [
+    {
+      "name": "...",
+      "value": "...",
+      "message": "..."
+    },
+    ...
+  ],
+  ...
+}
 ```
 
 - ### `name`
@@ -35,12 +38,18 @@
 
 - ### `message` (選填)
 
-  自定義驗證訊息。可使用 `{{value}}` 來顯示目前輸入的值。
+  自訂義驗證訊息。可使用 `{{value}}` 來顯示目前輸入的值。
 
   ```javascript
   {
-  //...
-  "message": "你的 id: {{value}} 格式不正確"
+    "validators": [
+      {
+        "name": "pattern",
+        "value": "\\d+",
+        "message": "你的 id: {{value}} 格式不正確"
+      }
+    ],
+    ...
   }
 
   // Output: 你的 id: 123456 格式不正確

@@ -26,14 +26,14 @@ Then, in your template, bind it to the input `customValidators`:
 
 Finally, you can choose which custom validator to use by specify the `value` to match the `key` inside `customValidators` we create just now.
 
-```json
+```javascript
 {
-  //...
   "validators": [
     {
       "name": "custom",
       "value": "firstUppercase"
     }
-  ]
+  ],
+  ...
 }
 ```

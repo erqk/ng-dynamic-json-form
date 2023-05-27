@@ -18,8 +18,8 @@ jsonData: FormControlConfig[] = [
     formArray: {},
     customComponent: ...,
     extra: {}
-  }
-  //...
+  },
+  ...
 ]
 ```
 

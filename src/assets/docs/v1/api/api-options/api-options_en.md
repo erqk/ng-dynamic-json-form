@@ -7,11 +7,13 @@ If your input element need to provide a list of option to select, you can insert
 > You can set `row` or `column` to the `optionsLayout` if type is `radio` and `checkbox`.
 
 ```javascript
-//...
-"options": [
-  {
-    "label": "...", //string
-    "value": "..." //any
-  }
-]
+{
+  "options": [
+    {
+      "label": "...", //string
+      "value": "..." //any
+    }
+  ],
+  ...
+}
 ```

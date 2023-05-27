@@ -28,12 +28,12 @@ Finally, you can choose which custom validator to use by specify the `value` to 
 
 ```javascript
 {
-  //...
   "validators": [
     {
       "name": "custom",
       "value": "firstUppercase"
     }
-  ]
+  ],
+  ...
 }
 ```

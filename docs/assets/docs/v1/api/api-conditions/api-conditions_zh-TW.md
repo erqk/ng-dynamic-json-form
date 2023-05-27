@@ -4,7 +4,9 @@
 
 當我們的表單比較複雜的時候，一般會有以下的需求：
 
-> 隱藏 `A` 輸入框，直到 `B` 已填寫或者 `C` 的值被設定為 X.
+> 隱藏 `A` 輸入框，直到 `B` 已填寫或者 `C` 的值被設定為 X。
+
+> 當 `B` 輸入框的值為 N 時，`A` 輸入框需要加入驗證器 X。
 
 `ng-dynamic-json-form` 能為你將上述需求自動完成，只需在 JSON 資料內設定好條件即可！😁
 
@@ -12,18 +14,22 @@
 
 設定 `conditions`：
 
-```json
-//...
-"conditions": [
-  {
-    "name": "...",
-    "control": "...",
-    "controlValue": "...",
-    "operator": "...",
-    "groupOperator": "...",
-    "groupWith": []
-  }
-]
+```javascript
+{
+  "conditions": [
+    {
+      "name": "...",
+      "control": "...",
+      "controlValue": "...",
+      "operator": "...",
+      "groupOperator": "...",
+      "groupWith": []
+    },
+    ...
+  ],
+  ...
+}
+
 ```
 
 - ### `name` (若為子層則可不填)
@@ -40,21 +46,23 @@
 
   如果是 `驗證器名稱`，那就會從 `validators` 列表內，搜尋符合的驗證器，並根據設定的條件切換驗證器的使用。
 
-  ```json
-  //...
-  "validators": [
-    {
-      "name": "minLength",
-      "value": "10"
-    }
-    //...
-  ],
-  "conditions": [
-    {
-      "name": "minLength", // 從 "validators" 尋找 minLength 的驗證器
-      //...
-    }
-  ]
+  ```javascript
+  {
+    "validators": [
+      {
+        "name": "minLength",
+        "value": "10"
+      },
+      ...
+    ],
+    "conditions": [
+      {
+        "name": "minLength", // 從 "validators" 尋找 minLength 的驗證器
+        ...
+      }
+    ],
+    ...
+  }
   ```
 
 - ### `control`
@@ -90,36 +98,7 @@
 
   需要和此條件一起檢查的其他判斷條件。
 
-  > 最外層的條件皆使用 "||" 運算子。如果你需要 "&&" 運算子，則使用 `groupWith`。請閱讀下面的範例瞭解。
-
-### Form 陣列條件設定
-
-如果你需要在 `formArray` 內的 `template` 模板設定條件，需注意的是 `control` 的起點是當前的 `template` 本身。
-
-```json
-{
-  //...
-  "formControlName": "parentControl",
-  "formArray": {
-    //...
-    "template": [
-      {
-        //...
-        "formControlName": "name"
-      },
-      {
-        //...
-        "conditions": [
-          {
-            "control": "name" // ==> 是 "name", 而非 "parentControl.name"
-            //...
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+> 最外層的條件皆使用 "||" 運算子。如果你需要 "&&" 運算子，則使用 `groupWith`。請閱讀下面的範例瞭解。
 
 ### 範例 (簡單條件)
 
@@ -202,5 +181,34 @@ if (basicInfo.email !== "") {
 
 if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.status === >false || basicInfo.gender === "0")) {
     // complexCondition 為必填
+}
+```
+
+### Form 陣列條件設定
+
+如果你需要在 `formArray` 內的 `template` 模板設定條件，需注意的是 `control` 的起點是當前的 `template` 本身。
+
+```javascript
+{
+  "formControlName": "parentControl",
+  "formArray": {
+    "template": [
+      {
+        "formControlName": "name",
+        ...
+      },
+      {
+        "conditions": [
+          {
+            "control": "name", // ==> 是 "name", 而非 "parentControl.name"
+            ...
+          }
+        ],
+        ...
+      }
+    ],
+    ...
+  },
+  ...
 }
 ```

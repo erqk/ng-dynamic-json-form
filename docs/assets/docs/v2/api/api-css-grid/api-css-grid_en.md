@@ -5,12 +5,12 @@ The form generated is using
 
 ```javascript
 {
-  //...
   "cssGrid": {
     "gridTemplateColumns": "...",
     "gridColumn": "...",
     "gridRow": "..."
-  }
+  },
+  ...
 }
 ```
 

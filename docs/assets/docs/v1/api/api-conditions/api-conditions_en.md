@@ -6,14 +6,15 @@ When we're building a larger form, imagine a scenario like this:
 
 > `A` input is hidden until `B` is filled or `C` is set to value X.
 
+> `A` input needs to add validator X when `B` input's value is N.
+
 Guess what, `ng-dynamic-json-form` can do it all for you automatically, just using the JSON data you provided! 😁
 
 ### Usage
 
 Provide your conditions like this:
 
-```json
-//...
+```javascript
 "conditions": [
   {
     "name": "...",
@@ -22,7 +23,8 @@ Provide your conditions like this:
     "operator": "...",
     "groupOperator": "...",
     "groupWith": []
-  }
+  },
+  ...
 ]
 ```
 
@@ -40,21 +42,21 @@ Provide your conditions like this:
 
   If the name is validator's name, then it will find the validator in `validators` list, and toggle the target validator if condition is met.
 
-  ```json
-  //...
+  ```javascript
   "validators": [
     {
       "name": "minLength",
       "value": "10"
-    }
-    //...
+    },
+    ...
   ],
   "conditions": [
     {
       "name": "minLength", // Will find the minLength validator from "validators"
-      //...
+      ...
     }
-  ]
+  ],
+  ...
   ```
 
 - ### `control`
@@ -89,36 +91,7 @@ Provide your conditions like this:
 
   Nested conditions to evaluate together with the current one.
 
-  > All the fist level conditions will be evaluated as "||". If you need "&&" operator, then use `groupWith`. See example below for more details.
-
-### Form Array conditions
-
-If you need to add `conditions` in the `formArray`'s `template`, the starting point of the path of `AbstractControl` is the current template.
-
-```json
-{
-  //...
-  "formControlName": "parentControl",
-  "formArray": {
-    //...
-    "template": [
-      {
-        //...
-        "formControlName": "name"
-      },
-      {
-        //...
-        "conditions": [
-          {
-            "control": "name" // ==> use "name", not "parentControl.name"
-            //...
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+> All the fist level conditions will be evaluated as "||". If you need "&&" operator, then use `groupWith`. See example below for more details.
 
 ### Example (simple condition)
 
@@ -201,5 +174,33 @@ if (basicInfo.email !== "") {
 
 // complexCondition is required
 if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.status === >false || basicInfo.gender === "0")) {
+}
+```
+
+### Form Array conditions
+
+If you need to add `conditions` in the `formArray`'s `template`, the starting point of the path of `AbstractControl` is the current template.
+
+```javascript
+{
+  "formControlName": "parentControl",
+  "formArray": {
+    "template": [
+      {
+        "formControlName": "name",
+        ...
+      },
+      {
+        "formControlName": "age",
+        "conditions": [
+          {
+            "control": "name" // ==> use "name", not "parentControl.name"
+            ...
+          }
+        ],
+        ...
+      }
+    ]
+  }
 }
 ```

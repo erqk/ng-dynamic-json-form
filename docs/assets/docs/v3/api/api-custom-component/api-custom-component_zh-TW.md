@@ -5,8 +5,9 @@
 建立一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。此元件內擁有必要的參數。
 
 ```javascript
-//...
+...
 export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
+...
 ```
 
 > `NgDynamicJsonFormCustomComponent` 內的參數如下：
@@ -117,10 +118,9 @@ customComponents = {
 
 接下來 `ng-dynamic-json-form` 就會自動從 JSON 資料內設定的 `customComponent` 欄位來尋找對應的元件：
 
-```json
+```javascript
 {
-  //...
   "customComponent": "custom-input",
-  //...
+  ...
 },
 ```

@@ -1,6 +1,14 @@
 :host {
+  --color-active: var(--primary-500);
+
   display: flex;
   flex-direction: column;
+}
+
+:host-context(.dark) {
+  :host {
+    --color-active: rgb(var(--text-color-rgb));
+  }
 }
 
 a {
@@ -8,7 +16,7 @@ a {
   padding: 0.65rem;
   padding-left: 1.5rem;
   text-decoration: none;
-  color: rgba(128, 128, 128, 0.65);
+  color: rgba(128, 128, 128, 1);
   z-index: 0;
   transition: 0.2s;
 
@@ -28,12 +36,18 @@ a {
 
   &:hover,
   &.active {
-    color: var(--primary-500);
+    color: var(--color-active);
     font-weight: bold;
 
     &::before {
       background-color: var(--primary-500);
     }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --color-active: rgb(var(--text-color-rgb));
   }
 }
 

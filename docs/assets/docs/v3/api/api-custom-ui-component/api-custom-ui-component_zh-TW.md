@@ -11,7 +11,7 @@ export const MY_UI_COMPONENTS: UiComponents = {
   text: { type: "custom", component: MyInputComponent },
   radio: { type: "custom", component: MyRadioComponent },
   checkbox: { type: "custom", component: MyCheckboxComponent },
-  //...
+  ...
 };
 ```
 
@@ -64,7 +64,7 @@ myComponentList = MY_UI_COMPONENTS;
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 
-//...
+...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 
