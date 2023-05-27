@@ -1,17 +1,17 @@
-## 自定 UI 元件
+## 自訂 UI 元件
 
 ### 建立
 
-和建立自定元件一樣，你需要新增一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。
+和建立自訂元件一樣，你需要新增一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。
 
-當所有自定的 UI 元件建立完成，將他們放入一個常數內：
+當所有自訂的 UI 元件建立完成，將他們放入一個常數內：
 
 ```javascript
 export const MY_UI_COMPONENTS = {
   input: MyInputComponent,
   radio: MyRadioComponent,
   checkbox: MyCheckboxComponent,
-  //...
+  ...
 };
 ```
 
@@ -26,7 +26,7 @@ export const MY_UI_COMPONENTS = {
 
 ### 用法
 
-宣告一個變數來存放我們的自定元件列表，然後傳入 template。
+宣告一個變數來存放我們的自訂元件列表，然後傳入 template。
 
 ```javascript
 myComponentList = MY_UI_COMPONENTS;
@@ -54,7 +54,7 @@ myComponentList = MY_UI_COMPONENTS;
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 
-//...
+...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 

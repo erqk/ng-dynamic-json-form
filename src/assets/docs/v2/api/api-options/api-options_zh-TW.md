@@ -3,13 +3,15 @@
 如果輸入元件需要提供用戶選項做選擇，你可以將選項塞入 `options` 內。每一個物件是由 `label` 和 `value` 組成。
 
 ```javascript
-//...
-"options": [
-  {
-    "label": "...", //string
-    "value": "..." //any
-  }
-]
+{
+  "options": [
+    {
+      "label": "...", //string
+      "value": "..." //any
+    }
+  ],
+  ...
+}
 ```
 
 > 如果 `type` 是 `radio`, `checkbox`, `dropdown` 則必須提供此列表。

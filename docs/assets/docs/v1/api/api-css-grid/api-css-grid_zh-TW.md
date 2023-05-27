@@ -2,14 +2,14 @@
 
 表單內的版型是基於 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout" target="_blank">CSS Grid</a> 達成的，因此你可以提供以下參數來組合出不同的版型：
 
-```json
+```javascript
 {
-  //...
   "cssGrid": {
     "gridTemplateColumns": "...",
     "gridColumn": "...",
     "gridRow": "..."
-  }
+  },
+  ...
 }
 ```
 

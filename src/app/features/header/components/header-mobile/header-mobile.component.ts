@@ -37,6 +37,7 @@ export class HeaderMobileComponent {
 
   openSettings = false;
   openNavigationPane = false;
+  showNavigationPaneButton = false;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(e: Event): void {
@@ -53,12 +54,24 @@ export class HeaderMobileComponent {
     this.toggleBackdrop(false);
   }
 
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(): void {
+    const host = this.elementRef.nativeElement as HTMLElement;
+    const shadowIntensity =
+      window.scrollY / 200 > 0.35 ? 0.35 : window.scrollY / 200;
+    host.style.boxShadow = `0 0 1.5rem rgba(0,0,0,${shadowIntensity})`;
+  }
+
   ngOnInit(): void {
     this.createBackdrop();
     this.router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => (this.openSettings = false))
+        tap((x) => {
+          this.openNavigationPane = false;
+          this.toggleBackdrop(false);
+          this.setButtonNavigationPane();
+        })
       )
       .subscribe();
   }
@@ -89,6 +102,19 @@ export class HeaderMobileComponent {
     } else {
       show && backdropEl?.classList.add('active');
       !show && backdropEl?.classList.remove('active');
+    }
+  }
+
+  private setButtonNavigationPane(): void {
+    switch (this.router.url) {
+      case '/':
+      case '/playground':
+        this.showNavigationPaneButton = false;
+        break;
+
+      default:
+        this.showNavigationPaneButton = true;
+        break;
     }
   }
 }

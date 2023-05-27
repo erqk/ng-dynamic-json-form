@@ -46,6 +46,14 @@ body {
   margin: 0;
 }
 
+h2 {
+  margin-top: 5rem;
+
+  &:first-of-type {
+    margin-top: unset;
+  }
+}
+
 a {
   position: relative;
   color: var(--primary-500);

@@ -34,7 +34,7 @@ export class DocumentLoaderService {
       from(tableOfContent).pipe(
         mergeMap((x, i) => {
           const basePath = `assets/docs/v${
-            this.documentVersionService.currentVersion$.value
+            this.documentVersionService.currentVersion
           }${hasTableOfContent ? '/' + parentDirectory : ''}`;
           const filePath = `${basePath}/${x}/${x}_${this.languageDataService.language$.value}.md`;
 
@@ -64,7 +64,7 @@ export class DocumentLoaderService {
   }
 
   private getTableOfContent$(parentDirectory: string): Observable<string[]> {
-    const basePath = `assets/docs/v${this.documentVersionService.currentVersion$.value}/${parentDirectory}`;
+    const basePath = `assets/docs/v${this.documentVersionService.currentVersion}/${parentDirectory}`;
     const filePath = `${basePath}/table-of-content.json`;
 
     return this.http

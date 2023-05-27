@@ -23,9 +23,15 @@
   陣列內 `FormGroup` 的標題。每一個標題後面會自動加上數字，來表示這是陣列內的第幾個表單。
 
   ```javascript
-  //...
-  templateLabel: "User",
-  //...
+  {
+    "formArray": {
+      template: {
+        templateLabel: "User",
+        ...
+      },
+      ...
+    }
+  }
 
   // Output: User 1, User 2, ...
   ```

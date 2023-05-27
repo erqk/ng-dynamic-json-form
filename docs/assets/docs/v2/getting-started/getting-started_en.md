@@ -26,12 +26,14 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 Lastly, add the styles into your `angular.json`:
 
 ```javascript
-//...
+{
+  ...
   "styles": [
     "node_modules/ng-dynamic-json-form/lib/styles/styles.scss",
-    //...
+    ...
   ],
-//...
+  ...
+}
 ```
 
 ## Basic usage
@@ -87,66 +89,65 @@ Then, to get your generated form you bind to the `formGet` output event.
 ```javascript
 onFormGet(e: UntypedFormGroup): void {
   this.form = e;
+
+  console.log(this.form?.value);
+  // {
+  //   "name": "Default Name",
+  //   "email": ""
+  // }
+
+  console.log(this.form?.status);
+  // INVALID
 }
-
-console.log(this.form?.value);
-// {
-//   "name": "Default Name",
-//   "email": ""
-// }
-
-console.log(this.form?.status);
-// INVALID
 ```
 
 Access the `form.errors` to see if any of the `control` inside this form has `errors`.
 
 ```json
 {
-  "basicInfo": {
-    "age": {
-      "min": {
-        "min": 18,
-        "actual": "1"
-      }
+  "age": {
+    "min": {
+      "min": 18,
+      "actual": "1"
     }
   },
   "email": {
-    "email": "Invalid email format"
+    "required": true
   }
 }
 ```
 
 ## Advanced usage
 
-For more complex form, you can add your own custom validators and custom components to fit your needs. See **API** for more detail.
+For more complex form, you can add your own custom validators and custom components to fit your needs. Also, you can setup `conditions` to bind status/validators of a `AbstractControl` to another. See **API** for more detail.
 
 ```javascript
-/**
- * The `key` will be use to match with `value` of validator named "custom":
- * @example
- * {
- *  //...
- *  "validators": [
- *    { "name": "custom", "value": "..." }
- *  ]
- * }
- */
-customValidators = {
-  [key: string]: ValidatorFn
-};
-
-/**
- * The `key` will be use to match with `customComponent`:
- * @example
- * {
- *  //...
- *  "customComponent": "..."
- * }
- */
-customComponents = {
-  [key: string]: Type<NgDynamicJsonFormCustomComponent>
-}
+jsonData: FormControlConfig[] = [
+  {
+    validators: [
+      {
+        name: "required"
+      },
+      // For custom validator, `value` is use as the key to match target ValidatorFn
+      // inside the list of `customValidators`
+      {
+        name: "custom",
+        value: "firstUppercase"
+      }
+    ],
+    // This AbstractControl is required when AbstractControl `age` value is greater than 20
+    conditions: [
+      {
+        name: "required",
+        control: "age",
+        controlValue: 20,
+        operator: ">"
+      }
+    ],
+    ...
+  },
+  ...
+]
 ```
 
 ```html

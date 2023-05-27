@@ -24,7 +24,6 @@ export class LanguageSelectorComponent {
     const select = e.target as HTMLSelectElement;
     const language = select.value;
 
-    window.sessionStorage.setItem('language', language);
-    this.languageDataService.setLanguage$(language).subscribe((res) => {});
+    this.languageDataService.setLanguage$(language).subscribe();
   }
 }

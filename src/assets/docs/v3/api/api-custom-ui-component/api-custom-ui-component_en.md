@@ -11,7 +11,7 @@ export const MY_UI_COMPONENTS: UiComponents = {
   text: { type: "custom", component: MyInputComponent },
   radio: { type: "custom", component: MyRadioComponent },
   checkbox: { type: "custom", component: MyCheckboxComponent },
-  //...
+  ...
 };
 ```
 
@@ -20,14 +20,14 @@ export const MY_UI_COMPONENTS: UiComponents = {
 The properties of `UiComponents`:
 
 | property  | description                                                                  |
-| :--------- | :---------------------------------------------------------------------------- |
+| :-------- | :--------------------------------------------------------------------------- |
 | type      | To tell what exactly the ui library current component is using.              |
 | component | Your custom build component that extends `NgDynamicJsonFormCustomComponent`. |
 
 Available value for `type`:
 
 | value    | description                |
-| :-------- | :-------------------------- |
+| :------- | :------------------------- |
 | basic    | Native HTML component      |
 | primeng  | PrimeNg component          |
 | material | Angular Material component |
@@ -64,7 +64,7 @@ Just import the constant of pre-built components and bind it.
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 
-//...
+...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 

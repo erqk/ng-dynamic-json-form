@@ -122,7 +122,7 @@ export class SideNavigationPaneComponent {
 
   private scrollToContent(index: number): void {
     const target = Array.from(document.querySelectorAll('markdown h2'))[index];
-    const header = document.querySelector('.header');
+    const header = document.querySelector(`app-header-${window.innerWidth > 992 ? 'desktop' : 'mobile'} .header`)
 
     if (!target || !header) return;
 

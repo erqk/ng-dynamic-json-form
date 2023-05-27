@@ -11,7 +11,7 @@ export const MY_UI_COMPONENTS = {
   input: MyInputComponent,
   radio: MyRadioComponent,
   checkbox: MyCheckboxComponent,
-  //...
+  ...
 };
 ```
 
@@ -54,7 +54,7 @@ You can import the constant of pre-built components and bind it.
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 
-//...
+...
 customUIComponentList = UI_PRIMENG_COMPONENTS; // UI_{{library}}_COMPONENTS
 ```
 

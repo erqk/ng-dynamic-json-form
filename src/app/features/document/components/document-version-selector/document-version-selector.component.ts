@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DocumentLoaderService } from '../../services/document-loader.service';
+import { Component, inject } from '@angular/core';
+import { delay } from 'rxjs/operators';
 import { DocumentVersionService } from '../../services/document-version.service';
 
 @Component({
@@ -8,10 +8,7 @@ import { DocumentVersionService } from '../../services/document-version.service'
   standalone: true,
   imports: [CommonModule],
   template: `
-    <select
-      [value]="version$.value"
-      (change)="changeVersion($event)"
-    >
+    <select [value]="version$ | async" (change)="changeVersion($event)">
       <ng-container *ngFor="let item of versions">
         <option value="{{ item }}">v{{ item }}</option>
       </ng-container>
@@ -21,14 +18,21 @@ import { DocumentVersionService } from '../../services/document-version.service'
 })
 export class DocumentVersionSelectorComponent {
   versionService = inject(DocumentVersionService);
-  
+
   versions = this.versionService.versions;
-  version$ = this.versionService.currentVersion$;
+  version$ = this.versionService.currentVersion$.pipe(delay(0));
+
+  ngAfterViewInit(): void {
+    this.versionService.setVersion(
+      window.localStorage.getItem('docs-version') ||
+        this.versionService.versions[0]
+    );
+  }
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;
     const version = select.value;
 
-    this.versionService.currentVersion$.next(version);
+    this.versionService.setVersion(version);
   }
 }

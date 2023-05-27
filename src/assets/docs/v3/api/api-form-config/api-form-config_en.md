@@ -29,7 +29,7 @@ You can provide your data as:
     "customComponent": "...",
     "extra": {},
   },
-  //...
+  ...
 ];
 ```
 
@@ -53,8 +53,8 @@ jsonData: FormControlConfig[] = [
     formArray: {},
     customComponent: "...",
     extra: {}
-  }
-  //...
+  },
+  ...
 ]
 ```
 

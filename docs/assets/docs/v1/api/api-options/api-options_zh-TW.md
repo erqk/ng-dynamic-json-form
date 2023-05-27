@@ -8,11 +8,13 @@
 > 如果 `type` 是 `radio`, `checkbox`，你可以設定 `optionsLayout` 為 `row` 或 `column`。
 
 ```javascript
-//...
-"options": [
-  {
-    "label": "...", //string
-    "value": "..." //any
-  }
-]
+{
+  "options": [
+    {
+      "label": "...", //string
+      "value": "..." //any
+    }
+  ],
+  ...
+}
 ```

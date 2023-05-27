@@ -23,9 +23,15 @@ You might want to build `FormArray` for some input element. Then you can use `fo
   Label for each of the `FormGroup` inside this `FormArray`. The label will be followed by a number to indicate current `FormGroup`'s position.
 
   ```javascript
-  //...
-  templateLabel: "User",
-  //...
+  {
+    "formArray": {
+      template: {
+        templateLabel: "User",
+        ...
+      },
+      ...
+    }
+  }
 
   // Output: User 1, User 2, ...
   ```

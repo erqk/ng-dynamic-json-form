@@ -49,7 +49,7 @@ change the layout of your form:
 {
   cssGrid: { gridColumn: "2" }, // Control 2
 },
-//...
+...
 ```
 
 </div>
@@ -83,7 +83,7 @@ change the layout of your form:
 {
   cssGrid: { gridColumn: "span 3" }, // Control 5
 },
-//...
+...
 ```
 
 </div>
@@ -115,8 +115,8 @@ change the layout of your form:
     // control 5,
     // control 6
   ]
-}
-//...
+},
+...
 ```
 
 </div>
@@ -144,8 +144,8 @@ change the layout of your form:
 },
 {
   cssGrid: { gridColumn: "1", gridRow: "2/3" }, // Control 3
-}
-//...
+},
+...
 ```
 
   </div>

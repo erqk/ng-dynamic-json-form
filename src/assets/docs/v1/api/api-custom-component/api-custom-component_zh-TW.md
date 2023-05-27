@@ -1,12 +1,13 @@
-## 自定元件
+## 自訂元件
 
 ### 建立
 
 建立一個 component 並繼承 `NgDynamicJsonFormCustomComponent`。此元件內擁有必要的參數。
 
 ```javascript
-//...
+...
 export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
+...
 ```
 
 > `NgDynamicJsonFormCustomComponent` 內的參數如下：
@@ -20,7 +21,7 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 
 好了，你現在可以建立任意類型的輸入元件了！
 
-### 自定複選框
+### 自訂複選框
 
 像這種比較簡單的輸入元件，你可以這樣做：
 
@@ -63,7 +64,7 @@ onChanged(e: { checked: any[]; originalEvent: Event }): void {
 }
 ```
 
-### FormGroup 類型的自定元件
+### FormGroup 類型的自訂元件
 
 或者，你也可以建立一個複雜的，使用 `FormGroup` 的輸入元件：
 
@@ -98,7 +99,7 @@ this.control?.valueChanges
 
 ### 用法
 
-宣告一個變數，將你建立的自定元件都放一起：
+宣告一個變數，將你建立的自訂元件都放一起：
 
 ```javascript
 customComponents = {
@@ -117,10 +118,9 @@ customComponents = {
 
 接下來 `ng-dynamic-json-form` 就會自動從 JSON 資料內設定的 `customComponent` 欄位來尋找對應的元件：
 
-```json
+```javascript
 {
-  //...
   "customComponent": "custom-input",
-  //...
+  ...
 },
 ```
