@@ -64,13 +64,16 @@ code {
   .sticky-header {
     position: sticky;
     top: 0;
-    padding: 0.5rem 0;
     background-color: rgba(var(--bg-color-rgb), 0.85);
     backdrop-filter: blur(8px);
 
     > * {
-      margin: 0.2rem;
+      margin: 0;
     }
+  }
+
+  > * {
+    padding: 1rem;
   }
 }
 

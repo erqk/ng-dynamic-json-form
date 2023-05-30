@@ -56,6 +56,8 @@ export class HeaderMobileComponent {
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
+    if (window.innerWidth > 992) return;
+
     const host = this.elementRef.nativeElement as HTMLElement;
     const shadowIntensity =
       window.scrollY / 200 > 0.35 ? 0.35 : window.scrollY / 200;
