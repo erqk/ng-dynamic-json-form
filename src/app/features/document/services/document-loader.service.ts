@@ -51,8 +51,7 @@ export class DocumentLoaderService {
         )
       );
 
-    return this.showLoading$.pipe(
-      switchMap(() => this.settings$),
+    return this.settings$.pipe(
       switchMap(() =>
         hasTableOfContent
           ? this.getTableOfContent$(parentDirectory)
@@ -72,16 +71,15 @@ export class DocumentLoaderService {
       .pipe(map((x) => JSON.parse(x)));
   }
 
-  private get showLoading$(): Observable<null> {
-    // https://github.com/angular/angular/issues/23522#issuecomment-385015819
-    // Use of(null) and add delay(0) before set the `documentLoading$` value to avoid NG0100
-    return of(null).pipe(delay(0));
-  }
-
   private get settings$(): Observable<any> {
     return merge(
       this.languageDataService.language$,
       this.documentVersionService.currentVersion$
+    ).pipe(
+      // https://github.com/angular/angular/issues/23522#issuecomment-385015819
+      // Use of(null) and add delay(0) before set the `documentLoading$` value to avoid NG0100
+      delay(0),
+      tap(() => this.documentLoading$.next(true))
     );
   }
 }
