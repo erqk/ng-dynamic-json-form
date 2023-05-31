@@ -23,7 +23,7 @@ import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/load
 })
 export class PageApiComponent {
   content$ = this.documentLoaderService.getDocumentContent$('api', true);
-  
+
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,
     private documentLoaderService: DocumentLoaderService
@@ -31,6 +31,7 @@ export class PageApiComponent {
 
   onReady(): void {
     const h2 = document.querySelectorAll('markdown h2');
+    this.documentLoaderService.wrapTable();
     this.sideNavigationPaneService.h2$.next(Array.from(h2));
   }
 }
