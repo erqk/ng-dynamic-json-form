@@ -9,6 +9,7 @@ import { ThemeService } from '../../services/theme.service';
   imports: [CommonModule],
   template: `
     <button
+      type="button"
       class="btn-menu"
       [innerHTML]="currentTheme.svg"
       (click)="toggleMenu()"
@@ -16,6 +17,7 @@ import { ThemeService } from '../../services/theme.service';
     <div class="menu" [class.show]="showMenu">
       <ng-container *ngFor="let item of themeIcons">
         <button
+          type="button"
           [innerHTML]="item.svg"
           (click)="switchTheme(item.name)"
         ></button>
