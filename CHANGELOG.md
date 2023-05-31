@@ -1,3 +1,13 @@
+# 3.1.0
+
+### Feature
+
+- Description is now using `pre-wrap` to process white space.
+- Group element specific property in `extra` using their `type`.
+- Able to add label to switch.
+- Able to change option's label position.
+- Native textarea now support auto resize.
+
 # 3.0.0
 
 ### Fix
