@@ -1,6 +1,24 @@
 <ng-container *ngIf="control && data">
-  <label class="switch-button">
-    <input type="checkbox" [formControl]="control" />
-    <span class="marker"></span>
-  </label>
+  <div class="option-button-wrapper">
+    <label class="option-button switch-button">
+      <ng-container
+        *ngIf="data.extra?.switch?.labelPosition === 'before'"
+        [ngTemplateOutlet]="labelTemplate"
+      ></ng-container>
+
+      <input type="checkbox" [formControl]="control" />
+      <span class="marker"></span>
+
+      <ng-container
+        *ngIf="data.extra?.switch?.labelPosition !== 'before'"
+        [ngTemplateOutlet]="labelTemplate"
+      ></ng-container>
+    </label>
+  </div>
+
+  <ng-template #labelTemplate>
+    <span *ngIf="data.extra?.switch?.label">{{
+      data.extra?.switch?.label
+    }}</span>
+  </ng-template>
 </ng-container>

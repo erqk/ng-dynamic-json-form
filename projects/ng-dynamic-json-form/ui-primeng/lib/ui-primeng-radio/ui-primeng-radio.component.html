@@ -1,8 +1,8 @@
 <ng-container *ngIf="control && data">
   <div
-    class="flex gap-3"
+    class="group-buttons"
     [ngStyle]="{
-      'flex-column': data.optionsLayout === 'column'
+      'flex-direction': data.optionsLayout
     }"
   >
     <div *ngFor="let item of data.options" class="field-checkbox">

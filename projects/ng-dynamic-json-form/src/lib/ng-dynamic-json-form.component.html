@@ -134,7 +134,7 @@
     <ng-container *ngIf="description">
       <span class="form-description">{{ description }}</span>
     </ng-container>
-    
+
     <!-- Show add button when form array is empty -->
     <div
       *ngIf="formArray.controls.length === 0"
@@ -142,6 +142,7 @@
     >
       <div class="buttons">
         <button
+          type="button"
           class="btn-add"
           (click)="addFormGroup(formArray, formArrayConfig.template)"
         >
@@ -166,6 +167,7 @@
             <div class="buttons">
               <ng-container *ngIf="formArrayConfig.editable === true">
                 <button
+                  type="button"
                   class="btn-add"
                   (click)="
                     addFormGroup(formArray, formArrayConfig.template, i + 1)
@@ -174,6 +176,7 @@
                   <span></span>
                 </button>
                 <button
+                  type="button"
                   class="btn-remove"
                   (click)="removeFormGroup(formArray, i)"
                 >

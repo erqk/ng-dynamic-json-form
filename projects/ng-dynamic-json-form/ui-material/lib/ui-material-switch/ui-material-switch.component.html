@@ -1,3 +1,7 @@
 <ng-container *ngIf="control && data">
-  <mat-slide-toggle [formControl]="control"></mat-slide-toggle>
+  <mat-slide-toggle
+    [labelPosition]="data.extra?.switch?.labelPosition ?? 'after'"
+    [formControl]="control"
+    >{{ data.extra?.switch?.label }}</mat-slide-toggle
+  >
 </ng-container>

@@ -7,9 +7,11 @@
       }"
     >
       <ng-container *ngFor="let item of data.options">
-        <mat-radio-button [value]="item.value">{{
-          item.label
-        }}</mat-radio-button>
+        <mat-radio-button
+          [value]="item.value"
+          [labelPosition]="data.extra?.radio?.labelPosition ?? 'after'"
+          >{{ item.label }}</mat-radio-button
+        >
       </ng-container>
     </div>
   </mat-radio-group>

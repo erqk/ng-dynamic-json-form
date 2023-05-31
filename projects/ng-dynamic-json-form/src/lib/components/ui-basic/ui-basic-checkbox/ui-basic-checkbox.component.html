@@ -7,28 +7,77 @@
   >
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
-      <label class="option-button">
-        <input type="checkbox" [formControl]="control" />
-        <span class="marker"></span>
-        <span>{{ data.options[0].label }}</span>
-      </label>
+      <div class="option-button-wrapper">
+        <label class="option-button">
+          <ng-container
+            *ngTemplateOutlet="
+              labelTemplate;
+              context: {
+                label: data.options[0].label,
+                isBefore: true
+              }
+            "
+          ></ng-container>
+
+          <input type="checkbox" [formControl]="control" />
+          <span class="marker"></span>
+
+          <ng-container
+            *ngTemplateOutlet="
+              labelTemplate;
+              context: {
+                label: data.options[0].label,
+                isBefore: false
+              }
+            "
+          ></ng-container>
+        </label>
+      </div>
     </ng-container>
 
     <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
-        <label class="option-button">
-          <input
-            type="checkbox"
-            [value]="item.value ?? false"
-            [checked]="control.value.includes(item.value)"
-            (change)="onCheckboxChange($event)"
-          />
+        <div class="option-button-wrapper">
+          <label class="option-button">
+            <ng-container
+              *ngTemplateOutlet="
+                labelTemplate;
+                context: {
+                  label: item.label,
+                  isBefore: true
+                }
+              "
+            ></ng-container>
 
-          <span class="marker"></span>
-          <span>{{ item.label }}</span>
-        </label>
+            <input
+              type="checkbox"
+              [value]="item.value ?? false"
+              [checked]="control.value.includes(item.value)"
+              (change)="onCheckboxChange($event)"
+            />
+            <span class="marker"></span>
+
+            <ng-container
+              *ngTemplateOutlet="
+                labelTemplate;
+                context: {
+                  label: item.label,
+                  isBefore: false
+                }
+              "
+            ></ng-container>
+          </label>
+        </div>
       </ng-container>
     </ng-container>
   </div>
+
+  <ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
+    <ng-container
+      *ngIf="(data.extra?.checkbox?.labelPosition === 'before') === isBefore"
+    >
+      <span>{{ label }}</span>
+    </ng-container>
+  </ng-template>
 </ng-container>

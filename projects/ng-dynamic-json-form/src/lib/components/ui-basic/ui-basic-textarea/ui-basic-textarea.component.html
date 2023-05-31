@@ -1,9 +1,18 @@
 <ng-container *ngIf="control && data">
-  <textarea
-    [attr.name]="data.extra?.['name'] ?? null"
-    [attr.id]="data.extra?.['id'] ?? null"
-    [attr.cols]="data.extra?.['cols'] ?? 30"
-    [attr.rows]="data.extra?.['rows'] ?? 10"
-    [formControl]="control"
-  ></textarea>
+  <ng-container *ngIf="data.extra?.textarea?.autoResize !== true">
+    <textarea
+      [attr.cols]="data.extra?.textarea?.cols ?? 30"
+      [attr.rows]="data.extra?.textarea?.rows ?? 10"
+      [formControl]="control"
+    ></textarea>
+  </ng-container>
+
+  <ng-container *ngIf="data.extra?.textarea?.autoResize === true">
+    <textarea
+      textareaAutoResize
+      [attr.cols]="data.extra?.textarea?.cols ?? 30"
+      [attr.rows]="data.extra?.textarea?.rows ?? 10"
+      [formControl]="control"
+    ></textarea>
+  </ng-container>
 </ng-container>

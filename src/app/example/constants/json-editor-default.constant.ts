@@ -62,7 +62,8 @@ export const testData: FormControlConfig[] = [
       {
         label: 'Multi condition input',
         description:
-          "Required If (name==='Andrew' && age > 20 && (showEmail===false || gender==='0') )",
+          "if (name==='Andrew' && age > 20 && (showEmail===false || gender==='0'))\n" +
+          "then required === true",
         formControlName: 'multiConditionInput',
         type: 'text',
         validators: [
@@ -126,6 +127,12 @@ export const testData: FormControlConfig[] = [
         formControlName: 'showEmail',
         value: false,
         type: 'switch',
+        extra: {
+          switch: {
+            label: 'Show email input field',
+            labelPosition: 'before',
+          }
+        },
         validators: [
           {
             name: 'required',
@@ -162,7 +169,7 @@ export const testData: FormControlConfig[] = [
     type: 'checkbox',
     options: [
       {
-        label: 'I\'m a binary checkbox',
+        label: "I'm a binary checkbox",
       },
     ],
   },
@@ -248,9 +255,11 @@ export const testData: FormControlConfig[] = [
     formControlName: 'textarea',
     type: 'textarea',
     extra: {
-      rows: 3,
-      cols: 30,
-      autoResize: true,
+      textarea: {
+        rows: 3,
+        cols: 30,
+        autoResize: true,
+      },
     },
   },
   {

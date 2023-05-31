@@ -4,10 +4,11 @@
   </a>
 
   <app-tab-bar [links]="links"></app-tab-bar>
-  <button class="btn-menu" (click)="toggleSettings()"></button>
+  <button type="button" class="btn-menu" (click)="toggleSettings()"></button>
 </div>
 
 <button
+  type="button"
   class="btn-navigation"
   *ngIf="showNavigationPaneButton"
   (click)="toggleNavigationPane()"
