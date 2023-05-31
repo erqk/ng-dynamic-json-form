@@ -1,3 +1,5 @@
+[繁體中文](./README_zh-TW.md)
+
 # NgDynamicJsonForm
 
 Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!
@@ -13,4 +15,8 @@ Generate Angular reactive form with just using JSON data. Your form can be very 
 
 ## Documentation and demo
 
-https://erqk.github.io/ng-dynamic-json-form/
+[Getting started](https://erqk.github.io/ng-dynamic-json-form/getting-started)
+
+[API](https://erqk.github.io/ng-dynamic-json-form/api)
+
+[Playground](https://erqk.github.io/ng-dynamic-json-form/playground)
