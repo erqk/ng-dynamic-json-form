@@ -6,12 +6,20 @@
     }"
   >
     <ng-container *ngFor="let item of data.options">
-      <label class="option-button">
-        <input type="radio" [value]="item.value" [formControl]="control" />
+      <div class="option-button-wrapper">
+        <label class="option-button">
+          <span *ngIf="data.extra?.radio?.labelPosition === 'before'">{{
+            item.label
+          }}</span>
 
-        <span class="marker"></span>
-        <span>{{ item.label }}</span>
-      </label>
+          <input type="radio" [value]="item.value" [formControl]="control" />
+          <span class="marker"></span>
+
+          <span *ngIf="data.extra?.radio?.labelPosition !== 'before'">{{
+            item.label
+          }}</span>
+        </label>
+      </div>
     </ng-container>
   </div>
 </ng-container>

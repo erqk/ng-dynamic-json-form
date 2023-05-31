@@ -1,26 +1,58 @@
 <ng-container *ngIf="control && data">
   <div
-    class="flex"
-    [ngClass]="{
-      'flex-column': data.optionsLayout === 'column'
+    class="group-buttons"
+    [ngStyle]="{
+      'flex-direction': data.optionsLayout
     }"
   >
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
-      <div class="field-checkbox">
+      <div class="option-button">
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: data.options[0].label,
+              isBefore: true,
+              for: data.formControlName + '0'
+            }
+          "
+        ></ng-container>
+
         <p-checkbox
           [binary]="true"
           [inputId]="data.formControlName + '0'"
           [formControl]="control"
         ></p-checkbox>
-        <label [for]="data.formControlName + '0'">{{ data.options[0].label }}</label>
+
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: data.options[0].label,
+              isBefore: false,
+              for: data.formControlName + '0'
+            }
+          "
+        ></ng-container>
       </div>
     </ng-container>
 
     <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
-        <div class="field-checkbox">
+        <div class="option-button">
+          <ng-container
+            *ngTemplateOutlet="
+              labelTemplate;
+              context: {
+                label: item.label,
+                isBefore: true,
+                for: data.formControlName + '-' + item.label
+              }
+            "
+          ></ng-container>
+
           <p-checkbox
             [(ngModel)]="selectedItems"
             [name]="'group'"
@@ -28,9 +60,32 @@
             [inputId]="data.formControlName + '-' + item.label"
             (onChange)="onChanged($event)"
           ></p-checkbox>
-          <label [for]="data.formControlName + '-' + item.label">{{ item.label }}</label>
+
+          <ng-container
+            *ngTemplateOutlet="
+              labelTemplate;
+              context: {
+                label: item.label,
+                isBefore: false,
+                for: data.formControlName + '-' + item.label
+              }
+            "
+          ></ng-container>
         </div>
       </ng-container>
     </ng-container>
   </div>
+
+  <ng-template
+    #labelTemplate
+    let-label="label"
+    let-isBefore="isBefore"
+    let-for="for"
+  >
+    <ng-container
+      *ngIf="(data.extra?.checkbox?.labelPosition === 'before') === isBefore"
+    >
+      <label [attr.for]="for">{{ label }}</label>
+    </ng-container>
+  </ng-template>
 </ng-container>

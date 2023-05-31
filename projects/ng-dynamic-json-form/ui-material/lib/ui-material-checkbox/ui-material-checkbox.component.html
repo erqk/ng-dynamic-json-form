@@ -7,15 +7,18 @@
   >
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
-      <mat-checkbox [formControl]="control">{{
-        data.options[0].label
-      }}</mat-checkbox>
+      <mat-checkbox
+        [labelPosition]="data.extra?.checkbox?.labelPosition ?? 'after'"
+        [formControl]="control"
+        >{{ data.options[0].label }}</mat-checkbox
+      >
     </ng-container>
 
     <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
         <mat-checkbox
+          [labelPosition]="data.extra?.checkbox?.labelPosition ?? 'after'"
           [value]="item.value ?? false"
           [checked]="control.value.includes(item.value)"
           (change)="onCheckboxChange($event)"

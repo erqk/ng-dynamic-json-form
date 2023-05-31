@@ -1,3 +1,4 @@
+import { FormControlExtra } from './extra/form-control-extra.model';
 import { FormArrayConfig } from './form-array-config.model';
 import { FormControlCondition } from './form-control-condition.model';
 import { FormControlOptions } from './form-control-options.model';
@@ -27,7 +28,7 @@ export interface FormControlConfig {
    *    [autoResize]="data.extra?.['autoResize'] === true"
    *  ></textarea>
    */
-  extra?: { [key: string]: any };
+  extra?: FormControlExtra;
 
   /**Validators to add to this form control */
   validators?: ValidatorConfig[];
