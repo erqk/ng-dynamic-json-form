@@ -1,3 +1,5 @@
+[HOME](https://github.com/erqk/ng-dynamic-json-form)
+
 ## 功能介紹
 
 - 隨意建立 `FormControl`、`FormGroup` 和 `FormArray`，不論層級的多寡
@@ -9,4 +11,8 @@
 
 ## 文件和說明
 
-https://erqk.github.io/ng-dynamic-json-form/
+[開始說明](https://erqk.github.io/ng-dynamic-json-form/getting-started)
+
+[API](https://erqk.github.io/ng-dynamic-json-form/api)
+
+[演示區域](https://erqk.github.io/ng-dynamic-json-form/playground)
