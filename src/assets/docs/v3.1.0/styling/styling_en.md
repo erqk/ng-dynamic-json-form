@@ -17,6 +17,9 @@ These are the predefined CSS variables, you can overwrite them with your desire 
   --row-gap: 1.5rem;
   --column-gap: 1rem;
   --group-gap: 2rem;
+  
+  --options-column-gap: 1.85rem;
+  --options-row-gap: 0.25rem;
 
   --form-array-group-divider-color: #e1e1e1;
   --form-array-aroup-divider-weight: 1px;
