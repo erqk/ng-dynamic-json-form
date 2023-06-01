@@ -156,6 +156,12 @@ button {
   }
 }
 
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .multi-column {
   --column-count: 1;
   
