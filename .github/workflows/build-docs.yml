@@ -4,7 +4,13 @@ on:
     branches:
       - main
     paths:
-      - src/
+      - src/**
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/**
 
 jobs:
   Explore-GitHub-Actions:
