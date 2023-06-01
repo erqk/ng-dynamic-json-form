@@ -47,11 +47,15 @@ body {
 }
 
 h2 {
-  margin-top: 5rem;
+  margin-top: 6.5rem;
 
   &:first-of-type {
     margin-top: unset;
   }
+}
+
+h3 {
+  margin: 2.5rem 0 1rem;
 }
 
 a {
@@ -76,6 +80,16 @@ a {
     height: 2px;
     width: 0;
     background-color: var(--primary-500);
+  }
+}
+
+li {
+  > * {
+    margin: 0.5rem 0;
+  }
+
+  + li {
+    margin-top: 2rem;
   }
 }
 
@@ -114,7 +128,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   padding: 1rem;
-  margin: 2rem 0;
+  margin: 1rem 0;
 
   th {
     padding: 0.5rem;
