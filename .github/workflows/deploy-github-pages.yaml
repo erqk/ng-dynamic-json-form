@@ -26,13 +26,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build_and_deploy:
     strategy:
       matrix:
         node-version: [18.x]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Build library and docs
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -41,14 +47,13 @@ jobs:
       - run: npm run build:lib
       - run: npm run build:docs
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      # Copy index.html and rename it to 404.html
+      - name: Copy index.html and rename it to 404.html
+        uses: canastro/copy-file-action@master
+        with:
+          source: "./docs/index.html"
+          target: "./docs/404.html"
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
