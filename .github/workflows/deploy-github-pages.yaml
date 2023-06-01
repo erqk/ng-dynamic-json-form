@@ -40,8 +40,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i
-      - run: npm run build demo --base-href /ng-dynamic-json-form/
+      - run: npm ci
+      - run: npm build demo --base-href /ng-dynamic-json-form/
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
