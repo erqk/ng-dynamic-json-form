@@ -3,6 +3,7 @@
     pInputTextarea
     [rows]="data.extra?.textarea?.rows || 5"
     [cols]="data.extra?.textarea?.cols || 30"
+    [attr.placeholder]="data.placeholder ?? null"
     [autoResize]="data.extra?.textarea?.autoResize === true"
     [formControl]="control"
   ></textarea>
