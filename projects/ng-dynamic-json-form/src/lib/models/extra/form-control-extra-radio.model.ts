@@ -1,4 +1,3 @@
-import { FormControlExtraLabel } from './form-control-extra-label.model';
-
-export interface FormControlExtraRadio
-  extends Omit<FormControlExtraLabel, 'label'> {}
+export interface FormControlExtraRadio {
+  labelPosition?: 'before' | 'after';
+}

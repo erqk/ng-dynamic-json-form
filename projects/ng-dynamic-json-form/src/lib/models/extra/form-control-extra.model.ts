@@ -12,4 +12,5 @@ export interface FormControlExtra {
   range?: FormControlExtraRange;
   switch?: FormControlExtraSwitch;
   textarea?: FormControlExtraTextarea;
+  [key: string]: any;
 }
