@@ -6,11 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="lds-roller">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+    <div class="lds-ring">
       <div></div>
       <div></div>
       <div></div>
