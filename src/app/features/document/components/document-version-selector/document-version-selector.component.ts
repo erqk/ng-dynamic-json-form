@@ -10,7 +10,7 @@ import { DocumentVersionService } from '../../services/document-version.service'
   template: `
     <select [value]="version$ | async" (change)="changeVersion($event)">
       <ng-container *ngFor="let item of versions">
-        <option value="{{ item }}">v{{ item }}</option>
+        <option value="{{ item }}">{{ item }}</option>
       </ng-container>
     </select>
   `,
