@@ -21,11 +21,9 @@ export interface FormControlConfig {
   /**Custom data for this control. Example:
    *  @example
    *  <textarea
-   *    pInputTextarea
    *    [rows]="data.extra?.['rows'] || 5"
    *    [cols]="data.extra?.['cols'] || 30"
-   *    [formControl]="control"
-   *    [autoResize]="data.extra?.['autoResize'] === true"
+   *    ...
    *  ></textarea>
    */
   extra?: FormControlExtra;
