@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:lib": "ng build ng-dynamic-json-form",
+    "build:docs": "ng build --base-href /ng-dynamic-json-form/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
