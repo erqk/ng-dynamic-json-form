@@ -61,7 +61,7 @@ Provide your conditions like this:
 
 - ### `control`
 
-  Path to the target `AbstractControl` to listen. You can get it from `formControlName` in your data. If it's nested, join them using dot separator.
+  Path to the target `AbstractControl` to listen. You can get it from `formControlName` in your data. If it's nested, join them using period delimiter.
 
   > Path of `basicInfo` control is `"basicInfo"`.
   >
