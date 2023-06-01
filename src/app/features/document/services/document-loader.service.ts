@@ -82,4 +82,19 @@ export class DocumentLoaderService {
       tap(() => this.documentLoading$.next(true))
     );
   }
+
+  wrapTable(): void {
+    const tables = Array.from(
+      document.querySelectorAll('table')
+    ) as HTMLTableElement[];
+
+    for (const table of tables) {
+      const tableWrapper = document.createElement('div');
+      const tableCloned = table.cloneNode(true);
+      tableWrapper.classList.add('table-wrapper');
+      tableWrapper.appendChild(tableCloned);
+      table.insertAdjacentElement('beforebegin', tableWrapper);
+      table.remove();
+    }
+  }
 }
