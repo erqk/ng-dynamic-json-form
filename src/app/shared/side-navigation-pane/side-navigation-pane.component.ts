@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Subject, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
@@ -27,7 +27,12 @@ export class SideNavigationPaneComponent {
 
   links$ = this.sideNavigationPaneService.h2$.pipe(
     map((x) => x.map((x) => x.innerHTML)),
-    tap((x) => this.findActiveIndex())
+    tap((x) => {
+      this.syncActiveIndexWithScroll();
+      requestAnimationFrame(() => {
+        this.scrollToContent(undefined, false);
+      });
+    })
   );
 
   scrolling = false;
@@ -38,7 +43,8 @@ export class SideNavigationPaneComponent {
   constructor(
     private sideNavigationPaneService: SideNavigationPaneService,
     private renderer2: Renderer2,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -52,10 +58,13 @@ export class SideNavigationPaneComponent {
 
   onLinkClick(e: Event, index: number): void {
     const el = e.target as HTMLElement;
+    const newUrl = this.router.url.split('?')[0];
+
     el.scrollIntoView({
-      block: 'center'
+      block: 'center',
     });
-    
+
+    this.location.replaceState(newUrl, `index=${index}`);
     this.scrollToContent(index);
   }
 
@@ -69,7 +78,7 @@ export class SideNavigationPaneComponent {
 
           if (x instanceof NavigationEnd) {
             this.activeIndex = 0;
-            this.findActiveIndex();
+            this.syncActiveIndexWithScroll();
           }
         }),
         takeUntil(this.onDestroy$)
@@ -77,7 +86,7 @@ export class SideNavigationPaneComponent {
       .subscribe();
   }
 
-  private findActiveIndex(): void {
+  private syncActiveIndexWithScroll(): void {
     let lastScrollPosition = 0;
 
     const h2 = Array.from(document.querySelectorAll('markdown h2'));
@@ -120,13 +129,26 @@ export class SideNavigationPaneComponent {
       .subscribe();
   }
 
-  private scrollToContent(index: number): void {
-    const target = Array.from(document.querySelectorAll('markdown h2'))[index];
-    const header = document.querySelector(`app-header-${window.innerWidth > 992 ? 'desktop' : 'mobile'} .header`)
+  private scrollToContent(index?: number, smoothScrolling = true): void {
+    const indexFromRoute = this.router.parseUrl(this.location.path()).queryParams[
+      'index'
+    ];
+    const targetIndex = index ?? parseInt(indexFromRoute) ?? 0;
+    const target = Array.from(document.querySelectorAll('markdown h2'))[
+      targetIndex
+    ];
+    const header = document.querySelector(
+      `app-header-${window.innerWidth > 992 ? 'desktop' : 'mobile'} .header`
+    );
 
     if (!target || !header) return;
 
-    this.activeIndex = index;
+    if (targetIndex === 0) {
+      window.scroll({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    this.activeIndex = targetIndex;
     this.scrolling = true;
 
     this.renderer2.setStyle(
@@ -135,7 +157,7 @@ export class SideNavigationPaneComponent {
       `${header.clientHeight + 16}px`
     );
     target.scrollIntoView({
-      behavior: 'smooth',
+      behavior: smoothScrolling === true ? 'smooth' : 'auto',
     });
 
     clearTimeout(this.scrollingTimeout);
