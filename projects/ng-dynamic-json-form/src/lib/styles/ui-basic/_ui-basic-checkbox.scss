@@ -1,0 +1,35 @@
+@mixin checkbox {
+  input[type="checkbox"] {
+    display: none;
+
+    &:checked {
+      ~ .marker {
+        background-color: var(--color-primary);
+
+        &::before {
+          opacity: 1;
+        }
+      }
+    }
+
+    ~ .marker {
+      border: solid 2px var(--color-primary);
+      border-radius: 0.25rem;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: calc(50% - 0.1rem);
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        width: 30%;
+        height: 60%;
+        border: solid 2px white;
+        border-left: none;
+        border-top: none;
+        opacity: 0;
+        transition: 0.1s;
+      }
+    }
+  }
+}
