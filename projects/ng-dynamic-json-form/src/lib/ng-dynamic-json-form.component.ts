@@ -1,10 +1,15 @@
-import { CommonModule } from '@angular/common';
+import {
+  CommonModule,
+  isPlatformServer
+} from '@angular/common';
 import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   Output,
+  PLATFORM_ID,
   Renderer2,
   SimpleChanges,
   Type,
@@ -88,6 +93,7 @@ export class NgDynamicJsonFormComponent {
   private onDestroy$ = new Subject();
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private el: ElementRef,
     private renderer2: Renderer2,
     private formConfigInitService: FormConfigInitService,
@@ -97,6 +103,10 @@ export class NgDynamicJsonFormComponent {
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const { jsonData, uiComponents } = simpleChanges;
 
     if (jsonData) {
@@ -109,6 +119,10 @@ export class NgDynamicJsonFormComponent {
   }
 
   ngOnInit(): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+    
     this.initHostClass();
     this.setHostUiClass();
   }
