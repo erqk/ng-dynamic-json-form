@@ -65,7 +65,14 @@ export class GridLayoutService {
   private gridTemplateColumnCount(gridTemplateColumns: string): number {
     /**Get multiplier from `repeat(N, ...)` */
     const multiplier =
-      gridTemplateColumns.match(/(?<=repeat\(\s*)\d+/)?.pop() || '1';
+      gridTemplateColumns.includes('repeat') &&
+      gridTemplateColumns.includes(',')
+        ? gridTemplateColumns
+            .split(/repeat\(\s*/)
+            .join('')
+            .split(',')
+            .filter((x) => x.trim())[0]
+        : '1';
 
     /**Get the number of `fr` */
     const columnCount =
