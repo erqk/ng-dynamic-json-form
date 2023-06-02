@@ -1,0 +1,27 @@
+<ng-container *ngIf="control && data">
+  <div class="range-wrapper">
+    <ng-container
+      *ngIf="data.extra?.range?.labelPosition === 'before'"
+      [ngTemplateOutlet]="labelTemplate"
+    ></ng-container>
+
+    <input
+      type="range"
+      [attr.min]="data.extra?.range?.min"
+      [attr.max]="data.extra?.range?.max"
+      [attr.step]="data.extra?.range?.step"
+      [formControl]="control"
+    />
+
+    <ng-container
+      *ngIf="data.extra?.range?.labelPosition !== 'before'"
+      [ngTemplateOutlet]="labelTemplate"
+    ></ng-container>
+  </div>
+
+  <ng-template #labelTemplate>
+    <ng-container *ngIf="data.extra?.range?.label">
+      <label>{{ data.extra?.range?.label }}</label>
+    </ng-container>
+  </ng-template>
+</ng-container>

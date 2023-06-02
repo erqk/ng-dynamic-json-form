@@ -263,6 +263,19 @@ export const testData: FormControlConfig[] = [
     },
   },
   {
+    label: 'Slider',
+    formControlName: 'rangeSlider',
+    type: 'range',
+    extra: {
+      range: {
+        min: 0,
+        max: 100,
+        label: '...label',
+        labelPosition: 'before'
+      }
+    }
+  },
+  {
     label: 'Custom Component (FormControl)',
     formControlName: 'customComponentControl',
     customComponent: 'custom-input',
