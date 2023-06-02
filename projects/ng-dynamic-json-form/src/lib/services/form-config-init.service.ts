@@ -75,6 +75,15 @@ export class FormConfigInitService {
 
   private initNgxMaskPatterns(config: FormControlConfig[]): void {
     for (const item of config) {
+      const noChildren = !item.children?.length;
+      const noFormArray = !item.formArray || !item.formArray.template.length;
+
+      if (!item.ngxMaskConfig && noChildren && noFormArray) {
+        continue;
+      }
+
+      // If one of the `specialCharacters` or `patterns` is provided in `ngxMaskConfig`,
+      // we need to set all the default value because they will be overwritten by ngx-mask
       const specialCharacters = item?.ngxMaskConfig?.specialCharacters;
       const patterns = item?.ngxMaskConfig?.patterns;
       const patternsMapped = !patterns
@@ -91,24 +100,19 @@ export class FormConfigInitService {
             return obj;
           }, patterns);
 
-      // If one of the `specialCharacters` or `patterns` is provided in `ngxMaskConfig`,
-      // we need to set all the default value because they will be overwritten by ngx-mask
-      if (item.ngxMaskConfig) {
-        if (item.ngxMaskConfig.specialCharacters) {
-          item.ngxMaskConfig = {
-            ...item.ngxMaskConfig,
-            specialCharacters:
-              specialCharacters ?? this.maskDefaultSpecialCharacters,
-          };
-        }
+      item.ngxMaskConfig = {
+        ...item.ngxMaskConfig,
+        specialCharacters:
+          specialCharacters && Array.isArray(specialCharacters)
+            ? specialCharacters
+            : this.maskDefaultSpecialCharacters,
+      };
 
-        if (item.ngxMaskConfig.patterns) {
-          item.ngxMaskConfig = {
-            ...item.ngxMaskConfig,
-            patterns: patternsMapped ?? this.maskDefaultPatterns,
-            specialCharacters: this.maskDefaultSpecialCharacters
-          };
-        }
+      if (patterns) {
+        item.ngxMaskConfig = {
+          ...item.ngxMaskConfig,
+          patterns: patternsMapped ?? this.maskDefaultPatterns,
+        };
       }
 
       if (!!item.children?.length) {
