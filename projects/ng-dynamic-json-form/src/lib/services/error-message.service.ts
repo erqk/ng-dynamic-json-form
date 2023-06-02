@@ -17,7 +17,7 @@ export class ErrorMessageService {
         if (!errors) return [];
 
         return Object.keys(errors!).reduce((acc, key) => {
-          switch (key.toLocaleLowerCase()) {
+          switch (key.toLowerCase()) {
             case ValidatorAndConditionTypes.REQUIRED.toLowerCase():
             case ValidatorAndConditionTypes.REQUIRED_TRUE.toLowerCase():
             case ValidatorAndConditionTypes.MIN.toLowerCase():
@@ -27,7 +27,7 @@ export class ErrorMessageService {
             case ValidatorAndConditionTypes.PATTERN.toLowerCase():
             case ValidatorAndConditionTypes.EMAIL.toLowerCase():
               const customErrorMessage = validatorConfigs
-                ?.find((x) => x.name.toLocaleLowerCase() === key)
+                ?.find((x) => x.name.toLowerCase() === key)
                 ?.message?.replace(/{{value}}/g, control.value || '');
 
               acc.push(

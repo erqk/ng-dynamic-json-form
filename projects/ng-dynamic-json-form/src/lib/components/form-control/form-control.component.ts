@@ -30,7 +30,7 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
 
   isMaterial = false;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.injectComponent();
   }
 
