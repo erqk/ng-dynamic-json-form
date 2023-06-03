@@ -266,12 +266,14 @@ export const testData: FormControlConfig[] = [
     label: 'Slider',
     formControlName: 'rangeSlider',
     type: 'range',
+    value: 20,
     extra: {
       range: {
         min: 0,
         max: 100,
-        label: '...label',
-        labelPosition: 'before'
+        step: 10,
+        showCurrentValue: true,
+        showTickMarks: true
       }
     }
   },

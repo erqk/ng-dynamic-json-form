@@ -1,10 +1,12 @@
 <ng-container *ngIf="control && data">
-  <div class="range-wrapper">
-    <ng-container
-      *ngIf="data.extra?.range?.labelPosition === 'before'"
-      [ngTemplateOutlet]="labelTemplate"
-    ></ng-container>
-
+  <div
+    class="range-input"
+    [ngClass]="{
+      'show-tick-marks':
+        data.extra?.range?.showTickMarks === true ||
+        data.extra?.range?.showCurrentValue === true
+    }"
+  >
     <input
       type="range"
       [attr.min]="data.extra?.range?.min"
@@ -13,15 +15,21 @@
       [formControl]="control"
     />
 
-    <ng-container
-      *ngIf="data.extra?.range?.labelPosition !== 'before'"
-      [ngTemplateOutlet]="labelTemplate"
-    ></ng-container>
-  </div>
-
-  <ng-template #labelTemplate>
-    <ng-container *ngIf="data.extra?.range?.label">
-      <label>{{ data.extra?.range?.label }}</label>
+    <ng-container *ngIf="data.extra?.range?.showCurrentValue">
+      <div class="current-value" [style.--left]="valuePosition">
+        {{ control.value }}
+      </div>
     </ng-container>
-  </ng-template>
+
+    <ng-container *ngIf="data.extra?.range?.showTickMarks">
+      <div class="tick-marks-container">
+        <ng-container *ngFor="let mark of tickMarks; index as i">
+          <span class="tick-mark"></span>
+        </ng-container>
+      </div>
+
+      <div class="min-number">{{ data.extra?.range?.min }}</div>
+      <div class="max-number">{{ data.extra?.range?.max }}</div>
+    </ng-container>
+  </div>
 </ng-container>

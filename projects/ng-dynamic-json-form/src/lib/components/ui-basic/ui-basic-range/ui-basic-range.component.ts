@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { startWith, tap } from 'rxjs/operators';
 import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/custom-component-base.component';
-import { debounceTime, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ui-basic-range',
@@ -14,15 +14,50 @@ import { debounceTime, startWith, tap } from 'rxjs/operators';
 export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
   private el = inject(ElementRef);
   private rangeInput?: HTMLInputElement;
-
   ngOnInit(): void {
+    this.getTickMarksCount();
+  }
+
+  tickMarks: any[] = [];
+
+  ngAfterViewInit(): void {
+    this.updateSlider();
     this.control?.valueChanges
       .pipe(
         startWith(this.control.value),
-        debounceTime(0),
         tap(() => this.updateSlider())
       )
       .subscribe();
+  }
+
+  get valuePosition(): string {
+    const min = this.data?.extra?.range?.min;
+    const max = this.data?.extra?.range?.max;
+
+    if (
+      this.control?.value === undefined ||
+      min === undefined ||
+      max === undefined
+    ) {
+      return '0%';
+    }
+
+    return `${(this.control.value / (max - min)) * 100}%`;
+  }
+
+  private getTickMarksCount(): void {
+    if (!this.data?.extra?.range || !this.data.extra.range.showTickMarks) {
+      return;
+    }
+
+    const diff =
+      (this.data.extra.range.max ?? 1) - (this.data.extra.range.min ?? 1);
+    const steps = this.data.extra.range.step ?? 1;
+    if (diff === 0) return;
+
+    this.tickMarks = Array.from(Array(Math.ceil(diff / steps) + 1).keys()).map(
+      (x, i) => i
+    );
   }
 
   private updateSlider(): void {

@@ -6,6 +6,7 @@ import { UiPrimengRadioComponent } from './ui-primeng-radio/ui-primeng-radio.com
 import { UiPrimengSwitchComponent } from './ui-primeng-switch/ui-primeng-switch.component';
 import { UiPrimengTextareaComponent } from './ui-primeng-textarea/ui-primeng-textarea.component';
 import { UiPrimengInputMaskComponent } from './ui-primeng-input-mask/ui-primeng-input-mask.component';
+import { UiPrimengRangeComponent } from './ui-primeng-range/ui-primeng-range.component';
 
 export const UI_PRIMENG_COMPONENTS: UiComponents = {
   checkbox: { type: 'primeng', component: UiPrimengCheckboxComponent },
@@ -14,6 +15,7 @@ export const UI_PRIMENG_COMPONENTS: UiComponents = {
   number: { type: 'primeng', component: UiPrimengInputComponent },
   email: { type: 'primeng', component: UiPrimengInputComponent },
   radio: { type: 'primeng', component: UiPrimengRadioComponent },
+  range: { type: 'primeng', component: UiPrimengRangeComponent },
   switch: { type: 'primeng', component: UiPrimengSwitchComponent },
   text: { type: 'primeng', component: UiPrimengInputComponent },
   textMask: { type: 'primeng', component: UiPrimengInputMaskComponent },
