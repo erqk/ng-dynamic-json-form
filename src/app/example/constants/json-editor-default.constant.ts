@@ -278,6 +278,17 @@ export const testData: FormControlConfig[] = [
     }
   },
   {
+    label: 'Date time',
+    formControlName: 'dateTimeInput',
+    type: 'date',
+    extra: {
+      date: {
+        selectTime: true,
+        outputFormat: 'yyyy/MM/dd HH:mm'
+      }
+    }
+  },
+  {
     label: 'Custom Component (FormControl)',
     formControlName: 'customComponentControl',
     customComponent: 'custom-input',

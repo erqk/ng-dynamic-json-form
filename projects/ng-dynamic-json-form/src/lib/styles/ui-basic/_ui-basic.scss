@@ -1,9 +1,10 @@
 @use "./ui-basic-checkbox" as checkbox;
+@use "./ui-basic-date" as date;
 @use "./ui-basic-radio" as radio;
+@use "./ui-basic-range" as range;
+@use "./ui-basic-select" as select;
 @use "./ui-basic-switch" as switch;
 @use "./ui-basic-textarea" as textarea;
-@use "./ui-basic-select" as select;
-@use "./ui-basic-range" as range;
 
 .ng-dynamic-json-form.ui-basic {
   * {
@@ -52,6 +53,7 @@
     @include checkbox.checkbox();
   }
 
+  @include date.date-input();
   @include range.range-input();
   @include select.select();
   @include switch.switch-button();

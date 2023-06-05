@@ -7,9 +7,11 @@ import { UiMaterialRadioComponent } from './ui-material-radio/ui-material-radio.
 import { UiMaterialRangeComponent } from './ui-material-range/ui-material-range.component';
 import { UiMaterialSwitchComponent } from './ui-material-switch/ui-material-switch.component';
 import { UiMaterialTextareaComponent } from './ui-material-textarea/ui-material-textarea.component';
+import { UiMaterialDateComponent } from './ui-material-date/ui-material-date.component';
 
 export const UI_MATERIAL_COMPONENTS: UiComponents = {
   checkbox: { type: 'material', component: UiMaterialCheckboxComponent },
+  date: { type: 'material', component: UiMaterialDateComponent },
   dropdown: { type: 'material', component: UiMaterialDropdownComponent },
   password: { type: 'material', component: UiMaterialInputComponent },
   number: { type: 'material', component: UiMaterialInputComponent },

@@ -1,4 +1,5 @@
 import { UiBasicCheckboxComponent } from '../components/ui-basic/ui-basic-checkbox/ui-basic-checkbox.component';
+import { UiBasicDateComponent } from '../components/ui-basic/ui-basic-date/ui-basic-date.component';
 import { UiBasicDropdownComponent } from '../components/ui-basic/ui-basic-dropdown/ui-basic-dropdown.component';
 import { UiBasicInputMaskComponent } from '../components/ui-basic/ui-basic-input-mask/ui-basic-input-mask.component';
 import { UiBasicInputComponent } from '../components/ui-basic/ui-basic-input/ui-basic-input.component';
@@ -10,6 +11,7 @@ import { UiComponents } from '../models/ui-components-type.model';
 
 export const UI_BASIC_COMPONENTS: UiComponents = {
   checkbox: { type: 'basic', component: UiBasicCheckboxComponent },
+  date: { type: 'basic', component: UiBasicDateComponent },
   dropdown: { type: 'basic', component: UiBasicDropdownComponent },
   password: { type: 'basic', component: UiBasicInputComponent },
   number: { type: 'basic', component: UiBasicInputComponent },

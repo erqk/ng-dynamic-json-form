@@ -1,0 +1,17 @@
+<ng-container *ngIf="control && data">
+  <div class="date-input">
+    <input
+      type="date"
+      [attr.min]="data.extra?.date?.min"
+      [attr.max]="data.extra?.date?.max"
+      [formControl]="dateControl"
+    />
+
+    <ng-container *ngIf="data.extra?.date?.selectTime === true">
+      <input
+        type="time"
+        [formControl]="timeControl"
+      />
+    </ng-container>
+  </div>
+</ng-container>
