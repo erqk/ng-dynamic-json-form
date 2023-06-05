@@ -1,0 +1,15 @@
+@mixin option-button-wrapper {
+  .option-button-wrapper {
+    display: flex;
+  }
+}
+
+// button inside group-buttons
+@mixin option-button {
+  .option-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+}

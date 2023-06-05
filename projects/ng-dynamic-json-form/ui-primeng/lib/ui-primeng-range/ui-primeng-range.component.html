@@ -1,0 +1,10 @@
+<ng-container *ngIf="control && data">
+  <div class="range-input">
+    <p-slider
+      [min]="data.extra?.range?.min ?? 0"
+      [max]="data.extra?.range?.max ?? 1"
+      [step]="data.extra?.range?.step ?? 1"
+      [formControl]="control"
+    ></p-slider>
+  </div>
+</ng-container>

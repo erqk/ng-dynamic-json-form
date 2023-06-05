@@ -1,0 +1,61 @@
+@use "./ui-basic-checkbox" as checkbox;
+@use "./ui-basic-date" as date;
+@use "./ui-basic-radio" as radio;
+@use "./ui-basic-range" as range;
+@use "./ui-basic-select" as select;
+@use "./ui-basic-switch" as switch;
+@use "./ui-basic-textarea" as textarea;
+
+.ng-dynamic-json-form.ui-basic {
+  * {
+    box-sizing: border-box;
+  }
+
+  input,
+  textarea {
+    padding: 0.75rem 1rem;
+    font-size: inherit;
+    border: solid 1px lightgray;
+    border-radius: 0.5rem;
+    outline: none;
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-lighter);
+    }
+  }
+
+  .option-button {
+    --markerSize: 1.35rem;
+
+    &:hover {
+      .marker {
+        box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .marker {
+      position: relative;
+      flex-shrink: 0;
+      display: block;
+      width: var(--markerSize);
+      height: var(--markerSize);
+      cursor: pointer;
+      transition: 0.25s;
+      z-index: 0;
+    }
+
+    @include radio.radio();
+    @include checkbox.checkbox();
+  }
+
+  @include date.date-input();
+  @include range.range-input();
+  @include select.select();
+  @include switch.switch-button();
+  @include textarea.textarea();
+}

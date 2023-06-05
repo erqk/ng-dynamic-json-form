@@ -1,0 +1,7 @@
+@mixin textarea {
+  textarea {
+    font-size: inherit;
+    font-family: inherit;
+    resize: vertical;
+  }
+}

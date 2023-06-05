@@ -1,6 +1,6 @@
-@use "./form-array-group-header-buttons";
-
-@import "./ui-basic";
+@use "./option-button" as option-button;
+@use "./form-array" as form-array;
+@use "./ui-basic/ui-basic";
 
 .ng-dynamic-json-form {
   --color-primary: #3b82f6;
@@ -20,11 +20,11 @@
   --form-array-aroup-divider-weight: 1px;
   --form-array-group-divider-spacing: 2rem;
 
+  --drop-shadow: 0 0 0.25rem 0.8rem rgba(0, 0, 0, 0.2);
+
   font-family: "Roboto", "Noto Sans TC", "Noto Sans SC", system-ui,
     -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell,
     "Open Sans", "Helvetica Neue", sans-serif;
-
-  word-break: break-all;
 
   input {
     width: 100%;
@@ -41,6 +41,7 @@
     margin-bottom: 1rem;
     font-size: var(--font-size-title);
     font-weight: 700;
+    word-break: break-all;
   }
 
   .form-description,
@@ -48,6 +49,7 @@
     margin-bottom: 0.5rem;
     color: gray;
     white-space: pre-wrap;
+    word-break: break-all;
   }
 
   .form-group-container,
@@ -94,6 +96,11 @@
       }
     }
 
+    form-control > * {
+      display: flex;
+      flex-direction: column;
+    }
+
     .input-label {
       display: block;
       font-weight: 500;
@@ -108,51 +115,11 @@
       row-gap: var(--options-row-gap);
     }
 
-    .option-button-wrapper {
-      display: flex;
-    }
-
-    // button inside group-buttons
-    .option-button {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-    }
-
-    form-control > * {
-      display: flex;
-      flex-direction: column;
-    }
+    @include option-button.option-button();
+    @include option-button.option-button-wrapper();
   }
 
-  // ==================== FormArray ======================
-  .form-array-container {
-    .form-array-group-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 1rem;
-
-      .label {
-        font-weight: bold;
-        opacity: 0.65;
-      }
-
-      .buttons {
-        @extend .form-array-group-header-buttons;
-      }
-    }
-
-    .group {
-      + .group {
-        margin-top: var(--form-array-group-divider-spacing);
-        padding-top: var(--form-array-group-divider-spacing);
-        border-top: solid var(--form-array-aroup-divider-weight)
-          var(--form-array-group-divider-color);
-      }
-    }
-  }
+  @include form-array.form-array-container();
 
   // ==================== Errors ======================
   .errors-container {
@@ -162,5 +129,17 @@
       margin-top: 0.35rem;
       color: #ff4747;
     }
+  }
+
+  // Apply to input, to let screen reader able to associate with corresponding label
+  .visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
   }
 }

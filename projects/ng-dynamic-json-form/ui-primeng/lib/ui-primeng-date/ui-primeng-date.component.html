@@ -1,0 +1,9 @@
+<ng-container *ngIf="control && data">
+  <p-calendar
+    [appendTo]="'body'"
+    [readonlyInput]="true"
+    [dateFormat]="data.extra?.date?.displayFormat"
+    [showTime]="data.extra?.date?.selectTime ?? false"
+    [formControl]="dateControl"
+  ></p-calendar>
+</ng-container>
