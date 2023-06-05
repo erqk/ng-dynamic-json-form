@@ -9,12 +9,13 @@ import {
 } from '@angular/forms';
 import {
   Observable,
-  combineLatest,
   debounceTime,
+  from,
   merge,
+  mergeMap,
   of,
   startWith,
-  tap,
+  tap
 } from 'rxjs';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import {
@@ -55,15 +56,12 @@ export class FormStatusService {
     if (!configs.length) return of(null);
 
     const conditionsExtracted = this.extractConditions(form, configs);
-    const allControlChanges$ = conditionsExtracted.map((conditionData) => {
-      const valueChanges$ = conditionData.controlsToListen.map((x) =>
-        x.valueChanges.pipe(startWith(x.value))
-      );
-
-      return combineLatest(valueChanges$).pipe(
-        tap((x) => this.updateControlStatus(form, conditionData))
-      );
-    });
+    const allControlChanges$ = conditionsExtracted.map((conditionData) =>
+      from(conditionData.controlsToListen).pipe(
+        mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
+        tap(() => this.updateControlStatus(form, conditionData))
+      )
+    );
 
     return merge(...allControlChanges$);
   }
@@ -138,12 +136,14 @@ export class FormStatusService {
             else this.setElementStyle(x, 'display', 'block');
           });
 
-          bool ? control.disable() : control.enable();
+          bool
+            ? control.disable({ emitEvent: false })
+            : control.enable({ emitEvent: false });
           break;
 
         case ValidatorAndConditionTypes.DISABLED:
-          if (bool) control.disable();
-          else control.enable();
+          if (bool) control.disable({ emitEvent: false });
+          else control.enable({ emitEvent: false });
           break;
 
         default:
@@ -153,7 +153,7 @@ export class FormStatusService {
     };
 
     Object.values(ValidatorAndConditionTypes).forEach((x) => setStatus(x));
-    control.updateValueAndValidity();
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
   /**Get the target element by using:
