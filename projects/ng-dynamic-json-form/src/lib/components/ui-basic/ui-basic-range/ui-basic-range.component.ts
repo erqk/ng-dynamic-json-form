@@ -14,11 +14,13 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
 export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
   private el = inject(ElementRef);
   private rangeInput?: HTMLInputElement;
-  ngOnInit(): void {
-    this.getTickMarksCount();
-  }
 
   tickMarks: any[] = [];
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.getTickMarksCount();
+  }
 
   ngAfterViewInit(): void {
     this.updateSlider();

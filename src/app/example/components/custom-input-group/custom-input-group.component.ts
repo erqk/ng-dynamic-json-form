@@ -18,7 +18,8 @@ export class CustomInputGroupComponent extends NgDynamicJsonFormCustomComponent 
     control3: new FormControl(''),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.formGroup.valueChanges
       .pipe(
         debounceTime(0),

@@ -21,7 +21,8 @@ export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
 
   dateControl = new FormControl('');
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.setMinMaxDate();
     this.bindControl();
   }
