@@ -1,4 +1,4 @@
-.form-array-group-header-buttons {
+@mixin header-buttons {
   display: flex;
 
   [class*="btn-"] {
@@ -53,6 +53,35 @@
       &::after {
         width: var(--lineWidth);
         height: 100%;
+      }
+    }
+  }
+}
+
+@mixin form-array-container {
+  .form-array-container {
+    .form-array-group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+
+      .label {
+        font-weight: bold;
+        opacity: 0.65;
+      }
+
+      .buttons {
+        @include header-buttons();
+      }
+    }
+
+    .group {
+      + .group {
+        margin-top: var(--form-array-group-divider-spacing);
+        padding-top: var(--form-array-group-divider-spacing);
+        border-top: solid var(--form-array-aroup-divider-weight)
+          var(--form-array-group-divider-color);
       }
     }
   }

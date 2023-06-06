@@ -22,7 +22,6 @@
     "@angular/router": "^16.0.2",
     "@types/marked": "^4.0.8",
     "angular-split": "^15.0.0",
-    "autoprefixer": "^10.4.14",
     "marked": "^4.3.0",
     "ngx-markdown": "^16.0.0",
     "ngx-mask": "^16.0.9",

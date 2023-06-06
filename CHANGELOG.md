@@ -1,3 +1,33 @@
+# 3.2.0
+
+### Feature
+
+- Add `range`, `date` input type.
+
+### Chore
+
+- Add server-side check
+
+  Some function is calling browser specific API, so we do nothing if it's server-side to prevent error.
+
+- `NgDynamicJsonFormCustomComponent` is now carry validation errors.
+
+# 3.1.5
+
+### Fix
+
+- Input validation error should not have mask
+
+  For the input that using `mask` directive, the `validation` is set to false, there shouldn't be any mask errors output.
+
+# 3.1.4
+
+### Fix
+
+- Form not generate on Safari version below 16.3
+
+  The use of positive lookbehind regular expression is not well supported. Use the other way to achieve same result.
+
 # 3.1.0
 
 ### Feature
@@ -14,7 +44,7 @@
 
 - Use more reliable way to determine whether the UI component is Angular Material using information form type `UiComponents`.
 
-### Feat
+### Feature
 
 - Update type `UiComponents`, enable it to carry more information
 
@@ -22,8 +52,8 @@
 
 ### Fix
 
-- add the missing description field in form group and form array
-- hide error message if it's Angular Material
+- Add the missing description field in form group and form array
+- Hide error message if it's Angular Material
 
 # 2.0.0
 

@@ -1,8 +1,8 @@
-import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
 import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ui-primeng-checkbox',
@@ -15,7 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class UiPrimengCheckboxComponent extends NgDynamicJsonFormCustomComponent {
   selectedItems: any[] = [];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.setValue();
   }
 

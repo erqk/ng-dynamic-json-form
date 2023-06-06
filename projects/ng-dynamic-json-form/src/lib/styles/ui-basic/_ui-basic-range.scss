@@ -1,0 +1,142 @@
+@mixin thumbStyles {
+  appearance: none;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  opacity: 1;
+  cursor: pointer;
+}
+
+@mixin range {
+  input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 0.25rem;
+    padding: 0;
+    margin: 0.5rem 0;
+    background: rgba(128, 128, 128, 0.2);
+    background-image: linear-gradient(
+      var(--color-primary),
+      var(--color-primary)
+    );
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 1rem;
+    outline: none;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:active,
+    &:focus {
+      &::-webkit-slider-thumb {
+        box-shadow: 0 0 0 0.5rem rgba(128, 128, 128, 0.25);
+      }
+
+      &::-moz-range-thumb {
+        box-shadow: 0 0 0 0.5rem rgba(128, 128, 128, 0.25);
+      }
+    }
+
+    &::-webkit-slider-thumb {
+      @include thumbStyles();
+    }
+
+    &::-moz-range-thumb {
+      @include thumbStyles();
+    }
+  }
+}
+
+@mixin range-input {
+  .range-input {
+    --slider-thumb-size: 1.35rem;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 0;
+
+    &:focus-within {
+      .current-value {
+        opacity: 1;
+      }
+    }
+
+    &.show-tick-marks {
+      padding-top: var(--slider-thumb-size);
+    }
+
+    @include range();
+
+    .tick-marks-container {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 0.25rem;
+      padding: 0 calc(var(--slider-thumb-size) * 0.5);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .tick-mark {
+      position: relative;
+      width: 0;
+      height: 100%;
+      z-index: 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 1px;
+        height: 100%;
+        background-color: rgba(128, 128, 128, 0.5);
+      }
+
+      &:first-child,
+      &:last-child {
+        &::before {
+          content: none;
+        }
+      }
+    }
+
+    .min-number,
+    .max-number,
+    .current-value {
+      position: absolute;
+      top: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .min-number {
+      left: 0;
+    }
+
+    .max-number {
+      right: 0;
+    }
+
+    .current-value {
+      top: calc(var(--slider-thumb-size) * -1);
+      left: calc(var(--left));
+      transform: translateX(calc(var(--left) * -1));
+      word-break: keep-all;
+      background-color: var(--color-primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.2rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1;
+    }
+  }
+}

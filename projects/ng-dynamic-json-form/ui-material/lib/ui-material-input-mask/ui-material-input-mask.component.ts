@@ -1,13 +1,11 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import {
   ErrorMessageService,
   NgDynamicJsonFormCustomComponent,
 } from 'ng-dynamic-json-form';
-import { MatInputModule } from '@angular/material/input';
-import { Observable } from 'rxjs/internal/Observable';
-import { debounceTime, startWith, switchMap } from 'rxjs/operators';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
@@ -23,21 +21,4 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   styles: [],
   providers: [ErrorMessageService, provideNgxMask()],
 })
-export class UiMaterialInputMaskComponent extends NgDynamicJsonFormCustomComponent {
-  errors$?: Observable<string[]>;
-
-  private errorMessageService = inject(ErrorMessageService);
-
-  ngOnInit(): void {
-    this.errors$ = this.control?.valueChanges.pipe(
-      startWith(this.control.value),
-      debounceTime(0),
-      switchMap(() =>
-        this.errorMessageService.getErrors$(
-          this.control!,
-          this.data?.validators || []
-        )
-      )
-    );
-  }
-}
+export class UiMaterialInputMaskComponent extends NgDynamicJsonFormCustomComponent {}

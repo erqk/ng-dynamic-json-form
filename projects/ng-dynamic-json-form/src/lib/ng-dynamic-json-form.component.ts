@@ -1,10 +1,12 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformServer } from '@angular/common';
 import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   Output,
+  PLATFORM_ID,
   Renderer2,
   SimpleChanges,
   Type,
@@ -22,6 +24,7 @@ import { FormControlComponent } from './components/form-control/form-control.com
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { FormControlConfig, UiComponents } from './models';
+import { ErrorMessageService } from './services';
 import { FormConfigInitService } from './services/form-config-init.service';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
@@ -45,6 +48,7 @@ import { GridLayoutService } from './services/grid-layout.service';
     FormValidatorService,
     FormStatusService,
     GridLayoutService,
+    ErrorMessageService,
   ],
 })
 export class NgDynamicJsonFormComponent {
@@ -88,6 +92,7 @@ export class NgDynamicJsonFormComponent {
   private onDestroy$ = new Subject();
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private el: ElementRef,
     private renderer2: Renderer2,
     private formConfigInitService: FormConfigInitService,
@@ -97,6 +102,10 @@ export class NgDynamicJsonFormComponent {
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const { jsonData, uiComponents } = simpleChanges;
 
     if (jsonData) {
@@ -109,6 +118,10 @@ export class NgDynamicJsonFormComponent {
   }
 
   ngOnInit(): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     this.initHostClass();
     this.setHostUiClass();
   }

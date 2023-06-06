@@ -263,6 +263,32 @@ export const testData: FormControlConfig[] = [
     },
   },
   {
+    label: 'Slider',
+    formControlName: 'rangeSlider',
+    type: 'range',
+    value: 20,
+    extra: {
+      range: {
+        min: 0,
+        max: 100,
+        step: 10,
+        showCurrentValue: true,
+        showTickMarks: true
+      }
+    }
+  },
+  {
+    label: 'Date time',
+    formControlName: 'dateTimeInput',
+    type: 'date',
+    extra: {
+      date: {
+        selectTime: true,
+        outputFormat: 'yyyy/MM/dd HH:mm'
+      }
+    }
+  },
+  {
     label: 'Custom Component (FormControl)',
     formControlName: 'customComponentControl',
     customComponent: 'custom-input',
