@@ -10,9 +10,9 @@
 
 <ng-container #componentAnchor></ng-container>
 
-<ng-container *ngIf="!isMaterial && control && data && control.errors">
+<ng-container *ngIf="!isMaterial">
   <error-message
     [control]="control"
-    [validators]="data.validators"
+    [validators]="data?.validators"
   ></error-message>
 </ng-container>

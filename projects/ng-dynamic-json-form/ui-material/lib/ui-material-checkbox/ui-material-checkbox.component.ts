@@ -6,11 +6,17 @@ import {
   MatCheckboxChange,
   MatCheckboxModule,
 } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'ui-material-checkbox',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatInputModule,
+  ],
   templateUrl: './ui-material-checkbox.component.html',
   styles: [],
 })

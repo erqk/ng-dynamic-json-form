@@ -28,7 +28,8 @@ export class UiMaterialDateComponent extends NgDynamicJsonFormCustomComponent {
 
   dateControl = new FormControl('');
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.bindControl();
   }
 

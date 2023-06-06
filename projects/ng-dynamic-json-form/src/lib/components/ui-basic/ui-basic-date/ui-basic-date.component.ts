@@ -18,7 +18,8 @@ export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
   dateControl = new FormControl('');
   timeControl = new FormControl('');
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.initControlValue();
     this.bindControl();
   }

@@ -4,4 +4,6 @@
     [formControl]="control"
     >{{ data.extra?.switch?.label }}</mat-slide-toggle
   >
+  
+  <mat-error>{{ errors$ | async }}</mat-error>
 </ng-container>
