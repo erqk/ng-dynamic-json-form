@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { AbstractControl, UntypedFormControl } from '@angular/forms';
 import {
+  BehaviorSubject,
   Observable,
   Subject,
   debounceTime,
+  filter,
   skipWhile,
   startWith,
   tap,
@@ -23,6 +25,8 @@ export class NgDynamicJsonFormCustomComponent {
   public data: FormControlConfig | null = null;
   public viewControl?: AbstractControl;
   public errors$?: Observable<string[]>;
+
+  private pauseEvent$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
     this.bindControlEvent();
@@ -52,17 +56,17 @@ export class NgDynamicJsonFormCustomComponent {
   private bindControlEvent(): void {
     if (!this.control) return;
 
-    let pauseValueChanges = false;
     this.writeControlValue((e: any) => {
-      pauseValueChanges = true;
+      this.pauseEvent$.next(true);
       this.control!.setValue(e);
+      this.pauseEvent$.next(false);
     });
 
     this.control.valueChanges
       .pipe(
         startWith(this.control.value),
+        filter(() => this.pauseEvent$.value === false),
         tap((x) => {
-          if (pauseValueChanges) return;
           this.readControlValue(x);
           this.controlDisabled(this.control?.disabled ?? false);
           this.controlTouched(this.control?.touched ?? false);
