@@ -1,5 +1,10 @@
 <ng-container *ngIf="control && data" [formGroup]="viewControl">
-  <div class="date-input">
+  <div
+    class="date-input"
+    [ngClass]="{
+      disabled: control.disabled
+    }"
+  >
     <input
       type="date"
       [attr.min]="data.extra?.date?.min"

@@ -1,5 +1,10 @@
 <ng-container *ngIf="control && data">
-  <div class="option-button-wrapper">
+  <div
+    class="option-button-wrapper"
+    [ngClass]="{
+      disabled: control.disabled
+    }"
+  >
     <label class="option-button switch-button">
       <ng-container
         *ngIf="data.extra?.switch?.labelPosition === 'before'"

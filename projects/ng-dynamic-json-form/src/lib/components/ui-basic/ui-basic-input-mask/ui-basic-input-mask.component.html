@@ -2,6 +2,7 @@
   <input
     type="text"
     [attr.placeholder]="data.placeholder ?? null"
+    [ngClass]="{ disabled: control.disabled }"
     [formControl]="control"
     [mask]="data.ngxMaskConfig?.mask ?? ''"
     [validation]="false"

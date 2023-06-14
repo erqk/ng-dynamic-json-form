@@ -4,6 +4,7 @@
       [attr.cols]="data.extra?.textarea?.cols ?? 30"
       [attr.rows]="data.extra?.textarea?.rows ?? 10"
       [attr.placeholder]="data.placeholder ?? null"
+      [ngClass]="{ disabled: control.disabled }"
       [formControl]="control"
     ></textarea>
   </ng-container>
@@ -14,6 +15,7 @@
       [attr.cols]="data.extra?.textarea?.cols ?? 30"
       [attr.rows]="data.extra?.textarea?.rows ?? 10"
       [attr.placeholder]="data.placeholder ?? null"
+      [ngClass]="{ disabled: control.disabled }"
       [formControl]="control"
     ></textarea>
   </ng-container>
