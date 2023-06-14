@@ -1,30 +1,43 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
 import { CalendarModule } from 'primeng/calendar';
-import { merge } from 'rxjs';
-import { filter, startWith, tap } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-primeng-date',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CalendarModule],
+  imports: [CommonModule, ReactiveFormsModule, CalendarModule, FormsModule],
   templateUrl: './ui-primeng-date.component.html',
   styles: [],
 })
 export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
   private locale = inject(LOCALE_ID);
 
+  override viewControl = new FormControl(new Date());
   minDate?: Date;
   maxDate?: Date;
-
-  dateControl = new FormControl('');
 
   override ngOnInit(): void {
     super.ngOnInit();
     this.setMinMaxDate();
-    this.bindControl();
+  }
+
+  override readControlValue(obj: any): void {
+    if (!obj) return;
+    this.viewControl.setValue(new Date(obj));
+  }
+
+  override writeControlValue(fn: any): void {
+    this.viewControl.valueChanges
+      .pipe(
+        map((x) => {
+          const outputFormat = this.data?.extra?.date?.outputFormat;
+          return outputFormat ? formatDate(x!, outputFormat, this.locale) : x;
+        })
+      )
+      .subscribe(fn);
   }
 
   private setMinMaxDate(): void {
@@ -35,33 +48,5 @@ export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
 
     this.minDate = new Date(min);
     this.minDate = new Date(max);
-  }
-
-  private bindControl(): void {
-    if (!this.control) return;
-
-    const valueChanges$ = this.dateControl.valueChanges.pipe(
-      startWith(this.dateControl.value),
-      filter((x) => !!x),
-      tap((x) => {
-        const outputFormat = this.data?.extra?.date?.outputFormat;
-        this.control?.setValue(
-          outputFormat ? formatDate(x!, outputFormat, this.locale) : x
-        );
-      })
-    );
-
-    const statusChanges$ = this.control.statusChanges.pipe(
-      startWith(this.control.status),
-      tap((x) => {
-        if (x === 'DISABLED') {
-          this.dateControl.disable({ emitEvent: false });
-        } else {
-          this.dateControl.enable({ emitEvent: false });
-        }
-      })
-    );
-
-    merge(statusChanges$, valueChanges$).subscribe();
   }
 }
