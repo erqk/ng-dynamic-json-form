@@ -33,24 +33,24 @@ export class NgDynamicJsonFormCustomComponent {
     this.listenToErrors();
   }
 
-  /**Mimic the behavior of `writeValue` of Angular's ControlValueAccessor */
+  /**Mimic the behavior of `writeValue` from Angular's ControlValueAccessor */
   readControlValue(obj: any): void {
     if (obj === undefined || obj === null || obj === '') return;
     this.viewControl?.setValue(obj);
   }
 
-  /**Mimic the behavior of `registerOnChange` of Angular's ControlValueAccessor */
+  /**Mimic the behavior of `registerOnChange` from Angular's ControlValueAccessor */
   writeControlValue(fn: any): void {
     this.viewControl?.valueChanges.subscribe(fn);
   }
 
-  /**Mimic the behavior of `setDisabledState` of Angular's ControlValueAccessor */
+  /**Mimic the behavior of `setDisabledState` from Angular's ControlValueAccessor */
   controlDisabled(isDisabled: boolean): void {
     if (isDisabled) this.viewControl?.disable({ emitEvent: false });
     else this.viewControl?.enable({ emitEvent: false });
   }
 
-  /**Mimic the behavior of `registerOnTouched` of Angular's ControlValueAccessor */
+  /**Mimic the behavior of `registerOnTouched` from Angular's ControlValueAccessor */
   controlTouched(isTouched: boolean): void {}
 
   private bindControlEvent(): void {

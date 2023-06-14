@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class DocumentVersionService {
-  versions = ['3.1.x', '3.0.x', '2.x.x', '1.x.x'];
+  versions = ['3.3.x', '3.0.x', '2.x.x', '1.x.x'];
 
   private _currentVersion$ = new BehaviorSubject<string>(this.versions[0]);
 

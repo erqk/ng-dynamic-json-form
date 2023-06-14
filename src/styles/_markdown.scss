@@ -57,7 +57,7 @@ markdown {
     padding: 0.5rem;
     padding-left: 1rem;
     margin-block: 1rem;
-    margin-inline: 1rem;
+    margin-inline: 0;
     border-left: solid 8px var(--primary-500);
     border-radius: 0.2rem;
     background-color: var(--primary-100);
@@ -71,7 +71,6 @@ markdown {
     border-collapse: collapse;
     width: 100%;
     padding: 1rem;
-    margin: 1rem 0;
 
     th {
       padding: 0.5rem;
