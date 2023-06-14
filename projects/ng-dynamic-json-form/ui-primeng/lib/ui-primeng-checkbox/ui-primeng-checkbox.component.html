@@ -57,6 +57,7 @@
             [(ngModel)]="selectedItems"
             [name]="'group'"
             [value]="item.value"
+            [disabled]="control.disabled"
             [inputId]="data.formControlName + '-' + item.label"
             (onChange)="onChanged($event)"
           ></p-checkbox>
@@ -75,7 +76,7 @@
       </ng-container>
     </ng-container>
   </div>
-  
+
   <ng-template
     #labelTemplate
     let-label="label"

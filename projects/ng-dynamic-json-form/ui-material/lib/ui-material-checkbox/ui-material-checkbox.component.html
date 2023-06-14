@@ -21,6 +21,7 @@
           [labelPosition]="data.extra?.checkbox?.labelPosition ?? 'after'"
           [value]="item.value ?? false"
           [checked]="control.value.includes(item.value)"
+          [disabled]="control.disabled"
           (change)="onCheckboxChange($event)"
           >{{ item.label }}</mat-checkbox
         >

@@ -4,7 +4,8 @@
     [ngClass]="{
       'show-tick-marks':
         data.extra?.range?.showTickMarks === true ||
-        data.extra?.range?.showCurrentValue === true
+        data.extra?.range?.showCurrentValue === true,
+      disabled: control.disabled
     }"
   >
     <input
