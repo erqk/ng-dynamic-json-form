@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
-  ErrorMessageService,
-  NgDynamicJsonFormCustomComponent,
+  NgDynamicJsonFormCustomComponent
 } from 'ng-dynamic-json-form';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
@@ -19,6 +18,6 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   ],
   templateUrl: './ui-material-input-mask.component.html',
   styles: [],
-  providers: [ErrorMessageService, provideNgxMask()],
+  providers: [provideNgxMask()],
 })
 export class UiMaterialInputMaskComponent extends NgDynamicJsonFormCustomComponent {}
