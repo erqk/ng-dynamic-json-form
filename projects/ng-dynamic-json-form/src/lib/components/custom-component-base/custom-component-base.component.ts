@@ -1,6 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { AbstractControl, UntypedFormControl } from '@angular/forms';
-import { Observable, debounceTime, startWith, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  debounceTime,
+  skipWhile,
+  startWith,
+  tap,
+} from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { ErrorMessageService } from '../../services';
 
@@ -40,21 +47,22 @@ export class NgDynamicJsonFormCustomComponent {
   }
 
   /**Mimic the behavior of `registerOnTouched` of Angular's ControlValueAccessor */
-  controlTouched(isTouched: boolean): void {
-  }
+  controlTouched(isTouched: boolean): void {}
 
   private bindControlEvent(): void {
     if (!this.control) return;
 
-    this.writeControlValue((e: any) =>
-      this.control!.setValue(e, { emitEvent: false })
-    );
+    let pauseValueChanges = false;
+    this.writeControlValue((e: any) => {
+      pauseValueChanges = true;
+      this.control!.setValue(e);
+    });
 
     this.control.valueChanges
       .pipe(
         startWith(this.control.value),
-        debounceTime(0),
         tap((x) => {
+          if (pauseValueChanges) return;
           this.readControlValue(x);
           this.controlDisabled(this.control?.disabled ?? false);
           this.controlTouched(this.control?.touched ?? false);

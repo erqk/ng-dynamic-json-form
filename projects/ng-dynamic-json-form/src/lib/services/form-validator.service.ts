@@ -26,7 +26,7 @@ export class FormValidatorService {
           break;
 
         case ValidatorAndConditionTypes.EMAIL:
-          validator = emailValidator;
+          validator = CustomValidators.emailValidator;
           break;
 
         case ValidatorAndConditionTypes.PATTERN:
@@ -60,14 +60,51 @@ export class FormValidatorService {
   }
 }
 
-function emailValidator(control: AbstractControl): ValidationErrors | null {
-  const emailValid = RegExp(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/).test(
-    control.value
-  );
+class CustomValidators {
+  static emailValidator(control: AbstractControl): ValidationErrors | null {
+    const emailValid = RegExp(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/).test(
+      control.value
+    );
 
-  if (!control.value) {
-    return null;
+    if (!control.value) {
+      return null;
+    }
+
+    return emailValid ? null : { email: 'Invalid email format' };
   }
 
-  return emailValid ? null : { email: 'Invalid email format' };
+  static minValidator(value: number): ValidatorFn {
+    return (control: AbstractControl) =>
+      CustomValidators.minMaxValidator(value, 'min', control);
+  }
+
+  static maxValidator(value: number): ValidatorFn {
+    return (control: AbstractControl) =>
+      CustomValidators.minMaxValidator(value, 'max', control);
+  }
+
+  static minMaxValidator(
+    value: any,
+    type: 'min' | 'max',
+    control: AbstractControl
+  ): ValidationErrors | null {
+    const valueParsed =
+      typeof control.value === 'number'
+        ? control.value
+        : parseFloat(control.value);
+
+    if (!valueParsed) return null;
+
+    const condition =
+      type === 'min' ? valueParsed >= value : valueParsed <= value;
+
+    return condition
+      ? null
+      : {
+          [type]: {
+            actual: valueParsed,
+            [type]: value,
+          },
+        };
+  }
 }
