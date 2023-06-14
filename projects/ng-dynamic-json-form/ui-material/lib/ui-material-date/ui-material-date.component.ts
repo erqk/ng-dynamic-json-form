@@ -1,13 +1,16 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
-import { merge } from 'rxjs';
-import { startWith, tap } from 'rxjs/operators';
+import { delay, map } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'ui-material-date',
@@ -26,37 +29,23 @@ import { startWith, tap } from 'rxjs/operators';
 export class UiMaterialDateComponent extends NgDynamicJsonFormCustomComponent {
   private locale = inject(LOCALE_ID);
 
-  dateControl = new FormControl('');
+  override viewControl = new FormControl(new Date());
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.bindControl();
+  override readControlValue(obj: any): void {
+    if (!obj) return;
+    this.viewControl.setValue(new Date(obj));
   }
 
-  private bindControl(): void {
-    if (!this.control) return;
-
-    const statusChanges$ = this.control.statusChanges.pipe(
-      startWith(this.control.status),
-      tap((x) => {
-        if (x === 'DISABLED') this.dateControl.disable({ emitEvent: false });
-        else this.dateControl.enable({ emitEvent: false });
-      })
-    );
-
-    const writeValue$ = this.dateControl.valueChanges.pipe(
-      startWith(this.dateControl.value),
-      tap((x) => {
-        if (!x) return;
-
-        const outputFormat = this.data?.extra?.date?.outputFormat;
-        const date = outputFormat
-          ? formatDate(x, outputFormat, this.locale)
-          : x;
-        this.control?.setValue(date);
-      })
-    );
-
-    merge(statusChanges$, writeValue$).subscribe();
+  override writeControlValue(fn: any): void {
+    this.viewControl.valueChanges
+      .pipe(
+        startWith(this.viewControl.value),
+        delay(0),
+        map((x) => {
+          const outputFormat = this.data?.extra?.date?.outputFormat;
+          return outputFormat ? formatDate(x!, outputFormat, this.locale) : x;
+        })
+      )
+      .subscribe(fn);
   }
 }
