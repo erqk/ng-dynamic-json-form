@@ -29,7 +29,7 @@ export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
     this.viewControl.setValue(new Date(obj));
   }
 
-  override writeControlValue(fn: any): void {
+  override registerControlChange(fn: any): void {
     this.viewControl.valueChanges
       .pipe(
         map((x) => {
