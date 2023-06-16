@@ -29,7 +29,7 @@ export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
     });
   }
 
-  override writeControlValue(fn: any): void {
+  override registerControlChange(fn: any): void {
     this.viewControl.valueChanges
       .pipe(
         filter((x) => !!x.date && !!x.time),

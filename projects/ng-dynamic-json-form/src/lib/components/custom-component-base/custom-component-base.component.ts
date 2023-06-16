@@ -33,33 +33,37 @@ export class NgDynamicJsonFormCustomComponent {
     this.listenToErrors();
   }
 
-  /**Mimic the behavior of `writeValue` of Angular's ControlValueAccessor */
+  /**Same behavior with `writeValue` from ControlValueAccessor */
   readControlValue(obj: any): void {
     if (obj === undefined || obj === null || obj === '') return;
     this.viewControl?.setValue(obj);
   }
 
-  /**Mimic the behavior of `registerOnChange` of Angular's ControlValueAccessor */
-  writeControlValue(fn: any): void {
+  /**Same behavior with `registerOnChange` from ControlValueAccessor */
+  registerControlChange(fn: any): void {
     this.viewControl?.valueChanges.subscribe(fn);
   }
 
-  /**Mimic the behavior of `setDisabledState` of Angular's ControlValueAccessor */
+  /**Same behavior with `setDisabledState` from ControlValueAccessor */
   controlDisabled(isDisabled: boolean): void {
     if (isDisabled) this.viewControl?.disable({ emitEvent: false });
     else this.viewControl?.enable({ emitEvent: false });
   }
 
-  /**Mimic the behavior of `registerOnTouched` of Angular's ControlValueAccessor */
-  controlTouched(isTouched: boolean): void {}
+  /**Same behavior with `registerOnTouched` from ControlValueAccessor */
+  registerControlTouched(fn: any): void {}
 
   private bindControlEvent(): void {
     if (!this.control) return;
 
-    this.writeControlValue((e: any) => {
+    this.registerControlChange((e: any) => {
       this.pauseEvent$.next(true);
       this.control!.setValue(e);
       this.pauseEvent$.next(false);
+    });
+
+    this.registerControlTouched(() => {
+      this.control!.markAllAsTouched();
     });
 
     this.control.valueChanges
@@ -69,7 +73,6 @@ export class NgDynamicJsonFormCustomComponent {
         tap((x) => {
           this.readControlValue(x);
           this.controlDisabled(this.control?.disabled ?? false);
-          this.controlTouched(this.control?.touched ?? false);
         })
       )
       .subscribe();
