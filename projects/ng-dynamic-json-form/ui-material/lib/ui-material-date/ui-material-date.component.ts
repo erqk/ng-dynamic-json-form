@@ -1,9 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
-import {
-  FormControl,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,7 +33,7 @@ export class UiMaterialDateComponent extends NgDynamicJsonFormCustomComponent {
     this.viewControl.setValue(new Date(obj));
   }
 
-  override writeControlValue(fn: any): void {
+  override registerControlChange(fn: any): void {
     this.viewControl.valueChanges
       .pipe(
         startWith(this.viewControl.value),
