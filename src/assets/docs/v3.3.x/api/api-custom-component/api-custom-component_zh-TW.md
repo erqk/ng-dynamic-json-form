@@ -12,9 +12,9 @@ export class NgDynamicJsonFormCustomComponent {
   public errors$?: Observable<string[]>;
 
   readControlValue(obj: any): void {}
-  writeControlValue(fn: any): void {}
+  registerControlChange(fn: any): void {}
   controlDisabled(isDisabled: boolean): void {}
-  controlTouched(isTouched: boolean): void {}
+  registerControlTouched(isTouched: boolean): void {}
 }
 ```
 
@@ -39,12 +39,12 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 
 這些方法的用法和實做 `ControlValueAccessor` 之後的用法一致。查看 <a href="https://angular.tw/api/forms/ControlValueAccessor" target="_blank">Angular 文件</a>.
 
-| method            | description                                      |
-| :---------------- | :----------------------------------------------- |
-| readControlValue  | 同 ControlValueAccessor 的 `writeValue`。        |
-| writeControlValue | 同 ControlValueAccessor 的 `registerOnChange`。  |
-| controlDisabled   | 同 ControlValueAccessor 的 `setDisabledState`。  |
-| controlTouched    | 同 ControlValueAccessor 的 `registerOnTouched`。 |
+| method                 | description                                      |
+| :--------------------- | :----------------------------------------------- |
+| readControlValue       | 同 ControlValueAccessor 的 `writeValue`。        |
+| registerControlChange  | 同 ControlValueAccessor 的 `registerOnChange`。  |
+| controlDisabled        | 同 ControlValueAccessor 的 `setDisabledState`。  |
+| registerControlTouched | 同 ControlValueAccessor 的 `registerOnTouched`。 |
 
 > **重要:** 以上所有方法都必須在 `ngOnInit()` 執行. 所以當你覆寫 `ngOnInit()` 時請務必呼叫 `super.ngOnInit()`。
 
@@ -130,7 +130,7 @@ override readControlValue(obj: any): void {
   });
 }
 
-override writeControlValue(fn: any): void {
+override registerControlChange(fn: any): void {
   this.viewControl.valueChanges
     .pipe(
       filter((x) => !!x.date && !!x.time),

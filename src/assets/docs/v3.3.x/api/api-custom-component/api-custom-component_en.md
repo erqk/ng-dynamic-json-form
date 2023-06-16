@@ -13,9 +13,9 @@ export class NgDynamicJsonFormCustomComponent {
   public errors$?: Observable<string[]>;
 
   readControlValue(obj: any): void {}
-  writeControlValue(fn: any): void {}
+  registerControlChange(fn: any): void {}
   controlDisabled(isDisabled: boolean): void {}
-  controlTouched(isTouched: boolean): void {}
+  registerControlTouched(isTouched: boolean): void {}
 }
 ```
 
@@ -40,12 +40,12 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 
 The usage of the methods is same with the `ControlValueAcessor`'s implementation. See the <a href="https://angular.io/api/forms/ControlValueAccessor" target="_blank">Angular docs</a>.
 
-| method            | description                                                       |
-| :---------------- | :---------------------------------------------------------------- |
-| readControlValue  | Same behavior with `writeValue` from ControlValueAccessor.        |
-| writeControlValue | Same behavior with `registerOnChange` from ControlValueAccessor.  |
-| controlDisabled   | Same behavior with `setDisabledState` from ControlValueAccessor.  |
-| controlTouched    | Same behavior with `registerOnTouched` from ControlValueAccessor. |
+| method                 | description                                                       |
+| :--------------------- | :---------------------------------------------------------------- |
+| readControlValue       | Same behavior with `writeValue` from ControlValueAccessor.        |
+| registerControlChange  | Same behavior with `registerOnChange` from ControlValueAccessor.  |
+| controlDisabled        | Same behavior with `setDisabledState` from ControlValueAccessor.  |
+| registerControlTouched | Same behavior with `registerOnTouched` from ControlValueAccessor. |
 
 > **Important:** All the methods above are called in `ngOnInit()`. So you must call `super.ngOnInit()` if you override `ngOnInit()` to make them works as expected.
 
@@ -131,7 +131,7 @@ override readControlValue(obj: any): void {
   });
 }
 
-override writeControlValue(fn: any): void {
+override registerControlChange(fn: any): void {
   this.viewControl.valueChanges
     .pipe(
       filter((x) => !!x.date && !!x.time),
