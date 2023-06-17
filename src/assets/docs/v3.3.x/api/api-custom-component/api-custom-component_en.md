@@ -25,7 +25,7 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 ...
 ```
 
-#### Properties
+### Properties
 
 | property    | description                                                            |
 | :---------- | :--------------------------------------------------------------------- |
@@ -36,7 +36,7 @@ export class MyCustomComponent extends NgDynamicJsonFormCustomComponent {}
 
 <br>
 
-#### Methods
+### Methods
 
 The usage of the methods is same with the `ControlValueAcessor`'s implementation. See the <a href="https://angular.io/api/forms/ControlValueAccessor" target="_blank">Angular docs</a>.
 
