@@ -1,5 +1,5 @@
 :host {
-  --sidePaneWidth: 16rem;
+  --sidePaneWidth: 18rem;
 
   flex: 1;
   display: flex;
@@ -11,9 +11,18 @@
   align-items: flex-start;
 
   .side-pane {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
     position: sticky;
-    top: 100px;
+    top: var(--header-height);
     width: var(--sidePaneWidth);
+    height: calc(100vh - var(--header-height));
+    padding: 2rem 0 3rem;
+    margin-left: 1rem;
+    background-color: rgba(128, 128, 128, 0.05);
+    border-right: solid 1px rgba(128, 128, 128, 0.2);
+    overflow: auto;
     z-index: 0;
   }
 
