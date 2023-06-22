@@ -176,11 +176,10 @@ export class NgDynamicJsonFormComponent {
     if (!this.jsonDataValid) return;
 
     if (Array.isArray(this.jsonData)) {
-      this.config = this.jsonData;
+      this.config = JSON.parse(JSON.stringify(this.jsonData));
     }
 
     this.formConfigInitService.init(this.config);
-
     this.formValidatorService.customValidators = this.customValidators;
     this.form = this.formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
