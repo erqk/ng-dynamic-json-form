@@ -1,3 +1,15 @@
+# 3.3.0
+
+### Feature
+
+- Provide methods to mimic same behavior as ControlValueAccessor to reduce boilerplate.
+
+### Fix
+
+- Missing disabled style for native HTML element #30
+- Duplicated input components #44
+- Element content overflow issue when there is pre tag inside #45
+
 # 3.2.0
 
 ### Feature
