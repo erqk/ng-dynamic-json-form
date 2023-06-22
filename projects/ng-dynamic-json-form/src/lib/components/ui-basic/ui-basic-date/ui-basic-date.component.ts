@@ -1,8 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { merge, tap } from 'rxjs';
-import { filter, startWith } from 'rxjs/operators';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { filter, map } from 'rxjs/operators';
 import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/custom-component-base.component';
 
 @Component({
@@ -15,67 +14,42 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
 export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
   private locale = inject(LOCALE_ID);
 
-  dateControl = new FormControl('');
-  timeControl = new FormControl('');
+  public override viewControl = new FormGroup({
+    date: new FormControl(''),
+    time: new FormControl(''),
+  });
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.initControlValue();
-    this.bindControl();
+  override readControlValue(obj: any): void {
+    if (!obj) return;
+
+    const dateRaw = formatDate(obj, 'yyyy-MM-dd,HH:mm:ss', this.locale);
+    this.viewControl.patchValue({
+      date: dateRaw.split(',')[0],
+      time: dateRaw.split(',')[1],
+    });
+  }
+
+  override registerControlChange(fn: any): void {
+    this.viewControl.valueChanges
+      .pipe(
+        filter((x) => !!x.date && !!x.time),
+        map(() => this.dateTimeFormatted)
+      )
+      .subscribe(fn);
   }
 
   private get dateTimeFormatted(): string {
     const outputFormat = this.data?.extra?.date?.outputFormat;
-
+    const controlValue = this.viewControl.value;
     const date =
       this.data?.extra?.date?.selectTime === true
-        ? new Date(`${this.dateControl.value}T${this.timeControl.value}`)
-        : new Date(this.dateControl.value!);
+        ? new Date(`${controlValue.date}T${controlValue.time}`)
+        : new Date(controlValue.time!);
 
     const dateISO = date.toISOString();
 
     return outputFormat
       ? formatDate(dateISO, outputFormat, this.locale)
       : dateISO;
-  }
-
-  private initControlValue(): void {
-    if (!this.data?.value) return;
-
-    const dateRaw = formatDate(
-      this.data.value,
-      'yyyy-MM-dd,HH:mm:ss',
-      this.locale
-    );
-
-    this.dateControl.setValue(dateRaw.split(',')[0]);
-    this.timeControl.setValue(dateRaw.split(',')[1]);
-  }
-
-  private bindControl(): void {
-    if (!this.control) return;
-
-    const valueChanges$ = merge(
-      this.dateControl.valueChanges,
-      this.timeControl.valueChanges
-    ).pipe(
-      filter(() => !!this.dateControl.value && !!this.timeControl.value),
-      tap(() => this.control?.setValue(this.dateTimeFormatted))
-    );
-
-    const statusChanges$ = this.control?.statusChanges.pipe(
-      startWith(this.control.status),
-      tap((x) => {
-        if (x === 'DISABLED') {
-          this.dateControl.disable({ emitEvent: false });
-          this.timeControl.disable({ emitEvent: false });
-        } else {
-          this.dateControl.enable({ emitEvent: false });
-          this.timeControl.enable({ emitEvent: false });
-        }
-      })
-    );
-
-    merge(statusChanges$, valueChanges$).subscribe();
   }
 }

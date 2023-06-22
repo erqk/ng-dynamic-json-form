@@ -18,7 +18,6 @@ import { ErrorMessageService } from '../../services/error-message.service';
   </ng-container>`,
   standalone: true,
   imports: [CommonModule],
-  providers: [ErrorMessageService],
 })
 export class ErrorMessageComponent {
   private errorMessageService = inject(ErrorMessageService);

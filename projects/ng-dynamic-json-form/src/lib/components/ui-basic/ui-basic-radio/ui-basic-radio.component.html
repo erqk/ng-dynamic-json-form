@@ -1,6 +1,9 @@
 <ng-container *ngIf="control && data">
   <div
     class="group-buttons"
+    [ngClass]="{
+      disabled: control.disabled
+    }"
     [ngStyle]="{
       'flex-direction': data.optionsLayout
     }"

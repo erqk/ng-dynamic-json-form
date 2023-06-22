@@ -60,6 +60,8 @@ jsonData: FormControlConfig[] = [
 
 </div>
 
+<br>
+
 | key             | Description                                            |
 | :-------------- | :----------------------------------------------------- |
 | label           | Label for this input element.                          |

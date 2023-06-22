@@ -1,17 +1,19 @@
-<ng-container *ngIf="control && data">
-  <div class="date-input">
+<ng-container *ngIf="control && data" [formGroup]="viewControl">
+  <div
+    class="date-input"
+    [ngClass]="{
+      disabled: control.disabled
+    }"
+  >
     <input
       type="date"
       [attr.min]="data.extra?.date?.min"
       [attr.max]="data.extra?.date?.max"
-      [formControl]="dateControl"
+      formControlName="date"
     />
 
     <ng-container *ngIf="data.extra?.date?.selectTime === true">
-      <input
-        type="time"
-        [formControl]="timeControl"
-      />
+      <input type="time" formControlName="time" />
     </ng-container>
   </div>
 </ng-container>

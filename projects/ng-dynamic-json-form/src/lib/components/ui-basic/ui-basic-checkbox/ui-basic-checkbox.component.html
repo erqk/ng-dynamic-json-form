@@ -7,7 +7,12 @@
   >
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.length === 1">
-      <div class="option-button-wrapper">
+      <div
+        class="option-button-wrapper"
+        [ngClass]="{
+          disabled: control.disabled
+        }"
+      >
         <label class="option-button">
           <ng-container
             *ngTemplateOutlet="
@@ -38,7 +43,12 @@
     <!-- muli-select checkbox -->
     <ng-container *ngIf="data.options && data.options.length > 1">
       <ng-container *ngFor="let item of data.options">
-        <div class="option-button-wrapper">
+        <div
+          class="option-button-wrapper"
+          [ngClass]="{
+            disabled: control.disabled
+          }"
+        >
           <label class="option-button">
             <ng-container
               *ngTemplateOutlet="
@@ -54,6 +64,7 @@
               type="checkbox"
               [value]="item.value ?? false"
               [checked]="control.value.includes(item.value)"
+              [disabled]="control.disabled"
               (change)="onCheckboxChange($event)"
             />
             <span class="marker"></span>

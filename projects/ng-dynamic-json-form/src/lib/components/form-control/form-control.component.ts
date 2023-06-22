@@ -6,11 +6,13 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
+import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
+import { FormControlConfig } from '../../models';
 import { UiComponents } from '../../models/ui-components-type.model';
 import { NgDynamicJsonFormCustomComponent } from '../custom-component-base/custom-component-base.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
-import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
 
 @Component({
   selector: 'form-control',
@@ -21,7 +23,9 @@ import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constan
     ':host {display: flex; flex-direction: column; gap: 0.35rem; width: 100%}',
   ],
 })
-export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
+export class FormControlComponent {
+  @Input() control: UntypedFormControl | null = null;
+  @Input() data: FormControlConfig | null = null;
   @Input() uiComponents: UiComponents = {};
   @Input() customComponent?: Type<NgDynamicJsonFormCustomComponent>;
 
@@ -63,6 +67,7 @@ export class FormControlComponent extends NgDynamicJsonFormCustomComponent {
     }
 
     setTimeout(() => {
+      this.componentAnchor.clear();
       const componentRef = this.componentAnchor.createComponent(inputComponent);
       componentRef.instance.data = this.data;
       componentRef.instance.control = this.control;

@@ -6,11 +6,8 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
 @Component({
   selector: 'ui-basic-dropdown',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule ],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './ui-basic-dropdown.component.html',
-  styles: [
-  ]
+  styles: [],
 })
-export class UiBasicDropdownComponent extends NgDynamicJsonFormCustomComponent {
-
-}
+export class UiBasicDropdownComponent extends NgDynamicJsonFormCustomComponent {}

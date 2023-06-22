@@ -53,6 +53,12 @@
     @include checkbox.checkbox();
   }
 
+  .disabled {
+    --color-primary: gray;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   @include date.date-input();
   @include range.range-input();
   @include select.select();

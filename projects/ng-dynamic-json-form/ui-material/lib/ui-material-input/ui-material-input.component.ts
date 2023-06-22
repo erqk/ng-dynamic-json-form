@@ -4,8 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import {
-  ErrorMessageService,
-  NgDynamicJsonFormCustomComponent,
+  NgDynamicJsonFormCustomComponent
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -14,6 +13,5 @@ import {
   imports: [CommonModule, ReactiveFormsModule, MatInputModule, MatButtonModule],
   templateUrl: './ui-material-input.component.html',
   styles: [],
-  providers: [ErrorMessageService],
 })
 export class UiMaterialInputComponent extends NgDynamicJsonFormCustomComponent {}

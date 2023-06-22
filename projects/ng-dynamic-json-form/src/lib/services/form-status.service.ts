@@ -15,7 +15,7 @@ import {
   mergeMap,
   of,
   startWith,
-  tap
+  tap,
 } from 'rxjs';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import {
@@ -132,18 +132,14 @@ export class FormStatusService {
         case ValidatorAndConditionTypes.HIDDEN:
           this.targetElement$(data.targetControlPath).then((x) => {
             if (!x) return;
-            if (bool) this.setElementStyle(x, 'display', 'none');
-            else this.setElementStyle(x, 'display', 'block');
+            this.setElementStyle(x, 'display', bool ? 'none' : 'block');
+            bool ? control.disable() : control.enable();
           });
-
-          bool
-            ? control.disable({ emitEvent: false })
-            : control.enable({ emitEvent: false });
           break;
 
         case ValidatorAndConditionTypes.DISABLED:
-          if (bool) control.disable({ emitEvent: false });
-          else control.enable({ emitEvent: false });
+          if (bool) control.disable();
+          else control.enable();
           break;
 
         default:
@@ -153,7 +149,7 @@ export class FormStatusService {
     };
 
     Object.values(ValidatorAndConditionTypes).forEach((x) => setStatus(x));
-    control.updateValueAndValidity({ emitEvent: false });
+    control.updateValueAndValidity();
   }
 
   /**Get the target element by using:

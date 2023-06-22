@@ -1,8 +1,5 @@
 :host {
   --color-active: var(--primary-500);
-
-  display: flex;
-  flex-direction: column;
 }
 
 :host-context(.dark) {
@@ -11,36 +8,71 @@
   }
 }
 
-a {
+button {
   position: relative;
-  padding: 0.65rem;
-  padding-left: 1.5rem;
+  padding: 0.65rem 1.5rem;
   text-decoration: none;
   color: rgba(128, 128, 128, 1);
+  background-color: unset;
+  font-size: inherit;
+  font-weight: normal;
+  text-align: left;
   z-index: 0;
+  cursor: pointer;
   transition: 0.2s;
 
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 3px;
-    height: 100%;
-    background-color: rgba(128, 128, 128, 0.25);
+  @mixin left-border {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background-color: rgba(128, 128, 128, 0.25);
+    }
   }
 
-  &::after {
-    content: none;
-  }
+  @include left-border();
 
   &:hover,
   &.active {
+    background-color: unset;
     color: var(--color-active);
     font-weight: bold;
 
-    &::before {
+    &::before,
+    + .sub-titles::before {
       background-color: var(--primary-500);
+    }
+  }
+
+  + .sub-titles {
+    position: relative;
+    z-index: 0;
+
+    @include left-border();
+  }
+}
+
+.sub-titles {
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  overflow: hidden;
+  transition: 0.25s;
+
+  &.active {
+    height: auto;
+    overflow: unset;
+  }
+
+  button {
+    margin-left: 1rem;
+    padding: 0.5rem 1.5rem;
+
+    &::before {
+      content: none;
     }
   }
 }
@@ -52,11 +84,23 @@ a {
 }
 
 @media screen and (max-width: 992px) {
-  a {
+  button {
     padding-block: 1rem;
 
     &::before {
       content: none;
+    }
+
+    + .sub-titles {
+      &::before {
+        content: none;
+      }
+    }
+  }
+
+  .sub-titles {
+    button {
+      padding: 0.8rem;
     }
   }
 }

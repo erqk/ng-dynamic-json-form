@@ -12,9 +12,8 @@ import {
   of,
   switchMap,
   tap,
-  toArray
+  toArray,
 } from 'rxjs';
-import { SideNavigationPaneService } from 'src/app/shared/side-navigation-pane/side-navigation-pane.service';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
 
@@ -25,7 +24,6 @@ export class DocumentLoaderService {
   private http = inject(HttpClient);
   private documentVersionService = inject(DocumentVersionService);
   private languageDataService = inject(LanguageDataService);
-  private sideNavigationPaneService = inject(SideNavigationPaneService);
 
   documentLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -53,7 +51,6 @@ export class DocumentLoaderService {
             .join('')
         ),
         catchError(() => {
-          this.sideNavigationPaneService.h2$.next([]);
           return of('');
         })
       );
@@ -91,7 +88,6 @@ export class DocumentLoaderService {
     return this.http.get(filePath, { responseType: 'text' }).pipe(
       map((x) => JSON.parse(x)),
       catchError(() => {
-        this.sideNavigationPaneService.h2$.next([]);
         return of([]);
       })
     );
