@@ -87,6 +87,7 @@
   .form-control-container {
     &.grid-layout {
       margin-bottom: 0;
+      min-width: 0;
     }
 
     &.level-1 {
