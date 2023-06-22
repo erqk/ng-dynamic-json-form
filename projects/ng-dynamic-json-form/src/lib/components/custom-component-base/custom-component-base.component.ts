@@ -3,12 +3,9 @@ import { AbstractControl, UntypedFormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
-  debounceTime,
   filter,
-  skipWhile,
   startWith,
-  tap,
+  tap
 } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { ErrorMessageService } from '../../services';
@@ -29,8 +26,8 @@ export class NgDynamicJsonFormCustomComponent {
   private pauseEvent$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
-    this.bindControlEvent();
-    this.listenToErrors();
+    this._bindControlEvent();
+    this._listenToErrors();
   }
 
   /**Same behavior with `writeValue` from ControlValueAccessor */
@@ -53,7 +50,7 @@ export class NgDynamicJsonFormCustomComponent {
   /**Same behavior with `registerOnTouched` from ControlValueAccessor */
   registerControlTouched(fn: any): void {}
 
-  private bindControlEvent(): void {
+  private _bindControlEvent(): void {
     if (!this.control) return;
 
     this.registerControlChange((e: any) => {
@@ -78,7 +75,7 @@ export class NgDynamicJsonFormCustomComponent {
       .subscribe();
   }
 
-  private listenToErrors(): void {
+  private _listenToErrors(): void {
     this.errors$ = this.errorMessageService.getErrors$(
       this.control!,
       this.data?.validators || []
