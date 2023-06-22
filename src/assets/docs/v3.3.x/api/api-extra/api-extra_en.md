@@ -1,7 +1,9 @@
 ## Extra
 
-Extra information to configure input element. Some of the properties is not available to some elements.
-For example primeng's slider doesn't have tick marks to show, so you need to build your own custom component if you need that.
+Extra information to configure input element.
+
+> Some of the properties is not available to some elements.
+> For example `showTickMarks` will not work in primeng's slider, so you need to build your own custom component if you need that.
 
 | type     | property         | description                                               |
 | :------- | :--------------- | :-------------------------------------------------------- |

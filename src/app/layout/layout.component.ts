@@ -27,7 +27,7 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
       [ngClass]="{
         hidden: documentLoading$.value === true
       }"
-      [maxWidth]="'85rem'"
+      [maxWidth]="'100%'"
       [@fade-up]="documentLoading$.value === false"
     >
       <app-side-navigation-pane class="side-pane"></app-side-navigation-pane>

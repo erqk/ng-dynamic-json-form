@@ -21,7 +21,6 @@ export class PageStylingComponent {
   ) {}
 
   onReady(): void {
-    const h2 = document.querySelectorAll('markdown h2');
-    this.sideNavigationPaneService.h2$.next(Array.from(h2));
+    this.sideNavigationPaneService.buildNavigationLinks();
   }
 }

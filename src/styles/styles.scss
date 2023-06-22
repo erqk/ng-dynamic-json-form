@@ -52,6 +52,7 @@ button {
   background-color: var(--primary-500);
   color: white;
   font-weight: bold;
+  cursor: pointer;
   transition: 0.2s;
 
   &:hover {
@@ -104,6 +105,27 @@ button {
   &.active {
     background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
+  }
+}
+
+.as-split-gutter {
+  position: relative !important;
+  background-color: var(--primary-500) !important;
+
+  &:hover {
+    > .as-split-gutter-icon {
+      opacity: 1;
+    }
+  }
+
+  > .as-split-gutter-icon {
+    position: absolute !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translate(-50%) !important;
+    width: 1.25rem !important;
+    background-color: rgba(128, 128, 128, 0.25);
+    opacity: 0;
   }
 }
 
