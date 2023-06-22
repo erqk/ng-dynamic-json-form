@@ -1,9 +1,9 @@
-<ng-container *ngIf="control">
-  <span>Your custom input here... </span>
-  <br />
-  <input type="text" [formControl]="control" />
-  
-  <ng-container *ngIf="control.errors">
-    <div>{{ control.errors | json }}</div>
+<app-source-code-viewer [source]="source">
+  <ng-container *ngIf="control">
+    <input type="text" [formControl]="control" />
+
+    <ng-container *ngIf="control.errors">
+      <div>{{ control.errors | json }}</div>
+    </ng-container>
   </ng-container>
-</ng-container>
+</app-source-code-viewer>

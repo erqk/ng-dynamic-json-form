@@ -1,14 +1,14 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
 
-export const testData: FormControlConfig[] = [
+export const FORM_CONFIG_ALL_ZHTW: FormControlConfig[] = [
   {
-    label: 'Basic Info',
+    label: '基本資料',
     formControlName: 'basicInfo',
     children: [
       {
-        label: 'Name',
+        label: '名字',
         formControlName: 'name',
-        value: 'Andrew',
+        value: '王小明',
         type: 'text',
         conditions: [
           {
@@ -21,24 +21,20 @@ export const testData: FormControlConfig[] = [
         validators: [
           {
             name: 'required',
-            message: 'Please type your name',
+            message: '請輸入名字',
           },
           {
             name: 'minLength',
-            value: 4,
+            value: 2,
           },
           {
             name: 'pattern',
             value: '\\D+',
           },
-          {
-            name: 'custom',
-            value: 'firstUppercase',
-          },
         ],
       },
       {
-        label: 'Age',
+        label: '年齡',
         formControlName: 'age',
         value: '18',
         type: 'number',
@@ -60,10 +56,10 @@ export const testData: FormControlConfig[] = [
         ],
       },
       {
-        label: 'Multi condition input',
+        label: '多重條件輸入元件',
         description:
-          "if (name==='Andrew' && age > 20 && (showEmail===false || gender==='0'))\n" +
-          "then required === true",
+          "若判斷式成立 (名字 === '王小明' && 年齡 > 20 && (顯示 Email === false || 性別 === '0'))\n" +
+          '則 required === true',
         formControlName: 'multiConditionInput',
         type: 'text',
         validators: [
@@ -81,7 +77,7 @@ export const testData: FormControlConfig[] = [
             groupWith: [
               {
                 control: 'basicInfo.name',
-                controlValue: 'Andrew',
+                controlValue: '王小明',
                 operator: '===',
               },
               {
@@ -102,7 +98,7 @@ export const testData: FormControlConfig[] = [
         ],
       },
       {
-        label: 'Gender',
+        label: '性別',
         formControlName: 'gender',
         value: '0',
         type: 'radio',
@@ -113,25 +109,25 @@ export const testData: FormControlConfig[] = [
         ],
         options: [
           {
-            label: 'Male',
+            label: '男',
             value: '0',
           },
           {
-            label: 'Female',
+            label: '女',
             value: '1',
           },
         ],
       },
       {
-        label: 'Show email',
+        label: '顯示 email',
         formControlName: 'showEmail',
         value: false,
         type: 'switch',
         extra: {
           switch: {
-            label: 'Show email input field',
+            label: '顯示 Email 輸入框',
             labelPosition: 'before',
-          }
+          },
         },
         validators: [
           {
@@ -169,12 +165,12 @@ export const testData: FormControlConfig[] = [
     type: 'checkbox',
     options: [
       {
-        label: "I'm a binary checkbox",
+        label: "我是二元勾選框",
       },
     ],
   },
   {
-    label: 'Credit cards type',
+    label: '信用卡類型',
     formControlName: 'creditCardTypes',
     type: 'checkbox',
     value: ['master'],
@@ -200,7 +196,7 @@ export const testData: FormControlConfig[] = [
     ],
   },
   {
-    label: 'Car brand',
+    label: '車輛品牌',
     formControlName: 'carBrand',
     type: 'dropdown',
     value: '0',
@@ -220,30 +216,30 @@ export const testData: FormControlConfig[] = [
     ],
   },
   {
-    label: 'Address',
+    label: '地址',
     formControlName: 'address',
     value: {},
     children: [
       {
-        label: 'Country',
+        label: '國家',
         formControlName: 'country',
-        value: 'country name',
+        value: '國家名',
         type: 'text',
         cssGrid: {
           gridColumn: '1',
         },
       },
       {
-        label: 'State',
+        label: '州屬',
         formControlName: 'state',
-        value: 'State name',
+        value: '州屬名',
         type: 'text',
         cssGrid: {
           gridColumn: '2',
         },
       },
       {
-        label: 'Postcode',
+        label: '郵編',
         formControlName: 'postcode',
         value: '00000',
         type: 'text',
@@ -273,44 +269,44 @@ export const testData: FormControlConfig[] = [
         max: 100,
         step: 10,
         showCurrentValue: true,
-        showTickMarks: true
-      }
-    }
+        showTickMarks: true,
+      },
+    },
   },
   {
-    label: 'Date time',
+    label: '日期',
     formControlName: 'dateTimeInput',
     type: 'date',
     extra: {
       date: {
         selectTime: true,
-        outputFormat: 'yyyy/MM/dd HH:mm'
-      }
-    }
+        outputFormat: 'yyyy/MM/dd HH:mm',
+      },
+    },
   },
   {
-    label: 'Custom Component (FormControl)',
+    label: '自訂元件 (FormControl)',
     formControlName: 'customComponentControl',
     customComponent: 'custom-input',
   },
   {
-    label: 'Custom Component (FormGroup)',
+    label: '自訂元件 (FormGroup)',
     formControlName: 'customComponentGroup',
     customComponent: 'custom-input-group',
   },
   {
-    label: 'Family member info',
+    label: '家庭成員資料',
     formControlName: 'familyMemberInfo',
     value: [],
     formArray: {
       length: 1,
       editable: true,
-      templateLabel: 'Member',
+      templateLabel: '成員',
       template: [
         {
-          label: 'Name',
+          label: '名字',
           formControlName: 'name',
-          value: 'Name',
+          value: '某某某',
           type: 'text',
         },
         {
@@ -325,30 +321,30 @@ export const testData: FormControlConfig[] = [
           type: 'text',
         },
         {
-          label: 'Address',
+          label: '地址',
           formControlName: 'address',
           value: {},
           children: [
             {
-              label: 'Country',
+              label: '國家',
               formControlName: 'country',
-              value: 'country name',
+              value: '國家名',
               type: 'text',
               cssGrid: {
                 gridColumn: '1',
               },
             },
             {
-              label: 'State',
+              label: '州屬',
               formControlName: 'state',
-              value: 'State name',
+              value: '州屬名',
               type: 'text',
               cssGrid: {
                 gridColumn: '2',
               },
             },
             {
-              label: 'Postcode',
+              label: '郵編',
               formControlName: 'postcode',
               value: '00000',
               type: 'text',
@@ -356,21 +352,21 @@ export const testData: FormControlConfig[] = [
           ],
         },
         {
-          label: 'Relationship',
+          label: '關係',
           formControlName: 'relationship',
           value: '',
           type: 'dropdown',
           options: [
             {
-              label: 'Father',
+              label: '父親',
               value: 0,
             },
             {
-              label: 'Mother',
+              label: '母親',
               value: 1,
             },
             {
-              label: 'Siblings',
+              label: '兄弟姐妹',
               value: 2,
             },
           ],

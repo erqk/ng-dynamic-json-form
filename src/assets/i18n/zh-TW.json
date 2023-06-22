@@ -9,9 +9,7 @@
     "brief": "從 JSON 資料動態生成 Angular 表單。從簡單的表單到擁有複雜的狀態監聽表單都可以，並且支援第三方 UI 套件！"
   },
   "playground": {
-    "generate_form": "生成表單",
     "ui_library": {
-      "title": "UI 套件",
       "native_html": "原生 HTML"
     }
   }

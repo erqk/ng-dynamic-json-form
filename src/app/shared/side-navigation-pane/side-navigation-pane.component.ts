@@ -87,15 +87,18 @@ export class SideNavigationPaneComponent {
     const el = e.target as HTMLElement;
     const newUrl = this.router.url.split('?')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
+    const itemIndex = Array.from(el.parentElement?.children || []).indexOf(el);
 
     el.scrollIntoView({
       block: 'center',
     });
 
     this.location.replaceState(newUrl, `id=${item.id}`);
-    this.scrollToContent(item.id);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
+
+    if (itemIndex > 0) this.scrollToContent(item.id);
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private onRouteChange(): void {
@@ -230,6 +233,7 @@ export class SideNavigationPaneComponent {
 
     target.scrollIntoView({
       behavior: smoothScrolling === true ? 'smooth' : 'auto',
+      block: 'start',
     });
 
     clearTimeout(this.scrollingTimeout);
