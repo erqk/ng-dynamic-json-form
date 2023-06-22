@@ -67,6 +67,7 @@ export class FormControlComponent {
     }
 
     setTimeout(() => {
+      this.componentAnchor.clear();
       const componentRef = this.componentAnchor.createComponent(inputComponent);
       componentRef.instance.data = this.data;
       componentRef.instance.control = this.control;
