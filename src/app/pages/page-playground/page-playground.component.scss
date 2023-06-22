@@ -128,6 +128,7 @@
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     transition: 0.5s cubic-bezier(0.55, -0.23, 0.42, 0.9);
+    transition-property: transform;
     z-index: 1;
 
     select {
