@@ -14,36 +14,41 @@ export class GridLayoutService {
     parentTemplateColumns?: string
   ): void {
     const columnCount = !!parentTemplateColumns
-      ? this.gridTemplateColumnCount(parentTemplateColumns)
-      : this.maxGridColumn(data);
+      ? this._gridTemplateColumnCount(parentTemplateColumns)
+      : this._maxGridColumn(data);
 
     for (const item of data) {
-      item.cssGrid = {
-        ...item.cssGrid,
-        ...(!item.cssGrid?.gridColumn && { gridColumn: `span ${columnCount}` }),
-      };
+      const isFormGroup = !item.formArray && !!item.children?.length;
+      const isFormArray = !isFormGroup && !!item.formArray?.template;
 
-      // If this is FormArray, then pass the template data in
-      if (!item.children?.length && !!item.formArray?.template) {
-        this.setGridColumn(item.formArray.template);
+      if (!item.cssGrid?.gridColumn) {
+        item.cssGrid = { ...item.cssGrid, gridColumn: `span ${columnCount}` };
       }
 
       // If this is FormGroup, then pass the children data in
-      if (!!item.children?.length && !item.formArray) {
-        const columnCount = this.maxGridColumn(item.children);
-        item.cssGrid = {
-          ...item.cssGrid,
-          ...(!item.cssGrid?.gridTemplateColumns && {
+      if (isFormGroup) {
+        const children = item.children!;
+        const columnCount = this._maxGridColumn(children);
+
+        if (!item.cssGrid?.gridTemplateColumns) {
+          item.cssGrid = {
+            ...item.cssGrid,
             gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-          }),
-        };
-        this.setGridColumn(item.children, item.cssGrid.gridTemplateColumns);
+          };
+        }
+
+        this.setGridColumn(children, item.cssGrid.gridTemplateColumns);
+      }
+
+      // If this is FormArray, then pass the template data in
+      if (isFormArray) {
+        this.setGridColumn(item.formArray!.template);
       }
     }
   }
 
   /**Find the max `gridColumn` value */
-  private maxGridColumn(data: FormControlConfig[]): number {
+  private _maxGridColumn(data: FormControlConfig[]): number {
     /**Find all the `gridColumn` items that is set to `"span N"` || `"N"` */
     const gridColumnItems = data.filter((x) => {
       const hasGridColumnSet = !!x.cssGrid && !!x.cssGrid.gridColumn;
@@ -62,7 +67,7 @@ export class GridLayoutService {
   }
 
   /**Parse `gridTemplateColumns` and get the total column amount */
-  private gridTemplateColumnCount(gridTemplateColumns: string): number {
+  private _gridTemplateColumnCount(gridTemplateColumns: string): number {
     /**Get multiplier from `repeat(N, ...)` */
     const multiplier =
       gridTemplateColumns.includes('repeat') &&
