@@ -24,7 +24,7 @@ import { startWith } from 'rxjs/operators';
   styles: [],
 })
 export class UiMaterialDateComponent extends NgDynamicJsonFormCustomComponent {
-  private locale = inject(LOCALE_ID);
+  private _locale = inject(LOCALE_ID);
 
   override viewControl = new FormControl(new Date());
 
@@ -40,7 +40,7 @@ export class UiMaterialDateComponent extends NgDynamicJsonFormCustomComponent {
         delay(0),
         map((x) => {
           const outputFormat = this.data?.extra?.date?.outputFormat;
-          return outputFormat ? formatDate(x!, outputFormat, this.locale) : x;
+          return outputFormat ? formatDate(x!, outputFormat, this._locale) : x;
         })
       )
       .subscribe(fn);

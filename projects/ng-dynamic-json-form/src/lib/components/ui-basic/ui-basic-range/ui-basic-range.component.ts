@@ -12,22 +12,22 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
   styles: [],
 })
 export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
-  private el = inject(ElementRef);
-  private rangeInput?: HTMLInputElement;
+  private _el = inject(ElementRef);
+  private _rangeInput?: HTMLInputElement;
 
   tickMarks: any[] = [];
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.getTickMarksCount();
+    this._getTickMarksCount();
   }
 
   ngAfterViewInit(): void {
-    this.updateSlider();
+    this._updateSlider();
     this.control?.valueChanges
       .pipe(
         startWith(this.control.value),
-        tap(() => this.updateSlider())
+        tap(() => this._updateSlider())
       )
       .subscribe();
   }
@@ -47,7 +47,7 @@ export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
     return `${(this.control.value / (max - min)) * 100}%`;
   }
 
-  private getTickMarksCount(): void {
+  private _getTickMarksCount(): void {
     if (!this.data?.extra?.range || !this.data.extra.range.showTickMarks) {
       return;
     }
@@ -62,18 +62,18 @@ export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
     );
   }
 
-  private updateSlider(): void {
-    if (!this.rangeInput) {
-      this.rangeInput = this.el.nativeElement.querySelector(
+  private _updateSlider(): void {
+    if (!this._rangeInput) {
+      this._rangeInput = this._el.nativeElement.querySelector(
         'input'
       ) as HTMLInputElement;
       return;
     }
 
-    const min = parseFloat(this.rangeInput.min);
-    const max = parseFloat(this.rangeInput.max);
-    const value = parseFloat(this.rangeInput.value);
-    this.rangeInput.style.backgroundSize = `${
+    const min = parseFloat(this._rangeInput.min);
+    const max = parseFloat(this._rangeInput.max);
+    const value = parseFloat(this._rangeInput.value);
+    this._rangeInput.style.backgroundSize = `${
       ((value - min) * 100) / (max - min)
     }% 100%`;
   }

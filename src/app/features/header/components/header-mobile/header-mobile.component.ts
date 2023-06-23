@@ -30,8 +30,8 @@ import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-
   styleUrls: ['./header-mobile.component.scss'],
 })
 export class HeaderMobileComponent {
-  private router = inject(Router);
-  private elementRef = inject(ElementRef);
+  private _router = inject(Router);
+  private _elementRef = inject(ElementRef);
 
   @Input() links: { label: string; route: string }[] = [];
 
@@ -41,7 +41,7 @@ export class HeaderMobileComponent {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(e: Event): void {
-    const host = this.elementRef.nativeElement as HTMLElement;
+    const host = this._elementRef.nativeElement as HTMLElement;
     if (host.contains(e.target as HTMLElement)) {
       return;
     }
@@ -51,28 +51,28 @@ export class HeaderMobileComponent {
     }
 
     this.openNavigationPane = false;
-    this.toggleBackdrop(false);
+    this._toggleBackdrop(false);
   }
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
     if (window.innerWidth > 992) return;
 
-    const host = this.elementRef.nativeElement as HTMLElement;
+    const host = this._elementRef.nativeElement as HTMLElement;
     const shadowIntensity =
       window.scrollY / 200 > 0.35 ? 0.35 : window.scrollY / 200;
     host.style.boxShadow = `0 0 1.5rem rgba(0,0,0,${shadowIntensity})`;
   }
 
   ngOnInit(): void {
-    this.createBackdrop();
-    this.router.events
+    this._createBackdrop();
+    this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
         tap((x) => {
           this.openNavigationPane = false;
-          this.toggleBackdrop(false);
-          this.setButtonNavigationPane();
+          this._toggleBackdrop(false);
+          this._setButtonNavigationPane();
         })
       )
       .subscribe();
@@ -80,15 +80,15 @@ export class HeaderMobileComponent {
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;
-    this.toggleBackdrop(false);
+    this._toggleBackdrop(false);
   }
 
   toggleNavigationPane(): void {
     this.openNavigationPane = !this.openNavigationPane;
-    this.toggleBackdrop(this.openNavigationPane);
+    this._toggleBackdrop(this.openNavigationPane);
   }
 
-  private createBackdrop(): void {
+  private _createBackdrop(): void {
     const anchorEl = document.querySelector('router-outlet');
     const backdropEl = document.createElement('div');
 
@@ -96,7 +96,7 @@ export class HeaderMobileComponent {
     anchorEl?.insertAdjacentElement('afterend', backdropEl);
   }
 
-  private toggleBackdrop(show?: boolean): void {
+  private _toggleBackdrop(show?: boolean): void {
     const backdropEl = document.querySelector('.backdrop');
 
     if (show === undefined) {
@@ -107,8 +107,8 @@ export class HeaderMobileComponent {
     }
   }
 
-  private setButtonNavigationPane(): void {
-    switch (this.router.url) {
+  private _setButtonNavigationPane(): void {
+    switch (this._router.url) {
       case '/':
       case '/playground':
         this.showNavigationPaneButton = false;

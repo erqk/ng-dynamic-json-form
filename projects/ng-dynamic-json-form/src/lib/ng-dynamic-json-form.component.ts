@@ -88,108 +88,108 @@ export class NgDynamicJsonFormComponent {
   basicUIComponents = UI_BASIC_COMPONENTS;
 
   config: FormControlConfig[] = [];
-  private reset$ = new Subject();
-  private onDestroy$ = new Subject();
+  private _reset$ = new Subject();
+  private _onDestroy$ = new Subject();
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private el: ElementRef,
-    private renderer2: Renderer2,
-    private formConfigInitService: FormConfigInitService,
-    private formGeneratorService: FormGeneratorService,
-    private formStatusService: FormStatusService,
-    private formValidatorService: FormValidatorService
+    @Inject(PLATFORM_ID) private _platformId: Object,
+    private _el: ElementRef,
+    private _renderer2: Renderer2,
+    private _formConfigInitService: FormConfigInitService,
+    private _formGeneratorService: FormGeneratorService,
+    private _formStatusService: FormStatusService,
+    private _formValidatorService: FormValidatorService
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 
     const { jsonData, uiComponents } = simpleChanges;
 
     if (jsonData) {
-      this.buildForm();
+      this._buildForm();
     }
 
     if (uiComponents) {
-      this.setHostUiClass();
+      this._setHostUiClass();
     }
   }
 
   ngOnInit(): void {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 
-    this.initHostClass();
-    this.setHostUiClass();
+    this._initHostClass();
+    this._setHostUiClass();
   }
 
   ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
-    this.reset$.complete();
+    this._onDestroy$.next(null);
+    this._onDestroy$.complete();
+    this._reset$.complete();
   }
 
-  private initHostClass(): void {
-    const hostEl = this.el.nativeElement as HTMLElement;
+  private _initHostClass(): void {
+    const hostEl = this._el.nativeElement as HTMLElement;
     const dynamicFormsFound = document.querySelectorAll('ng-dynamic-json-form');
     const hostIndex = Array.from(dynamicFormsFound).indexOf(hostEl);
 
-    this.renderer2.addClass(hostEl, 'ng-dynamic-json-form');
-    this.renderer2.addClass(hostEl, `index-${hostIndex}`);
-    this.formStatusService.hostIndex = hostIndex;
+    this._renderer2.addClass(hostEl, 'ng-dynamic-json-form');
+    this._renderer2.addClass(hostEl, `index-${hostIndex}`);
+    this._formStatusService.hostIndex = hostIndex;
   }
 
-  private setHostUiClass(): void {
-    const hostEl = this.el.nativeElement as HTMLElement;
+  private _setHostUiClass(): void {
+    const hostEl = this._el.nativeElement as HTMLElement;
 
     if (!this.uiComponents) {
-      this.renderer2.addClass(hostEl, 'ui-basic');
+      this._renderer2.addClass(hostEl, 'ui-basic');
     } else {
-      this.renderer2.removeClass(hostEl, 'ui-basic');
+      this._renderer2.removeClass(hostEl, 'ui-basic');
     }
   }
 
-  private get jsonDataValid(): boolean {
-    if (!this.jsonData) return false;
+  private get _jsonDataValid(): boolean {
+    if (!this.jsonData) {
+      return false;
+    }
+
+    if (typeof this.jsonData === 'string') {
+      try {
+        JSON.parse(this.jsonData);
+      } catch (e) {
+        return false;
+      }
+    }
 
     if (Array.isArray(this.jsonData)) {
       return !!this.jsonData.length;
     }
 
-    if (typeof this.jsonData === 'string') {
-      try {
-        this.config = JSON.parse(this.jsonData);
-        return true;
-      } catch (e) {
-        console.error(e);
-        return false;
-      }
-    }
-
-    return false;
+    return true;
   }
 
-  private buildForm(): void {
-    if (!this.jsonDataValid) return;
+  private _buildForm(): void {
+    if (!this._jsonDataValid) return;
 
-    if (Array.isArray(this.jsonData)) {
-      this.config = JSON.parse(JSON.stringify(this.jsonData));
-    }
+    this.config = Array.isArray(this.jsonData)
+      ? JSON.parse(JSON.stringify(this.jsonData))
+      : JSON.parse(this.jsonData);
 
-    this.formConfigInitService.init(this.config);
-    this.formValidatorService.customValidators = this.customValidators;
-    this.form = this.formGeneratorService.generateFormGroup(this.config);
+    this._formConfigInitService.init(this.config);
+    this._formValidatorService.customValidators = this.customValidators;
+    this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
-    this.reset$.next(null);
+    this._reset$.next(null);
     merge(
-      this.formStatusService.formErrorEvent$(this.form),
-      this.formStatusService.formControlConditonsEvent$(this.form, this.config)
+      this._formStatusService.formErrorEvent$(this.form),
+      this._formStatusService.formControlConditonsEvent$(this.form, this.config)
     )
-      .pipe(takeUntil(merge(this.reset$, this.onDestroy$)))
+      .pipe(takeUntil(merge(this._reset$, this._onDestroy$)))
       .subscribe();
   }
 
@@ -198,7 +198,7 @@ export class NgDynamicJsonFormComponent {
     template: FormControlConfig[],
     index?: number
   ): void {
-    const formGroup = this.formGeneratorService.generateFormGroup(template);
+    const formGroup = this._formGeneratorService.generateFormGroup(template);
     if (!index) formArray.push(formGroup);
     else formArray.insert(index, formGroup);
   }

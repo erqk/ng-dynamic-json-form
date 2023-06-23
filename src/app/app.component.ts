@@ -15,7 +15,7 @@ import { DocumentLoaderService } from './features/document/services/document-loa
 })
 export class AppComponent {
   documentLoaderService = inject(DocumentLoaderService);
-  private router = inject(Router);
+  private _router = inject(Router);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
@@ -23,7 +23,7 @@ export class AppComponent {
   ngOnInit(): void {
     // No need to use `takeUntil()` because this is the root of the app
     // And this is one time action, no repeated subscription
-    this.router.events
+    this._router.events
       .pipe(
         tap((x) => {
           if (x instanceof RouteConfigLoadStart) {

@@ -13,46 +13,46 @@ export class GridItemWrapperComponent {
   @Input() parentId = '';
   @Input() data: FormControlConfig = {} as FormControlConfig;
 
-  get hostId(): string {
+  private get _hostId(): string {
     return this.parentId
       ? `${this.parentId}.${this.data.formControlName}`
       : this.data.formControlName;
   }
 
-  get isGridLayout(): boolean {
+  private get _isGridLayout(): boolean {
     return !!this.data?.cssGrid?.gridColumn || !!this.data?.cssGrid?.gridRow;
   }
 
-  get gridRow(): string {
+  private get _gridRow(): string {
     return this.data?.cssGrid?.gridRow ?? '';
   }
 
-  get gridColumn(): string {
+  private get _gridColumn(): string {
     return this.data?.cssGrid?.gridColumn ?? '';
   }
 
-  constructor(private el: ElementRef, private renderer2: Renderer2) {}
+  constructor(private _el: ElementRef, private _renderer2: Renderer2) {}
 
   ngOnInit(): void {
     this.setHostAttributes();
   }
 
   setHostAttributes(): void {
-    const hostElement = this.el.nativeElement as HTMLElement;
+    const hostElement = this._el.nativeElement as HTMLElement;
 
-    if (this.isGridLayout) {
-      this.renderer2.addClass(hostElement, 'grid-layout');
+    if (this._isGridLayout) {
+      this._renderer2.addClass(hostElement, 'grid-layout');
     }
 
     // Set `id` to this component so that `querySelector` can find it correctly.
-    this.renderer2.setAttribute(hostElement, 'id', this.hostId);
+    this._renderer2.setAttribute(hostElement, 'id', this._hostId);
 
     const styles: { [key: string]: string } = {
-      ...(this.gridRow && { 'grid-row': this.gridRow }),
-      ...(this.gridColumn && { 'grid-column': this.gridColumn }),
+      ...(this._gridRow && { 'grid-row': this._gridRow }),
+      ...(this._gridColumn && { 'grid-column': this._gridColumn }),
     };
 
-    this.renderer2.setAttribute(
+    this._renderer2.setAttribute(
       hostElement,
       'style',
       Object.keys(styles).reduce((a, key) => `${a}${key}:${styles[key]};`, '')

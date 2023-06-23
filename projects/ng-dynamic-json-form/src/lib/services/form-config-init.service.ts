@@ -5,7 +5,7 @@ import { NgxMaskConfig } from '../models/ngx-mask-config.model';
 
 @Injectable()
 export class FormConfigInitService {
-  private maskDefaultSpecialCharacters: string[] = [
+  private _maskDefaultSpecialCharacters: string[] = [
     '-',
     '/',
     '(',
@@ -22,7 +22,7 @@ export class FormConfigInitService {
     "'",
   ];
 
-  private maskDefaultPatterns: NgxMaskConfig['patterns'] = {
+  private _maskDefaultPatterns: NgxMaskConfig['patterns'] = {
     '0': {
       pattern: new RegExp('\\d'),
     },
@@ -66,14 +66,14 @@ export class FormConfigInitService {
     },
   };
 
-  constructor(private gridLayoutService: GridLayoutService) {}
+  constructor(private _gridLayoutService: GridLayoutService) {}
 
   init(config: FormControlConfig[]): void {
-    this.gridLayoutService.setGridColumn(config);
-    this.initNgxMaskPatterns(config);
+    this._gridLayoutService.setGridColumn(config);
+    this._initNgxMaskPatterns(config);
   }
 
-  private initNgxMaskPatterns(config: FormControlConfig[]): void {
+  private _initNgxMaskPatterns(config: FormControlConfig[]): void {
     for (const item of config) {
       const noChildren = !item.children?.length;
       const noFormArray = !item.formArray || !item.formArray.template.length;
@@ -105,22 +105,22 @@ export class FormConfigInitService {
         specialCharacters:
           specialCharacters && Array.isArray(specialCharacters)
             ? specialCharacters
-            : this.maskDefaultSpecialCharacters,
+            : this._maskDefaultSpecialCharacters,
       };
 
       if (patterns) {
         item.ngxMaskConfig = {
           ...item.ngxMaskConfig,
-          patterns: patternsMapped ?? this.maskDefaultPatterns,
+          patterns: patternsMapped ?? this._maskDefaultPatterns,
         };
       }
 
       if (!!item.children?.length) {
-        this.initNgxMaskPatterns(item.children);
+        this._initNgxMaskPatterns(item.children);
       }
 
       if (!!item.formArray && !!item.formArray.template) {
-        this.initNgxMaskPatterns(item.formArray.template);
+        this._initNgxMaskPatterns(item.formArray.template);
       }
     }
   }

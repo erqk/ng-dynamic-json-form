@@ -40,7 +40,7 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
   animations: [FADE_UP_ANIMATION]
 })
 export class LayoutComponent {
-  private documentLoaderService = inject(DocumentLoaderService);
+  private _documentLoaderService = inject(DocumentLoaderService);
 
-  documentLoading$ = this.documentLoaderService.documentLoading$;
+  documentLoading$ = this._documentLoaderService.documentLoading$;
 }

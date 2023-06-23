@@ -29,7 +29,7 @@ import { ThemeService } from '../../services/theme.service';
 export class ThemeSwitcherComponent {
   @HostListener('document:click', ['$event'])
   onClick(e: MouseEvent): void {
-    const hostElement = this.el.nativeElement as HTMLElement;
+    const hostElement = this._el.nativeElement as HTMLElement;
     const clickedItem = e.target as HTMLElement;
 
     if (!hostElement.contains(clickedItem)) {
@@ -59,23 +59,23 @@ export class ThemeSwitcherComponent {
     },
   ].map((x) => ({
     ...x,
-    svg: this.domSanitizer.bypassSecurityTrustHtml(x.svg),
+    svg: this._domSanitizer.bypassSecurityTrustHtml(x.svg),
   }));
 
   showMenu = false;
   currentTheme = this.themeIcons[0];
 
   constructor(
-    private domSanitizer: DomSanitizer,
-    private el: ElementRef,
-    private themeService: ThemeService
+    private _domSanitizer: DomSanitizer,
+    private _el: ElementRef,
+    private _themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
-    this.initTheme();
+    this._initTheme();
   }
 
-  private initTheme(): void {
+  private _initTheme(): void {
     const themeSaved = window.localStorage.getItem('theme') || 'auto';
     this.switchTheme(themeSaved);
   }
@@ -91,7 +91,7 @@ export class ThemeSwitcherComponent {
     this.showMenu = false;
 
     window.localStorage.setItem('theme', name);
-    this.themeService.theme$.next(name);
+    this._themeService.theme$.next(name);
   }
 
   toggleMenu(): void {

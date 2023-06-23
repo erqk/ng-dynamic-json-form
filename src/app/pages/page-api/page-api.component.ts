@@ -21,15 +21,15 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
   styleUrls: ['./page-api.component.scss'],
 })
 export class PageApiComponent {
-  content$ = this.documentLoaderService.getDocumentContent$('api', true);
+  content$ = this._documentLoaderService.getDocumentContent$('api', true);
 
   constructor(
-    private sideNavigationPaneService: SideNavigationPaneService,
-    private documentLoaderService: DocumentLoaderService
+    private _sideNavigationPaneService: SideNavigationPaneService,
+    private _documentLoaderService: DocumentLoaderService
   ) {}
 
   onReady(): void {
-    this.documentLoaderService.wrapTable();
-    this.sideNavigationPaneService.buildNavigationLinks();
+    this._documentLoaderService.wrapTable();
+    this._sideNavigationPaneService.buildNavigationLinks();
   }
 }

@@ -5,26 +5,26 @@ import { Directive, ElementRef, HostListener, inject } from '@angular/core';
   standalone: true,
 })
 export class TextareaAutoResizeDirective {
-  private el = inject(ElementRef);
+  private _el = inject(ElementRef);
 
-  private hostEl?: HTMLElement;
-  private borderWidth = 0;
+  private _hostEl?: HTMLElement;
+  private _borderWidth = 0;
 
   ngOnInit(): void {
-    this.hostEl = this.el.nativeElement as HTMLElement;
-    if (this.hostEl) {
-      this.hostEl.style.resize = 'none';
-      this.borderWidth = parseFloat(
-        window.getComputedStyle(this.hostEl).borderWidth
+    this._hostEl = this._el.nativeElement as HTMLElement;
+    if (this._hostEl) {
+      this._hostEl.style.resize = 'none';
+      this._borderWidth = parseFloat(
+        window.getComputedStyle(this._hostEl).borderWidth
       );
     }
   }
 
   @HostListener('input', ['$event'])
   onInput(): void {
-    if (!this.hostEl) return;
+    if (!this._hostEl) return;
 
-    this.hostEl.style.removeProperty('height');
-    this.hostEl.style.height = `${this.hostEl.scrollHeight + this.borderWidth * 2}px`;
+    this._hostEl.style.removeProperty('height');
+    this._hostEl.style.height = `${this._hostEl.scrollHeight + this._borderWidth * 2}px`;
   }
 }

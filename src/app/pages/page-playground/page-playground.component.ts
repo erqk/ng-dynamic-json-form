@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule, UntypedFormGroup } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import {
@@ -8,6 +8,7 @@ import {
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
+import { MarkdownModule } from 'ngx-markdown';
 import {
   Subject,
   combineLatest,
@@ -16,8 +17,7 @@ import {
   map,
   of,
   takeUntil,
-  tap,
-  throttleTime,
+  tap
 } from 'rxjs';
 import { EXAMPLE_CONFIGS } from 'src/app/example/configs/example-configs.constant';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
@@ -27,7 +27,6 @@ import { firstUppercaseValidator } from '../../example/validators/first-uppercas
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { ThemeService } from '../../features/theme/services/theme.service';
 import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
-import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-page-playground',
@@ -72,13 +71,13 @@ export class PagePlaygroundComponent {
     position: 'right',
   };
 
-  language$ = this.languageDataService.language$;
-  languageData$ = this.languageDataService.languageData$;
+  language$ = this._languageDataService.language$;
+  languageData$ = this._languageDataService.languageData$;
   onDestroy$ = new Subject();
 
   constructor(
-    private languageDataService: LanguageDataService,
-    private themeService: ThemeService
+    private _languageDataService: LanguageDataService,
+    private _themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -162,7 +161,7 @@ export class PagePlaygroundComponent {
   }
 
   private get _fallbackJsonData() {
-    const currentLanguage = this.languageDataService.language$.value;
+    const currentLanguage = this._languageDataService.language$.value;
     const formConfig = (this.exampleList as any)[this.exampleSelected][
       currentLanguage
     ]['config'];
@@ -226,14 +225,16 @@ export class PagePlaygroundComponent {
     }
 
     if ('text' in input && input.text) {
-      jsonContent = input.text;
+      try {
+        jsonContent = JSON.parse(input.text);
+      } catch (e) {}
     }
 
     return { json: jsonContent };
   }
 
   private _languageChangeEvent(): void {
-    this.languageDataService.language$
+    this._languageDataService.language$
       .pipe(
         tap(() => {
           this.loadJsonData();
@@ -256,7 +257,7 @@ export class PagePlaygroundComponent {
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
     const prefersDark$ = of(mediaQueryList).pipe(map((x) => x.matches));
 
-    combineLatest([prefersDark$, this.themeService.theme$])
+    combineLatest([prefersDark$, this._themeService.theme$])
       .pipe(
         debounceTime(0),
         tap(([prefersDark, currentTheme]) => {

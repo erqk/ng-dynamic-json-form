@@ -9,12 +9,12 @@ export class LanguageDataService {
   language$ = new BehaviorSubject<string>('en');
   languageData$ = new BehaviorSubject<any>({});
 
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
 
   setLanguage$(lang?: string): Observable<any> {
     const _lang = lang ?? window.localStorage.getItem('language') ?? 'en';
 
-    return this.http
+    return this._http
       .get(`assets/i18n/${_lang}.json`, { responseType: 'json' })
       .pipe(
         tap((x) => {

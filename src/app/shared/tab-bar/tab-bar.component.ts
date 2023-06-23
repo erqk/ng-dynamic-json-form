@@ -22,66 +22,66 @@ export class TabBarComponent {
     label: string;
   }[] = [];
 
-  private onDestroy$ = new Subject();
+  private _onDestroy$ = new Subject();
 
   constructor(
-    private router: Router,
-    private el: ElementRef,
-    private renderer2: Renderer2
+    private _router: Router,
+    private _el: ElementRef,
+    private _renderer2: Renderer2
   ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { links } = simpleChanges;
 
-    links && this.setIndicatorStyle();
+    links && this._setIndicatorStyle();
   }
 
   ngAfterViewInit(): void {
-    this.onRouteChange();
-    this.setIndicatorStyle();
+    this._onRouteChange();
+    this._setIndicatorStyle();
   }
 
   ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
+    this._onDestroy$.next(null);
+    this._onDestroy$.complete();
   }
 
-  private onRouteChange(): void {
-    this.router.events
+  private _onRouteChange(): void {
+    this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => this.setIndicatorStyle()),
-        takeUntil(this.onDestroy$)
+        tap((x) => this._setIndicatorStyle()),
+        takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
-  private findElement(selector: string): HTMLElement | null {
-    const host = this.el.nativeElement as HTMLElement;
+  private _findElement(selector: string): HTMLElement | null {
+    const host = this._el.nativeElement as HTMLElement;
     return host.querySelector(selector);
   }
 
-  private setIndicatorStyle(): void {
+  private _setIndicatorStyle(): void {
     requestAnimationFrame(() => {
-      const indicator = this.findElement('.indicator');
-      const activeTab = this.findElement('a.active');
+      const indicator = this._findElement('.indicator');
+      const activeTab = this._findElement('a.active');
       if (!indicator) {
         return;
       }
 
       if (!activeTab) {
-        this.renderer2.setStyle(indicator, 'opacity', '0');
+        this._renderer2.setStyle(indicator, 'opacity', '0');
         return;
       }
 
-      const containerPaddingLeft = this.findElement('.content')
+      const containerPaddingLeft = this._findElement('.content')
         ? parseFloat(
-            window.getComputedStyle(this.findElement('.content')!).paddingLeft
+            window.getComputedStyle(this._findElement('.content')!).paddingLeft
           )
         : 0;
 
       const leftStart =
-        (this.findElement('a')?.getBoundingClientRect().x || 0) -
+        (this._findElement('a')?.getBoundingClientRect().x || 0) -
         containerPaddingLeft;
       const left = activeTab.getBoundingClientRect().x - leftStart;
       const indicatorWidth = activeTab.clientWidth * 0.8;
@@ -91,9 +91,9 @@ export class TabBarComponent {
         inline: 'center',
       });
 
-      this.renderer2.setStyle(indicator, 'opacity', '1');
-      this.renderer2.setStyle(indicator, 'left', `${left + leftOffset}px`);
-      this.renderer2.setStyle(indicator, 'width', `${indicatorWidth}px`);
+      this._renderer2.setStyle(indicator, 'opacity', '1');
+      this._renderer2.setStyle(indicator, 'left', `${left + leftOffset}px`);
+      this._renderer2.setStyle(indicator, 'width', `${indicatorWidth}px`);
     });
   }
 }

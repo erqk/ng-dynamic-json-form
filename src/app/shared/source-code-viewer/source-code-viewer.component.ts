@@ -13,7 +13,7 @@ import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.comp
   styleUrls: ['./source-code-viewer.component.scss'],
 })
 export class SourceCodeViewerComponent {
-  private http = inject(HttpClient);
+  private _http = inject(HttpClient);
 
   @Input() source?: { html: string; ts: string };
 
@@ -25,8 +25,8 @@ export class SourceCodeViewerComponent {
     if (!this.source) return;
 
     forkJoin([
-      this.http.get(this.source.html, { responseType: 'text' }),
-      this.http.get(this.source.ts, { responseType: 'text' }),
+      this._http.get(this.source.html, { responseType: 'text' }),
+      this._http.get(this.source.ts, { responseType: 'text' }),
     ]).subscribe(([html, ts]) => (this.markdown = { html, ts }));
   }
 }

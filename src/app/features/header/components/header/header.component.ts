@@ -20,7 +20,7 @@ import { LanguageDataService } from 'src/app/features/language/services/language
 export class HeaderComponent {
   reload = false;
 
-  links$ = this.languageDataService.languageData$.pipe(
+  links$ = this._languageDataService.languageData$.pipe(
     map((x) => [
       {
         route: 'getting-started',
@@ -41,12 +41,12 @@ export class HeaderComponent {
     ])
   );
 
-  constructor(private languageDataService: LanguageDataService) {}
+  constructor(private _languageDataService: LanguageDataService) {}
 
   ngOnInit(): void {
-    this.languageDataService.language$
+    this._languageDataService.language$
       .pipe(
-        tap((x) => {
+        tap(() => {
           this.reload = true;
           requestAnimationFrame(() => (this.reload = false));
         })

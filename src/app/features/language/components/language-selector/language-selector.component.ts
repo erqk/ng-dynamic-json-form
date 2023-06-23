@@ -16,14 +16,14 @@ import { LanguageDataService } from '../../services/language-data.service';
   styles: [],
 })
 export class LanguageSelectorComponent {
-  language$ = this.languageDataService.language$;
+  language$ = this._languageDataService.language$;
 
-  constructor(private languageDataService: LanguageDataService) {}
+  constructor(private _languageDataService: LanguageDataService) {}
 
   switchLanguage(e: Event): void {
     const select = e.target as HTMLSelectElement;
     const language = select.value;
 
-    this.languageDataService.setLanguage$(language).subscribe();
+    this._languageDataService.setLanguage$(language).subscribe();
   }
 }

@@ -56,36 +56,36 @@ export class SideNavigationPaneComponent {
   links: SideNaviagionPaneLink[] = [];
   currentActiveId = ['', ''];
 
-  private currentLinkIndex = 0;
-  private linksFlatten: SideNaviagionPaneLink[] = [];
-  private scrolling = false;
-  private scrollingTimeout: number = 0;
+  private _currentLinkIndex = 0;
+  private _linksFlatten: SideNaviagionPaneLink[] = [];
+  private _scrolling = false;
+  private _scrollingTimeout: number = 0;
 
-  private reset$ = new Subject();
-  private onDestroy$ = new Subject();
+  private _reset$ = new Subject();
+  private _onDestroy$ = new Subject();
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
   constructor(
-    private sideNavigationPaneService: SideNavigationPaneService,
-    private renderer2: Renderer2,
-    private router: Router,
-    private location: Location
+    private _sideNavigationPaneService: SideNavigationPaneService,
+    private _renderer2: Renderer2,
+    private _router: Router,
+    private _location: Location
   ) {}
 
   ngOnInit(): void {
-    this.getLinks();
-    this.onRouteChange();
+    this._getLinks();
+    this._onRouteChange();
   }
 
   ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
+    this._onDestroy$.next(null);
+    this._onDestroy$.complete();
   }
 
   onLinkClick(e: Event, item: SideNaviagionPaneLink): void {
     const el = e.target as HTMLElement;
-    const newUrl = this.router.url.split('?')[0];
+    const newUrl = this._router.url.split('?')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
     const itemIndex = Array.from(el.parentElement?.children || []).indexOf(el);
 
@@ -93,45 +93,45 @@ export class SideNavigationPaneComponent {
       block: 'center',
     });
 
-    this.location.replaceState(newUrl, `id=${item.id}`);
+    this._location.replaceState(newUrl, `id=${item.id}`);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
 
-    if (itemIndex > 0) this.scrollToContent(item.id);
+    if (itemIndex > 0) this._scrollToContent(item.id);
     else window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  private onRouteChange(): void {
-    this.router.events
+  private _onRouteChange(): void {
+    this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => this.syncActiveIndexWithScroll()),
-        takeUntil(this.onDestroy$)
+        tap((x) => this._syncActiveIndexWithScroll()),
+        takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
-  private getLinks(): void {
-    this.sideNavigationPaneService.navigationLinks$
+  private _getLinks(): void {
+    this._sideNavigationPaneService.navigationLinks$
       .pipe(
         tap((x) => {
           this.links = x;
-          this.flattenLinks(x);
-          this.syncActiveIndexWithScroll();
-          this.scrollToContent(undefined, false);
-          this.setActiveIds();
+          this._flattenLinks(x);
+          this._syncActiveIndexWithScroll();
+          this._scrollToContent(undefined, false);
+          this._setActiveIds();
         }),
-        takeUntil(this.onDestroy$)
+        takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
-  private flattenLinks(links: SideNaviagionPaneLink[]): void {
-    this.linksFlatten = [];
+  private _flattenLinks(links: SideNaviagionPaneLink[]): void {
+    this._linksFlatten = [];
 
     const flatten = (input: SideNaviagionPaneLink[]) => {
       for (const item of input) {
-        this.linksFlatten.push(item);
+        this._linksFlatten.push(item);
 
         if (item.children) {
           flatten(item.children);
@@ -142,36 +142,36 @@ export class SideNavigationPaneComponent {
     flatten(links);
   }
 
-  private syncActiveIndexWithScroll(): void {
+  private _syncActiveIndexWithScroll(): void {
     let lastScrollPosition = 0;
     const highlightVisibleTitle = () => {
-      if (this.scrolling) return;
+      if (this._scrolling) return;
 
       const scrollUp = window.scrollY < lastScrollPosition;
 
       if (scrollUp) {
-        const prevLinkItem = this.linksFlatten[this.currentLinkIndex - 1];
+        const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
         if (!prevLinkItem) return;
 
         const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
         this.currentActiveId[level] = prevLinkItem.id || '';
       }
 
-      this.setActiveIds();
+      this._setActiveIds();
       lastScrollPosition = window.scrollY;
     };
 
-    this.reset$.next(null);
+    this._reset$.next(null);
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
         tap(() => highlightVisibleTitle()),
-        takeUntil(merge(this.onDestroy$, this.reset$))
+        takeUntil(merge(this._onDestroy$, this._reset$))
       )
       .subscribe();
   }
 
-  private setActiveIds(): void {
-    const titles = this.linksFlatten
+  private _setActiveIds(): void {
+    const titles = this._linksFlatten
       .map((x) => document.querySelector(`#${x.id}`)!)
       .filter((x) => !!x);
 
@@ -202,13 +202,13 @@ export class SideNavigationPaneComponent {
 
     this.currentActiveId[level - 1] = parent?.id || '';
     this.currentActiveId[level] = activeTitle.id || '';
-    this.currentLinkIndex = this.linksFlatten.findIndex(
+    this._currentLinkIndex = this._linksFlatten.findIndex(
       (x) => x.id === activeTitle!.id
     );
   }
 
-  private scrollToContent(id?: string, smoothScrolling = true): void {
-    const idFromRoute = this.router.parseUrl(this.location.path()).queryParams[
+  private _scrollToContent(id?: string, smoothScrolling = true): void {
+    const idFromRoute = this._router.parseUrl(this._location.path()).queryParams[
       'id'
     ];
     const targetId = id ?? idFromRoute;
@@ -224,8 +224,8 @@ export class SideNavigationPaneComponent {
 
     if (!target || !header) return;
 
-    this.scrolling = true;
-    this.renderer2.setStyle(
+    this._scrolling = true;
+    this._renderer2.setStyle(
       target,
       'scroll-margin',
       `${header.clientHeight + 16}px`
@@ -236,9 +236,9 @@ export class SideNavigationPaneComponent {
       block: 'start',
     });
 
-    clearTimeout(this.scrollingTimeout);
-    this.scrollingTimeout = window.setTimeout(
-      () => (this.scrolling = false),
+    clearTimeout(this._scrollingTimeout);
+    this._scrollingTimeout = window.setTimeout(
+      () => (this._scrolling = false),
       1000
     );
   }

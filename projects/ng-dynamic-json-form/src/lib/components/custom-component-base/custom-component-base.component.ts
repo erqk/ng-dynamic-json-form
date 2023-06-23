@@ -16,14 +16,14 @@ import { ErrorMessageService } from '../../services';
   standalone: true,
 })
 export class NgDynamicJsonFormCustomComponent {
-  private errorMessageService = inject(ErrorMessageService);
+  private _errorMessageService = inject(ErrorMessageService);
 
   public control: UntypedFormControl | null = null;
   public data: FormControlConfig | null = null;
   public viewControl?: AbstractControl;
   public errors$?: Observable<string[]>;
 
-  private pauseEvent$ = new BehaviorSubject<boolean>(false);
+  private _pauseEvent$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
     this._bindControlEvent();
@@ -54,9 +54,9 @@ export class NgDynamicJsonFormCustomComponent {
     if (!this.control) return;
 
     this.registerControlChange((e: any) => {
-      this.pauseEvent$.next(true);
+      this._pauseEvent$.next(true);
       this.control!.setValue(e);
-      this.pauseEvent$.next(false);
+      this._pauseEvent$.next(false);
     });
 
     this.registerControlTouched(() => {
@@ -66,7 +66,7 @@ export class NgDynamicJsonFormCustomComponent {
     this.control.valueChanges
       .pipe(
         startWith(this.control.value),
-        filter(() => this.pauseEvent$.value === false),
+        filter(() => this._pauseEvent$.value === false),
         tap((x) => {
           this.readControlValue(x);
           this.controlDisabled(this.control?.disabled ?? false);
@@ -76,7 +76,7 @@ export class NgDynamicJsonFormCustomComponent {
   }
 
   private _listenToErrors(): void {
-    this.errors$ = this.errorMessageService.getErrors$(
+    this.errors$ = this._errorMessageService.getErrors$(
       this.control!,
       this.data?.validators || []
     );
