@@ -17,7 +17,7 @@ import {
   map,
   of,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs';
 import { EXAMPLE_CONFIGS } from 'src/app/example/configs/example-configs.constant';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
@@ -281,16 +281,14 @@ export class PagePlaygroundComponent {
         if (window.innerWidth <= breakpoints.large) {
           this.formInfoState.size = 50;
           this.formInfoState.position = 'right';
+        } else {
+          this.formInfoState.size = 30;
+          this.formInfoState.position = 'right';
         }
 
         if (window.innerWidth <= breakpoints.medium) {
           this.formInfoState.size = 35;
           this.formInfoState.position = 'bottom';
-        }
-
-        if (window.innerWidth > breakpoints.large) {
-          this.formInfoState.size = 30;
-          this.formInfoState.position = 'right';
         }
       });
 

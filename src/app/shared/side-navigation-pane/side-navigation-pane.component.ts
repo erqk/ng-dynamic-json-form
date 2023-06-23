@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, HostBinding, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostBinding, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
@@ -68,6 +68,7 @@ export class SideNavigationPaneComponent {
 
   constructor(
     private _sideNavigationPaneService: SideNavigationPaneService,
+    private _el: ElementRef,
     private _renderer2: Renderer2,
     private _router: Router,
     private _location: Location
@@ -87,7 +88,9 @@ export class SideNavigationPaneComponent {
     const el = e.target as HTMLElement;
     const newUrl = this._router.url.split('?')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
-    const itemIndex = Array.from(el.parentElement?.children || []).indexOf(el);
+    const itemIndex = Array.from(
+      (this._el.nativeElement as HTMLElement).children
+    ).indexOf(el);
 
     el.scrollIntoView({
       block: 'center',
@@ -97,15 +100,15 @@ export class SideNavigationPaneComponent {
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
 
-    if (itemIndex > 0) this._scrollToContent(item.id);
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (itemIndex === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+    else this._scrollToContent(item.id);
   }
 
   private _onRouteChange(): void {
     this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => this._syncActiveIndexWithScroll()),
+        tap(() => this._syncActiveIndexWithScroll()),
         takeUntil(this._onDestroy$)
       )
       .subscribe();
@@ -148,11 +151,9 @@ export class SideNavigationPaneComponent {
       if (this._scrolling) return;
 
       const scrollUp = window.scrollY < lastScrollPosition;
+      const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
 
-      if (scrollUp) {
-        const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
-        if (!prevLinkItem) return;
-
+      if (scrollUp && !!prevLinkItem) {
         const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
         this.currentActiveId[level] = prevLinkItem.id || '';
       }
@@ -175,23 +176,24 @@ export class SideNavigationPaneComponent {
       .map((x) => document.querySelector(`#${x.id}`)!)
       .filter((x) => !!x);
 
+    const visibleThreshold = window.innerHeight * 0.5;
     const rect = (input: Element) => input.getBoundingClientRect();
     const visibleTitles = titles.filter((x) => {
-      return (
-        rect(x).top >= 0 && rect(x).bottom < window.innerHeight - rect(x).height
-      );
+      const topEdgeVisible = rect(x).top >= 0;
+      const bottomEdgeVisible = rect(x).bottom < window.innerHeight;
+      return topEdgeVisible && bottomEdgeVisible;
     });
 
     const activeTitle =
       visibleTitles.length === 1
         ? visibleTitles[0]
-        : visibleTitles.find((x) => rect(x).y < window.innerHeight * 0.5);
+        : visibleTitles.find((x) => rect(x).top < visibleThreshold);
 
     if (!activeTitle) {
       return;
     }
 
-    const newSectionAppear = rect(activeTitle).top < window.innerHeight * 0.5;
+    const newSectionAppear = rect(activeTitle).top < visibleThreshold;
     if (!newSectionAppear) return;
 
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
@@ -208,9 +210,8 @@ export class SideNavigationPaneComponent {
   }
 
   private _scrollToContent(id?: string, smoothScrolling = true): void {
-    const idFromRoute = this._router.parseUrl(this._location.path()).queryParams[
-      'id'
-    ];
+    const idFromRoute = this._router.parseUrl(this._location.path())
+      .queryParams['id'];
     const targetId = id ?? idFromRoute;
     if (!targetId) {
       this.currentActiveId[0] = document.querySelector('markdown h2')?.id || '';
