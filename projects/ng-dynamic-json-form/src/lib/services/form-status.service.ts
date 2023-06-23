@@ -32,14 +32,14 @@ export class FormStatusService {
   /**To differentiate the host element if there is multiple ng-dynamic-json-form */
   hostIndex = 0;
 
-  constructor(private formValidatorService: FormValidatorService) {}
+  constructor(private _formValidatorService: FormValidatorService) {}
 
   formErrorEvent$(form: FormGroup): Observable<any> {
     return form.valueChanges.pipe(
       startWith(form.value),
       debounceTime(0),
       tap((x) => {
-        const errors = this.getFormErrors(form);
+        const errors = this._getFormErrors(form);
         form.setErrors(errors);
       })
     );
@@ -55,11 +55,11 @@ export class FormStatusService {
   ): Observable<any> {
     if (!configs.length) return of(null);
 
-    const conditionsExtracted = this.extractConditions(form, configs);
+    const conditionsExtracted = this._extractConditions(form, configs);
     const allControlChanges$ = conditionsExtracted.map((conditionData) =>
       from(conditionData.controlsToListen).pipe(
         mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
-        tap(() => this.updateControlStatus(form, conditionData))
+        tap(() => this._updateControlStatus(form, conditionData))
       )
     );
 
@@ -75,44 +75,46 @@ export class FormStatusService {
    *  }
    * }
    */
-  private getFormErrors(form: FormGroup): ValidationErrors | null {
-    const getErrors = (input: AbstractControl) => {
-      let errors = null;
+  private _getFormErrors(
+    control: AbstractControl,
+    prevResult?: ValidationErrors | null
+  ): ValidationErrors | null {
+    const controlErrors = control.errors;
+    let result = prevResult ? { ...prevResult } : null;
+    let errorsGet = null;
 
-      if (isFormControl(input)) {
-        errors = input.errors;
-      }
+    if (isFormControl(control)) {
+      errorsGet = controlErrors;
+    }
 
-      if (isFormGroup(input)) {
-        errors = Object.keys(input.controls).reduce((acc, key) => {
-          const formControlErrors: any = getErrors(input.controls[key]);
-          if (!formControlErrors) return acc;
+    if (isFormGroup(control)) {
+      errorsGet = Object.keys(control.controls).reduce((acc, key) => {
+        const err = this._getFormErrors(control.controls[key], result);
+        return err ? { ...acc, [key]: err } : acc;
+      }, {});
+    }
 
-          return {
-            ...acc,
-            [key]: formControlErrors,
-          };
-        }, {});
-      }
+    if (isFormArray(control)) {
+      const childrenErrors = control.controls
+        .map((x) => this._getFormErrors(x, result))
+        .filter((x) => !!x);
 
-      if (isFormArray(input)) {
-        const parentErrors = input.errors;
-        const childrenErrors: any = input.controls.map((x) => getErrors(x));
+      errorsGet = {
+        ...controlErrors,
+        ...childrenErrors,
+      };
+    }
 
-        errors = {
-          ...parentErrors,
-          ...childrenErrors,
-        };
-      }
-
-      return errors ? JSON.parse(JSON.stringify(errors)) : null;
-    };
-
-    const errors = clearEmpties(getErrors(form));
-    return !Object.keys(errors).length ? null : errors;
+    result = clearEmpties({ ...result, ...errorsGet });
+    
+    const noErrors = !result || !Object.keys(result).length;
+    return noErrors ? null : result;
   }
 
-  private updateControlStatus(form: FormGroup, data: ConditionExtracted): void {
+  private _updateControlStatus(
+    form: FormGroup,
+    data: ConditionExtracted
+  ): void {
     const conditions = data.conditions;
     const control = data.targetControl;
 
@@ -121,7 +123,7 @@ export class FormStatusService {
       const targetConditions = conditions.filter((x) => x.name === type);
       if (!targetConditions.length) return undefined;
 
-      return this.getConditionResult(form, targetConditions);
+      return this._getConditionResult(form, targetConditions);
     };
 
     const setStatus = (type: string) => {
@@ -130,9 +132,9 @@ export class FormStatusService {
 
       switch (type) {
         case ValidatorAndConditionTypes.HIDDEN:
-          this.targetElement$(data.targetControlPath).then((x) => {
+          this._targetElement$(data.targetControlPath).then((x) => {
             if (!x) return;
-            this.setElementStyle(x, 'display', bool ? 'none' : 'block');
+            this._setElementStyle(x, 'display', bool ? 'none' : 'block');
             bool ? control.disable() : control.enable();
           });
           break;
@@ -143,7 +145,7 @@ export class FormStatusService {
           break;
 
         default:
-          this.toggleValidators(control, bool, type, data.validators);
+          this._toggleValidators(control, bool, type, data.validators);
           break;
       }
     };
@@ -156,12 +158,13 @@ export class FormStatusService {
    * - `hostIndex` on each `ng-dynamic-json-form`
    * - `id` on each `grid-item-wrapper`
    */
-  private targetElement$(controlPath: string): Promise<HTMLElement | null> {
+  private _targetElement$(controlPath: string): Promise<HTMLElement | null> {
     return new Promise<HTMLElement | null>((resolve, reject) => {
       requestAnimationFrame(() => {
         const hostClass = `ng-dynamic-json-form.index-${this.hostIndex}`;
+
+        // Must escape the "." character so that querySelector will work correctly
         const element = document.querySelector(
-          // Must escape the "." character so that querySelector will work correctly
           `${hostClass} grid-item-wrapper#${controlPath.replace('.', '\\.')}`
         ) as HTMLElement | null;
 
@@ -176,30 +179,27 @@ export class FormStatusService {
    * @param name the attribute name (ex: display, opacity, visibility...)
    * @param value the attribute's value (ex: none, 0, hidden...)
    */
-  private setElementStyle(el: HTMLElement, name: string, value: string): void {
+  private _setElementStyle(el: HTMLElement, name: string, value: string): void {
     const oldStyles = el.getAttribute('style') || '';
     const currentStyle = oldStyles.match(new RegExp(`${name}:\\w+`));
 
-    if (!currentStyle) {
-      // Append the new style attribute if there's no existing value.
-      el.setAttribute('style', `${oldStyles}; ${name}:${value}`);
-    } else {
-      // Replace the existing style attribute with the new one.
-      el.setAttribute(
-        'style',
-        oldStyles.replace(currentStyle[0], `${name}:${value}`)
-      );
-    }
+    // Append the new style attribute if there's no existing value,
+    // else replace the existing style attribute with the new one.
+    const valueToSet = !currentStyle
+      ? `${oldStyles}; ${name}:${value}`
+      : oldStyles.replace(currentStyle[0], `${name}:${value}`);
+
+    el.setAttribute('style', valueToSet);
   }
 
-  private toggleValidators(
+  private _toggleValidators(
     control: AbstractControl,
     bool: boolean,
     type: string,
     validators: ValidatorConfig[]
   ): void {
-    const allValidators = this.formValidatorService.getValidators(validators);
-    const otherValidators = this.formValidatorService.getValidators(
+    const allValidators = this._formValidatorService.getValidators(validators);
+    const otherValidators = this._formValidatorService.getValidators(
       validators.filter((x) => x.name !== type)
     );
 
@@ -212,7 +212,7 @@ export class FormStatusService {
    * @example
    * [...controls from A conditions]
    */
-  private getControlsToListen(
+  private _getControlsToListen(
     form: FormGroup,
     conditions: FormControlCondition[],
     path: AbstractControl[] = []
@@ -223,91 +223,88 @@ export class FormStatusService {
 
       return !curr.groupWith?.length
         ? acc
-        : this.getControlsToListen(form, curr.groupWith, acc);
+        : this._getControlsToListen(form, curr.groupWith, acc);
     }, path);
   }
 
   /**Extract all the conditions from JSON data and flatten them,
    * then output to an array of `ConditionExtracted`
    */
-  extractConditions(
+  private _extractConditions(
     form: FormGroup,
     configs: FormControlConfig[],
-    parentControlName?: string,
-    path?: ConditionExtracted[]
+    previousControlPath?: string,
+    accumulated?: ConditionExtracted[]
   ): ConditionExtracted[] {
-    if (path === undefined) {
-      path = [];
-    }
+    const result = (accumulated || []).concat();
 
-    const result = configs.reduce((acc, curr) => {
-      if (!curr.children?.length && !!curr.conditions?.length) {
-        const targetControlPath = parentControlName
-          ? `${parentControlName}.${curr.formControlName}`
-          : curr.formControlName;
+    for (const item of configs) {
+      const hasConditions = !!item.conditions && !!item.conditions.length;
+      const hasChildren = !!item.children && !!item.children.length;
 
-        const targetControl = form.get(targetControlPath);
-        if (!targetControl) return acc;
+      const targetControlPath = previousControlPath
+        ? `${previousControlPath}.${item.formControlName}`
+        : item.formControlName;
+      const targetControl = form.get(targetControlPath);
 
-        acc.push({
+      if (hasConditions && !!targetControl) {
+        result.push({
           targetControl,
           targetControlPath,
-          controlsToListen: this.getControlsToListen(form, curr.conditions),
-          conditions: curr.conditions,
-          validators: curr.validators || [],
+          controlsToListen: this._getControlsToListen(form, item.conditions!),
+          conditions: item.conditions!,
+          validators: item.validators || [],
         });
       }
 
-      if (!!curr.children?.length && !curr.conditions?.length) {
-        return this.extractConditions(
+      if (hasChildren) {
+        return this._extractConditions(
           form,
-          curr.children,
-          curr.formControlName,
-          acc
+          item.children!,
+          targetControlPath,
+          result
         );
       }
+    }
 
-      return acc;
-    }, [] as ConditionExtracted[]);
-
-    path.push(...result);
-    return path;
+    return result;
   }
 
   /**Evaluate the boolean result from the condition given.
    * Solved by ChatGPT (with some modification)
    */
-  private getConditionResult(
+  private _getConditionResult(
     form: FormGroup,
     conditions: FormControlCondition[],
     groupOperator?: '&&' | '||'
   ): boolean {
     const evaluateExpression = (input: FormControlCondition): boolean => {
-      if (input.groupOperator && input.groupWith) {
-        const result = this.booleanResult(form, input);
-        const operator = input.groupOperator;
-        const groupWith = input.groupWith;
-        const groupResults = groupWith.map(evaluateExpression);
+      const result = this._booleanResult(form, input);
+      const operator = input.groupOperator;
+      const groupWith = input.groupWith;
 
-        switch (operator) {
-          case '&&':
-            return result && groupResults.every((x) => x);
+      if (!operator || !groupWith) {
+        return result;
+      }
 
-          case '||':
-            return result || groupResults.some((x) => x);
+      const groupResults = groupWith.map(evaluateExpression);
 
-          default:
-            throw new Error(`Unknown group operator ${groupOperator}`);
-        }
-      } else {
-        return this.booleanResult(form, input);
+      switch (operator) {
+        case '&&':
+          return result && groupResults.every((x) => x);
+
+        case '||':
+          return result || groupResults.some((x) => x);
+
+        default:
+          throw new Error(`Unknown group operator ${groupOperator}`);
       }
     };
 
     return conditions.map(evaluateExpression).some((x) => x);
   }
 
-  private booleanResult(form: FormGroup, data: FormControlCondition): boolean {
+  private _booleanResult(form: FormGroup, data: FormControlCondition): boolean {
     const left = form.get(data.control)?.value;
     const right = data.controlValue;
 

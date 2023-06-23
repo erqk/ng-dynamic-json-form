@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, HostBinding, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostBinding, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
@@ -56,82 +56,85 @@ export class SideNavigationPaneComponent {
   links: SideNaviagionPaneLink[] = [];
   currentActiveId = ['', ''];
 
-  private currentLinkIndex = 0;
-  private linksFlatten: SideNaviagionPaneLink[] = [];
-  private scrolling = false;
-  private scrollingTimeout: number = 0;
+  private _currentLinkIndex = 0;
+  private _linksFlatten: SideNaviagionPaneLink[] = [];
+  private _scrolling = false;
+  private _scrollingTimeout: number = 0;
 
-  private reset$ = new Subject();
-  private onDestroy$ = new Subject();
+  private _reset$ = new Subject();
+  private _onDestroy$ = new Subject();
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
   constructor(
-    private sideNavigationPaneService: SideNavigationPaneService,
-    private renderer2: Renderer2,
-    private router: Router,
-    private location: Location
+    private _sideNavigationPaneService: SideNavigationPaneService,
+    private _el: ElementRef,
+    private _renderer2: Renderer2,
+    private _router: Router,
+    private _location: Location
   ) {}
 
   ngOnInit(): void {
-    this.getLinks();
-    this.onRouteChange();
+    this._getLinks();
+    this._onRouteChange();
   }
 
   ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
+    this._onDestroy$.next(null);
+    this._onDestroy$.complete();
   }
 
   onLinkClick(e: Event, item: SideNaviagionPaneLink): void {
     const el = e.target as HTMLElement;
-    const newUrl = this.router.url.split('?')[0];
+    const newUrl = this._router.url.split('?')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
-    const itemIndex = Array.from(el.parentElement?.children || []).indexOf(el);
+    const itemIndex = Array.from(
+      (this._el.nativeElement as HTMLElement).children
+    ).indexOf(el);
 
     el.scrollIntoView({
       block: 'center',
     });
 
-    this.location.replaceState(newUrl, `id=${item.id}`);
+    this._location.replaceState(newUrl, `id=${item.id}`);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
 
-    if (itemIndex > 0) this.scrollToContent(item.id);
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (itemIndex === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+    else this._scrollToContent(item.id);
   }
 
-  private onRouteChange(): void {
-    this.router.events
+  private _onRouteChange(): void {
+    this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => this.syncActiveIndexWithScroll()),
-        takeUntil(this.onDestroy$)
+        tap(() => this._syncActiveIndexWithScroll()),
+        takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
-  private getLinks(): void {
-    this.sideNavigationPaneService.navigationLinks$
+  private _getLinks(): void {
+    this._sideNavigationPaneService.navigationLinks$
       .pipe(
         tap((x) => {
           this.links = x;
-          this.flattenLinks(x);
-          this.syncActiveIndexWithScroll();
-          this.scrollToContent(undefined, false);
-          this.setActiveIds();
+          this._flattenLinks(x);
+          this._syncActiveIndexWithScroll();
+          this._scrollToContent(undefined, false);
+          this._setActiveIds();
         }),
-        takeUntil(this.onDestroy$)
+        takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
-  private flattenLinks(links: SideNaviagionPaneLink[]): void {
-    this.linksFlatten = [];
+  private _flattenLinks(links: SideNaviagionPaneLink[]): void {
+    this._linksFlatten = [];
 
     const flatten = (input: SideNaviagionPaneLink[]) => {
       for (const item of input) {
-        this.linksFlatten.push(item);
+        this._linksFlatten.push(item);
 
         if (item.children) {
           flatten(item.children);
@@ -142,56 +145,55 @@ export class SideNavigationPaneComponent {
     flatten(links);
   }
 
-  private syncActiveIndexWithScroll(): void {
+  private _syncActiveIndexWithScroll(): void {
     let lastScrollPosition = 0;
     const highlightVisibleTitle = () => {
-      if (this.scrolling) return;
+      if (this._scrolling) return;
 
       const scrollUp = window.scrollY < lastScrollPosition;
+      const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
 
-      if (scrollUp) {
-        const prevLinkItem = this.linksFlatten[this.currentLinkIndex - 1];
-        if (!prevLinkItem) return;
-
+      if (scrollUp && !!prevLinkItem) {
         const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
         this.currentActiveId[level] = prevLinkItem.id || '';
       }
 
-      this.setActiveIds();
+      this._setActiveIds();
       lastScrollPosition = window.scrollY;
     };
 
-    this.reset$.next(null);
+    this._reset$.next(null);
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
         tap(() => highlightVisibleTitle()),
-        takeUntil(merge(this.onDestroy$, this.reset$))
+        takeUntil(merge(this._onDestroy$, this._reset$))
       )
       .subscribe();
   }
 
-  private setActiveIds(): void {
-    const titles = this.linksFlatten
+  private _setActiveIds(): void {
+    const titles = this._linksFlatten
       .map((x) => document.querySelector(`#${x.id}`)!)
       .filter((x) => !!x);
 
+    const visibleThreshold = window.innerHeight * 0.5;
     const rect = (input: Element) => input.getBoundingClientRect();
     const visibleTitles = titles.filter((x) => {
-      return (
-        rect(x).top >= 0 && rect(x).bottom < window.innerHeight - rect(x).height
-      );
+      const topEdgeVisible = rect(x).top >= 0;
+      const bottomEdgeVisible = rect(x).bottom < window.innerHeight;
+      return topEdgeVisible && bottomEdgeVisible;
     });
 
     const activeTitle =
       visibleTitles.length === 1
         ? visibleTitles[0]
-        : visibleTitles.find((x) => rect(x).y < window.innerHeight * 0.5);
+        : visibleTitles.find((x) => rect(x).top < visibleThreshold);
 
     if (!activeTitle) {
       return;
     }
 
-    const newSectionAppear = rect(activeTitle).top < window.innerHeight * 0.5;
+    const newSectionAppear = rect(activeTitle).top < visibleThreshold;
     if (!newSectionAppear) return;
 
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
@@ -202,15 +204,14 @@ export class SideNavigationPaneComponent {
 
     this.currentActiveId[level - 1] = parent?.id || '';
     this.currentActiveId[level] = activeTitle.id || '';
-    this.currentLinkIndex = this.linksFlatten.findIndex(
+    this._currentLinkIndex = this._linksFlatten.findIndex(
       (x) => x.id === activeTitle!.id
     );
   }
 
-  private scrollToContent(id?: string, smoothScrolling = true): void {
-    const idFromRoute = this.router.parseUrl(this.location.path()).queryParams[
-      'id'
-    ];
+  private _scrollToContent(id?: string, smoothScrolling = true): void {
+    const idFromRoute = this._router.parseUrl(this._location.path())
+      .queryParams['id'];
     const targetId = id ?? idFromRoute;
     if (!targetId) {
       this.currentActiveId[0] = document.querySelector('markdown h2')?.id || '';
@@ -224,8 +225,8 @@ export class SideNavigationPaneComponent {
 
     if (!target || !header) return;
 
-    this.scrolling = true;
-    this.renderer2.setStyle(
+    this._scrolling = true;
+    this._renderer2.setStyle(
       target,
       'scroll-margin',
       `${header.clientHeight + 16}px`
@@ -236,9 +237,9 @@ export class SideNavigationPaneComponent {
       block: 'start',
     });
 
-    clearTimeout(this.scrollingTimeout);
-    this.scrollingTimeout = window.setTimeout(
-      () => (this.scrolling = false),
+    clearTimeout(this._scrollingTimeout);
+    this._scrollingTimeout = window.setTimeout(
+      () => (this._scrolling = false),
       1000
     );
   }

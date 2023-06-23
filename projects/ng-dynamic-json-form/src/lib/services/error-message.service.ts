@@ -16,11 +16,11 @@ export class ErrorMessageService {
 
     return control.valueChanges.pipe(
       startWith(control.value),
-      map(() => this.parseErrorMessage(control, validatorConfigs))
+      map(() => this._parseErrorMessage(control, validatorConfigs))
     );
   }
 
-  private parseErrorMessage(
+  private _parseErrorMessage(
     control: AbstractControl,
     validatorConfigs: ValidatorConfig[]
   ): string[] {

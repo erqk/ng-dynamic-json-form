@@ -13,14 +13,14 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
   styleUrls: ['./page-styling.component.scss'],
 })
 export class PageStylingComponent {
-  content$ = this.documentLoaderService.getDocumentContent$('styling');
+  content$ = this._documentLoaderService.getDocumentContent$('styling');
 
   constructor(
-    private sideNavigationPaneService: SideNavigationPaneService,
-    private documentLoaderService: DocumentLoaderService
+    private _sideNavigationPaneService: SideNavigationPaneService,
+    private _documentLoaderService: DocumentLoaderService
   ) {}
 
   onReady(): void {
-    this.sideNavigationPaneService.buildNavigationLinks();
+    this._sideNavigationPaneService.buildNavigationLinks();
   }
 }

@@ -20,7 +20,7 @@ import { ErrorMessageService } from '../../services/error-message.service';
   imports: [CommonModule],
 })
 export class ErrorMessageComponent {
-  private errorMessageService = inject(ErrorMessageService);
+  private _errorMessageService = inject(ErrorMessageService);
 
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
@@ -32,7 +32,7 @@ export class ErrorMessageComponent {
       startWith(this.control.value),
       debounceTime(0),
       switchMap(() =>
-        this.errorMessageService.getErrors$(
+        this._errorMessageService.getErrors$(
           this.control!,
           this.validators || []
         )

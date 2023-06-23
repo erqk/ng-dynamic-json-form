@@ -12,7 +12,7 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
   styles: [],
 })
 export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
-  private locale = inject(LOCALE_ID);
+  private _locale = inject(LOCALE_ID);
 
   public override viewControl = new FormGroup({
     date: new FormControl(''),
@@ -22,7 +22,7 @@ export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
   override readControlValue(obj: any): void {
     if (!obj) return;
 
-    const dateRaw = formatDate(obj, 'yyyy-MM-dd,HH:mm:ss', this.locale);
+    const dateRaw = formatDate(obj, 'yyyy-MM-dd,HH:mm:ss', this._locale);
     this.viewControl.patchValue({
       date: dateRaw.split(',')[0],
       time: dateRaw.split(',')[1],
@@ -33,12 +33,12 @@ export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
     this.viewControl.valueChanges
       .pipe(
         filter((x) => !!x.date && !!x.time),
-        map(() => this.dateTimeFormatted)
+        map(() => this._dateTimeFormatted)
       )
       .subscribe(fn);
   }
 
-  private get dateTimeFormatted(): string {
+  private get _dateTimeFormatted(): string {
     const outputFormat = this.data?.extra?.date?.outputFormat;
     const controlValue = this.viewControl.value;
     const date =
@@ -49,7 +49,7 @@ export class UiBasicDateComponent extends NgDynamicJsonFormCustomComponent {
     const dateISO = date.toISOString();
 
     return outputFormat
-      ? formatDate(dateISO, outputFormat, this.locale)
+      ? formatDate(dateISO, outputFormat, this._locale)
       : dateISO;
   }
 }

@@ -13,46 +13,45 @@ import { FormValidatorService } from './form-validator.service';
 
 @Injectable()
 export class FormGeneratorService {
-  reset$ = new Subject();
+  private _reset$ = new Subject();
 
   constructor(
-    private formStatusService: FormStatusService,
-    private formValidatorService: FormValidatorService
+    private _formStatusService: FormStatusService,
+    private _formValidatorService: FormValidatorService
   ) {}
 
   generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
+
     for (const item of data) {
+      const isFormControl = !item.children && !item.formArray;
+      const isFormGroup = !!item.children && !item.formArray;
+      const isFormArray =
+        !!item.formArray && !!item.formArray.template.length && !item.children;
+
       let control: AbstractControl | null = null;
-      const validators = this.formValidatorService.getValidators(
+      const validators = this._formValidatorService.getValidators(
         item.validators ?? []
       );
 
-      // form control
-      if (!item.children && !item.formArray) {
+      if (isFormControl) {
         control = new FormControl(item.value ?? '', {
           validators,
         });
       }
 
-      // form group
-      if (!!item.children && !item.formArray) {
-        control = this.generateFormGroup(item.children);
+      if (isFormGroup) {
+        control = this.generateFormGroup(item.children!);
       }
 
-      // form array
-      if (
-        !!item.formArray &&
-        !!item.formArray.template.length &&
-        !item.children
-      ) {
+      if (isFormArray) {
         const arrayLength =
           Array.isArray(item.value) && !!item.value.length
             ? item.value.length
-            : item.formArray.length || 0;
+            : item.formArray!.length || 0;
 
-        control = this.generateFormArray(
-          item.formArray.template,
+        control = this._generateFormArray(
+          item.formArray!.template,
           arrayLength,
           validators
         );
@@ -69,7 +68,7 @@ export class FormGeneratorService {
     return formGroup;
   }
 
-  private generateFormArray(
+  private _generateFormArray(
     data: FormControlConfig[],
     count: number,
     validators: ValidatorFn[]
@@ -80,14 +79,14 @@ export class FormGeneratorService {
 
     if (!count) formArray;
 
-    this.reset$.next(null);
+    this._reset$.next(null);
     for (let i = 0; i < count; i++) {
       const formGroup = this.generateFormGroup(data);
       formArray.push(formGroup);
 
-      this.formStatusService
+      this._formStatusService
         .formControlConditonsEvent$(formGroup, data)
-        .pipe(takeUntil(this.reset$))
+        .pipe(takeUntil(this._reset$))
         .subscribe();
     }
 

@@ -22,17 +22,17 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./page-home.component.scss'],
 })
 export class PageHomeComponent {
-  private http = inject(HttpClient);
-  private languageDataService = inject(LanguageDataService);
+  private _http = inject(HttpClient);
+  private _languageDataService = inject(LanguageDataService);
   isLoading = false;
 
-  features$ = this.languageDataService.language$.pipe(
+  features$ = this._languageDataService.language$.pipe(
     switchMap((language) =>
-      this.http.get(`assets/docs/introduction/introduction_${language}.md`, {
+      this._http.get(`assets/docs/introduction/introduction_${language}.md`, {
         responseType: 'text',
       })
     )
   );
 
-  languageData$ = this.languageDataService.languageData$;
+  languageData$ = this._languageDataService.languageData$;
 }

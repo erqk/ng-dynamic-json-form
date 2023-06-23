@@ -21,9 +21,9 @@ import { DocumentVersionService } from './document-version.service';
   providedIn: 'root',
 })
 export class DocumentLoaderService {
-  private http = inject(HttpClient);
-  private documentVersionService = inject(DocumentVersionService);
-  private languageDataService = inject(LanguageDataService);
+  private _http = inject(HttpClient);
+  private _documentVersionService = inject(DocumentVersionService);
+  private _languageDataService = inject(LanguageDataService);
 
   documentLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -35,11 +35,11 @@ export class DocumentLoaderService {
       from(tableOfContent).pipe(
         mergeMap((x, i) => {
           const basePath = `assets/docs/v${
-            this.documentVersionService.currentVersion
+            this._documentVersionService.currentVersion
           }${hasTableOfContent ? '/' + parentDirectory : ''}`;
-          const filePath = `${basePath}/${x}/${x}_${this.languageDataService.language$.value}.md`;
+          const filePath = `${basePath}/${x}/${x}_${this._languageDataService.language$.value}.md`;
 
-          return this.http
+          return this._http
             .get(filePath, { responseType: 'text' })
             .pipe(map((x) => ({ index: i, content: x })));
         }),
@@ -55,10 +55,10 @@ export class DocumentLoaderService {
         })
       );
 
-    return this.settings$.pipe(
+    return this._settings$.pipe(
       switchMap(() =>
         hasTableOfContent
-          ? this.getTableOfContent$(parentDirectory)
+          ? this._getTableOfContent$(parentDirectory)
           : of([parentDirectory])
       ),
       switchMap((x) => (x.length ? content$(x) : of(''))),
@@ -81,11 +81,11 @@ export class DocumentLoaderService {
     }
   }
 
-  private getTableOfContent$(parentDirectory: string): Observable<string[]> {
-    const basePath = `assets/docs/v${this.documentVersionService.currentVersion}/${parentDirectory}`;
+  private _getTableOfContent$(parentDirectory: string): Observable<string[]> {
+    const basePath = `assets/docs/v${this._documentVersionService.currentVersion}/${parentDirectory}`;
     const filePath = `${basePath}/table-of-content.json`;
 
-    return this.http.get(filePath, { responseType: 'text' }).pipe(
+    return this._http.get(filePath, { responseType: 'text' }).pipe(
       map((x) => JSON.parse(x)),
       catchError(() => {
         return of([]);
@@ -93,10 +93,10 @@ export class DocumentLoaderService {
     );
   }
 
-  private get settings$(): Observable<any> {
+  private get _settings$(): Observable<any> {
     return merge(
-      this.languageDataService.language$,
-      this.documentVersionService.currentVersion$
+      this._languageDataService.language$,
+      this._documentVersionService.currentVersion$
     ).pipe(
       // https://github.com/angular/angular/issues/23522#issuecomment-385015819
       // add delay(0) before set the `documentLoading$` value to avoid NG0100

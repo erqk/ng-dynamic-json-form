@@ -13,7 +13,7 @@ import { map } from 'rxjs';
   styles: [],
 })
 export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
-  private locale = inject(LOCALE_ID);
+  private _locale = inject(LOCALE_ID);
 
   override viewControl = new FormControl(new Date());
   minDate?: Date;
@@ -21,7 +21,7 @@ export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.setMinMaxDate();
+    this._setMinMaxDate();
   }
 
   override readControlValue(obj: any): void {
@@ -34,13 +34,13 @@ export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
       .pipe(
         map((x) => {
           const outputFormat = this.data?.extra?.date?.outputFormat;
-          return outputFormat ? formatDate(x!, outputFormat, this.locale) : x;
+          return outputFormat ? formatDate(x!, outputFormat, this._locale) : x;
         })
       )
       .subscribe(fn);
   }
 
-  private setMinMaxDate(): void {
+  private _setMinMaxDate(): void {
     const min = this.data?.extra?.date?.min;
     const max = this.data?.extra?.date?.max;
 

@@ -35,10 +35,10 @@ export class FormControlComponent {
   isMaterial = false;
 
   ngOnChanges(): void {
-    this.injectComponent();
+    this._injectComponent();
   }
 
-  private get inputType(): string {
+  private get _inputType(): string {
     // If `ngxMaskConfig` is specified, we use input with mask
     const defaultInput = !this.data?.ngxMaskConfig ? 'text' : 'textMask';
 
@@ -55,18 +55,18 @@ export class FormControlComponent {
     }
   }
 
-  private injectComponent(): void {
+  private _injectComponent(): void {
     const inputComponent =
       this.customComponent ||
-      this.uiComponents[this.inputType]?.component ||
-      UI_BASIC_COMPONENTS[this.inputType]?.component ||
+      this.uiComponents[this._inputType]?.component ||
+      UI_BASIC_COMPONENTS[this._inputType]?.component ||
       UiBasicInputComponent;
 
-    if (this.uiComponents[this.inputType]) {
-      this.isMaterial = this.uiComponents[this.inputType]?.type === 'material';
+    if (this.uiComponents[this._inputType]) {
+      this.isMaterial = this.uiComponents[this._inputType]?.type === 'material';
     }
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.componentAnchor.clear();
       const componentRef = this.componentAnchor.createComponent(inputComponent);
       componentRef.instance.data = this.data;

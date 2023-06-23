@@ -13,14 +13,14 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
   styleUrls: ['./page-getting-started.component.scss'],
 })
 export class PageGettingStartedComponent {
-  content$ = this.documentLoaderService.getDocumentContent$('getting-started');
+  content$ = this._documentLoaderService.getDocumentContent$('getting-started');
 
   constructor(
-    private sideNavigationPaneService: SideNavigationPaneService,
-    private documentLoaderService: DocumentLoaderService
+    private _sideNavigationPaneService: SideNavigationPaneService,
+    private _documentLoaderService: DocumentLoaderService
   ) {}
 
   onReady(): void {
-    this.sideNavigationPaneService.buildNavigationLinks();
+    this._sideNavigationPaneService.buildNavigationLinks();
   }
 }
