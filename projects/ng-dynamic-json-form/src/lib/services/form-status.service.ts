@@ -4,7 +4,8 @@ import {
   FormGroup,
   ValidationErrors,
   isFormArray,
-  isFormGroup
+  isFormControl,
+  isFormGroup,
 } from '@angular/forms';
 import {
   Observable,
@@ -82,6 +83,10 @@ export class FormStatusService {
     let result = prevResult ? { ...prevResult } : null;
     let errorsGet = null;
 
+    if (isFormControl(control)) {
+      errorsGet = controlErrors;
+    }
+
     if (isFormGroup(control)) {
       errorsGet = Object.keys(control.controls).reduce((acc, key) => {
         const err = this._getFormErrors(control.controls[key], result);
@@ -100,7 +105,6 @@ export class FormStatusService {
       };
     }
 
-    errorsGet = controlErrors;
     result = clearEmpties({ ...result, ...errorsGet });
 
     const noErrors = !result || !Object.keys(result).length;
@@ -114,7 +118,7 @@ export class FormStatusService {
     const conditions = data.conditions;
     const control = data.targetControl;
     const validatorsAndConditions = Object.values(ValidatorAndConditionTypes);
-
+    
     const toggleHiddenState = (hidden: boolean) => {
       this._targetElement$(data.targetControlPath).then((x) => {
         if (!x) return;
@@ -132,7 +136,7 @@ export class FormStatusService {
         : this._getConditionResult(form, targetConditions);
 
       if (bool === undefined) {
-        return;
+        continue;
       }
 
       switch (key) {
@@ -238,8 +242,8 @@ export class FormStatusService {
     const result = (accumulated || []).concat();
 
     for (const item of configs) {
-      const hasConditions = !!item.conditions && !!item.conditions.length;
-      const hasChildren = !!item.children && !!item.children.length;
+      const hasConditions = !!item.conditions?.length;
+      const hasChildren = !!item.children?.length;
 
       const targetControlPath = previousControlPath
         ? `${previousControlPath}.${item.formControlName}`
