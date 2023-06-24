@@ -86,19 +86,7 @@ export class FormConfigInitService {
       // we need to set all the default value because they will be overwritten by ngx-mask
       const specialCharacters = item?.ngxMaskConfig?.specialCharacters;
       const patterns = item?.ngxMaskConfig?.patterns;
-      const patternsMapped = !patterns
-        ? null
-        : Object.keys(patterns).reduce((obj, key) => {
-            // Type can be string if config is come from parsed JSON
-            const patternRegex = obj[key].pattern as RegExp | string;
-
-            obj[key].pattern =
-              typeof patternRegex === 'string'
-                ? new RegExp(patternRegex)
-                : patternRegex;
-
-            return obj;
-          }, patterns);
+      const patternsMapped = this._getMappedPatterns(patterns);
 
       item.ngxMaskConfig = {
         ...item.ngxMaskConfig,
@@ -123,5 +111,25 @@ export class FormConfigInitService {
         this._initNgxMaskPatterns(item.formArray.template);
       }
     }
+  }
+
+  private _getMappedPatterns(
+    patterns: NgxMaskConfig['patterns'] | undefined
+  ): NgxMaskConfig['patterns'] | null {
+    if (!patterns) {
+      return null;
+    }
+
+    return Object.keys(patterns).reduce((obj, key) => {
+      // Type can be string if config is come from parsed JSON
+      const patternRegex = obj[key].pattern as RegExp | string;
+
+      obj[key].pattern =
+        typeof patternRegex === 'string'
+          ? new RegExp(patternRegex)
+          : patternRegex;
+
+      return obj;
+    }, patterns);
   }
 }
