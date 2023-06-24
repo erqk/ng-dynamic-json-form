@@ -19,7 +19,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { EXAMPLE_CONFIGS } from 'src/app/example/configs/example-configs.constant';
+import { PLAYGROUND_CONFIGS } from 'src/app/example/playground-configs/playground-configs.constant';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
 import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
@@ -62,7 +62,7 @@ export class PagePlaygroundComponent {
   };
   customUIComponents: any = UI_PRIMENG_COMPONENTS;
 
-  exampleList = EXAMPLE_CONFIGS;
+  exampleList = PLAYGROUND_CONFIGS;
   exampleSelected = 'all';
 
   formInfoState = {
