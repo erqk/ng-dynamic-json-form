@@ -53,11 +53,11 @@ export const PLAYGROUND_CONFIGS: {
   'form-array': {
     en: {
       label: 'Form array',
-      config: FORM_CONFIG_FAMILY_MEMBERS_EN,
+      config: [FORM_CONFIG_FAMILY_MEMBERS_EN],
     },
     'zh-TW': {
       label: 'Form 陣列',
-      config: FORM_CONFIG_FAMILY_MEMBERS_ZHTW,
+      config: [FORM_CONFIG_FAMILY_MEMBERS_ZHTW],
     },
   },
   'multi-condition': {

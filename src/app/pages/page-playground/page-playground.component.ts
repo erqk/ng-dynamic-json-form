@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, UntypedFormGroup } from '@angular/forms';
+import {
+  FormsModule,
+  UntypedFormArray,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import {
   FormControlConfig,
@@ -85,6 +89,7 @@ export class PagePlaygroundComponent {
     this._initJsonEditor();
     this._darkThemeEvent();
     this._languageChangeEvent();
+    this._setUI();
     this.generateForm();
   }
 
@@ -119,22 +124,8 @@ export class PagePlaygroundComponent {
     this.editing = !this.editing;
   }
 
-  setUI(): void {
-    switch (this.formUI) {
-      case 'ui-primeng':
-        this.customUIComponents = UI_PRIMENG_COMPONENTS;
-        break;
-
-      case 'ui-material':
-        this.customUIComponents = UI_MATERIAL_COMPONENTS;
-        break;
-
-      default:
-        this.customUIComponents = null;
-        break;
-    }
-
-    window.localStorage.setItem('form-ui', this.formUI);
+  onFormUiChange(): void {
+    this._setUI();
     this.generateForm();
   }
 
@@ -183,6 +174,24 @@ export class PagePlaygroundComponent {
     } catch (e) {}
 
     return content;
+  }
+
+  private _setUI(): void {
+    switch (this.formUI) {
+      case 'ui-primeng':
+        this.customUIComponents = UI_PRIMENG_COMPONENTS;
+        break;
+
+      case 'ui-material':
+        this.customUIComponents = UI_MATERIAL_COMPONENTS;
+        break;
+
+      default:
+        this.customUIComponents = null;
+        break;
+    }
+
+    window.localStorage.setItem('form-ui', this.formUI);
   }
 
   private _saveEditorContent(input: any): void {

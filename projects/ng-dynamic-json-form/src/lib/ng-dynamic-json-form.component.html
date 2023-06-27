@@ -136,20 +136,17 @@
     </ng-container>
 
     <!-- Show add button when form array is empty -->
-    <div
-      *ngIf="formArray.controls.length === 0"
-      class="form-array-group-header"
-    >
-      <div class="buttons">
-        <button
-          type="button"
-          class="btn-add"
-          (click)="addFormGroup(formArray, formArrayConfig.template)"
-        >
-          <span></span>
-        </button>
-      </div>
-    </div>
+    <ng-container
+      *ngIf="
+        formArrayConfig.editable === true && formArray.controls.length === 0
+      "
+      [ngTemplateOutlet]="formArrayGroupHeader"
+      [ngTemplateOutletContext]="{
+          label,
+          formArray,
+          formArrayConfig
+        }"
+    ></ng-container>
 
     <ng-container formArrayName="{{ formArrayName }}">
       <error-message
@@ -157,34 +154,23 @@
         [validators]="validators"
       ></error-message>
 
-      <ng-container *ngFor="let formGroup of formArray.controls; index as i">
+      <ng-container
+        *ngFor="let formGroup of formArray.controls; index as index"
+      >
         <div class="group">
-          <div class="form-array-group-header">
-            <span class="label"
-              >{{ formArrayConfig.templateLabel }} {{ i + 1 }}</span
-            >
+          <!-- FormGroup header -->
+          <ng-container
+            *ngIf="formArrayConfig.editable === true"
+            [ngTemplateOutlet]="formArrayGroupHeader"
+            [ngTemplateOutletContext]="{
+              index,
+              label,
+              formArray,
+              formArrayConfig
+            }"
+          ></ng-container>
 
-            <div class="buttons">
-              <ng-container *ngIf="formArrayConfig.editable === true">
-                <button
-                  type="button"
-                  class="btn-add"
-                  (click)="
-                    addFormGroup(formArray, formArrayConfig.template, i + 1)
-                  "
-                >
-                  <span></span>
-                </button>
-                <button
-                  type="button"
-                  class="btn-remove"
-                  (click)="removeFormGroup(formArray, i)"
-                >
-                  <span></span>
-                </button>
-              </ng-container>
-            </div>
-          </div>
+          <!-- FormGroup -->
           <ng-container
             *ngTemplateOutlet="
               formGroupTemplate;
@@ -200,4 +186,56 @@
       </ng-container>
     </ng-container>
   </ng-container>
+</ng-template>
+
+<ng-template
+  #formArrayGroupHeader
+  let-index="index"
+  let-label="label"
+  let-formArray="formArray"
+  let-formArrayConfig="formArrayConfig"
+>
+  <div
+    [ngClass]="{
+      'form-array-group-header-custom': formArrayGroupHeaderRef,
+      'form-array-group-header': !formArrayGroupHeaderRef
+    }"
+  >
+    <ng-container
+      [ngTemplateOutlet]="
+        formArrayGroupHeaderRef ?? formArrayDefaultGroupHeader
+      "
+      [ngTemplateOutletContext]="{
+        label: formArray.length
+          ? formArrayConfig.templateLabel + ' ' + (index + 1)
+          : '',
+        index,
+        formArray,
+        templateForm: formArrayConfig.template | generateForm,
+        buttonEvent:
+          formArray | formArrayHeaderEvent : formArrayConfig.template : index
+      }"
+    ></ng-container>
+  </div>
+</ng-template>
+
+<ng-template
+  #formArrayDefaultGroupHeader
+  let-label="label"
+  let-formArray="formArray"
+  let-buttonEvent="buttonEvent"
+>
+  <span *ngIf="label" class="label">{{ label }}</span>
+
+  <div class="buttons">
+    <button type="button" class="btn-add" (click)="buttonEvent.add()">
+      <span></span>
+    </button>
+
+    <ng-container *ngIf="formArray.length > 0">
+      <button type="button" class="btn-remove" (click)="buttonEvent.remove()">
+        <span></span>
+      </button>
+    </ng-container>
+  </div>
 </ng-template>
