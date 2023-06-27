@@ -44,7 +44,7 @@ export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
       return '0%';
     }
 
-    return `${(this.control.value / (max - min)) * 100}%`;
+    return `${((this.control.value - min) / (max - min)) * 100}%`;
   }
 
   private _getTickMarksCount(): void {
