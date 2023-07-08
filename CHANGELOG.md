@@ -3,8 +3,12 @@
 ### Feature
 
 - Support custom template for FormArray's group header.
-  - Fully customize group header using ng-template
-  - Access all the needed data using template variable
+  1. Fully customize group header using ng-template
+  2. Access all the needed data using template variable
+
+### Fix
+
+- #50 UI native: slider tooltip position misaligned
 
 # 3.3.0
 
