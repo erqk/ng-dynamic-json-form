@@ -81,7 +81,7 @@
       <select
         [(ngModel)]="formUI"
         [disabled]="editing"
-        (ngModelChange)="setUI()"
+        (ngModelChange)="onFormUiChange()"
       >
         <option [ngValue]="'ui-basic'">
           UI -

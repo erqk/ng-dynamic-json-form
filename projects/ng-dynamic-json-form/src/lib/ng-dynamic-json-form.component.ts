@@ -1,6 +1,7 @@
 import { CommonModule, isPlatformServer } from '@angular/common';
 import {
   Component,
+  ContentChild,
   ElementRef,
   EventEmitter,
   Inject,
@@ -9,7 +10,9 @@ import {
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
+  TemplateRef,
   Type,
+  ViewChild,
 } from '@angular/core';
 import {
   FormArray,
@@ -30,6 +33,8 @@ import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
 import { GridLayoutService } from './services/grid-layout.service';
+import { GenerateFormPipe } from './pipes/generate-form.pipe';
+import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -41,6 +46,8 @@ import { GridLayoutService } from './services/grid-layout.service';
     FormControlComponent,
     GridItemWrapperComponent,
     ErrorMessageComponent,
+    GenerateFormPipe,
+    FormArrayHeaderEventPipe,
   ],
   providers: [
     FormConfigInitService,
@@ -52,6 +59,9 @@ import { GridLayoutService } from './services/grid-layout.service';
   ],
 })
 export class NgDynamicJsonFormComponent {
+  @ContentChild('formArrayGroupHeader')
+  formArrayGroupHeaderRef?: TemplateRef<any>;
+
   @Input() jsonData: FormControlConfig[] | string = [];
 
   /**User defined custom valiators
@@ -191,19 +201,5 @@ export class NgDynamicJsonFormComponent {
     )
       .pipe(takeUntil(merge(this._reset$, this._onDestroy$)))
       .subscribe();
-  }
-
-  addFormGroup(
-    formArray: FormArray,
-    template: FormControlConfig[],
-    index?: number
-  ): void {
-    const formGroup = this._formGeneratorService.generateFormGroup(template);
-    if (!index) formArray.push(formGroup);
-    else formArray.insert(index, formGroup);
-  }
-
-  removeFormGroup(formArray: FormArray, index?: number): void {
-    formArray.removeAt(index ?? formArray.length - 1);
   }
 }
