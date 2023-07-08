@@ -16,8 +16,8 @@ customValidators = {
 
 之後，將該常數綁定到 `customValidators`:
 
-```HTML
 <!-- prettier-ignore -->
+```HTML
 <ng-dynamic-json-form
  ...
  [customValidators]="customValidators"

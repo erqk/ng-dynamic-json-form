@@ -1,3 +1,11 @@
+# 3.4.0
+
+### Feature
+
+- Support custom template for FormArray's group header.
+  - Fully customize group header using ng-template
+  - Access all the needed data using template variable
+
 # 3.3.0
 
 ### Feature

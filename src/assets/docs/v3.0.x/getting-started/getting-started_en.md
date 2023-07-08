@@ -47,8 +47,8 @@ Then, bind it to `jsonData` input in the template.
 
 > The form will generate instantly when the data is provided.
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-dynamic-json-form
   [jsonData]="jsonData"
   (formGet)="onFormGet($event)"
@@ -150,8 +150,8 @@ jsonData: FormControlConfig[] = [
 ]
 ```
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-dynamic-json-form
   [jsonData]="jsonData"
   [customValidators]="customValidators"

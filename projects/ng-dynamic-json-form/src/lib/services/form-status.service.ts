@@ -106,7 +106,7 @@ export class FormStatusService {
     }
 
     result = clearEmpties({ ...result, ...errorsGet });
-    
+
     const noErrors = !result || !Object.keys(result).length;
     return noErrors ? null : result;
   }
@@ -117,40 +117,43 @@ export class FormStatusService {
   ): void {
     const conditions = data.conditions;
     const control = data.targetControl;
+    const validatorsAndConditions = Object.values(ValidatorAndConditionTypes);
+    
+    const toggleHiddenState = (hidden: boolean) => {
+      this._targetElement$(data.targetControlPath).then((x) => {
+        if (!x) return;
 
-    const result = (type: string) => {
-      // Pick only first level condition type, to prevent complexity goes up
-      const targetConditions = conditions.filter((x) => x.name === type);
-      if (!targetConditions.length) return undefined;
-
-      return this._getConditionResult(form, targetConditions);
+        this._setElementStyle(x, 'display', hidden ? 'none' : 'block');
+        hidden ? control.disable() : control.enable();
+      });
     };
 
-    const setStatus = (type: string) => {
-      const bool = result(type);
-      if (bool === undefined) return;
+    for (const key of validatorsAndConditions) {
+      // Pick only first level condition type, to prevent complexity goes up
+      const targetConditions = conditions.filter((x) => x.name === key);
+      const bool = !targetConditions.length
+        ? undefined
+        : this._getConditionResult(form, targetConditions);
 
-      switch (type) {
+      if (bool === undefined) {
+        continue;
+      }
+
+      switch (key) {
         case ValidatorAndConditionTypes.HIDDEN:
-          this._targetElement$(data.targetControlPath).then((x) => {
-            if (!x) return;
-            this._setElementStyle(x, 'display', bool ? 'none' : 'block');
-            bool ? control.disable() : control.enable();
-          });
+          toggleHiddenState(bool);
           break;
 
         case ValidatorAndConditionTypes.DISABLED:
-          if (bool) control.disable();
-          else control.enable();
+          bool ? control.disable() : control.enable();
           break;
 
         default:
-          this._toggleValidators(control, bool, type, data.validators);
+          this._toggleValidators(control, bool, key, data.validators);
           break;
       }
-    };
+    }
 
-    Object.values(ValidatorAndConditionTypes).forEach((x) => setStatus(x));
     control.updateValueAndValidity();
   }
 
@@ -239,8 +242,8 @@ export class FormStatusService {
     const result = (accumulated || []).concat();
 
     for (const item of configs) {
-      const hasConditions = !!item.conditions && !!item.conditions.length;
-      const hasChildren = !!item.children && !!item.children.length;
+      const hasConditions = !!item.conditions?.length;
+      const hasChildren = !!item.children?.length;
 
       const targetControlPath = previousControlPath
         ? `${previousControlPath}.${item.formControlName}`

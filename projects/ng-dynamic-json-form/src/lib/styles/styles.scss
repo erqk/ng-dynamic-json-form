@@ -116,11 +116,11 @@
       row-gap: var(--options-row-gap);
     }
 
-    @include option-button.option-button();
-    @include option-button.option-button-wrapper();
+    @include option-button.option-button;
+    @include option-button.option-button-wrapper;
   }
 
-  @include form-array.form-array-container();
+  @include form-array.form-array-container;
 
   // ==================== Errors ======================
   .errors-container {

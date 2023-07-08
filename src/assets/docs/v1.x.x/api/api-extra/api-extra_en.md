@@ -4,8 +4,8 @@ Extra information to configure input element.
 
 Example:
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-container *ngIf="control && data">
   <textarea pInputTextarea
     [rows]="data.extra?.['rows'] || 5"

@@ -4,7 +4,9 @@
 }
 
 input,
-.ng-dynamic-json-form.ui-basic input {
+textarea,
+.ng-dynamic-json-form.ui-basic input,
+.ng-dynamic-json-form.ui-basic textarea {
   border: solid 1px rgba(128, 128, 128, 0.35);
   background-color: rgb(var(--bg-color-rgb));
   color: rgb(var(--text-color-rgb));
