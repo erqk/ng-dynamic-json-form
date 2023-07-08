@@ -33,8 +33,8 @@
 
 範例:
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-container *ngIf="control && data">
   <textarea
     [rows]="data.extra?.textarea?.rows || 5"

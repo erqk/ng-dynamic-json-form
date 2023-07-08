@@ -47,8 +47,8 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 
 > 表單將在資料傳入後馬上生成
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-dynamic-json-form
   [jsonData]="jsonData"
   (formGet)="onFormGet($event)"
@@ -149,8 +149,8 @@ jsonData: FormControlConfig[] = [
 ]
 ```
 
-```html
 <!-- prettier-ignore -->
+```html
 <ng-dynamic-json-form
   [jsonData]="jsonData"
   [customValidators]="customValidators"

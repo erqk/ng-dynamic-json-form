@@ -16,8 +16,8 @@ customValidators = {
 
 Then, in your template, bind it to the input `customValidators`:
 
-```HTML
 <!-- prettier-ignore -->
+```HTML
 <ng-dynamic-json-form
  ...
  [customValidators]="customValidators"

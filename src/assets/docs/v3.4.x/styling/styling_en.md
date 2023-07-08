@@ -1,10 +1,10 @@
-# 樣式
+# Styling
 
-## 表單樣式
+## Form styling
 
-### CSS 變數
+### CSS variables
 
-以下是定義好的 CSS 變數，你可以覆寫為其他想要的值。
+These are the predefined CSS variables, you can overwrite them with your desire value.
 
 ```css
 .ng-dynamic-json-form {
@@ -20,18 +20,19 @@
 
   --options-column-gap: 1.85rem;
   --options-row-gap: 0.25rem;
-  
+
   --form-array-group-divider-color: #e1e1e1;
   --form-array-aroup-divider-weight: 1px;
   --form-array-group-divider-spacing: 2rem;
 }
 ```
 
-## 表單版型
+## Form layout
 
-以下是一些使用了 `cssGrid` 內不同的值所組合出來的表單版型範例：
+These are some examples show how different value inside `cssGrid` can
+change the layout of your form:
 
-### 範例 1
+### Example 1
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -54,7 +55,7 @@
 
 </div>
 
-### 範例 2
+### Example 2
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -88,7 +89,7 @@
 
 </div>
 
-### 範例 3
+### Example 3
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -121,7 +122,7 @@
 
 </div>
 
-### 範例 4
+### Example 4
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -147,4 +148,60 @@
 },
 ...
 ```
+
 </div>
+
+## Form array group's header
+
+### Default header
+
+This is what the default header will look like:
+
+<div class="ng-dynamic-json-form" style="border: solid 1px rgba(128, 128, 128, 0.35); padding: 1rem; border-radius: 0.35rem;">
+  <div class="form-array-container" style="margin: 0;">
+    <div class="form-array-group-header" style="margin: 0;">
+      <span class="label">Header label</span>
+      <div class="buttons">
+        <button type="button" class="btn-add"><span></span></button>
+        <button type="button" class="btn-remove"><span></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Custom header
+
+To use header with different layout and styling, use `ng-template` with the selector `#formArrayGroupHeader`.
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  [jsonData]="jsonData"
+  (formGet)="onFormGet($event)"
+>
+  <ng-template
+    #formArrayGroupHeader
+    let-label="label"
+    let-index="index"
+    let-formArray="formArray"
+    let-templateForm="templateForm"
+    let-buttonEvent="buttonEvent"
+  >
+    <div class="my-custom-group-header">
+      <span>{{ label }}</span>
+      <button type="button" (click)="buttonEvent.add()">+</button>
+      <button type="button" (click)="buttonEvent.remove()">-</button>
+    </div>
+  </ng-template>
+</ng-dynamic-json-form>
+```
+
+<br>
+
+| variable     | description                                                      |
+| :----------- | :--------------------------------------------------------------- |
+| label        | Header's label.                                                  |
+| index        | Index of the form group in the form array.                       |
+| formArray    | The FormArray itself.                                            |
+| templateForm | The FormGroup to build this FormArray.                           |
+| buttonEvent  | Consists of `add`, `remove` method to manipulate this FormArray. |

@@ -1,10 +1,10 @@
-# Styling
+# 樣式
 
-## Form styling
+## 表單樣式
 
-### CSS variables
+### CSS 變數
 
-These are the predefined CSS variables, you can overwrite them with your desire value.
+以下是定義好的 CSS 變數，你可以覆寫為其他想要的值。
 
 ```css
 .ng-dynamic-json-form {
@@ -17,7 +17,7 @@ These are the predefined CSS variables, you can overwrite them with your desire 
   --row-gap: 1.5rem;
   --column-gap: 1rem;
   --group-gap: 2rem;
-  
+
   --options-column-gap: 1.85rem;
   --options-row-gap: 0.25rem;
 
@@ -27,12 +27,11 @@ These are the predefined CSS variables, you can overwrite them with your desire 
 }
 ```
 
-## Form layout
+## 表單版型
 
-These are some examples show how different value inside `cssGrid` can
-change the layout of your form:
+以下是一些使用了 `cssGrid` 內不同的值所組合出來的表單版型範例：
 
-### Example 1
+### 範例 1
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -55,7 +54,7 @@ change the layout of your form:
 
 </div>
 
-### Example 2
+### 範例 2
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -89,7 +88,7 @@ change the layout of your form:
 
 </div>
 
-### Example 3
+### 範例 3
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -122,7 +121,7 @@ change the layout of your form:
 
 </div>
 
-### Example 4
+### 範例 4
 
 <div class="example-wrapper">
   <div class="css-grid-example">
@@ -150,3 +149,58 @@ change the layout of your form:
 ```
 
 </div>
+
+## Form 陣列的表單標頭
+
+### 預設標頭
+
+預設標頭的樣式和排版:
+
+<div class="ng-dynamic-json-form" style="border: solid 1px rgba(128, 128, 128, 0.35); padding: 1rem; border-radius: 0.35rem;">
+  <div class="form-array-container" style="margin: 0;">
+    <div class="form-array-group-header" style="margin: 0;">
+      <span class="label">Header label</span>
+      <div class="buttons">
+        <button type="button" class="btn-add"><span></span></button>
+        <button type="button" class="btn-remove"><span></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+### 自訂標頭
+
+如果你想用自訂的版型和樣式，可以使用 `ng-template` 並加上 `#formArrayGroupHeader` 選擇器。
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  [jsonData]="jsonData"
+  (formGet)="onFormGet($event)"
+>
+  <ng-template
+    #formArrayGroupHeader
+    let-label="label"
+    let-index="index"
+    let-formArray="formArray"
+    let-templateForm="templateForm"
+    let-buttonEvent="buttonEvent"
+  >
+    <div class="my-custom-group-header">
+      <span>{{ label }}</span>
+      <button type="button" (click)="buttonEvent.add()">+</button>
+      <button type="button" (click)="buttonEvent.remove()">-</button>
+    </div>
+  </ng-template>
+</ng-dynamic-json-form>
+```
+
+<br>
+
+| 變數         | 說明                                              |
+| :----------- | :------------------------------------------------ |
+| label        | 標頭文字                                          |
+| index        | 此表單在 FormArray 內的索引值                     |
+| formArray    | FormArray 本身。                                  |
+| templateForm | 此 FormArray 的表單模板 FormGroup 。              |
+| buttonEvent  | 內含增減 FormArray 內容的 `add`, `remove` 的方法. |
