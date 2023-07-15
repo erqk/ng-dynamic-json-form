@@ -48,6 +48,7 @@ import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wr
 })
 export class PagePlaygroundComponent {
   headerHeight = 0;
+  windowHeight = 0;
 
   jsonEditor: JSONEditor | null = null;
   jsonData: FormControlConfig[] | string = [];
@@ -71,12 +72,12 @@ export class PagePlaygroundComponent {
 
   formInfoState = {
     tab: 'value',
-    size: 25,
+    size: parseInt(window.localStorage.getItem('form-info-width') || '25'),
     position: 'right',
   };
 
   language$ = this._languageDataService.language$;
-  languageData$ = this._languageDataService.languageData$;
+  i18nContent$ = this._languageDataService.i18nContent$;
   onDestroy$ = new Subject();
 
   constructor(
@@ -96,7 +97,9 @@ export class PagePlaygroundComponent {
   ngAfterViewInit(): void {
     this._onWindowResize();
     requestAnimationFrame(() => {
-      this.headerHeight = document.querySelector('.header')?.clientHeight || 0;
+      this.windowHeight = window.innerHeight;
+      this.headerHeight =
+        document.querySelector('app-header')?.clientHeight || 0;
     });
   }
 
@@ -149,6 +152,10 @@ export class PagePlaygroundComponent {
 
   setFormInfoState(tab: 'value' | 'errors'): void {
     this.formInfoState.tab = tab;
+  }
+
+  onAsSplitDragEnd(e: { gutterNum: number; sizes: number[] }): void {
+    window.localStorage.setItem('form-info-width', e.sizes[1].toString());
   }
 
   private get _fallbackJsonData() {
@@ -287,18 +294,13 @@ export class PagePlaygroundComponent {
 
     const action = () =>
       requestAnimationFrame(() => {
-        if (window.innerWidth <= breakpoints.large) {
-          this.formInfoState.size = 50;
-          this.formInfoState.position = 'right';
+        if (window.innerWidth <= breakpoints.medium) {
+          this.formInfoState.position = 'bottom';
         } else {
-          this.formInfoState.size = 30;
           this.formInfoState.position = 'right';
         }
 
-        if (window.innerWidth <= breakpoints.medium) {
-          this.formInfoState.size = 35;
-          this.formInfoState.position = 'bottom';
-        }
+        this.windowHeight = window.innerHeight;
       });
 
     action();

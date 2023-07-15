@@ -20,23 +20,23 @@ import { LanguageDataService } from 'src/app/features/language/services/language
 export class HeaderComponent {
   reload = false;
 
-  links$ = this._languageDataService.languageData$.pipe(
+  links$ = this._languageDataService.i18nContent$.pipe(
     map((x) => [
       {
         route: 'getting-started',
-        label: `${x['menu']['getting_started']}`,
+        label: `${x['MENU']['GETTING_STARTED']}`,
       },
       {
         route: 'api',
-        label: `${x['menu']['api']}`,
+        label: `${x['MENU']['API']}`,
       },
       {
         route: 'styling',
-        label: `${x['menu']['styling']}`,
+        label: `${x['MENU']['STYLING']}`,
       },
       {
         route: 'playground',
-        label: `${x['menu']['playground']}`,
+        label: `${x['MENU']['PLAYGROUND']}`,
       },
     ])
   );

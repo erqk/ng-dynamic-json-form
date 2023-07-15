@@ -197,10 +197,10 @@
 
 <br>
 
-| 變數         | 說明                                              |
-| :----------- | :------------------------------------------------ |
-| label        | 標頭文字                                          |
-| index        | 此表單在 FormArray 內的索引值                     |
-| formArray    | FormArray 本身。                                  |
-| templateForm | 此 FormArray 的表單模板 FormGroup 。              |
-| buttonEvent  | 內含增減 FormArray 內容的 `add`, `remove` 的方法. |
+| 變數         | 說明                                               |
+| :----------- | :------------------------------------------------- |
+| label        | 標頭文字。                                         |
+| index        | 此表單在 FormArray 內的索引值。                    |
+| formArray    | FormArray 本身。                                   |
+| templateForm | 此 FormArray 的表單模板 FormGroup。                |
+| buttonEvent  | 內含增減 FormArray 內容的 `add`, `remove` 的方法。 |

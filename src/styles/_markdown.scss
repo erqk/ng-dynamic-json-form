@@ -105,6 +105,15 @@ markdown {
   }
 }
 
+.form-info {
+  markdown {
+    pre {
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+}
+
 @media screen and (max-width: 992px) {
   markdown {
     .multi-column {
