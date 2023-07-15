@@ -5,8 +5,9 @@
 
 .main-content {
   --headerHeight: 0px;
+  --windowHeight: 0px;
 
-  height: calc(100vh - var(--headerHeight));
+  height: calc(var(--windowHeight) - var(--headerHeight));
 }
 
 .edit-and-preview {
@@ -105,7 +106,6 @@
 .form-preview {
   position: relative;
   width: 100%;
-  padding: 0 1rem;
   overflow: auto;
   z-index: 0;
   transition: 0.25s;
@@ -204,6 +204,7 @@ code {
   .detail {
     flex: 1;
     height: 1%;
+    border-bottom: solid 1px rgba(128, 128, 128, 0.5);
 
     markdown {
       display: flex;
@@ -215,9 +216,13 @@ code {
 }
 
 @media screen and (max-width: 992px) {
-  .form-preview {
-    .toolbar {
-      width: 90%;
+  .edit-and-preview {
+    --editor-edge-spacing: 5%;
+  }
+  
+  .form-info {
+    .bar {
+      font-size: 1rem;
     }
   }
 }

@@ -1,16 +1,23 @@
 {
-  "menu": {
-    "getting_started": "開始",
-    "api": "API",
-    "styling": "樣式",
-    "playground": "演示區域"
+  "MENU": {
+    "GETTING_STARTED": "開始",
+    "API": "API",
+    "STYLING": "樣式",
+    "PLAYGROUND": "演示區域"
   },
-  "introduction": {
-    "brief": "從 JSON 資料動態生成 Angular 表單。從簡單的表單到擁有複雜的狀態監聽表單都可以，並且支援第三方 UI 套件！"
+  "INTRODUCTION": {
+    "BRIEF": "從 JSON 資料動態生成 Angular 表單。從簡單的表單到擁有複雜的狀態監聽表單都可以，並且支援第三方 UI 套件！"
   },
-  "playground": {
-    "ui_library": {
-      "native_html": "原生 HTML"
+  "FEATURES": {
+    "NESTED_LEVELS": "建立不限層級的巢狀 FormControl、FormGroup、FormArray。",
+    "VALIDATORS": "支援 Angular 內建驗證器和自訂驗證器。",
+    "STATUS_BINDING": "根據特定的 AbstractControl 值來切換某個 AbstractControl 的狀態（隱藏、禁用等等）和驗證器的啟用。",
+    "CSS_GRID": "基於 CSS Grid，讓你靈活的建立各種版型的表單。",
+    "CUSTOM_COMPONENTS": "可依照需求建立自訂元件。"
+  },
+  "PLAYGROUND": {
+    "UI_LIBRARY": {
+      "NATIVE_HTML": "原生 HTML"
     }
   }
 }

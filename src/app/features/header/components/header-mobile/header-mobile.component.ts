@@ -80,7 +80,6 @@ export class HeaderMobileComponent {
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;
-    this._toggleBackdrop(false);
   }
 
   toggleNavigationPane(): void {

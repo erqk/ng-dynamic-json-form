@@ -1,11 +1,13 @@
 <div
   class="main-content beauty-scrollbar"
   [style.--headerHeight.px]="headerHeight + 1"
+  [style.--windowHeight.px]="windowHeight"
 >
   <as-split
     [direction]="formInfoState.position === 'right' ? 'horizontal' : 'vertical'"
     [useTransition]="true"
     [gutterSize]="6"
+    (dragEnd)="onAsSplitDragEnd($any($event))"
   >
     <as-split-area [size]="100 - formInfoState.size">
       <div
@@ -85,7 +87,7 @@
       >
         <option [ngValue]="'ui-basic'">
           UI -
-          {{ languageData$.value.playground.ui_library.native_html }}
+          {{ i18nContent$.value.PLAYGROUND.UI_LIBRARY.NATIVE_HTML }}
         </option>
         <option [ngValue]="'ui-primeng'">UI - PrimeNg</option>
         <option [ngValue]="'ui-material'">UI - Material</option>

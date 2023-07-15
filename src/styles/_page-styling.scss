@@ -48,15 +48,15 @@
 @mixin darkStyle {
   .glassmorphism-effect {
     background: linear-gradient(
-      333deg,
-      rgb(14 78 144 / 60%) 0%,
-      rgb(84 36 85) 100%
+      310deg,
+      rgba(255, 67, 111, 0.15),
+      rgba(95, 67, 255, 0.22)
     );
   }
 
   .css-grid-example {
     .form-control {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
     }
   }
 }

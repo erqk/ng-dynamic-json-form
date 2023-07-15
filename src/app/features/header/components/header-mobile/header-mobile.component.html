@@ -4,7 +4,14 @@
   </a>
 
   <app-tab-bar [links]="links"></app-tab-bar>
-  <button type="button" class="btn-menu" (click)="toggleSettings()"></button>
+  <button
+    type="button"
+    class="btn-menu"
+    [ngClass]="{ active: openSettings }"
+    (click)="toggleSettings()"
+  >
+    <span></span>
+  </button>
 </div>
 
 <button
@@ -35,7 +42,6 @@
   [ngClass]="{ active: openNavigationPane, 'settings-open': openSettings }"
 >
   <app-side-navigation-pane></app-side-navigation-pane>
-  <div class="spacer"></div>
 </div>
 
 <div class="settings" [ngClass]="{ active: openSettings }">

@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class LanguageDataService {
   language$ = new BehaviorSubject<string>('en');
-  languageData$ = new BehaviorSubject<any>({});
+  i18nContent$ = new BehaviorSubject<any>({});
 
   constructor(private _http: HttpClient) {}
 
@@ -19,7 +19,7 @@ export class LanguageDataService {
       .pipe(
         tap((x) => {
           this.language$.next(_lang);
-          this.languageData$.next(x);
+          this.i18nContent$.next(x);
           window.localStorage.setItem('language', _lang);
         })
       );

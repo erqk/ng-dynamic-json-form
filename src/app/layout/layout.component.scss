@@ -12,8 +12,6 @@
 
   .side-pane {
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
     position: sticky;
     top: var(--header-height);
     width: var(--sidePaneWidth);
