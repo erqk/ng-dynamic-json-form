@@ -1,3 +1,5 @@
+<a href="https://codeclimate.com/github/erqk/ng-dynamic-json-form/maintainability"><img src="https://api.codeclimate.com/v1/badges/822fd579fde353c1fa47/maintainability" /></a>
+
 # NgDynamicJsonForm
 
 Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!
