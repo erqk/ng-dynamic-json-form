@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ui-primeng-radio',
@@ -11,4 +11,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './ui-primeng-radio.component.html',
   styles: [],
 })
-export class UiPrimengRadioComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiPrimengRadioComponent extends CustomControlComponent {
+  override control = new UntypedFormControl('');
+}

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/custom-component-base.component';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-radio',
@@ -10,4 +10,6 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
   templateUrl: './ui-basic-radio.component.html',
   styles: [],
 })
-export class UiBasicRadioComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiBasicRadioComponent extends CustomControlComponent {
+  override control = new FormControl('');
+}

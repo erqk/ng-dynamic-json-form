@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 import { SourceCodeViewerComponent } from 'src/app/shared/source-code-viewer/source-code-viewer.component';
 
 @Component({
@@ -11,9 +11,11 @@ import { SourceCodeViewerComponent } from 'src/app/shared/source-code-viewer/sou
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SourceCodeViewerComponent],
 })
-export class CustomInputComponent extends NgDynamicJsonFormCustomComponent {
+export class CustomInputComponent extends CustomControlComponent {
   source = {
     html: 'https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/src/app/example/components/custom-input/custom-input.component.html',
     ts: 'https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/src/app/example/components/custom-input/custom-input.component.ts',
   };
+
+  override control = new FormControl('');
 }

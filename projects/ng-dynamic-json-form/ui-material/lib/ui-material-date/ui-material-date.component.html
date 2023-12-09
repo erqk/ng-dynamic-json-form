@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
     <input
@@ -7,7 +7,7 @@
       [matDatepicker]="picker"
       [min]="data.extra?.date?.min"
       [max]="data.extra?.date?.max"
-      [formControl]="viewControl"
+      [formControl]="control"
     />
     <mat-hint>{{ data.placeholder }}</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

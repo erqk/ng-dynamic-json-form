@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable, debounceTime, startWith, switchMap } from 'rxjs';
+import { Observable, map, startWith } from 'rxjs';
 import { ValidatorConfig } from '../../models';
 import { ErrorMessageService } from '../../services/error-message.service';
 
@@ -10,6 +10,7 @@ import { ErrorMessageService } from '../../services/error-message.service';
   template: ` <ng-container
     *ngIf="control && control.errors && (control?.touched || control?.value)"
   >
+    <!-- TODO: Reduce the nesting level, and control the display of message using css -->
     <div class="errors-container">
       <ng-container *ngFor="let error of errors$ | async">
         <div class="error">{{ error }}</div>
@@ -27,12 +28,13 @@ export class ErrorMessageComponent {
 
   errors$?: Observable<string[]>;
 
-  ngOnInit(): void {
-    this.errors$ = this.control?.valueChanges.pipe(
-      startWith(this.control.value),
-      debounceTime(0),
-      switchMap(() =>
-        this._errorMessageService.getErrors$(
+  ngOnChanges(): void {
+    if (!this.control || !this.validators?.length) return;
+
+    this.errors$ = this.control.statusChanges.pipe(
+      startWith(this.control.status),
+      map(() =>
+        this._errorMessageService.getErrorMessages(
           this.control!,
           this.validators || []
         )

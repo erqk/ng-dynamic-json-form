@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-textarea',
@@ -11,4 +11,6 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './ui-material-textarea.component.html',
   styles: [],
 })
-export class UiMaterialTextareaComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiMaterialTextareaComponent extends CustomControlComponent {
+  override control = new FormControl('');
+}

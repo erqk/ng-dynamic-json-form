@@ -1,6 +1,6 @@
 <app-source-code-viewer [source]="source">
   <ng-container *ngIf="control">
-    <ng-container [formGroup]="viewControl">
+    <ng-container [formGroup]="control">
       <div class="form-group">
         <span>A</span>
         <input type="text" formControlName="a" />

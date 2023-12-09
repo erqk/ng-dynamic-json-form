@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <div class="option-button-wrapper">
     <label class="option-button">
       <ng-container
@@ -6,7 +6,7 @@
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
 
-      <p-inputSwitch [formControl]="control">123</p-inputSwitch>
+      <p-inputSwitch [formControl]="control"></p-inputSwitch>
 
       <ng-container
         *ngIf="data.extra?.switch?.labelPosition !== 'before'"

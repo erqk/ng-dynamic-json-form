@@ -12,29 +12,28 @@ import {
   SimpleChanges,
   TemplateRef,
   Type,
-  ViewChild,
 } from '@angular/core';
 import {
-  FormArray,
   ReactiveFormsModule,
   UntypedFormGroup,
   ValidatorFn,
 } from '@angular/forms';
 import { Subject, merge, takeUntil } from 'rxjs';
-import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
+import { CustomControlComponent } from './components/custom-control/custom-control.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { FormControlConfig, UiComponents } from './models';
+import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
+import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import { ErrorMessageService } from './services';
 import { FormConfigInitService } from './services/form-config-init.service';
+import { FormDataTransformService } from './services/form-data-transform.service';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
 import { GridLayoutService } from './services/grid-layout.service';
-import { GenerateFormPipe } from './pipes/generate-form.pipe';
-import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -51,6 +50,7 @@ import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
   ],
   providers: [
     FormConfigInitService,
+    FormDataTransformService,
     FormGeneratorService,
     FormValidatorService,
     FormStatusService,
@@ -86,7 +86,7 @@ export class NgDynamicJsonFormComponent {
    * }
    */
   @Input() customComponents: {
-    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
+    [key: string]: Type<CustomControlComponent>;
   } = {};
 
   /**Form control components built with other libraries */

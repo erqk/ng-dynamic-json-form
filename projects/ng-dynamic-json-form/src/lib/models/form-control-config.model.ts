@@ -7,16 +7,25 @@ import { ValidatorConfig } from './form-validator-config.model';
 import { NgxMaskConfig } from './ngx-mask-config.model';
 
 export interface FormControlConfig {
-  label?: string;
   formControlName: string;
-  value?: any;
-  placeholder?: string;
-  description?: string;
-  type?: FormControlType;
-  ngxMaskConfig?: Partial<NgxMaskConfig>;
+
+  /**Change state or toggle validators when condition met */
+  conditions?: FormControlCondition[];
+
+  /**Make this control as a FormGroup */
+  children?: FormControlConfig[];
 
   /**Custom component to use on this control */
   customComponent?: string;
+
+  /**CSS Grid */
+  cssGrid?: {
+    gridRow?: string;
+    gridColumn?: string;
+    gridTemplateColumns?: string;
+  };
+
+  description?: string;
 
   /**Custom data for this control. Example:
    *  @example
@@ -28,14 +37,14 @@ export interface FormControlConfig {
    */
   extra?: FormControlExtra;
 
-  /**Validators to add to this form control */
-  validators?: ValidatorConfig[];
+  /**Make this control as a FormArray */
+  formArray?: FormArrayConfig;
 
-  /**Change state or toggle validators when condition met */
-  conditions?: FormControlCondition[];
+  /**Set to true if you need to take control of validation message */
+  hideValidationMessage?: boolean;
 
-  /**Display options using row or column (options must not be empty) */
-  optionsLayout?: 'column' | 'row';
+  label?: string;
+  ngxMaskConfig?: Partial<NgxMaskConfig>;
 
   /**Options with key value pairs, use with the following elements:
    * - Dropdown menu
@@ -45,16 +54,13 @@ export interface FormControlConfig {
    */
   options?: FormControlOptions[];
 
-  /**Make this control as a FormGroup */
-  children?: FormControlConfig[];
+  /**Display options using row or column (options must not be empty) */
+  optionsLayout?: 'column' | 'row';
 
-  /**Make this control as a FormArray */
-  formArray?: FormArrayConfig;
+  placeholder?: string;
+  type?: FormControlType;
+  value?: any;
 
-  /**CSS Grid */
-  cssGrid?: {
-    gridRow?: string;
-    gridColumn?: string;
-    gridTemplateColumns?: string;
-  };
+  /**Validators to add to this form control */
+  validators?: ValidatorConfig[];
 }

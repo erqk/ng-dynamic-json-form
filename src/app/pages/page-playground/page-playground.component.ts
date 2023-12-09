@@ -89,9 +89,8 @@ export class PagePlaygroundComponent {
     this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
     this._initJsonEditor();
     this._darkThemeEvent();
-    this._languageChangeEvent();
     this._setUI();
-    this.generateForm();
+    this._languageChangeEvent();
   }
 
   ngAfterViewInit(): void {
@@ -113,12 +112,12 @@ export class PagePlaygroundComponent {
   }
 
   generateForm(): void {
-    const content = this._savedJson;
+    const content = this._jsonEditorData;
     if (!content) return;
 
     this.jsonData = '';
     requestAnimationFrame(() => {
-      this.jsonData = (content as any).json;
+      this.jsonData = (content as any)['json'];
       this.editing = false;
     });
   }
@@ -138,16 +137,11 @@ export class PagePlaygroundComponent {
   }
 
   loadJsonData(reset = true): void {
-    let content: any = null;
-
     if (reset) {
-      content = this._fallbackJsonData;
-      this._saveEditorContent(this._fallbackJsonData);
-    } else {
-      content = this._savedJson;
+      this._jsonEditorData = this._fallbackJsonData;
     }
 
-    this.jsonEditor?.set(content);
+    this.jsonEditor?.set(this._jsonEditorData);
   }
 
   setFormInfoState(tab: 'value' | 'errors'): void {
@@ -167,20 +161,27 @@ export class PagePlaygroundComponent {
     return { json: formConfig };
   }
 
-  private get _savedJson(): Content {
-    const jsonData =
-      window.sessionStorage.getItem(
-        `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`
-      ) || this._fallbackJsonData;
+  private get _jsonEditorDataKey(): string {
+    return `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`;
+  }
 
-    let content = null;
+  private get _jsonEditorData(): Content {
+    const jsonData =
+      window.localStorage.getItem(this._jsonEditorDataKey) ||
+      this._fallbackJsonData;
+
     try {
       const data =
         typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
-      content = Array.isArray(data) ? { json: data } : data;
+
+      return Array.isArray(data) ? { json: data } : data;
     } catch (e) {}
 
-    return content;
+    return this._fallbackJsonData;
+  }
+
+  private set _jsonEditorData(data: any) {
+    window.localStorage.setItem(this._jsonEditorDataKey, JSON.stringify(data));
   }
 
   private _setUI(): void {
@@ -201,46 +202,33 @@ export class PagePlaygroundComponent {
     window.localStorage.setItem('form-ui', this.formUI);
   }
 
-  private _saveEditorContent(input: any): void {
-    window.sessionStorage.setItem(
-      `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`,
-      JSON.stringify(input)
-    );
-  }
-
   private _initJsonEditor(): void {
     const el = document.querySelector('.json-editor') as HTMLElement;
-    const content = this._savedJson;
-    const playgroundThis = this;
+    const content = this._jsonEditorData;
 
     this.jsonEditor = new JSONEditor({
       target: el,
       props: {
         mode: Mode.text,
         content,
-        onChange(content, previousContent, status) {
-          const contentParsed = playgroundThis._getContent(content);
-          playgroundThis._saveEditorContent(contentParsed);
+        onChange: (content, previousContent, status) => {
+          this._jsonEditorData = this._getContent(content);
         },
       },
     });
 
-    this._saveEditorContent(content);
+    // this._jsonEditorData = content;
   }
 
   /**To get the consistent result of jsoneditor */
   private _getContent(input: Content | undefined): Content {
     let jsonContent = null;
 
-    if (!input) {
-      return { json: jsonContent };
-    }
-
-    if ('json' in input && input.json) {
+    if (!!input && 'json' in input && input.json) {
       jsonContent = input.json;
     }
 
-    if ('text' in input && input.text) {
+    if (!!input && 'text' in input && input.text) {
       try {
         jsonContent = JSON.parse(input.text);
       } catch (e) {}
@@ -253,7 +241,7 @@ export class PagePlaygroundComponent {
     this._languageDataService.language$
       .pipe(
         tap(() => {
-          this.loadJsonData();
+          this.loadJsonData(false);
           this.generateForm();
         }),
         takeUntil(this.onDestroy$)

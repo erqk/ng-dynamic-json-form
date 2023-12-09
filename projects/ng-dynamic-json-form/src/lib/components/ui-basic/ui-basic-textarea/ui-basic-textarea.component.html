@@ -1,22 +1,10 @@
-<ng-container *ngIf="control && data">
-  <ng-container *ngIf="data.extra?.textarea?.autoResize !== true">
-    <textarea
-      [attr.cols]="data.extra?.textarea?.cols ?? 30"
-      [attr.rows]="data.extra?.textarea?.rows ?? 10"
-      [attr.placeholder]="data.placeholder ?? null"
-      [ngClass]="{ disabled: control.disabled }"
-      [formControl]="control"
-    ></textarea>
-  </ng-container>
-
-  <ng-container *ngIf="data.extra?.textarea?.autoResize === true">
-    <textarea
-      textareaAutoResize
-      [attr.cols]="data.extra?.textarea?.cols ?? 30"
-      [attr.rows]="data.extra?.textarea?.rows ?? 10"
-      [attr.placeholder]="data.placeholder ?? null"
-      [ngClass]="{ disabled: control.disabled }"
-      [formControl]="control"
-    ></textarea>
-  </ng-container>
+<ng-container *ngIf="data">
+  <textarea
+    [textareaAutoHeight]="data.extra?.textarea?.autoResize ?? false"
+    [attr.cols]="data.extra?.textarea?.cols ?? 30"
+    [attr.rows]="data.extra?.textarea?.rows ?? 10"
+    [attr.placeholder]="data.placeholder ?? null"
+    [ngClass]="{ disabled: control.disabled }"
+    [formControl]="control"
+  ></textarea>
 </ng-container>

@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <div
     class="group-buttons"
     [ngStyle]="{
@@ -63,7 +63,7 @@
             <input
               type="checkbox"
               [value]="item.value ?? false"
-              [checked]="control.value.includes(item.value)"
+              [checked]="control.value!.includes(item.value)"
               [disabled]="control.disabled"
               (change)="onCheckboxChange($event)"
             />

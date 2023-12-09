@@ -1,33 +1,22 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-import { of } from 'rxjs/internal/observable/of';
-import { map, startWith } from 'rxjs/operators';
 import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import { ValidatorConfig } from '../models';
 
 @Injectable()
 export class ErrorMessageService {
-  getErrors$(
-    control: AbstractControl,
-    validatorConfigs: ValidatorConfig[]
-  ): Observable<string[]> {
-    if (!control) return of([]);
-
-    return control.valueChanges.pipe(
-      startWith(control.value),
-      map(() => this._parseErrorMessage(control, validatorConfigs))
-    );
-  }
-
-  private _parseErrorMessage(
+  getErrorMessages(
     control: AbstractControl,
     validatorConfigs: ValidatorConfig[]
   ): string[] {
     const errors = control.errors;
     if (!errors) return [];
 
-    return Object.keys(errors!).reduce((acc, key) => {
+    // TODO: Can be refactor to a cleaner way.
+    // Add {{value}} replacement for all validation message if found.
+    // Validation types can be any string, as long as matched.
+
+    return Object.keys(errors).reduce((acc, key) => {
       switch (key.toLowerCase()) {
         case ValidatorAndConditionTypes.REQUIRED.toLowerCase():
         case ValidatorAndConditionTypes.REQUIRED_TRUE.toLowerCase():
@@ -49,7 +38,7 @@ export class ErrorMessageService {
         // The validator name is outside the range above, meaning this is a custom validator
         // So we extract the message from ValidatorErrors keyValue pair
         default:
-          acc.push(errors![key]);
+          acc.push(errors[key]);
           break;
       }
 

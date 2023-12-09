@@ -10,7 +10,7 @@
 
 <ng-container #componentAnchor></ng-container>
 
-<ng-container *ngIf="!isMaterial">
+<ng-container *ngIf="!isMaterial && !data?.hideValidationMessage">
   <error-message
     [control]="control"
     [validators]="data?.validators"

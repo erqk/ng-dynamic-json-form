@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 import { SourceCodeViewerComponent } from 'src/app/shared/source-code-viewer/source-code-viewer.component';
 
 @Component({
@@ -11,13 +11,13 @@ import { SourceCodeViewerComponent } from 'src/app/shared/source-code-viewer/sou
   templateUrl: './custom-input-group.component.html',
   styleUrls: ['./custom-input-group.component.scss'],
 })
-export class CustomInputGroupComponent extends NgDynamicJsonFormCustomComponent {
+export class CustomInputGroupComponent extends CustomControlComponent {
   source = {
     html: 'https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/src/app/example/components/custom-input-group/custom-input-group.component.html',
     ts: 'https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/src/app/example/components/custom-input-group/custom-input-group.component.ts',
   };
 
-  override viewControl = new FormGroup({
+  override control = new FormGroup({
     a: new FormControl(''),
     b: new FormControl(''),
     c: new FormControl(''),

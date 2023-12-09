@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { startWith, tap } from 'rxjs/operators';
-import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/custom-component-base.component';
+import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-range',
@@ -11,14 +11,14 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
   templateUrl: './ui-basic-range.component.html',
   styles: [],
 })
-export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
+export class UiBasicRangeComponent extends CustomControlComponent {
   private _el = inject(ElementRef);
   private _rangeInput?: HTMLInputElement;
 
+  override control = new FormControl(0);
   tickMarks: any[] = [];
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     this._getTickMarksCount();
   }
 
@@ -33,18 +33,10 @@ export class UiBasicRangeComponent extends NgDynamicJsonFormCustomComponent {
   }
 
   get valuePosition(): string {
-    const min = this.data?.extra?.range?.min;
-    const max = this.data?.extra?.range?.max;
+    const min = this.data?.extra?.range?.min ?? 0;
+    const max = this.data?.extra?.range?.max ?? 0;
 
-    if (
-      this.control?.value === undefined ||
-      min === undefined ||
-      max === undefined
-    ) {
-      return '0%';
-    }
-
-    return `${((this.control.value - min) / (max - min)) * 100}%`;
+    return `${((this.control.value! - min) / (max - min)) * 100}%`;
   }
 
   private _getTickMarksCount(): void {

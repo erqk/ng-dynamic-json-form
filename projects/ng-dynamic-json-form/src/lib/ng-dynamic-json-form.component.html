@@ -28,53 +28,54 @@
     }"
   >
     <ng-container [formGroup]="parentForm">
-      <ng-container *ngFor="let control of controlConfigs">
+      <ng-container *ngFor="let config of controlConfigs">
         <!-- Form control -->
-        <ng-container *ngIf="!control.children && !control.formArray">
+        <ng-container *ngIf="!config.children && !config.formArray">
           <grid-item-wrapper
             class="form-control-container"
             [ngClass]="{
               'level-1': isNested !== true
             }"
             [parentId]="parentId"
-            [data]="control"
+            [data]="config"
           >
             <form-control
-              [data]="control"
-              [control]="parentForm.controls[control.formControlName]"
-              [customComponent]="customComponents[control.customComponent]"
+              [data]="config"
+              [control]="parentForm.controls[config.formControlName]"
+              [formControlName]="config.formControlName"
+              [customComponent]="customComponents[config.customComponent]"
               [uiComponents]="uiComponents || basicUIComponents"
             ></form-control>
           </grid-item-wrapper>
         </ng-container>
 
         <!-- Form group -->
-        <ng-container *ngIf="!!control.children && !control.formArray">
+        <ng-container *ngIf="!!config.children && !config.formArray">
           <grid-item-wrapper
             class="form-group-container"
             [ngClass]="{
               'is-nested': isNested === true
             }"
             [parentId]="parentId"
-            [data]="control"
+            [data]="config"
           >
-            <ng-container *ngIf="control.label">
-              <span class="form-title">{{ control.label }}</span>
+            <ng-container *ngIf="config.label">
+              <span class="form-title">{{ config.label }}</span>
             </ng-container>
 
-            <ng-container *ngIf="control.description">
-              <span class="form-description">{{ control.description }}</span>
+            <ng-container *ngIf="config.description">
+              <span class="form-description">{{ config.description }}</span>
             </ng-container>
 
             <ng-container
               [ngTemplateOutlet]="formGroupTemplate"
               [ngTemplateOutletContext]="{
-                controlConfigs: control.children,
+                controlConfigs: config.children,
                 parentId:
-                  (parentId ? parentId + '.' : '') + control.formControlName,
-                parentForm: parentForm.controls[control.formControlName],
+                  (parentId ? parentId + '.' : '') + config.formControlName,
+                parentForm: parentForm.controls[config.formControlName],
                 isNested: true,
-                gridTemplateColumns: control?.cssGrid?.gridTemplateColumns
+                gridTemplateColumns: config?.cssGrid?.gridTemplateColumns
               }"
             ></ng-container>
           </grid-item-wrapper>
@@ -83,9 +84,9 @@
         <!-- Form array -->
         <ng-container
           *ngIf="
-            !control.children &&
-            !!control.formArray &&
-            !!control.formArray.template.length
+            !config.children &&
+            !!config.formArray &&
+            !!config.formArray.template.length
           "
         >
           <grid-item-wrapper
@@ -94,18 +95,18 @@
               'is-nested': isNested === true
             }"
             [parentId]="parentId"
-            [data]="control"
+            [data]="config"
           >
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
               [ngTemplateOutletContext]="{
-                label: control.label,
-                description: control.description,
+                label: config.label,
+                description: config.description,
                 parentForm: parentForm,
-                validators: control.validators,
-                formArray: parentForm.controls[control.formControlName],
-                formArrayName: control.formControlName,
-                formArrayConfig: control.formArray
+                validators: config.validators,
+                formArray: parentForm.controls[config.formControlName],
+                formArrayName: config.formControlName,
+                formArrayConfig: config.formArray
               }"
             ></ng-container>
           </grid-item-wrapper>

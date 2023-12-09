@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 import { InputTextModule } from 'primeng/inputtext';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ui-primeng-input',
@@ -11,4 +11,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './ui-primeng-input.component.html',
   styles: [],
 })
-export class UiPrimengInputComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiPrimengInputComponent extends CustomControlComponent {
+  override control = new UntypedFormControl('');
+}

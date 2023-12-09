@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/custom-component-base.component';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-input',
@@ -10,4 +10,6 @@ import { NgDynamicJsonFormCustomComponent } from '../../custom-component-base/cu
   templateUrl: './ui-basic-input.component.html',
   styles: [],
 })
-export class UiBasicInputComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiBasicInputComponent extends CustomControlComponent {
+  override control = new UntypedFormControl('');
+}

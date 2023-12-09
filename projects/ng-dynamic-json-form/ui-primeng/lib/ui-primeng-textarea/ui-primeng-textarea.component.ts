@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
@@ -11,4 +11,6 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
   templateUrl: './ui-primeng-textarea.component.html',
   styles: [],
 })
-export class UiPrimengTextareaComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiPrimengTextareaComponent extends CustomControlComponent {
+  override control = new FormControl('');
+}

@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <div
     class="group-buttons"
     [ngStyle]="{
@@ -54,11 +54,11 @@
           ></ng-container>
 
           <p-checkbox
-            [(ngModel)]="selectedItems"
             [name]="'group'"
             [value]="item.value"
             [disabled]="control.disabled"
             [inputId]="data.formControlName + '-' + item.label"
+            [ngModel]="selectedItems"
             (onChange)="onChanged($event)"
           ></p-checkbox>
 

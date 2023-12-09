@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-range',
@@ -12,4 +12,6 @@ import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
   templateUrl: './ui-material-range.component.html',
   styles: [],
 })
-export class UiMaterialRangeComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiMaterialRangeComponent extends CustomControlComponent {
+  override control = new FormControl(0);
+}

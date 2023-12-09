@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
-  NgDynamicJsonFormCustomComponent
+  CustomControlComponent,
+  NgDynamicJsonFormCustomComponent,
+  NgxMaskConfigBindingDirective,
 } from 'ng-dynamic-json-form';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
@@ -15,9 +17,12 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     ReactiveFormsModule,
     MatInputModule,
     NgxMaskDirective,
+    NgxMaskConfigBindingDirective,
   ],
   templateUrl: './ui-material-input-mask.component.html',
   styles: [],
   providers: [provideNgxMask()],
 })
-export class UiMaterialInputMaskComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiMaterialInputMaskComponent extends CustomControlComponent {
+  override control = new FormControl('');
+}

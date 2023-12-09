@@ -1,6 +1,6 @@
-import { Type, InjectionToken, Provider } from '@angular/core';
+import { InjectionToken, Provider, Type } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
+import { CustomControlComponent } from './components/custom-control/custom-control.component';
 import { FormGeneratorService } from './services/form-generator.service';
 import { FormStatusService } from './services/form-status.service';
 import { FormValidatorService } from './services/form-validator.service';
@@ -8,8 +8,8 @@ import { GridLayoutService } from './services/grid-layout.service';
 
 interface FormConfig {
   customValidators: { [key: string]: ValidatorFn };
-  customComponents: { [key: string]: Type<NgDynamicJsonFormCustomComponent> };
-  customUIComponents: { [key: string]: Type<NgDynamicJsonFormCustomComponent> };
+  customComponents: { [key: string]: Type<CustomControlComponent> };
+  customUIComponents: { [key: string]: Type<CustomControlComponent> };
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(

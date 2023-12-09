@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import {
-  NgDynamicJsonFormCustomComponent
-} from 'ng-dynamic-json-form';
+import { CustomControlComponent } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-input',
@@ -14,4 +12,6 @@ import {
   templateUrl: './ui-material-input.component.html',
   styles: [],
 })
-export class UiMaterialInputComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiMaterialInputComponent extends CustomControlComponent {
+  override control = new UntypedFormControl('');
+}

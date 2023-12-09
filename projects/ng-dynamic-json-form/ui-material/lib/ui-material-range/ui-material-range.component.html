@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <mat-slider
     [min]="data.extra?.range?.min ?? 0"
     [max]="data.extra?.range?.max ?? 100"
@@ -8,6 +8,6 @@
   >
     <input matSliderThumb [formControl]="control" />
   </mat-slider>
-  
+
   <mat-error>{{ errors$ | async }}</mat-error>
 </ng-container>
