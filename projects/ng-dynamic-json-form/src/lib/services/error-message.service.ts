@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 import { ValidatorConfig } from '../models';
+import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
 
 @Injectable()
 export class ErrorMessageService {
@@ -12,36 +12,38 @@ export class ErrorMessageService {
     const errors = control.errors;
     if (!errors) return [];
 
-    // TODO: Can be refactor to a cleaner way.
-    // Add {{value}} replacement for all validation message if found.
-    // Validation types can be any string, as long as matched.
+    const validationTypes = Object.values(ValidatorAndConditionTypes)
+      .filter(
+        (x) =>
+          x !== ValidatorAndConditionTypes.CUSTOM &&
+          x !== ValidatorAndConditionTypes.DISABLED
+      )
+      .map((x) => x.toLowerCase());
 
     return Object.keys(errors).reduce((acc, key) => {
-      switch (key.toLowerCase()) {
-        case ValidatorAndConditionTypes.REQUIRED.toLowerCase():
-        case ValidatorAndConditionTypes.REQUIRED_TRUE.toLowerCase():
-        case ValidatorAndConditionTypes.MIN.toLowerCase():
-        case ValidatorAndConditionTypes.MAX.toLowerCase():
-        case ValidatorAndConditionTypes.MIN_LENGTH.toLowerCase():
-        case ValidatorAndConditionTypes.MAX_LENGTH.toLowerCase():
-        case ValidatorAndConditionTypes.PATTERN.toLowerCase():
-        case ValidatorAndConditionTypes.EMAIL.toLowerCase():
-          const customErrorMessage = validatorConfigs
-            ?.find((x) => x.name.toLowerCase() === key)
-            ?.message?.replace(/{{value}}/g, control.value || '');
+      const targetConfig = validatorConfigs.find(
+        (x) => x.name.toLowerCase() === key
+      );
 
-          acc.push(
-            customErrorMessage ?? JSON.stringify({ [key]: errors![key] })
-          );
-          break;
+      const isCustomValidation = validationTypes.every((x) => x !== key);
 
-        // The validator name is outside the range above, meaning this is a custom validator
-        // So we extract the message from ValidatorErrors keyValue pair
-        default:
-          acc.push(errors[key]);
-          break;
-      }
+      const messageRaw = isCustomValidation
+        ? errors[key]
+        : { [key]: errors[key] };
 
+      const messageReplaced = targetConfig?.message?.replace(
+        /{{value}}/g,
+        control.value || ''
+      );
+
+      const messageGet = messageReplaced ?? messageRaw;
+
+      const result =
+        typeof messageGet === 'string'
+          ? messageGet
+          : JSON.stringify(messageGet);
+
+      acc.push(result);
       return acc;
     }, [] as string[]);
   }
