@@ -4,7 +4,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  NgDynamicJsonFormCustomComponent,
   NgxMaskConfigBindingDirective,
 } from 'ng-dynamic-json-form';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
