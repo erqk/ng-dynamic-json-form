@@ -1,5 +1,7 @@
+import { ValidatorAndConditionEnum } from './validator-and-condition.enum';
+
 export interface FormControlCondition {
-  name?: 'required' | 'disabled' | 'hidden' | (string & {});
+  name?: keyof typeof ValidatorAndConditionEnum;
   control: string;
   controlValue: any;
   operator: '===' | '!==' | '>=' | '>' | '<=' | '<';

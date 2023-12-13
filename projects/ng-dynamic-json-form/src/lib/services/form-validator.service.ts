@@ -5,7 +5,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
+import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 import { ValidatorConfig } from '../models';
 
 @Injectable()
@@ -17,39 +17,39 @@ export class FormValidatorService {
       let validator: ValidatorFn = Validators.nullValidator;
 
       switch (item.name) {
-        case ValidatorAndConditionTypes.REQUIRED:
+        case ValidatorAndConditionEnum.required:
           validator = Validators.required;
           break;
 
-        case ValidatorAndConditionTypes.REQUIRED_TRUE:
+        case ValidatorAndConditionEnum.requiredTrue:
           validator = Validators.requiredTrue;
           break;
 
-        case ValidatorAndConditionTypes.EMAIL:
+        case ValidatorAndConditionEnum.email:
           validator = CustomValidators.emailValidator;
           break;
 
-        case ValidatorAndConditionTypes.PATTERN:
+        case ValidatorAndConditionEnum.pattern:
           validator = Validators.pattern(item.value);
           break;
 
-        case ValidatorAndConditionTypes.MIN:
+        case ValidatorAndConditionEnum.min:
           validator = Validators.min(item.value);
           break;
 
-        case ValidatorAndConditionTypes.MAX:
+        case ValidatorAndConditionEnum.max:
           validator = Validators.max(item.value);
           break;
 
-        case ValidatorAndConditionTypes.MIN_LENGTH:
+        case ValidatorAndConditionEnum.minLength:
           validator = Validators.minLength(item.value);
           break;
 
-        case ValidatorAndConditionTypes.MAX_LENGTH:
+        case ValidatorAndConditionEnum.maxLength:
           validator = Validators.maxLength(item.value);
           break;
 
-        case ValidatorAndConditionTypes.CUSTOM:
+        case ValidatorAndConditionEnum.custom:
           validator =
             this.customValidators[item.value] || Validators.nullValidator;
           break;

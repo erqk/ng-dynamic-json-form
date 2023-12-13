@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { ValidatorConfig } from '../models';
-import { ValidatorAndConditionTypes } from '../enums/validator-and-condition-types.enum';
+import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 
 @Injectable()
 export class ErrorMessageService {
@@ -12,11 +12,11 @@ export class ErrorMessageService {
     const errors = control.errors;
     if (!errors) return [];
 
-    const validationTypes = Object.values(ValidatorAndConditionTypes)
+    const validationTypes = Object.values(ValidatorAndConditionEnum)
       .filter(
         (x) =>
-          x !== ValidatorAndConditionTypes.CUSTOM &&
-          x !== ValidatorAndConditionTypes.DISABLED
+          x !== ValidatorAndConditionEnum.custom &&
+          x !== ValidatorAndConditionEnum.disabled
       )
       .map((x) => x.toLowerCase());
 
