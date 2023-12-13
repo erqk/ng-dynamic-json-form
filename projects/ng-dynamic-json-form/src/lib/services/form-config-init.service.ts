@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GridLayoutService } from './grid-layout.service';
 import { FormControlConfig } from '../models';
-import { NgxMaskConfig } from '../models/ngx-mask-config.model';
+import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
 
 @Injectable()
 export class FormConfigInitService {

@@ -9,7 +9,7 @@ import { FormControlConfig } from '../../models';
 import { ErrorMessageService } from '../../services';
 import { FormDataTransformService } from '../../services/form-data-transform.service';
 import { filter, map, startWith } from 'rxjs/operators';
-import { FormControlType } from '../../models/form-control-type.model';
+import { FormControlType } from '../../models/form-control-type.interface';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({

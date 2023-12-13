@@ -1,4 +1,4 @@
-import { FormControlConfig as FormControlConfig } from './form-control-config.model';
+import { FormControlConfig as FormControlConfig } from './form-control-config.interface';
 
 export interface FormArrayConfig {
   templateLabel: string;

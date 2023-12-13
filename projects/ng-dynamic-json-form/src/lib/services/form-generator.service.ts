@@ -7,7 +7,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { FormControlConfig } from '../models/form-control-config.model';
+import { FormControlConfig } from '../models/form-control-config.interface';
 import { FormStatusService } from './form-status.service';
 import { FormValidatorService } from './form-validator.service';
 

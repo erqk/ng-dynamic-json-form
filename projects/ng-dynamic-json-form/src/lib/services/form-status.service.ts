@@ -23,7 +23,7 @@ import {
   FormControlConfig,
   ValidatorConfig,
 } from '../models';
-import { ConditionExtracted } from '../models/condition-extracted.model';
+import { ConditionExtracted } from '../models/condition-extracted.interface';
 import { clearEmpties } from '../utils/clear-empties';
 import { FormValidatorService } from './form-validator.service';
 

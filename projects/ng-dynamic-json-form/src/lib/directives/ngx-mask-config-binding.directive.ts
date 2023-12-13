@@ -5,7 +5,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgxMaskConfig } from '../../models/ngx-mask-config.model';
+import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
 import { NgxMaskDirective } from 'ngx-mask';
 
 @Directive({

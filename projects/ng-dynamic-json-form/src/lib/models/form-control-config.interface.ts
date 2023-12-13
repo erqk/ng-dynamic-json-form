@@ -1,10 +1,10 @@
-import { FormControlExtra } from './extra/form-control-extra.model';
-import { FormArrayConfig } from './form-array-config.model';
-import { FormControlCondition } from './form-control-condition.model';
-import { FormControlOptions } from './form-control-options.model';
-import { FormControlType } from './form-control-type.model';
-import { ValidatorConfig } from './form-validator-config.model';
-import { NgxMaskConfig } from './ngx-mask-config.model';
+import { FormControlExtra } from './extra/form-control-extra.interface';
+import { FormArrayConfig } from './form-array-config.interface';
+import { FormControlCondition } from './form-control-condition.interface';
+import { FormControlOptions } from './form-control-options.interface';
+import { FormControlType } from './form-control-type.interface';
+import { ValidatorConfig } from './form-validator-config.interface';
+import { NgxMaskConfig } from './ngx-mask-config.interface';
 
 export interface FormControlConfig {
   formControlName: string;

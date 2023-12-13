@@ -7,7 +7,7 @@ import { UiBasicRadioComponent } from '../components/ui-basic/ui-basic-radio/ui-
 import { UiBasicRangeComponent } from '../components/ui-basic/ui-basic-range/ui-basic-range.component';
 import { UiBasicSwitchComponent } from '../components/ui-basic/ui-basic-switch/ui-basic-switch.component';
 import { UiBasicTextareaComponent } from '../components/ui-basic/ui-basic-textarea/ui-basic-textarea.component';
-import { UiComponents } from '../models/ui-components-type.model';
+import { UiComponents } from '../models/ui-components-type.type';
 
 export const UI_BASIC_COMPONENTS: UiComponents = {
   checkbox: { type: 'basic', component: UiBasicCheckboxComponent },

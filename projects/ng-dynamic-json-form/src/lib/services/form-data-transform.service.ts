@@ -1,6 +1,6 @@
 import { Injectable, LOCALE_ID, inject } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { FormControlType } from '../models/form-control-type.model';
+import { FormControlType } from '../models/form-control-type.interface';
 import { FormControlConfig } from '../models';
 
 @Injectable()

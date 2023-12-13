@@ -1,5 +1,5 @@
-import { FormControlCondition } from './form-control-condition.model';
-import { ValidatorConfig } from './form-validator-config.model';
+import { FormControlCondition } from './form-control-condition.interface';
+import { ValidatorConfig } from './form-validator-config.interface';
 import { AbstractControl } from '@angular/forms';
 
 export interface ConditionExtracted {
