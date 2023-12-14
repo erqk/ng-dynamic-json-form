@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {
+  RouterModule,
+  Routes,
+  UrlMatchResult,
+  UrlSegment,
+} from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
-import { PagePlaygroundComponent } from './pages/page-playground/page-playground.component';
 
 const routes: Routes = [
   {
@@ -39,8 +43,19 @@ const routes: Routes = [
     ],
   },
   {
+    matcher: (segments: UrlSegment[]): UrlMatchResult | null => {
+      const invalidRoute =
+        !segments.length || segments[0].path !== 'older-docs';
+
+      return invalidRoute ? null : { consumed: segments };
+    },
+    loadComponent: () =>
+      import('./pages/page-older-docs/page-older-docs.component').then(
+        (c) => c.PageOlderDocsComponent
+      ),
+  },
+  {
     path: 'playground',
-    // component: PagePlaygroundComponent,
     loadComponent: () =>
       import('./pages/page-playground/page-playground.component').then(
         (c) => c.PagePlaygroundComponent

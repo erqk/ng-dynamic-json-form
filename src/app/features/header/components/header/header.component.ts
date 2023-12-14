@@ -38,6 +38,10 @@ export class HeaderComponent {
         route: 'playground',
         label: `${x['MENU']['PLAYGROUND']}`,
       },
+      {
+        route: 'older-docs',
+        label: `${x['MENU']['OLD_DOCS']}`
+      }
     ])
   );
 

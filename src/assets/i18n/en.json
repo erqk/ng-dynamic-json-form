@@ -1,19 +1,20 @@
 {
-  "MENU": {
-    "GETTING_STARTED": "Getting started",
-    "API": "API",
-    "STYLING": "Styling",
-    "PLAYGROUND": "Playground"
+  "FEATURES": {
+    "CSS_GRID": "Flexible input field layout using the CSS grid.",
+    "CUSTOM_COMPONENTS": "Support custom components. Build your own that totally fits you.",
+    "NESTED_LEVELS": "Create FormControl, FormGroup and FormArray, with as many nested level as you wish.",
+    "STATUS_BINDING": "Toggle input visibility or validators based on value of other form control.",
+    "VALIDATORS": "Supports Angular built in validators and custom validators."
   },
   "INTRODUCTION": {
     "BRIEF": "Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!"
   },
-  "FEATURES": {
-    "NESTED_LEVELS": "Create FormControl, FormGroup and FormArray, with as many nested level as you wish.",
-    "VALIDATORS": "Supports Angular built in validators and custom validators.",
-    "STATUS_BINDING": "Toggle input visibility or validators based on value of other form control.",
-    "CSS_GRID": "Flexible input field layout using the CSS grid.",
-    "CUSTOM_COMPONENTS": "Support custom components. Build your own that totally fits you."
+  "MENU": {
+    "API": "API",
+    "GETTING_STARTED": "Getting started",
+    "OLD_DOCS": "Older docs",
+    "PLAYGROUND": "Playground",
+    "STYLING": "Styling"
   },
   "PLAYGROUND": {
     "UI_LIBRARY": {

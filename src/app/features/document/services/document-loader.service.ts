@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   Observable,
@@ -21,11 +22,29 @@ import { DocumentVersionService } from './document-version.service';
   providedIn: 'root',
 })
 export class DocumentLoaderService {
+  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
+  private _router = inject(Router);
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
 
   documentLoading$ = new BehaviorSubject<boolean>(false);
+  oldDocsContent$ = new BehaviorSubject<string>('');
+
+  loadOldDocs$(filePath: string): Observable<string> {
+    const lang = this._languageDataService.language$.value;
+
+    filePath = !filePath
+      ? `assets/docs/index_${lang}.md`
+      : `assets/docs/${filePath}`;
+
+    return this._http
+      .get(`${filePath}?q=${new Date().getTime()}`, { responseType: 'text' })
+      .pipe(
+        tap((x) => this.oldDocsContent$.next(x)),
+        catchError(() => this.loadOldDocs$(''))
+      );
+  }
 
   getDocumentContent$(
     parentDirectory: string,
@@ -40,7 +59,7 @@ export class DocumentLoaderService {
           const filePath = `${basePath}/${x}/${x}_${this._languageDataService.language$.value}.md`;
 
           return this._http
-            .get(filePath, { responseType: 'text' })
+            .get(`${filePath}?q=${new Date().getTime()}`, { responseType: 'text' })
             .pipe(map((x) => ({ index: i, content: x })));
         }),
         toArray(),
@@ -79,6 +98,27 @@ export class DocumentLoaderService {
       table.insertAdjacentElement('beforebegin', tableWrapper);
       table.remove();
     }
+  }
+
+  mapCorrectRouterLink(host?: HTMLElement): void {
+    const links = Array.from((host || document).querySelectorAll('a')).filter(
+      (x) => x.href.startsWith('./')
+    );
+
+    console.log(links, (host || document).querySelectorAll('a'));
+    links.forEach((x) => {
+      const { version } = this._router.parseUrl(this._router.url).queryParams;
+
+      const currentUrlClean = window.location.href.split('?')[0];
+      const path = x.href.replace('./', '');
+      const newQuery = new URLSearchParams({
+        version,
+        path,
+      }).toString();
+      const newHref = `${currentUrlClean}?${newQuery}`;
+
+      this._renderer2.setProperty(x, 'href', newHref);
+    });
   }
 
   private _getTableOfContent$(parentDirectory: string): Observable<string[]> {

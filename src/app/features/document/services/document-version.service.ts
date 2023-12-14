@@ -25,4 +25,8 @@ export class DocumentVersionService {
   get currentVersion(): string {
     return this._currentVersion$.value;
   }
+
+  get prevVersion(): string {
+    return this.versions.sort().reverse()[1];
+  }
 }
