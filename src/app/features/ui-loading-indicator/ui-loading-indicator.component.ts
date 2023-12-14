@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-loading-indicator',
+  selector: 'ui-loading-indicator',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -13,6 +13,6 @@ import { CommonModule } from '@angular/common';
       <div></div>
     </div>
   `,
-  styleUrls: ['./loading-indicator.component.scss'],
+  styleUrls: ['./ui-loading-indicator.component.scss'],
 })
 export class LoadingIndicatorComponent {}

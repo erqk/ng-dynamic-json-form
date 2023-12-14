@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from 'ng-dynamic-json-form';
-import { SourceCodeViewerComponent } from 'src/app/shared/source-code-viewer/source-code-viewer.component';
+import { SourceCodeViewerComponent } from 'src/app/features/source-code-viewer/source-code-viewer.component';
 
 @Component({
   selector: 'app-custom-input',

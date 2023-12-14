@@ -6,9 +6,9 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SideNavigationPaneComponent } from 'src/app/shared/side-navigation-pane/side-navigation-pane.component';
+import { SideNavigationPaneComponent } from 'src/app/features/side-navigation-pane/side-navigation-pane.component';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { TabBarComponent } from 'src/app/shared/tab-bar/tab-bar.component';
+import { UiTabBarComponent } from 'src/app/features/ui-tab-bar/ui-tab-bar.component';
 import { filter, tap } from 'rxjs/operators';
 import { DocumentVersionSelectorComponent } from 'src/app/features/document/components/document-version-selector/document-version-selector.component';
 import { LanguageSelectorComponent } from 'src/app/features/language/components/language-selector/language-selector.component';
@@ -21,7 +21,7 @@ import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-
     CommonModule,
     RouterModule,
     SideNavigationPaneComponent,
-    TabBarComponent,
+    UiTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
     DocumentVersionSelectorComponent,

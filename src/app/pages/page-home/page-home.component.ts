@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { RouterModule } from '@angular/router';
-import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
+import { LoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import { map, switchMap } from 'rxjs/operators';
     CommonModule,
     RouterModule,
     MarkdownModule,
-    ContentWrapperComponent,
+    UiContentWrapperComponent,
     LoadingIndicatorComponent,
   ],
   templateUrl: './page-home.component.html',

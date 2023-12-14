@@ -5,7 +5,7 @@ import { Subject, catchError, combineLatest, switchMap, takeUntil } from 'rxjs';
 import { DocumentOldVersionViewerComponent } from 'src/app/features/document/components/document-old-version-viewer/document-old-version-viewer.component';
 import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
 import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
-import { ContentWrapperComponent } from 'src/app/shared/content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
   selector: 'app-page-older-docs',
@@ -13,7 +13,7 @@ import { ContentWrapperComponent } from 'src/app/shared/content-wrapper/content-
   imports: [
     CommonModule,
     RouterModule,
-    ContentWrapperComponent,
+    UiContentWrapperComponent,
     DocumentOldVersionViewerComponent,
   ],
   templateUrl: './page-older-docs.component.html',

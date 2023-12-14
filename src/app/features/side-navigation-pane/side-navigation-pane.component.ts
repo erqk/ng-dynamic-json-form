@@ -3,14 +3,14 @@ import { Component, ElementRef, HostBinding, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
-import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrapper.component';
 import { SideNaviagionPaneLink } from './side-navigation-pane-link.interface';
 import { SideNavigationPaneService } from './side-navigation-pane.service';
 
 @Component({
   selector: 'app-side-navigation-pane',
   standalone: true,
-  imports: [CommonModule, ContentWrapperComponent],
+  imports: [CommonModule, UiContentWrapperComponent],
   template: `
     <ng-container *ngFor="let item of links">
       <ng-container

@@ -3,7 +3,7 @@ import { Component, HostBinding, Input } from '@angular/core';
 import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
 
 @Component({
-  selector: 'app-content-wrapper',
+  selector: 'ui-content-wrapper',
   standalone: true,
   imports: [CommonModule],
   template: ` <ng-content></ng-content> `,
@@ -12,7 +12,7 @@ import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
     ':host {display: flex; flex-direction: column; width: 100%; margin: 0 auto}',
   ],
 })
-export class ContentWrapperComponent {
+export class UiContentWrapperComponent {
   @Input() maxWidth = '80rem';
   @HostBinding('@fade-up') fadeUp = true;
   @HostBinding('style.max-width')

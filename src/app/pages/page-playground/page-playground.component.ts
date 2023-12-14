@@ -30,7 +30,7 @@ import { CustomInputComponent } from '../../example/components/custom-input/cust
 import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { ThemeService } from '../../features/theme/services/theme.service';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
   selector: 'app-page-playground',
@@ -38,7 +38,7 @@ import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wr
   imports: [
     CommonModule,
     NgDynamicJsonFormComponent,
-    ContentWrapperComponent,
+    UiContentWrapperComponent,
     AngularSplitModule,
     FormsModule,
     MarkdownModule,

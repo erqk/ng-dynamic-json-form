@@ -10,13 +10,13 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Subject, filter, takeUntil, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-tab-bar',
+  selector: 'ui-tab-bar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './tab-bar.component.html',
-  styleUrls: ['./tab-bar.component.scss'],
+  templateUrl: './ui-tab-bar.component.html',
+  styleUrls: ['./ui-tab-bar.component.scss'],
 })
-export class TabBarComponent {
+export class UiTabBarComponent {
   @Input() links: {
     route: string;
     label: string;

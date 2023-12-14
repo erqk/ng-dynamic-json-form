@@ -30,7 +30,7 @@
             *ngTemplateOutlet="formPreviewToolbarTemplate"
           ></ng-container>
 
-          <app-content-wrapper [maxWidth]="'50rem'">
+          <ui-content-wrapper [maxWidth]="'50rem'">
             <div class="p-5">
               <ng-dynamic-json-form
                 [jsonData]="jsonData"
@@ -40,7 +40,7 @@
                 (formGet)="onFormGet($event)"
               ></ng-dynamic-json-form>
             </div>
-          </app-content-wrapper>
+          </ui-content-wrapper>
         </div>
       </div>
     </as-split-area>

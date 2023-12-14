@@ -3,9 +3,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
 import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
-import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
-import { SideNavigationPaneService } from '../../shared/side-navigation-pane/side-navigation-pane.service';
+import { LoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
+import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
+import { SideNavigationPaneService } from '../../features/side-navigation-pane/side-navigation-pane.service';
 
 @Component({
   selector: 'app-page-api',
@@ -14,7 +14,7 @@ import { SideNavigationPaneService } from '../../shared/side-navigation-pane/sid
     CommonModule,
     HttpClientModule,
     MarkdownModule,
-    ContentWrapperComponent,
+    UiContentWrapperComponent,
     LoadingIndicatorComponent,
   ],
   templateUrl: './page-api.component.html',

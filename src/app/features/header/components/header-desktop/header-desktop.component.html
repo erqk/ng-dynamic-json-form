@@ -1,15 +1,15 @@
 <div class="header">
-  <app-content-wrapper class="content-wrapper" [maxWidth]="'100%'">
+  <ui-content-wrapper class="content-wrapper" [maxWidth]="'100%'">
     <a [routerLink]="'/'" class="logo">
       <img src="assets/logo.svg" alt="" />
     </a>
 
-    <app-tab-bar class="tab-bar" [links]="links"></app-tab-bar>
+    <ui-tab-bar class="tab-bar" [links]="links"></ui-tab-bar>
 
     <div class="settings">
       <app-theme-switcher></app-theme-switcher>
       <app-language-selector></app-language-selector>
       <app-document-version-selector></app-document-version-selector>
     </div>
-  </app-content-wrapper>
+  </ui-content-wrapper>
 </div>

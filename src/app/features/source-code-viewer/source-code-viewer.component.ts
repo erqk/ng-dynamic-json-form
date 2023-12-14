@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
-import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
   selector: 'app-source-code-viewer',
   standalone: true,
-  imports: [CommonModule, MarkdownModule, ContentWrapperComponent],
+  imports: [CommonModule, MarkdownModule, UiContentWrapperComponent],
   templateUrl: './source-code-viewer.component.html',
   styleUrls: ['./source-code-viewer.component.scss'],
 })

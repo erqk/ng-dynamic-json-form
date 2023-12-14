@@ -11,18 +11,18 @@
   </button>
 </div>
 
-<!-- <app-content-wrapper
+<!-- <ui-content-wrapper
   *ngIf="features$ | async as features; else loadingTemplate"
 >
   <markdown [data]="features"></markdown>
-</app-content-wrapper>
+</ui-content-wrapper>
 
 <ng-template #loadingTemplate>
-  <app-loading-indicator #loadingIndicator></app-loading-indicator>
+  <ui-loading-indicator #loadingIndicator></ui-loading-indicator>
 </ng-template> -->
 
 <ng-container *ngIf="features$ | async as features">
-  <app-content-wrapper>
+  <ui-content-wrapper>
     <div class="feature-section">
       <div class="illustration">
         <div style="height: 100%"></div>
@@ -118,5 +118,5 @@
       </div>
       <p>{{ features.CUSTOM_COMPONENTS }}</p>
     </div>
-  </app-content-wrapper>
+  </ui-content-wrapper>
 </ng-container>

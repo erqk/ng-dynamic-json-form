@@ -1,5 +1,5 @@
 <ng-container *ngIf="content$ | async as content">
-  <app-content-wrapper>
+  <ui-content-wrapper>
     <markdown [data]="content" (ready)="onReady()"></markdown>
-  </app-content-wrapper>
+  </ui-content-wrapper>
 </ng-container>
