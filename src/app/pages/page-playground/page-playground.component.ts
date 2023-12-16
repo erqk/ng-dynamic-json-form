@@ -1,10 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-  FormsModule,
-  UntypedFormArray,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormsModule, UntypedFormGroup } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import {
   FormControlConfig,
@@ -171,13 +167,18 @@ export class PagePlaygroundComponent {
       this._fallbackJsonData;
 
     try {
-      const data =
-        typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+      if (typeof jsonData === 'string') {
+        return JSON.parse(jsonData);
+      }
 
-      return Array.isArray(data) ? { json: data } : data;
-    } catch (e) {}
+      if (Array.isArray(jsonData)) {
+        return { json: jsonData };
+      }
 
-    return this._fallbackJsonData;
+      return jsonData;
+    } catch {
+      return this._fallbackJsonData;
+    }
   }
 
   private set _jsonEditorData(data: any) {
@@ -216,23 +217,15 @@ export class PagePlaygroundComponent {
         },
       },
     });
-
-    // this._jsonEditorData = content;
   }
 
   /**To get the consistent result of jsoneditor */
   private _getContent(input: Content | undefined): Content {
     let jsonContent = null;
 
-    if (!!input && 'json' in input && input.json) {
-      jsonContent = input.json;
-    }
-
-    if (!!input && 'text' in input && input.text) {
-      try {
-        jsonContent = JSON.parse(input.text);
-      } catch (e) {}
-    }
+    if (!input) return { json: jsonContent };
+    if ('json' in input) jsonContent = input['json'];
+    if ('text' in input) jsonContent = JSON.parse(input['text'] || 'null');
 
     return { json: jsonContent };
   }
