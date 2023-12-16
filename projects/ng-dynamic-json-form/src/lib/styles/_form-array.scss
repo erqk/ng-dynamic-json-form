@@ -1,20 +1,34 @@
 @mixin header-buttons {
+  --line-width: var(--input-border-width);
+  --line-color: var(--color-primary);
+
   display: flex;
 
   [class*="btn-"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    font-size: 1em;
+    width: 2.25em;
+    height: 2.25em;
     padding: 0;
-    background-color: var(--color-primary);
+    background-color: transparent;
+    border-radius: 0.5em;
     outline: none;
-    border: none;
-    border-radius: 0.5rem;
 
     + [class*="btn-"] {
-      margin-left: 0.5rem;
+      margin-left: 0.5em;
+    }
+
+    &:hover {
+      --line-color: var(--color-primary);
+
+      background-color: var(--color-primary);
+      box-shadow: 0 0.15em 0.65em rgba(0, 0, 0, 0.35);
+
+      span {
+        --line-color: white;
+      }
     }
 
     &.btn-remove {
@@ -26,9 +40,6 @@
     }
 
     span {
-      --lineWidth: 3px;
-      --lineColor: white;
-
       position: relative;
       width: 55%;
       height: 55%;
@@ -41,17 +52,17 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: var(--lineColor);
-        border-radius: 100rem;
+        background-color: var(--line-color);
+        border-radius: 100em;
       }
 
       &::before {
         width: 100%;
-        height: var(--lineWidth);
+        height: var(--line-width);
       }
 
       &::after {
-        width: var(--lineWidth);
+        width: var(--line-width);
         height: 100%;
       }
     }
