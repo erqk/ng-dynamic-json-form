@@ -1,16 +1,27 @@
 <ng-container *ngIf="!jsonData"> Please pass in your JSON string </ng-container>
-<ng-container *ngIf="!!config.length && !!form">
-  <form action="POST" [formGroup]="form">
-    <ng-container
-      *ngTemplateOutlet="
-        formGroupTemplate;
-        context: {
-          parentForm: form,
-          controlConfigs: config
-        }
-      "
-    ></ng-container>
-  </form>
+
+<ng-container *ngIf="!!configValidateErrors?.length">
+  <div class="config-validation-error">
+    <p>Config validation failed. Please check.</p>
+    <ng-container *ngFor="let error of configValidateErrors">
+      <p>
+        {{ error | json }}
+      </p>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!!config?.length && !!form">
+  <ng-container
+    *ngTemplateOutlet="
+      formGroupTemplate;
+      context: {
+        parentForm: form,
+        controlConfigs: config
+      }
+    "
+    [formGroup]="form"
+  ></ng-container>
 </ng-container>
 
 <ng-template

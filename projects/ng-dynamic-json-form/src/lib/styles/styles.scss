@@ -5,6 +5,7 @@
 .ng-dynamic-json-form {
   --color-primary: #3b82f6;
   --color-primary-lighter: #bfdbfe;
+  --color-error: #ff4747;
 
   --font-size-title: 1.2rem;
   --font-size-subtitle: 1rem;
@@ -116,19 +117,24 @@
       row-gap: var(--options-row-gap);
     }
 
-    @include option-button.option-button;
-    @include option-button.option-button-wrapper;
+    @include option-button.option-button();
+    @include option-button.option-button-wrapper();
   }
 
-  @include form-array.form-array-container;
+  @include form-array.form-array-container();
 
   // ==================== Errors ======================
+  .config-validation-error {
+    color: var(--color-error);
+    white-space: pre-wrap;
+  }
+
   .errors-container {
     font-size: 0.95rem;
 
     .error {
       margin-top: 0.35rem;
-      color: #ff4747;
+      color: var(--color-error);
     }
   }
 
