@@ -18,9 +18,7 @@ export const FORM_CONFIG_BASIC_INFO_EN: FormControlConfig = {
       conditions: [
         {
           name: 'hidden',
-          control: 'basicInfo.showEmail',
-          controlValue: false,
-          operator: '===',
+          operation: ['basicInfo.showEmail', '===', false],
         },
       ],
     },

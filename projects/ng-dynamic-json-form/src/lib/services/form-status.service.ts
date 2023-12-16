@@ -224,7 +224,11 @@ export class FormStatusService {
     if (!conditions.length) return [];
 
     return conditions.reduce((acc, curr) => {
-      const { control, groupWith = [] } = curr;
+      const {
+        operation: [control, _, __],
+        groupWith = [],
+      } = curr;
+
       const _control = form.get(control);
 
       if (!!_control && !acc.includes(_control)) {
@@ -294,15 +298,19 @@ export class FormStatusService {
     conditions: FormControlCondition[]
   ): boolean {
     const evaluate = (input: FormControlCondition): boolean => {
-      const { control, groupOperator, groupWith } = input;
+      const {
+        operation: [control, operator, controlValue],
+        groupOperator,
+        groupWith,
+      } = input;
       const _control = form.get(control);
 
       if (!_control) return false;
 
       const result = this._booleanResult(
         _control.value,
-        input.controlValue,
-        input.operator
+        controlValue,
+        operator
       );
 
       if (!groupOperator || !groupWith) {
@@ -330,7 +338,7 @@ export class FormStatusService {
   private _booleanResult(
     left: any,
     right: any,
-    operator: FormControlCondition['operator']
+    operator: FormControlCondition['operation']['1']
   ): boolean {
     switch (operator) {
       case '===':
