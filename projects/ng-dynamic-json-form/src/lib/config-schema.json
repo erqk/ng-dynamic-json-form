@@ -13,7 +13,6 @@
             "type": "string"
           },
           "conditions": {
-            "type": "array",
             "$ref": "#/definitions/conditionConfig"
           },
           "children": {
@@ -123,10 +122,7 @@
             "enum": ["||", "&&"]
           },
           "groupWith": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/conditionConfig"
-            }
+            "$ref": "#/definitions/conditionConfig"
           }
         }
       }
