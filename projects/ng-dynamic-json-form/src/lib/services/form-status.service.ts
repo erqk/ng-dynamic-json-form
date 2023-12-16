@@ -59,10 +59,10 @@ export class FormStatusService {
     if (!configs.length) return of(null);
 
     const conditionsExtracted = this._extractConditions(form, configs);
-
     const allControlChanges$ = conditionsExtracted.map((data) =>
       from(data.controlsToListen).pipe(
         mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
+        debounceTime(0),
         tap(() => this._updateControlStatus(form, data))
       )
     );
