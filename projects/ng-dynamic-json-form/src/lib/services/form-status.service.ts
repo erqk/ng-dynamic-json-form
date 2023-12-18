@@ -38,7 +38,7 @@ export class FormStatusService {
     return form.valueChanges.pipe(
       startWith(form.value),
       debounceTime(0),
-      tap((x) => {
+      tap(() => {
         const errors = this._getFormErrors(form);
         form.setErrors(errors);
       })
@@ -59,6 +59,7 @@ export class FormStatusService {
     const allControlChanges$ = conditionsExtracted.map((conditionData) =>
       from(conditionData.controlsToListen).pipe(
         mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
+        debounceTime(0),
         tap(() => this._updateControlStatus(form, conditionData))
       )
     );
@@ -117,8 +118,17 @@ export class FormStatusService {
   ): void {
     const conditions = data.conditions;
     const control = data.targetControl;
-    const validatorsAndConditions = Object.values(ValidatorAndConditionTypes);
-    
+    const conditionsGrouped = conditions.reduce((acc, curr) => {
+      const group = acc.find((child) =>
+        child.some((x) => x.name === curr.name)
+      );
+
+      group ? group.push(curr) : acc.push([curr]);
+      return acc;
+    }, [] as FormControlCondition[][]);
+
+    if (!conditionsGrouped.length) return;
+
     const toggleHiddenState = (hidden: boolean) => {
       this._targetElement$(data.targetControlPath).then((x) => {
         if (!x) return;
@@ -128,28 +138,27 @@ export class FormStatusService {
       });
     };
 
-    for (const key of validatorsAndConditions) {
-      // Pick only first level condition type, to prevent complexity goes up
-      const targetConditions = conditions.filter((x) => x.name === key);
-      const bool = !targetConditions.length
-        ? undefined
-        : this._getConditionResult(form, targetConditions);
+    for (const group of conditionsGrouped) {
+      const name = group[0].name;
+      const conditionResult = this._getConditionResult(form, group);
 
-      if (bool === undefined) {
-        continue;
-      }
-
-      switch (key) {
+      if (!name) continue;
+      switch (name) {
         case ValidatorAndConditionTypes.HIDDEN:
-          toggleHiddenState(bool);
+          toggleHiddenState(conditionResult);
           break;
 
         case ValidatorAndConditionTypes.DISABLED:
-          bool ? control.disable() : control.enable();
+          conditionResult ? control.disable() : control.enable();
           break;
 
         default:
-          this._toggleValidators(control, bool, key, data.validators);
+          this._toggleValidators(
+            control,
+            conditionResult,
+            name,
+            data.validators
+          );
           break;
       }
     }
@@ -261,11 +270,13 @@ export class FormStatusService {
       }
 
       if (hasChildren) {
-        return this._extractConditions(
-          form,
-          item.children!,
-          targetControlPath,
-          result
+        result.push(
+          ...this._extractConditions(
+            form,
+            item.children!,
+            targetControlPath,
+            result
+          )
         );
       }
     }

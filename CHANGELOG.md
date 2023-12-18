@@ -1,3 +1,9 @@
+# 3.4.1
+
+### Fix
+
+- Conditions extracted is not correct
+
 # 3.4.0
 
 ### Feature
