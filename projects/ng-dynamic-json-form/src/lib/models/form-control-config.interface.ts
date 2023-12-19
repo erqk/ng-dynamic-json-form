@@ -1,8 +1,8 @@
 import { FormControlExtra } from './extra/form-control-extra.interface';
 import { FormArrayConfig } from './form-array-config.interface';
-import { FormControlCondition } from './form-control-condition.interface';
+import { FormControlCondition } from './form-control-condition.type';
 import { FormControlOptions } from './form-control-options.interface';
-import { FormControlType } from './form-control-type.interface';
+import { FormControlType } from './form-control-type.type';
 import { ValidatorConfig } from './form-validator-config.interface';
 import { NgxMaskConfig } from './ngx-mask-config.interface';
 
@@ -10,18 +10,21 @@ export interface FormControlConfig {
   formControlName: string;
 
   /**Change state or toggle validators when condition met */
-  conditions?: FormControlCondition[];
+  conditions?: FormControlCondition;
 
-  /**Make this control as a FormGroup */
+  /**Provide to make this control as a FormGroup */
   children?: FormControlConfig[];
 
-  /**Custom component to use on this control */
+  /**Key of the custom component to use on this control */
   customComponent?: string;
 
   /**CSS Grid */
   cssGrid?: {
+    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row */
     gridRow?: string;
+    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column */
     gridColumn?: string;
+    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns */
     gridTemplateColumns?: string;
   };
 

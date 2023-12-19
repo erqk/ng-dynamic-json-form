@@ -1,9 +1,9 @@
 import { RendererFactory2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControlGroupCondition } from '../models';
 import { FormStatusService } from './form-status.service';
 import { FormValidatorService } from './form-validator.service';
-import { FormControlCondition } from '../models';
 
 const formGroup = new FormGroup({
   address: new FormGroup({
@@ -32,56 +32,26 @@ const formGroup = new FormGroup({
 describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () => {
   let service: FormStatusService;
 
-  const conditionsA: FormControlCondition[] = [
-    {
-      name: 'required',
-      control: 'basicInfo.age',
-      controlValue: 20,
-      operator: '>',
-      groupOperator: '&&',
-      groupWith: [
-        {
-          control: 'basicInfo.name',
-          controlValue: 'Andrew',
-          operator: '===',
-        },
-        {
-          control: 'basicInfo.showEmail',
-          controlValue: false,
-          operator: '===',
-          groupOperator: '||',
-          groupWith: [
-            {
-              control: 'basicInfo.gender',
-              controlValue: '0',
-              operator: '===',
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  const conditionsA: FormControlGroupCondition = {
+    '&&': [
+      ['basicInfo.age', '>', 20],
+      ['basicInfo.name', '===', 'Andrew'],
+      {
+        '||': [
+          ['basicInfo.showEmail', '===', false],
+          ['basicInfo.gender', '===', '0'],
+        ],
+      },
+    ],
+  };
 
-  const conditionsB: FormControlCondition[] = [
-    {
-      name: 'disabled',
-      control: 'basicInfo.age',
-      controlValue: '50',
-      operator: '>',
-    },
-    {
-      name: 'required',
-      control: 'basicInfo.age',
-      controlValue: '20',
-      operator: '>',
-    },
-    {
-      name: 'required',
-      control: 'basicInfo.showEmail',
-      controlValue: true,
-      operator: '===',
-    },
-  ];
+  const conditionsB: FormControlGroupCondition = {
+    '||': [
+      ['basicInfo.age', '>', 50],
+      ['basicInfo.age', '>', 20],
+      ['basicInfo.showEmail', '===', true],
+    ],
+  };
 
   beforeEach(() => {
     const renderFactory2Spy = jasmine.createSpyObj('RendererFactory2', [
@@ -120,5 +90,5 @@ describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () 
 
   it(`(age > 20 || showEmail === true) => false`, () => {
     expect(service['_getConditionsResult'](formGroup, conditionsB)).toBe(false);
-  })
+  });
 });

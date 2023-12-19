@@ -14,27 +14,20 @@ export const PLAYGROUND_CONFIG_MULTI_CONDITION_EN: FormControlConfig[] = [
         name: 'required',
       },
     ],
-    conditions: [
-      {
-        name: 'required',
-        operation: ['basicInfo.age', '>', 20],
-        groupOperator: '&&',
-        groupWith: [
+    conditions: {
+      required: {
+        '&&': [
+          ['basicInfo.age', '>', 20],
+          ['basicInfo.name', '===', 'Andrew'],
           {
-            operation: ['basicInfo.name', '===', 'Andrew'],
-          },
-          {
-            operation: ['basicInfo.showEmail', '===', false],
-            groupOperator: '||',
-            groupWith: [
-              {
-                operation: ['basicInfo.gender', '===', '0'],
-              },
+            '||': [
+              ['basicInfo.showEmail', '===', false],
+              ['basicInfo.gender', '===', '0'],
             ],
           },
         ],
       },
-    ],
+    },
   },
   FORM_CONFIG_BASIC_INFO_EN,
 ];

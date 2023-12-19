@@ -15,12 +15,11 @@ export const FORM_CONFIG_BASIC_INFO_EN: FormControlConfig = {
     FORM_CONFIG_SWITCH_SHOW_EMAIL_EN,
     {
       ...FORM_CONFIG_EMAIL_EN,
-      conditions: [
-        {
-          name: 'hidden',
-          operation: ['basicInfo.showEmail', '===', false],
+      conditions: {
+        hidden: {
+          '&&': [['basicInfo.showEmail', '===', false]],
         },
-      ],
+      },
     },
   ],
 };

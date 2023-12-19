@@ -12,15 +12,17 @@ import {
   debounceTime,
   filter,
   from,
-  merge,
   mergeMap,
   of,
   startWith,
   tap,
 } from 'rxjs';
 import {
-  FormControlCondition,
+  FormControlConditionOperator,
+  FormControlConditionType,
   FormControlConfig,
+  FormControlGroupCondition,
+  FormControlIfCondition,
   ValidatorConfig,
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
@@ -31,11 +33,11 @@ import { FormValidatorService } from './form-validator.service';
 export class FormStatusService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
+  private _formValidatorService = inject(FormValidatorService);
+  private _controlStatusUpdating = false;
 
-  /**To differentiate the host element if there is multiple ng-dynamic-json-form */
+  /**To differentiate the host element from multiple ng-dynamic-json-form instances */
   hostIndex = 0;
-
-  constructor(private _formValidatorService: FormValidatorService) {}
 
   formErrorEvent$(form: FormGroup): Observable<any> {
     return form.statusChanges.pipe(
@@ -58,16 +60,19 @@ export class FormStatusService {
   ): Observable<any> {
     if (!configs.length) return of(null);
 
+    const controls = this._getControlsToListen(form, configs);
     const conditionsExtracted = this._extractConditions(form, configs);
-    const allControlChanges$ = conditionsExtracted.map((data) =>
-      from(data.controlsToListen).pipe(
-        mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
-        debounceTime(0),
-        tap(() => this._updateControlStatus(form, data))
-      )
-    );
 
-    return merge(...allControlChanges$);
+    return from(controls).pipe(
+      mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
+      filter(() => !this._controlStatusUpdating),
+      debounceTime(0),
+      tap(() => {
+        this._controlStatusUpdating = true;
+        this._updateControlStatus(form, conditionsExtracted);
+        this._controlStatusUpdating = false;
+      })
+    );
   }
 
   /**Get all the errors under this `FormGroup` following the hierachy
@@ -117,43 +122,39 @@ export class FormStatusService {
 
   private _updateControlStatus(
     form: FormGroup,
-    data: ConditionExtracted
+    data: ConditionExtracted[]
   ): void {
-    const { conditions, targetControl, validators } = data;
-    const conditionsGrouped = conditions.reduce((acc, curr) => {
-      const group = acc.find((child) =>
-        child.some((x) => x.name === curr.name)
-      );
+    for (const item of data) {
+      const { conditions, targetControl, validators } = item;
+      const { disabled, hidden, ...rest } = conditions;
 
-      group ? group.push(curr) : acc.push([curr]);
-      return acc;
-    }, [] as FormControlCondition[][]);
+      if (disabled) {
+        const bool = this._getConditionsResult(form, disabled);
+        if (bool === undefined) continue;
 
-    if (!conditionsGrouped.length) return;
+        bool ? targetControl.disable() : targetControl.enable();
+      }
 
-    for (const group of conditionsGrouped) {
-      const name = group[0].name;
-      const conditionResult = this._getConditionsResult(form, group);
+      if (hidden) {
+        const bool = this._getConditionsResult(form, hidden);
+        if (bool === undefined) continue;
 
-      if (!name) continue;
-      switch (name) {
-        case 'hidden':
-          this._toggleElementVisibility(conditionResult, data);
-          continue;
+        this._toggleElementVisibility(bool, item);
+      }
 
-        case 'disabled':
-          conditionResult ? targetControl.disable() : targetControl.enable();
-          targetControl.updateValueAndValidity();
-          break;
+      if (rest) {
+        const boolResults = Object.keys(rest).reduce((acc, key) => {
+          const group = rest[key];
+          if (!group) return acc;
 
-        default:
-          this._toggleValidators(
-            targetControl,
-            conditionResult,
-            name,
-            validators
-          );
-          break;
+          const bool = this._getConditionsResult(form, group);
+          if (bool === undefined) return acc;
+
+          acc[key] = bool;
+          return acc;
+        }, {} as { [key in FormControlConditionType]?: boolean });
+
+        this._toggleValidators(targetControl, boolResults, validators);
       }
     }
   }
@@ -183,14 +184,16 @@ export class FormStatusService {
     hidden: boolean,
     data: ConditionExtracted
   ): void {
-    const control = data.targetControl;
-    this._getTargetEl$(data.targetControlPath)
+    const { targetControl, targetControlPath } = data;
+
+    this._getTargetEl$(targetControlPath)
       .pipe(
-        filter((x) => !!x),
         tap((x) => {
+          if (!x) return;
+          this._controlStatusUpdating = true;
           this._renderer2.setStyle(x, 'display', hidden ? 'none' : null);
-          hidden ? control.disable() : control.enable();
-          control.updateValueAndValidity();
+          hidden ? targetControl.disable() : targetControl.enable();
+          this._controlStatusUpdating = false;
         })
       )
       .subscribe();
@@ -198,13 +201,17 @@ export class FormStatusService {
 
   private _toggleValidators(
     control: AbstractControl,
-    bool: boolean,
-    type: string,
+    boolResults: { [key in FormControlConditionType]?: boolean },
     validatorConfig: ValidatorConfig[]
   ): void {
-    const configFilterd = validatorConfig.filter((x) =>
-      bool ? true : x.name !== type
-    );
+    if (!Object.keys(boolResults).length) return;
+
+    const configFilterd = validatorConfig.filter(({ name, value }) => {
+      const bool = name === 'custom' ? boolResults[value] : boolResults[name];
+      // Let `undefined` pass the filter because this validator it's not under control of conditions.
+      return bool === undefined ? true : bool;
+    });
+    
     const validators = this._formValidatorService.getValidators(configFilterd);
 
     control.setValidators(validators);
@@ -212,33 +219,44 @@ export class FormStatusService {
   }
 
   /**Get all the `AbstractControl` to listen from conditions
-   *
-   * @example
-   * [...controls from A conditions]
    */
   private _getControlsToListen(
     form: FormGroup,
-    conditions: FormControlCondition[],
-    path: AbstractControl[] = []
+    configs: FormControlConfig[] = [],
+    result: AbstractControl[] = []
   ): AbstractControl[] {
-    if (!conditions.length) return [];
+    if (!configs.length) return [];
 
-    return conditions.reduce((acc, curr) => {
-      const {
-        operation: [control, _, __],
-        groupWith = [],
-      } = curr;
+    for (const item of configs) {
+      const { conditions, children = [] } = item;
 
-      const _control = form.get(control);
+      if (conditions) {
+        const controls = Object.values(conditions)
+          .filter((x) => !!x)
+          .flatMap((x) => this._getFlattenIfConditions(x!))
+          .map((x) => form.get(x[0]))
+          .filter((x) => !!x) as AbstractControl[];
 
-      if (!!_control && !acc.includes(_control)) {
-        acc.push(_control);
+        result.push(...controls);
       }
 
-      return !!groupWith.length
-        ? this._getControlsToListen(form, groupWith, acc)
-        : acc;
-    }, path);
+      if (children.length > 0) {
+        result.push(...this._getControlsToListen(form, item.children, result));
+      }
+    }
+
+    return [...new Set(result)];
+  }
+
+  private _getFlattenIfConditions(
+    input: FormControlGroupCondition
+  ): FormControlIfCondition[] {
+    const conditions = input['&&'] || input['||'] || [];
+    const result = conditions
+      .map((x) => (!Array.isArray(x) ? this._getFlattenIfConditions(x) : [x]))
+      .flat();
+
+    return result;
   }
 
   /**Extract all the conditions from JSON data and flatten them,
@@ -248,14 +266,12 @@ export class FormStatusService {
     form: FormGroup,
     configs: FormControlConfig[],
     prevControlPath = '',
-    accumulated?: ConditionExtracted[]
+    result: ConditionExtracted[] = []
   ): ConditionExtracted[] {
-    const result = (accumulated || []).concat();
-
     for (const item of configs) {
       const {
         formControlName,
-        conditions = [],
+        conditions,
         children = [],
         validators = [],
       } = item;
@@ -264,81 +280,87 @@ export class FormStatusService {
         ? `${prevControlPath}.${formControlName}`
         : formControlName;
 
-      const targetControl = form.get(targetControlPath);
-      const controlsToListen = this._getControlsToListen(form, conditions);
+      if (conditions) {
+        const targetControl = form.get(targetControlPath);
+        if (!targetControl) continue;
 
-      if (!!conditions.length && !!targetControl) {
         result.push({
           targetControl,
           targetControlPath,
-          controlsToListen,
           conditions,
           validators,
         });
       }
 
-      if (!!children.length) {
-        return this._extractConditions(
+      if (children.length > 0) {
+        const childConditions = this._extractConditions(
           form,
           children,
           targetControlPath,
           result
-        );
+        ).filter(({ targetControlPath: left }) => {
+          return !result.some(({ targetControlPath: right }) => left === right);
+        });
+
+        result.push(...childConditions);
       }
     }
 
     return result;
   }
 
-  /**Evaluate the boolean result from the condition given.
-   * Solved by ChatGPT (with some modification)
-   */
+  /**Evaluate the boolean result from the condition given. */
   private _getConditionsResult(
     form: FormGroup,
-    conditions: FormControlCondition[]
-  ): boolean {
-    const evaluate = (input: FormControlCondition): boolean => {
-      const {
-        operation: [control, operator, controlValue],
-        groupOperator,
-        groupWith,
-      } = input;
-      const _control = form.get(control);
+    conditions: FormControlGroupCondition
+  ): boolean | undefined {
+    let result: boolean | undefined = undefined;
+    const _conditions = conditions['&&'] || conditions['||'] || [];
+    if (!_conditions.length) return result;
 
-      if (!_control) return false;
+    const groupOperator = Object.keys(conditions)[0];
 
-      const result = this._booleanResult(
-        _control.value,
-        controlValue,
-        operator
-      );
+    const ifConditions = _conditions.filter((x) =>
+      Array.isArray(x)
+    ) as FormControlIfCondition[];
 
-      if (!groupOperator || !groupWith) {
-        return result;
-      }
+    const childConditions = _conditions.find((x) => '&&' in x || '||' in x) as
+      | FormControlGroupCondition
+      | undefined;
 
-      const groupResults = groupWith.map(evaluate);
+    const childResult = !childConditions
+      ? result
+      : this._getConditionsResult(form, childConditions);
 
-      switch (groupOperator) {
-        case '&&':
-          return result && groupResults.every((x) => x);
+    const predicateFn = (value: FormControlIfCondition) => {
+      const [controlPath, operator, controlValue] = value;
+      const control = form.get(controlPath);
 
-        case '||':
-          return result || groupResults.some((x) => x);
-
-        default:
-          throw new Error(`Unknown group operator ${groupOperator}`);
-      }
+      if (!control) return undefined;
+      return this._booleanResult(control.value, controlValue, operator);
     };
 
-    // Evaluate all the conditions on the first level with OR operator.
-    return conditions.map(evaluate).some((x) => x);
+    switch (groupOperator) {
+      case '&&':
+        result = [ifConditions.every(predicateFn), childResult]
+          .filter((x) => x !== undefined)
+          .every((x) => x);
+        break;
+
+      case '||':
+        result = [ifConditions.some(predicateFn), childResult]
+          .filter((x) => x !== undefined)
+          .some((x) => x);
+        break;
+    }
+
+    return result;
   }
 
   private _booleanResult(
     left: any,
     right: any,
-    operator: FormControlCondition['operation']['1']
+    operator: FormControlConditionOperator
   ): boolean {
     switch (operator) {
       case '===':

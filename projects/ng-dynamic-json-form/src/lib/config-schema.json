@@ -100,32 +100,48 @@
       },
       "required": ["templateLabel", "template"]
     },
-    "conditionConfig": {
+    "conditionIfConfig": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "operation": {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              { "type": "string" },
-              { "enum": ["===", "!==", ">=", ">", "<=", "<"] },
-              {}
+      "minItems": 3,
+      "maxItems": 3,
+      "items": [
+        { "type": "string" },
+        { "enum": ["===", "!==", ">=", ">", "<=", "<"] },
+        {}
+      ]
+    },
+    "conditionGroupConfig": {
+      "type": "object",
+      "properties": {
+        "&&": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
             ]
-          },
-          "groupOperator": {
-            "enum": ["||", "&&"]
-          },
-          "groupWith": {
-            "$ref": "#/definitions/conditionConfig"
+          }
+        },
+        "||": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
           }
         }
-      }
+      },
+      "additionalProperties": false
+    },
+    "conditionConfig": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/conditionGroupConfig"
+        }
+      },
+      "additionalProperties": false
     },
     "labelPositionConfig": {
       "enum": ["after", "before"],

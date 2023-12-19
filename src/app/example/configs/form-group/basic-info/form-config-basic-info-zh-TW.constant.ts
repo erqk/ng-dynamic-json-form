@@ -15,12 +15,11 @@ export const FORM_CONFIG_BASIC_INFO_ZHTW: FormControlConfig = {
     FORM_CONFIG_SWITCH_SHOW_EMAIL_ZHTW,
     {
       ...FORM_CONFIG_EMAIL_ZHTW,
-      conditions: [
-        {
-          name: 'hidden',
-          operation: ['basicInfo.showEmail', '===', false],
+      conditions: {
+        hidden: {
+          '&&': [['basicInfo.showEmail', '===', false]],
         },
-      ],
+      },
     },
   ],
 };

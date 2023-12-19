@@ -19,4 +19,12 @@ export const FORM_CONFIG_TEXT_NAME_ZHTW: FormControlConfig = {
       value: '\\D+',
     },
   ],
+  conditions: {
+    required: {
+      '||': [
+        ['basicInfo.showEmail', '===', true],
+        ['basicInfo.age', '>', 20],
+      ],
+    },
+  },
 };

@@ -23,14 +23,12 @@ export const FORM_CONFIG_TEXT_NAME_EN: FormControlConfig = {
       value: 'firstUppercase',
     },
   ],
-  conditions: [
-    {
-      name: 'required',
-      operation: ['basicInfo.showEmail', '===', true],
+  conditions: {
+    required: {
+      '||': [
+        ['basicInfo.showEmail', '===', true],
+        ['basicInfo.age', '>', 20],
+      ],
     },
-    {
-      name: 'required',
-      operation: ['basicInfo.age', '>', 20],
-    },
-  ],
+  },
 };
