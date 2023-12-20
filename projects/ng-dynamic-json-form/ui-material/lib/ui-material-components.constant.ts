@@ -10,16 +10,16 @@ import { UiMaterialTextareaComponent } from './ui-material-textarea/ui-material-
 import { UiMaterialDateComponent } from './ui-material-date/ui-material-date.component';
 
 export const UI_MATERIAL_COMPONENTS: UiComponents = {
-  checkbox: { type: 'material', component: UiMaterialCheckboxComponent },
-  date: { type: 'material', component: UiMaterialDateComponent },
-  dropdown: { type: 'material', component: UiMaterialDropdownComponent },
-  password: { type: 'material', component: UiMaterialInputComponent },
-  number: { type: 'material', component: UiMaterialInputComponent },
-  email: { type: 'material', component: UiMaterialInputComponent },
-  radio: { type: 'material', component: UiMaterialRadioComponent },
-  range: { type: 'material', component: UiMaterialRangeComponent },
-  switch: { type: 'material', component: UiMaterialSwitchComponent },
-  text: { type: 'material', component: UiMaterialInputComponent },
-  textMask: { type: 'material', component: UiMaterialInputMaskComponent },
-  textarea: { type: 'material', component: UiMaterialTextareaComponent },
+  checkbox: UiMaterialCheckboxComponent,
+  date: UiMaterialDateComponent,
+  dropdown: UiMaterialDropdownComponent,
+  password: UiMaterialInputComponent,
+  number: UiMaterialInputComponent,
+  email: UiMaterialInputComponent,
+  radio: UiMaterialRadioComponent,
+  range: UiMaterialRangeComponent,
+  switch: UiMaterialSwitchComponent,
+  text: UiMaterialInputComponent,
+  textMask: UiMaterialInputMaskComponent,
+  textarea: UiMaterialTextareaComponent,
 };

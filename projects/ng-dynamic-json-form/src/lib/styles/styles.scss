@@ -146,4 +146,9 @@
   .sr-only {
     @include utilities.sr-only();
   }
+
+  // ================= Others =========================
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }

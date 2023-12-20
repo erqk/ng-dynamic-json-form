@@ -6,7 +6,6 @@ import {
   ViewChild,
   ViewContainerRef,
   forwardRef,
-  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -19,8 +18,7 @@ import {
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
 import { FormControlConfig } from '../../models';
-import { UiComponents } from '../../models/ui-components-type.type';
-import { ErrorMessageService } from '../../services';
+import { UiComponents } from '../../models/ui-components.type';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
@@ -47,11 +45,9 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
-  private _errorMessageService = inject(ErrorMessageService);
   private _controlComponentRef?: CustomControlComponent;
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
-
   private readonly _pendingValue$ = new BehaviorSubject<any>('');
 
   @Input() control: AbstractControl | null = null;
@@ -61,8 +57,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;
-
-  isMaterial = false;
 
   ngOnChanges(): void {
     this._injectComponent();
@@ -109,13 +103,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _injectComponent(): void {
     const inputComponent =
       this.customComponent ||
-      this.uiComponents[this._inputType]?.component ||
-      UI_BASIC_COMPONENTS[this._inputType]?.component ||
+      this.uiComponents[this._inputType] ||
+      UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
-
-    if (this.uiComponents[this._inputType]) {
-      this.isMaterial = this.uiComponents[this._inputType]?.type === 'material';
-    }
 
     window.setTimeout(() => {
       this.componentAnchor.clear();
@@ -126,6 +116,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       componentRef.instance?.registerOnChange(this._onChange);
       componentRef.instance?.registerOnTouched(this._onTouched);
       componentRef.instance?.writeValue(this._pendingValue$.value);
+      componentRef.instance.listenErrors(this.control);
     }, 0);
   }
 }

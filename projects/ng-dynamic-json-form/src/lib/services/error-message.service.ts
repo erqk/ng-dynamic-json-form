@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { ValidationErrors } from '@angular/forms';
 import { ValidatorConfig } from '../models';
 import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 
 @Injectable()
 export class ErrorMessageService {
   getErrorMessages(
-    control: AbstractControl,
+    errors: ValidationErrors | null,
+    currentValue: any,
     validatorConfigs: ValidatorConfig[]
   ): string[] {
-    const errors = control.errors;
     if (!errors) return [];
 
     const validationTypes = Object.values(ValidatorAndConditionEnum)
@@ -33,7 +33,7 @@ export class ErrorMessageService {
 
       const messageReplaced = targetConfig?.message?.replace(
         /{{value}}/g,
-        control.value || ''
+        currentValue || ''
       );
 
       const messageGet = messageReplaced ?? messageRaw;

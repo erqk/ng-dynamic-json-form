@@ -35,7 +35,8 @@ export class ErrorMessageComponent {
       startWith(this.control.status),
       map(() =>
         this._errorMessageService.getErrorMessages(
-          this.control!,
+          this.control?.errors ?? null,
+          this.control?.value ?? '',
           this.validators || []
         )
       )

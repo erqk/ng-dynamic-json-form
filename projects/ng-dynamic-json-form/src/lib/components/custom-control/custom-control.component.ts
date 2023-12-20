@@ -1,16 +1,16 @@
-import { Component, HostListener, SimpleChanges, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { Observable } from 'rxjs/internal/Observable';
+import { debounceTime, filter, map, startWith, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
 import { ErrorMessageService } from '../../services';
 import { FormDataTransformService } from '../../services/form-data-transform.service';
-import { filter, map, startWith } from 'rxjs/operators';
-import { FormControlType } from '../../models/form-control-type.interface';
-import { Observable } from 'rxjs/internal/Observable';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'custom-control',
@@ -29,8 +29,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _outputData = (input: unknown) =>
     this._dataTransformService.outputData(input, this.data);
 
-  public data: FormControlConfig | null = null;
-
   /**Can be override by instance of `AbstractControl`
    * @example
    * public override control = new FormControl() 'or' new UntypedFormControl();
@@ -39,38 +37,25 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
    */
   public control?: any;
 
-  public errors$?: Observable<string[]>;
+  public data: FormControlConfig | null = null;
+  public errors$ = new BehaviorSubject<string[]>([]);
 
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {
     this._onTouched();
   }
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    const { control, data } = simpleChanges;
-
-    if (control && data) {
-      this.errors$ = this._control.valueChanges.pipe(
-        startWith(this._control.status),
-        map(() =>
-          this._errorMessageService.getErrorMessages(
-            this._control,
-            this.data?.validators || []
-          )
-        )
-      );
-    }
-  }
-
   writeValue(obj: any): void {
     if (obj === undefined || obj === null || obj === '') return;
-    this._control?.setValue(this._inputData(obj));
+    this._control.setValue(this._inputData(obj));
+    this._control.markAsDirty();
+    this._control.markAsTouched();
   }
 
   registerOnChange(fn: any): void {
     this._control?.valueChanges
       .pipe(
-        startWith(this.control.value),
+        startWith(this._control.value),
         map((x) => this._outputData(x))
       )
       .subscribe(fn);
@@ -87,6 +72,26 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     return this._control?.errors ?? null;
+  }
+
+  listenErrors(control: AbstractControl | null): void {
+    if (!control) return;
+
+    control.statusChanges
+      .pipe(
+        startWith(control.status),
+        tap(() => {
+          const messages = this._errorMessageService.getErrorMessages(
+            this._control.errors,
+            this._control.value,
+            this.data?.validators || []
+          );
+
+          this._control.setErrors(control.errors);
+          this.errors$.next(messages);
+        })
+      )
+      .subscribe();
   }
 
   private get _control(): AbstractControl {
