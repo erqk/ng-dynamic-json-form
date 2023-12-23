@@ -1,21 +1,68 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentVersionService {
-  versions = ['3.4.x', '3.0.x', '2.x.x', '1.x.x'];
+  private _http = inject(HttpClient);
+  private _location = inject(Location);
+  private _currentVersion$ = new BehaviorSubject<string>('');
 
-  private _currentVersion$ = new BehaviorSubject<string>(this.versions[0]);
+  versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
 
-  setVersion(version: string): void {
-    if (!this.versions.includes(version)) {
+  loadVersions$(): Observable<string[]> {
+    return this._http
+      .get('assets/docs/index.md', { responseType: 'text' })
+      .pipe(
+        map((x) => {
+          const versions = Array.from(x.matchAll(/(\d\.){1,}(\d)/g)).map(
+            (x) => x[0]
+          );
+          return versions;
+        }),
+        tap((x) => {
+          this.versions$.next(
+            x.map((x) => ({
+              label: `v${x}`,
+              value: `v${x.slice(0, 1)}`,
+            }))
+          );
+          this._currentVersion$.next(this.versionFromUrl || this.latestVersion);
+        })
+      );
+  }
+
+  firstContentPath$(path: string): Observable<string> {
+    return this._http.get(path, { responseType: 'text' }).pipe(
+      map((x) => x.match(/(\.+\/){1,}.+/)?.[0]),
+      map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
+      catchError(() => of(''))
+    );
+  }
+
+  get versionSaved(): string {
+    return window.localStorage.getItem('docs-version') || this.latestVersion;
+  }
+
+  set versionSaved(value: string) {
+    if (!this.versions$.value.find((x) => x.value === value)) {
       return;
     }
 
-    this._currentVersion$.next(version);
-    window.localStorage.setItem('docs-version', version);
+    this._currentVersion$.next(value);
+    window.localStorage.setItem('docs-version', value);
   }
 
   get currentVersion$(): Observable<string> {
@@ -26,7 +73,25 @@ export class DocumentVersionService {
     return this._currentVersion$.value;
   }
 
+  get latestVersion(): string {
+    return this.versions$.value
+      .map((x) => x.value)
+      .sort()
+      .reverse()[0];
+  }
+
   get prevVersion(): string {
-    return this.versions.sort().reverse()[1];
+    return this.versions$.value
+      .map((x) => x.value)
+      .sort()
+      .reverse()[1];
+  }
+
+  get versionFromUrl(): string | undefined {
+    const urls = this._location.path().split('#')[0].split('?')[0].split('/');
+    const docIndex = urls.findIndex((x) => x === 'docs');
+    const version = docIndex > -1 ? urls[docIndex + 1] : undefined;
+
+    return version;
   }
 }

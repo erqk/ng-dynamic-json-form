@@ -5,7 +5,6 @@ import {
   UrlMatchResult,
   UrlSegment,
 } from '@angular/router';
-import { LayoutComponent } from './layout/layout.component';
 
 const routes: Routes = [
   {
@@ -16,42 +15,13 @@ const routes: Routes = [
       ),
   },
   {
-    path: '',
-    component: LayoutComponent,
-    children: [
-      {
-        path: 'getting-started',
-        loadComponent: () =>
-          import(
-            './pages/page-getting-started/page-getting-started.component'
-          ).then((c) => c.PageGettingStartedComponent),
-      },
-      {
-        path: 'api',
-        loadComponent: () =>
-          import('./pages/page-api/page-api.component').then(
-            (c) => c.PageApiComponent
-          ),
-      },
-      {
-        path: 'styling',
-        loadComponent: () =>
-          import('./pages/page-styling/page-styling.component').then(
-            (c) => c.PageStylingComponent
-          ),
-      },
-    ],
-  },
-  {
     matcher: (segments: UrlSegment[]): UrlMatchResult | null => {
-      const invalidRoute =
-        !segments.length || segments[0].path !== 'older-docs';
-
+      const invalidRoute = !segments.length || segments[0].path !== 'docs';
       return invalidRoute ? null : { consumed: segments };
     },
     loadComponent: () =>
-      import('./pages/page-older-docs/page-older-docs.component').then(
-        (c) => c.PageOlderDocsComponent
+      import('./pages/page-docs/page-docs.component').then(
+        (c) => c.PageDocsComponent
       ),
   },
   {
@@ -64,11 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
-    }),
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

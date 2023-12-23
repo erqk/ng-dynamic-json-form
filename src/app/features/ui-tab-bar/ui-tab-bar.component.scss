@@ -8,7 +8,7 @@
   z-index: 0;
 
   &::-webkit-scrollbar {
-    @include scrollbar.mixin-hidden-scrollbar();
+    @include scrollbar.hidden-scrollbar();
   }
 }
 

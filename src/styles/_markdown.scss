@@ -1,19 +1,8 @@
 markdown {
-  h2 {
-    margin-top: 6.5rem;
-
-    &:first-of-type {
-      margin-top: unset;
-    }
-  }
-
-  h3 {
-    margin: 2.5rem 0 1rem;
-  }
-
   a {
     position: relative;
     color: var(--primary-500);
+    text-align: center;
     z-index: 0;
 
     &:hover {
@@ -21,7 +10,8 @@ markdown {
 
       &::after {
         width: 100%;
-        transition: 0.5s;
+        opacity: 1;
+        transition: 0.25s;
       }
     }
 
@@ -29,16 +19,17 @@ markdown {
       content: "";
       position: absolute;
       bottom: 0;
-      left: 0;
-      height: 2px;
-      width: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 1px;
+      width: 50%;
       background-color: var(--primary-500);
+      opacity: 0;
     }
   }
 
   pre {
     border-radius: 0.5rem;
-    box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.25);
   }
 
   code {

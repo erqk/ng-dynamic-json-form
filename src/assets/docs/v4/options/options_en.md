@@ -1,4 +1,4 @@
-## Options
+# Options
 
 Use with `radio`, `checkbox`, and `dropdown` input type.
 

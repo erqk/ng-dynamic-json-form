@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { tap } from 'rxjs';
 import { LanguageDataService } from '../../services/language-data.service';
+import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
 
 @Component({
   selector: 'app-language-selector',
@@ -16,14 +18,18 @@ import { LanguageDataService } from '../../services/language-data.service';
   styles: [],
 })
 export class LanguageSelectorComponent {
-  language$ = this._languageDataService.language$;
+  private _languageDataService = inject(LanguageDataService);
+  private _docLoaderService = inject(DocumentLoaderService);
 
-  constructor(private _languageDataService: LanguageDataService) {}
+  language$ = this._languageDataService.language$;
 
   switchLanguage(e: Event): void {
     const select = e.target as HTMLSelectElement;
     const language = select.value;
 
-    this._languageDataService.setLanguage$(language).subscribe();
+    this._languageDataService
+      .setLanguage$(language)
+      .pipe(tap(() => this._docLoaderService.updateUrl()))
+      .subscribe();
   }
 }

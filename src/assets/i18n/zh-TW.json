@@ -10,11 +10,8 @@
     "BRIEF": "從 JSON 資料動態生成 Angular 表單。從簡單的表單到擁有複雜的狀態監聽表單都可以，並且支援第三方 UI 套件！"
   },
   "MENU": {
-    "API": "API",
-    "GETTING_STARTED": "開始",
-    "OLD_DOCS": "舊版文件",
-    "PLAYGROUND": "演示區域",
-    "STYLING": "樣式"
+    "DOCS": "文件",
+    "PLAYGROUND": "演示區域"
   },
   "PLAYGROUND": {
     "UI_LIBRARY": {

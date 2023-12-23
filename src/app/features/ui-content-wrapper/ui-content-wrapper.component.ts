@@ -9,7 +9,7 @@ import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
   template: ` <ng-content></ng-content> `,
   animations: [FADE_UP_ANIMATION],
   styles: [
-    ':host {display: flex; flex-direction: column; width: 100%; margin: 0 auto}',
+    ':host {display: flex; flex-direction: column; width: 100%; margin-left: auto; margin-right: auto;}',
   ],
 })
 export class UiContentWrapperComponent {

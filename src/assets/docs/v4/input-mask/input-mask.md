@@ -1,4 +1,4 @@
-## Input mask
+# Input Mask
 
 Mask the input with specific pattern.
 This feature requires [`ngx-mask`](https://www.npmjs.com/package/ngx-mask) to be installed.

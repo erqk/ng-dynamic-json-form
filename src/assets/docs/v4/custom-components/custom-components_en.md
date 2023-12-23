@@ -1,4 +1,4 @@
-## Custom Components
+# Custom Components
 
 You can create your own input components, collect them in an object, then bind it to the `customComponents`.
 
@@ -33,7 +33,7 @@ Then, you specify the key in your config to decide which component to use.
 }
 ```
 
-### CustomControlComponent
+## CustomControlComponent
 
 Extends your component with `CustomControlComponent`. It provides all the methods same as `ControlValueAccessor` and `Validator`.
 
@@ -53,7 +53,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 | control  | You must override this to your desire `AbstractControl`.      |
 | errors$  | Subscribe to get all the error messages inside the `control`. |
 
-### Example
+## Example
 
 ```javascript
 export class UiBasicDateComponent extends CustomControlComponent {
@@ -121,7 +121,7 @@ Then, you specify the key in your config to decide which component to use.
 }
 ```
 
-### Pre-made UI components
+## Pre-made UI components
 
 Here are some components from other UI libraries that ready for use.
 

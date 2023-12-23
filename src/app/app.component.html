@@ -1,4 +1,6 @@
-<div class="route-loading-bar" *ngIf="routeLoading"></div>
+<ui-loading-indicator
+  [start]="routeLoading || ((docLoading$ | async) ?? false)"
+></ui-loading-indicator>
 
 <app-header></app-header>
 <router-outlet> </router-outlet>

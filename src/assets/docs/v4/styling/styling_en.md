@@ -1,4 +1,6 @@
-## CSS variables
+# Styling
+
+## CSS Variables
 
 These are the predefined CSS variables, you can overwrite them with your desire value.
 
@@ -219,6 +221,7 @@ This is what the default header will look like:
     </div>
   </div>
 </div>
+<br>
 
 ### Custom header
 
@@ -226,10 +229,7 @@ To use header with different layout and styling, use `ng-template` with the sele
 
 <!-- prettier-ignore -->
 ```html
-<ng-dynamic-json-form
-  [jsonData]="jsonData"
-  (formGet)="onFormGet($event)"
->
+<ng-dynamic-json-form ...>
   <ng-template
     #formArrayGroupHeader
     let-label="label"

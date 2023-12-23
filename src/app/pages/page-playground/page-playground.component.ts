@@ -225,7 +225,11 @@ export class PagePlaygroundComponent {
 
     if (!input) return { json: jsonContent };
     if ('json' in input) jsonContent = input['json'];
-    if ('text' in input) jsonContent = JSON.parse(input['text'] || 'null');
+    if ('text' in input) {
+      try {
+        jsonContent = JSON.parse(input['text'] || 'null');
+      } catch {}
+    }
 
     return { json: jsonContent };
   }

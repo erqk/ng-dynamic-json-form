@@ -1,8 +1,9 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, ElementRef, HostBinding, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostBinding } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
+import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrapper.component';
 import { SideNaviagionPaneLink } from './side-navigation-pane-link.interface';
 import { SideNavigationPaneService } from './side-navigation-pane.service';
@@ -31,22 +32,24 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
         {{ item.label }}
       </button>
 
-      <div
-        class="sub-titles"
-        [ngClass]="{
-          active:
-            item.children?.length && currentActiveId[level - 1] === item.id
-        }"
-      >
-        <ng-container
-          *ngFor="let child of item.children"
-          [ngTemplateOutlet]="buttonTemplate"
-          [ngTemplateOutletContext]="{
-            item: child,
-            level: level + 1
+      <ng-container *ngIf="item.children?.length">
+        <div
+          class="sub-titles"
+          [ngClass]="{
+            active:
+              item.children?.length && currentActiveId[level - 1] === item.id
           }"
-        ></ng-container>
-      </div>
+        >
+          <ng-container
+            *ngFor="let child of item.children"
+            [ngTemplateOutlet]="buttonTemplate"
+            [ngTemplateOutletContext]="{
+              item: child,
+              level: level + 1
+            }"
+          ></ng-container>
+        </div>
+      </ng-container>
     </ng-template>
   `,
   styleUrls: ['./side-navigation-pane.component.scss'],
@@ -69,7 +72,6 @@ export class SideNavigationPaneComponent {
   constructor(
     private _sideNavigationPaneService: SideNavigationPaneService,
     private _el: ElementRef,
-    private _renderer2: Renderer2,
     private _router: Router,
     private _location: Location
   ) {}
@@ -86,7 +88,7 @@ export class SideNavigationPaneComponent {
 
   onLinkClick(e: Event, item: SideNaviagionPaneLink): void {
     const el = e.target as HTMLElement;
-    const newUrl = this._router.url.split('?')[0];
+    const newUrl = this._router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
     const itemIndex = Array.from(
       (this._el.nativeElement as HTMLElement).children
@@ -96,7 +98,7 @@ export class SideNavigationPaneComponent {
       block: 'center',
     });
 
-    this._location.replaceState(newUrl, `id=${item.id}`);
+    window.history.replaceState(null, '', `${newUrl}#${item.id}`);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
 
@@ -135,10 +137,9 @@ export class SideNavigationPaneComponent {
     const flatten = (input: SideNaviagionPaneLink[]) => {
       for (const item of input) {
         this._linksFlatten.push(item);
+        if (!item.children) continue;
 
-        if (item.children) {
-          flatten(item.children);
-        }
+        flatten(item.children);
       }
     };
 
@@ -173,7 +174,7 @@ export class SideNavigationPaneComponent {
 
   private _setActiveIds(): void {
     const titles = this._linksFlatten
-      .map((x) => document.querySelector(`#${x.id}`)!)
+      .map(({ id }) => document.querySelector(`#${id}`)!)
       .filter((x) => !!x);
 
     const visibleThreshold = window.innerHeight * 0.5;
@@ -197,45 +198,33 @@ export class SideNavigationPaneComponent {
     if (!newSectionAppear) return;
 
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
-    const parent = this.links.find(
-      (x) =>
-        x.children && x.children.find((child) => child.id === activeTitle!.id)
+    const parent = this.links.find(({ children }) =>
+      (children || []).find(({ id }) => id === activeTitle!.id)
     );
 
     this.currentActiveId[level - 1] = parent?.id || '';
     this.currentActiveId[level] = activeTitle.id || '';
     this._currentLinkIndex = this._linksFlatten.findIndex(
-      (x) => x.id === activeTitle!.id
+      ({ id }) => id === activeTitle!.id
     );
   }
 
   private _scrollToContent(id?: string, smoothScrolling = true): void {
     const idFromRoute = this._router.parseUrl(this._location.path())
       .queryParams['id'];
+
     const targetId = id ?? idFromRoute;
+
     if (!targetId) {
       this.currentActiveId[0] = document.querySelector('markdown h2')?.id || '';
       return;
     }
 
     const target = document.querySelector(`#${targetId}`);
-    const header = document.querySelector(
-      `app-header-${window.innerWidth > 992 ? 'desktop' : 'mobile'} .header`
-    );
-
-    if (!target || !header) return;
+    if (!target) return;
 
     this._scrolling = true;
-    this._renderer2.setStyle(
-      target,
-      'scroll-margin',
-      `${header.clientHeight + 16}px`
-    );
-
-    target.scrollIntoView({
-      behavior: smoothScrolling === true ? 'smooth' : 'auto',
-      block: 'start',
-    });
+    scrollToTitle(target, smoothScrolling ? 'smooth' : 'auto');
 
     clearTimeout(this._scrollingTimeout);
     this._scrollingTimeout = window.setTimeout(

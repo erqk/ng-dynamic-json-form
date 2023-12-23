@@ -1,4 +1,4 @@
-## Validators
+# Validators
 
 ```javascript
 export interface ValidatorConfig {

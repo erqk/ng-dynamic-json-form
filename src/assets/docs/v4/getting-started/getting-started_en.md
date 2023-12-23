@@ -1,3 +1,5 @@
+# Getting Started
+
 ## Installation
 
 Install `ng-dynamic-json-form` from npm:
@@ -38,16 +40,16 @@ The inputs and outputs of `ng-dynamic-json-form` are listed as below.
 
 | type      | name             | description                |
 | :-------- | :--------------- | :------------------------- |
-| @Input()  | configs          | See [FormControlConfig]    |
+| @Input()  | configs          | See [Form Control Config]  |
 | @Input()  | customValidators | See [Custom Validators]    |
 | @Input()  | customComponents | See [Custom Components]    |
 | @Input()  | uiComponents     | See [Custom UI Components] |
 | @Output() | formGet          | `UntypedFormGroup`         |
 
-[FormControlConfig]: ../form-control-config/form-control-config_en.md
-[Custom Validators]: ../validators/validators_en.md#custom-validators
-[Custom Components]: ../custom-components/custom-components_en.md
-[Custom UI Components]: ../custom-components/custom-components_en.md#custom-ui-components
+[Form Control Config]: ../../v4/form-control-config/form-control-config_en.md
+[Custom Validators]: ../../v4/validators/validators_en.md#custom-validators
+[Custom Components]: ../../v4/custom-components/custom-components_en.md
+[Custom UI Components]: ../../v4/custom-components/custom-components_en.md#custom-ui-components
 
 `ng-dynamic-json-form` accepts two type of configs, **JSON string** or **FormControlCofig[]**.
 

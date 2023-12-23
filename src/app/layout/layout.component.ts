@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-content-wrapper.component';
 import { SideNavigationPaneComponent } from '../features/side-navigation-pane/side-navigation-pane.component';
 import { DocumentLoaderService } from '../features/document/services/document-loader.service';
-import { LoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
+import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
 
 @Component({
@@ -15,7 +15,7 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
     RouterModule,
     UiContentWrapperComponent,
     SideNavigationPaneComponent,
-    LoadingIndicatorComponent,
+    UiLoadingIndicatorComponent,
   ],
   template: `
     <ui-loading-indicator
@@ -42,5 +42,5 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
 export class LayoutComponent {
   private _documentLoaderService = inject(DocumentLoaderService);
 
-  documentLoading$ = this._documentLoaderService.documentLoading$;
+  documentLoading$ = this._documentLoaderService.docLoading$;
 }

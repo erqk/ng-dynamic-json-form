@@ -1,4 +1,4 @@
-## Form Array
+# Form Array
 
 ```javascript
 export interface FormArrayConfig {

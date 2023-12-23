@@ -1,20 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  delay,
-  from,
-  map,
-  merge,
-  mergeMap,
-  of,
-  switchMap,
-  tap,
-  toArray,
-} from 'rxjs';
+import { BehaviorSubject, Observable, catchError, finalize, map } from 'rxjs';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
 
@@ -28,60 +15,41 @@ export class DocumentLoaderService {
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
 
-  documentLoading$ = new BehaviorSubject<boolean>(false);
-  oldDocsContent$ = new BehaviorSubject<string>('');
+  docLoading$ = new BehaviorSubject<boolean>(false);
 
-  loadOldDocs$(filePath: string): Observable<string> {
+  loadDoc$(path: string): Observable<string> {
     const lang = this._languageDataService.language$.value;
+    const pathSegments = path.split('/');
+    const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
+    const timestamp = new Date().getTime();
+    const _path = path.endsWith('.md') ? path : `${path}/${filename}`;
 
-    filePath = !filePath
-      ? `assets/docs/index_${lang}.md`
-      : `assets/docs/${filePath}`;
-
+    this.docLoading$.next(true);
     return this._http
-      .get(`${filePath}?q=${new Date().getTime()}`, { responseType: 'text' })
+      .get(`assets/docs/${_path}?q=${timestamp}`, {
+        responseType: 'text',
+      })
       .pipe(
-        tap((x) => this.oldDocsContent$.next(x)),
-        catchError(() => this.loadOldDocs$(''))
+        finalize(() => this.docLoading$.next(false)),
+        catchError((err) => {
+          throw err;
+        })
       );
   }
 
-  getDocumentContent$(
-    parentDirectory: string,
-    hasTableOfContent = false
-  ): Observable<string> {
-    const content$ = (tableOfContent: string[]) =>
-      from(tableOfContent).pipe(
-        mergeMap((x, i) => {
-          const basePath = `assets/docs/v${
-            this._documentVersionService.currentVersion
-          }${hasTableOfContent ? '/' + parentDirectory : ''}`;
-          const filePath = `${basePath}/${x}/${x}_${this._languageDataService.language$.value}.md`;
+  firstContentPath$(useDefaultLang = false): Observable<string> {
+    const lang = this._languageDataService.language$.value;
+    const version =
+      this._documentVersionService.versionSaved ??
+      this._documentVersionService.latestVersion;
+    const indexPath = `assets/docs/${version}/index_${
+      useDefaultLang ? 'en' : lang
+    }.md`;
 
-          return this._http
-            .get(`${filePath}?q=${new Date().getTime()}`, { responseType: 'text' })
-            .pipe(map((x) => ({ index: i, content: x })));
-        }),
-        toArray(),
-        map((x) =>
-          x
-            .sort((a, b) => a.index - b.index)
-            .map((x) => x.content)
-            .join('')
-        ),
-        catchError(() => {
-          return of('');
-        })
-      );
-
-    return this._settings$.pipe(
-      switchMap(() =>
-        hasTableOfContent
-          ? this._getTableOfContent$(parentDirectory)
-          : of([parentDirectory])
-      ),
-      switchMap((x) => (x.length ? content$(x) : of(''))),
-      tap(() => this.documentLoading$.next(false))
+    return this._http.get(indexPath, { responseType: 'text' }).pipe(
+      map((x) => x.match(/(\.+\/){1,}.+\.md/)?.[0]),
+      map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
+      catchError(() => this.firstContentPath$(true))
     );
   }
 
@@ -93,55 +61,57 @@ export class DocumentLoaderService {
     for (const table of tables) {
       const tableWrapper = document.createElement('div');
       const tableCloned = table.cloneNode(true);
+
       tableWrapper.classList.add('table-wrapper');
       tableWrapper.appendChild(tableCloned);
-      table.insertAdjacentElement('beforebegin', tableWrapper);
+      this._renderer2.appendChild(tableWrapper, tableCloned);
+      this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
       table.remove();
     }
   }
 
-  mapCorrectRouterLink(host?: HTMLElement): void {
-    const links = Array.from((host || document).querySelectorAll('a')).filter(
-      (x) => x.href.startsWith('./')
-    );
+  markdownLinkRenderFn(
+    routePrefix: string,
+    replaceHref?: { searchValue: string | RegExp; replaceValue: string }
+  ) {
+    return (href: string | null, title: string | null, text: string) => {
+      const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
+      const useRouter = !!prefix && href?.startsWith(prefix);
 
-    console.log(links, (host || document).querySelectorAll('a'));
-    links.forEach((x) => {
-      const { version } = this._router.parseUrl(this._router.url).queryParams;
+      if (href?.startsWith('#')) {
+        return `<a title="${title || text}" [routerLink]
+          href="${this._router.url}${href}">${text}</a>`;
+      }
 
-      const currentUrlClean = window.location.href.split('?')[0];
-      const path = x.href.replace('./', '');
-      const newQuery = new URLSearchParams({
-        version,
-        path,
-      }).toString();
-      const newHref = `${currentUrlClean}?${newQuery}`;
+      if (!useRouter) {
+        return `<a target="_blank" rel="noreferrer noopener"
+          title="${title || text}" href="${href}">${text}</a>`;
+      }
 
-      this._renderer2.setProperty(x, 'href', newHref);
-    });
+      const _href = href
+        ?.substring(prefix.length)
+        .replace(
+          replaceHref?.searchValue || '',
+          replaceHref?.replaceValue || ''
+        );
+
+      const newHref = routePrefix ? `/${routePrefix}/${_href}` : _href;
+
+      return `<a title="${title || text}" [routerLink]
+        href="${newHref}">${text}</a>`;
+    };
   }
 
-  private _getTableOfContent$(parentDirectory: string): Observable<string[]> {
-    const basePath = `assets/docs/v${this._documentVersionService.currentVersion}/${parentDirectory}`;
-    const filePath = `${basePath}/table-of-content.json`;
+  updateUrl(): void {
+    if (!this._router.url.includes('.md')) return;
 
-    return this._http.get(filePath, { responseType: 'text' }).pipe(
-      map((x) => JSON.parse(x)),
-      catchError(() => {
-        return of([]);
-      })
-    );
-  }
+    const currentRoute = this._router.url;
+    const { versionFromUrl, currentVersion } = this._documentVersionService;
+    const { language$, languageFromUrl } = this._languageDataService;
+    const newRoute = currentRoute
+      .replace(versionFromUrl ?? currentVersion, currentVersion)
+      .replace(languageFromUrl ?? '', language$.value);
 
-  private get _settings$(): Observable<any> {
-    return merge(
-      this._languageDataService.language$,
-      this._documentVersionService.currentVersion$
-    ).pipe(
-      // https://github.com/angular/angular/issues/23522#issuecomment-385015819
-      // add delay(0) before set the `documentLoading$` value to avoid NG0100
-      delay(0),
-      tap(() => this.documentLoading$.next(true))
-    );
+    this._router.navigateByUrl(newRoute);
   }
 }

@@ -1,0 +1,6 @@
+.sticky {
+  --header-height: 0px;
+
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+}

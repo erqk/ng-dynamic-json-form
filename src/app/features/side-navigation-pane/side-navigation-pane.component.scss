@@ -13,7 +13,7 @@
 
 button {
   position: relative;
-  padding: 0.65rem 1.5rem;
+  padding: 0.35rem 1.5rem;
   text-decoration: none;
   color: rgba(128, 128, 128, 1);
   background-color: unset;
@@ -22,7 +22,6 @@ button {
   text-align: left;
   z-index: 0;
   cursor: pointer;
-  transition: 0.2s;
 
   @mixin left-border {
     &::before {
@@ -42,7 +41,7 @@ button {
   &.active {
     background-color: unset;
     color: var(--color-active);
-    font-weight: bold;
+    font-weight: 500;
 
     &::before,
     + .sub-titles::before {
@@ -72,7 +71,7 @@ button {
 
   button {
     margin-left: 1rem;
-    padding: 0.5rem 1.5rem;
+    padding: 0.25rem 1.5rem;
 
     &::before {
       content: none;

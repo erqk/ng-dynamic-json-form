@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { delay } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { delay, filter, switchMap } from 'rxjs/operators';
+import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
 import { DocumentVersionService } from '../../services/document-version.service';
 
 @Component({
@@ -8,31 +10,36 @@ import { DocumentVersionService } from '../../services/document-version.service'
   standalone: true,
   imports: [CommonModule],
   template: `
-    <select [value]="version$ | async" (change)="changeVersion($event)">
-      <ng-container *ngFor="let item of versions">
-        <option value="{{ item }}">{{ item }}</option>
+    <select [value]="currentVersion$ | async" (change)="changeVersion($event)">
+      <ng-container *ngFor="let item of versions$ | async">
+        <option value="{{ item.value }}">{{ item.label }}</option>
       </ng-container>
     </select>
   `,
   styles: [],
 })
 export class DocumentVersionSelectorComponent {
-  versionService = inject(DocumentVersionService);
+  private _router = inject(Router);
+  private _docVersionService = inject(DocumentVersionService);
+  private _langService = inject(LanguageDataService);
 
-  versions = this.versionService.versions;
-  version$ = this.versionService.currentVersion$.pipe(delay(0));
-
-  ngAfterViewInit(): void {
-    this.versionService.setVersion(
-      window.localStorage.getItem('docs-version') ||
-        this.versionService.versions[0]
-    );
-  }
+  versions$ = this._docVersionService.versions$;
+  currentVersion$ = this._docVersionService.currentVersion$.pipe(delay(0));
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;
     const version = select.value;
 
-    this.versionService.setVersion(version);
+    const { language$ } = this._langService;
+    const indexPath = `assets/docs/${version}/index_${language$.value}.md`;
+
+    this._docVersionService.versionSaved = version;
+    this._docVersionService
+      .firstContentPath$(indexPath)
+      .pipe(
+        filter((x) => x.length > 0),
+        switchMap((x) => this._router.navigateByUrl(x))
+      )
+      .subscribe();
   }
 }

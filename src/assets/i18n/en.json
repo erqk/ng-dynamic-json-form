@@ -10,11 +10,8 @@
     "BRIEF": "Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!"
   },
   "MENU": {
-    "API": "API",
-    "GETTING_STARTED": "Getting started",
-    "OLD_DOCS": "Older docs",
-    "PLAYGROUND": "Playground",
-    "STYLING": "Styling"
+    "DOCS": "Doc",
+    "PLAYGROUND": "Playground"
   },
   "PLAYGROUND": {
     "UI_LIBRARY": {

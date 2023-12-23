@@ -1,4 +1,4 @@
-## Conditions
+# Conditions
 
 Apply conditional rendering and conditional validators to the input.
 
@@ -10,9 +10,7 @@ Set the `conditions` like this:
     [name]: {
       [groupOperator]: [
         [controlPath, operator, controlValue],
-
-        OR
-
+        ...,
         {
           [groupOperator]: [...]
         }
@@ -63,7 +61,7 @@ Set the `conditions` like this:
   </tbody>
 </table>
 
-### Example - toggle visibility
+## Example - toggle visibility
 
 ```javascript
 if (basicInfo.showEmail === false) {
@@ -84,7 +82,7 @@ if (basicInfo.showEmail === false) {
 }
 ```
 
-### Example - toggle disabled
+## Example - toggle disabled
 
 ```javascript
 if (basicInfo.showEmail === false) {
@@ -105,7 +103,7 @@ if (basicInfo.showEmail === false) {
 }
 ```
 
-### Exmaple - toggle validators
+## Exmaple - toggle validators
 
 To toggle validator, make sure the validator is already listed in `validators` array.
 
@@ -147,7 +145,7 @@ if (basicInfo.gender === "0") {
 }
 ```
 
-### Example - complex operation
+## Example - complex operation
 
 ```javascript
 if (basicInfo.age > 20 && basicInfo.name === "Andrew" && (basicInfo.showEmail === false || basicInfo.gender === "0")) {

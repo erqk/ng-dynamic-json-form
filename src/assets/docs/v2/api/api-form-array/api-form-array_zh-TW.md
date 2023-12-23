@@ -1,6 +1,6 @@
-## Form 陣列
+## 表單陣列
 
-若你需要建立 Form 陣列，則可將陣列的資訊塞入 `formArray` 欄位，以此告訴 `ng-dynamic-json-form` 怎麼構建它。
+若你需要建立表單陣列，則可將陣列的資訊塞入 `formArray` 欄位，以此告訴 `ng-dynamic-json-form` 怎麼構建它。
 
 ```json
 {

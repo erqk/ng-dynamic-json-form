@@ -1,0 +1,34 @@
+<ui-content-wrapper class="beauty-scrollbar affect-child" [maxWidth]="'85rem'">
+  <div class="grid grid-cols-[auto,3fr,auto] gap-8 items-start">
+    <div
+      class="sticky w-64 pt-5 pb-10 px-6 overflow-auto"
+      [ngStyle]="{
+        '--header-height.px': (headerHeight$ | async) ?? 0
+      }"
+    >
+      <app-document-version-selector
+        class="block mb-5"
+      ></app-document-version-selector>
+
+      <app-document-index
+        [containerClass]="['grid-cols-1 gap-y-2']"
+      ></app-document-index>
+    </div>
+
+    <markdown
+      class="overflow-hidden mb-20"
+      docRouterLink
+      [data]="content$ | async"
+      (ready)="onReady()"
+    ></markdown>
+
+    <div
+      class="sticky w-64 py-10 overflow-auto"
+      [ngStyle]="{
+        '--header-height.px': (headerHeight$ | async) ?? 0
+      }"
+    >
+      <app-side-navigation-pane></app-side-navigation-pane>
+    </div>
+  </div>
+</ui-content-wrapper>

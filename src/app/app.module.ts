@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
-import { LoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
+import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +22,7 @@ import { LoadingIndicatorComponent } from './features/ui-loading-indicator/ui-lo
       sanitize: SecurityContext.NONE,
     }),
     HeaderComponent,
-    LoadingIndicatorComponent,
+    UiLoadingIndicatorComponent,
   ],
   providers: [
     {

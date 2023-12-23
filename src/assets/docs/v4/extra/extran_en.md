@@ -1,4 +1,4 @@
-## Extra
+# Extra
 
 The additional data that is input type specific, to render the input.
 

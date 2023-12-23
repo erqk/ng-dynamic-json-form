@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -5,14 +6,13 @@ import {
   Input,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SideNavigationPaneComponent } from 'src/app/features/side-navigation-pane/side-navigation-pane.component';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { UiTabBarComponent } from 'src/app/features/ui-tab-bar/ui-tab-bar.component';
 import { filter, tap } from 'rxjs/operators';
-import { DocumentVersionSelectorComponent } from 'src/app/features/document/components/document-version-selector/document-version-selector.component';
+import { LayoutService } from 'src/app/core/services/layout.service';
 import { LanguageSelectorComponent } from 'src/app/features/language/components/language-selector/language-selector.component';
+import { SideNavigationPaneComponent } from 'src/app/features/side-navigation-pane/side-navigation-pane.component';
 import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-switcher/theme-switcher.component';
+import { UiTabBarComponent } from 'src/app/features/ui-tab-bar/ui-tab-bar.component';
 
 @Component({
   selector: 'app-header-mobile',
@@ -24,7 +24,6 @@ import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-
     UiTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
-    DocumentVersionSelectorComponent,
   ],
   templateUrl: './header-mobile.component.html',
   styleUrls: ['./header-mobile.component.scss'],
@@ -32,6 +31,7 @@ import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-
 export class HeaderMobileComponent {
   private _router = inject(Router);
   private _elementRef = inject(ElementRef);
+  private _layoutService = inject(LayoutService);
 
   @Input() links: { label: string; route: string }[] = [];
 
@@ -80,6 +80,10 @@ export class HeaderMobileComponent {
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;
+
+    window.setTimeout(() => {
+      this._layoutService.updateHeaderHeight();
+    }, 100);
   }
 
   toggleNavigationPane(): void {

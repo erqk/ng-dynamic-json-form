@@ -1,8 +1,30 @@
 @use "./dark-theme" as dark;
-@use "./scrollbar";
 @use "./form-elements";
 @use "./page-styling";
 @use "./markdown";
+@use "./components/scrollbar";
+@use "./components/as-split";
+@use "./components/backdrop";
+@use "./components/loading-indicator";
+@use "./components/docs-index-container";
+
+@tailwind base;
+@tailwind commponents;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-3xl font-bold mt-8 mb-4;
+  }
+
+  h2 {
+    @apply text-2xl font-bold mt-6 mb-2;
+  }
+
+  h3 {
+    @apply text-xl font-medium mt-4 mb-2;
+  }
+}
 
 :root {
   --primary-100: #efecff;
@@ -45,7 +67,7 @@ body {
   margin: 0;
 }
 
-button {
+button, [type="button"] {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   border: none;
@@ -69,63 +91,6 @@ button {
 
   &:disabled {
     opacity: 0.5;
-  }
-}
-
-.loading-indicator {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 2rem;
-  height: 2rem;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #130d33;
-  }
-}
-
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-  transition: 0.25s;
-  z-index: 998;
-  opacity: 0;
-
-  &.active {
-    opacity: 1;
-  }
-}
-
-.as-split-gutter {
-  position: relative !important;
-  background-color: var(--primary-500) !important;
-
-  &:hover {
-    > .as-split-gutter-icon {
-      opacity: 1;
-    }
-  }
-
-  > .as-split-gutter-icon {
-    position: absolute !important;
-    top: 0 !important;
-    left: 50% !important;
-    transform: translate(-50%) !important;
-    width: 1.25rem !important;
-    background-color: rgba(128, 128, 128, 0.25);
-    opacity: 0;
   }
 }
 

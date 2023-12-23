@@ -1,5 +1,5 @@
 <div
-  class="main-content beauty-scrollbar"
+  class="main-content beauty-scrollbar affect-child"
   [style.--headerHeight.px]="headerHeight + 1"
   [style.--windowHeight.px]="windowHeight"
 >
@@ -33,7 +33,7 @@
           <ui-content-wrapper [maxWidth]="'50rem'">
             <div class="p-5">
               <ng-dynamic-json-form
-                [jsonData]="jsonData"
+                [configs]="jsonData"
                 [customValidators]="customValidators"
                 [customComponents]="customComponents"
                 [uiComponents]="customUIComponents"
