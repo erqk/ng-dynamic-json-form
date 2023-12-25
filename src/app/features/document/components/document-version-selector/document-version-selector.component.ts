@@ -33,7 +33,7 @@ export class DocumentVersionSelectorComponent {
     const { language$ } = this._langService;
     const indexPath = `assets/docs/${version}/index_${language$.value}.md`;
 
-    this._docVersionService.versionSaved = version;
+    this._docVersionService.currentVersion = version;
     this._docVersionService
       .firstContentPath$(indexPath)
       .pipe(

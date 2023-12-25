@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import {
   catchError,
   combineLatest,
   debounceTime,
   map,
-  of,
   switchMap,
   tap,
 } from 'rxjs';
@@ -24,8 +22,6 @@ import { DocumentVersionService } from '../../services/document-version.service'
   templateUrl: './document-index.component.html',
 })
 export class DocumentIndexComponent {
-  private _route = inject(ActivatedRoute);
-  private _router = inject(Router);
   private _domSanitizer = inject(DomSanitizer);
   private _docLoaderService = inject(DocumentLoaderService);
   private _docVersionService = inject(DocumentVersionService);

@@ -1,16 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  map,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -52,25 +43,16 @@ export class DocumentVersionService {
     );
   }
 
-  get versionSaved(): string {
-    return window.localStorage.getItem('docs-version') || this.latestVersion;
-  }
-
-  set versionSaved(value: string) {
-    if (!this.versions$.value.find((x) => x.value === value)) {
-      return;
-    }
-
-    this._currentVersion$.next(value);
-    window.localStorage.setItem('docs-version', value);
-  }
-
   get currentVersion$(): Observable<string> {
     return this._currentVersion$.asObservable();
   }
 
   get currentVersion(): string {
     return this._currentVersion$.value;
+  }
+
+  set currentVersion(value: string) {
+    this._currentVersion$.next(value);
   }
 
   get latestVersion(): string {
