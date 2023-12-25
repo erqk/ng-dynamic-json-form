@@ -22,6 +22,7 @@ button {
   text-align: left;
   z-index: 0;
   cursor: pointer;
+  transition: 0s;
 
   @mixin left-border {
     &::before {
@@ -58,15 +59,13 @@ button {
 }
 
 .sub-titles {
-  display: flex;
-  flex-direction: column;
-  height: 0;
-  overflow: hidden;
-  transition: 0.25s;
+  display: grid;
+  grid-template-rows: 0fr;
+  font-size: 0.95rem;
+  transition: 0.2s;
 
   &.active {
-    height: auto;
-    overflow: unset;
+    grid-template-rows: 1fr;
   }
 
   button {

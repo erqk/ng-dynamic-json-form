@@ -40,14 +40,16 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
               item.children?.length && currentActiveId[level - 1] === item.id
           }"
         >
-          <ng-container
-            *ngFor="let child of item.children"
-            [ngTemplateOutlet]="buttonTemplate"
-            [ngTemplateOutletContext]="{
-              item: child,
-              level: level + 1
-            }"
-          ></ng-container>
+          <div class="overflow-hidden">
+            <ng-container
+              *ngFor="let child of item.children"
+              [ngTemplateOutlet]="buttonTemplate"
+              [ngTemplateOutletContext]="{
+                item: child,
+                level: level + 1
+              }"
+            ></ng-container>
+          </div>
         </div>
       </ng-container>
     </ng-template>
@@ -92,10 +94,11 @@ export class SideNavigationPaneComponent {
       block: 'center',
     });
 
-    // window.history.replaceState(null, '', `${newUrl}#${item.id}`);
-    this._router.navigateByUrl(`${newUrl}#${item.id}`);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
+    this._router.navigateByUrl(`${newUrl}#${item.id}`, {
+      onSameUrlNavigation: 'reload',
+    });
   }
 
   private _onRouteChange(): void {

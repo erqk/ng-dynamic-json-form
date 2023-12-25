@@ -14,19 +14,20 @@
 
 @layer base {
   h1 {
-    @apply text-3xl font-bold mt-8 mb-4;
+    @apply text-4xl font-bold my-6;
   }
 
   h2 {
-    @apply text-2xl font-bold mt-6 mb-2;
+    @apply text-3xl font-bold my-4;
   }
 
   h3 {
-    @apply text-xl font-medium mt-4 mb-2;
+    @apply text-2xl font-medium my-2;
   }
 }
 
 :root {
+  --primary-50: #f7f6ff;
   --primary-100: #efecff;
   --primary-200: #cfc7ff;
   --primary-300: #afa1ff;
@@ -41,7 +42,9 @@
 
   --body-bg-color: white;
   --bg-color-rgb: 255, 255, 255;
-  --text-color-rgb: 0, 0, 0;
+  --text-color-rgb: 80, 80, 100;
+
+  color-scheme: light dark;
 
   &.dark {
     @include dark.rootVariables;
@@ -67,7 +70,8 @@ body {
   margin: 0;
 }
 
-button, [type="button"] {
+button,
+[type="button"] {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   border: none;
