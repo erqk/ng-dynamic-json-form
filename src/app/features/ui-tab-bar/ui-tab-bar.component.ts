@@ -89,6 +89,7 @@ export class UiTabBarComponent {
 
       activeTab.scrollIntoView({
         inline: 'center',
+        block: 'nearest'
       });
 
       this._renderer2.setStyle(indicator, 'opacity', '1');
