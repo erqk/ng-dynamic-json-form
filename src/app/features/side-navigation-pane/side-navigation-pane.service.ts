@@ -20,7 +20,7 @@ export class SideNavigationPaneService {
       const prevH2 = acc.filter((x) => x.tagName === 'H2').pop();
       const item = {
         id: curr.id,
-        label: curr.innerHTML,
+        label: (curr as HTMLElement).innerText,
         tagName: curr.tagName,
       };
 
