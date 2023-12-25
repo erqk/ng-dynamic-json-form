@@ -64,7 +64,7 @@ export class UiBasicRangeComponent extends CustomControlComponent {
 
     const min = parseFloat(this._rangeInput.min);
     const max = parseFloat(this._rangeInput.max);
-    const value = parseFloat(this._rangeInput.value);
+    const value = this.control.value ?? 0;
     this._rangeInput.style.backgroundSize = `${
       ((value - min) * 100) / (max - min)
     }% 100%`;
