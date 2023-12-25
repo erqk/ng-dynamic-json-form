@@ -30,7 +30,7 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
       deps: [LanguageDataService],
       multi: true,
       useFactory: (languageDataService: LanguageDataService) => () =>
-        languageDataService.setLanguage$(),
+        languageDataService.loadLanguageData$(),
     },
   ],
   bootstrap: [AppComponent],

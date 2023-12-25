@@ -42,9 +42,9 @@ export class AppComponent {
         }
 
         if (x instanceof NavigationEnd) {
-          this._langService
-            .setLanguage$(this._langService.languageFromUrl)
-            .subscribe();
+          this._langService.language$.next(
+            this._langService.languageFromUrl ?? 'en'
+          );
         }
       })
     );

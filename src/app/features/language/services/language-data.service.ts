@@ -1,9 +1,8 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LanguageType } from '../language.type';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -27,15 +26,17 @@ export class LanguageDataService {
     return langFromUrl;
   }
 
-  setLanguage$(lang?: string): Observable<any> {
+  loadLanguageData$(lang?: LanguageType): Observable<any> {
     const _lang =
       lang ??
       this.languageFromUrl ??
       window.localStorage.getItem('language') ??
       'en';
 
+    const timestamp = new Date().getTime();
+
     return this._http
-      .get(`assets/i18n/${_lang}.json`, { responseType: 'json' })
+      .get(`assets/i18n/${_lang}.json?q=${timestamp}`, { responseType: 'json' })
       .pipe(
         tap((x) => {
           if (!x) return;

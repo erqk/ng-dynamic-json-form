@@ -28,7 +28,7 @@ export class LanguageSelectorComponent {
     const language = select.value;
 
     this._languageDataService
-      .setLanguage$(language)
+      .loadLanguageData$(language)
       .pipe(tap(() => this._docLoaderService.updateUrl()))
       .subscribe();
   }
