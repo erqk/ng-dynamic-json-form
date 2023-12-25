@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { LanguageType } from '../language.type';
 
 @Injectable({
@@ -10,6 +10,7 @@ import { LanguageType } from '../language.type';
 export class LanguageDataService {
   private _http = inject(HttpClient);
   private _location = inject(Location);
+  private _cache: { lang: string; data: any }[] = [];
 
   languageList: LanguageType[] = ['zh-TW', 'en'];
   defaultLanguage: LanguageType = 'en';
@@ -34,16 +35,21 @@ export class LanguageDataService {
       'en';
 
     const timestamp = new Date().getTime();
-
-    return this._http
-      .get(`assets/i18n/${_lang}.json?q=${timestamp}`, { responseType: 'json' })
-      .pipe(
-        tap((x) => {
-          if (!x) return;
-          this.language$.next(_lang);
-          this.i18nContent$.next(x);
-          window.localStorage.setItem('language', _lang);
+    const cache = this._cache.find((x) => x.lang === _lang)?.data;
+    const source$ = !cache
+      ? this._http.get(`assets/i18n/${_lang}.json?q=${timestamp}`, {
+          responseType: 'json',
         })
-      );
+      : of(cache);
+
+    return source$.pipe(
+      tap((x) => {
+        if (!x) return;
+        this.language$.next(_lang);
+        this.i18nContent$.next(x);
+        this._cache.push({ lang: _lang, data: x });
+        window.localStorage.setItem('language', _lang);
+      })
+    );
   }
 }
