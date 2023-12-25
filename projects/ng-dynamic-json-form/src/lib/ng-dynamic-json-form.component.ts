@@ -10,7 +10,6 @@ import {
   Renderer2,
   SimpleChanges,
   TemplateRef,
-  Type,
   inject,
 } from '@angular/core';
 import {
@@ -18,15 +17,15 @@ import {
   UntypedFormGroup,
   ValidatorFn,
 } from '@angular/forms';
-import Ajv, { ValidateFunction } from 'ajv';
+import Ajv from 'ajv';
 import { Subject, merge, takeUntil } from 'rxjs';
-import { CustomControlComponent } from './components/custom-control/custom-control.component';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import * as schema from './config-schema.json';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { FormControlConfig, UiComponents } from './models';
+import { CustomComponents } from './models/custom-components.type';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import { ErrorMessageService } from './services';
@@ -74,7 +73,7 @@ export class NgDynamicJsonFormComponent {
   @ContentChild('formArrayGroupHeader')
   formArrayGroupHeaderRef?: TemplateRef<any>;
 
-  @Input() jsonData: FormControlConfig[] | string = [];
+  @Input() configs: FormControlConfig[] | string = [];
 
   /**User defined custom valiators. The `value` is the `key` of target ValidatorFn.
    * @example
@@ -108,34 +107,36 @@ export class NgDynamicJsonFormComponent {
    *    ...
    * }
    */
-  @Input() customComponents: {
-    [key: string]: Type<CustomControlComponent>;
-  } = {};
+  @Input() customComponents: CustomComponents = {};
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents;
+  @Input() uiComponents?: CustomComponents;
 
   @Output() formGet = new EventEmitter();
 
   config: FormControlConfig[] = [];
-  configValidateErrors: ValidateFunction['errors'] = [];
+  configValidateErrors: string[] = [];
 
   form?: UntypedFormGroup;
-  basicUIComponents = UI_BASIC_COMPONENTS;
+  uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
       return;
     }
 
-    const { jsonData, uiComponents } = simpleChanges;
+    const { configs, uiComponents } = simpleChanges;
 
-    if (jsonData && jsonData.currentValue) {
+    if (configs && configs.currentValue) {
       this._buildForm();
     }
 
     if (uiComponents) {
       this._setHostUiClass();
+      this.uiComponentsGet = {
+        ...UI_BASIC_COMPONENTS,
+        ...this.uiComponents,
+      };
     }
   }
 
@@ -172,11 +173,11 @@ export class NgDynamicJsonFormComponent {
   }
 
   private _validateAndGetConfig(): FormControlConfig[] | null {
-    if (!this.jsonData) return null;
+    if (!this.configs) return null;
 
-    const data = Array.isArray(this.jsonData)
-      ? { config: this.jsonData }
-      : this.jsonData;
+    const data = Array.isArray(this.configs)
+      ? { config: this.configs }
+      : this.configs;
 
     try {
       const ajv = new Ajv({ allErrors: true });
@@ -185,11 +186,18 @@ export class NgDynamicJsonFormComponent {
       const valid = validate(parsed);
 
       if (!valid) {
-        this.configValidateErrors = validate.errors;
+        this.configValidateErrors = [
+          ...(validate.errors ?? []).map((x) => JSON.stringify(x)),
+        ];
         return null;
       }
+
       return (parsed as any)['config'] ?? null;
-    } catch {
+    } catch (err: any) {
+      // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+      this.configValidateErrors = [
+        JSON.stringify(err, Object.getOwnPropertyNames(err)),
+      ];
       return null;
     }
   }

@@ -1,11 +1,11 @@
-<ng-container *ngIf="!jsonData"> Please pass in your JSON string </ng-container>
+<ng-container *ngIf="!configs"> Please pass in your JSON string </ng-container>
 
 <ng-container *ngIf="!!configValidateErrors?.length">
   <div class="config-validation-error">
     <p>Config validation failed. Please check.</p>
     <ng-container *ngFor="let error of configValidateErrors">
       <p>
-        {{ error | json }}
+        {{ error }}
       </p>
     </ng-container>
   </div>
@@ -55,7 +55,7 @@
               [control]="parentForm.controls[config.formControlName]"
               [formControlName]="config.formControlName"
               [customComponent]="customComponents[config.customComponent]"
-              [uiComponents]="uiComponents || basicUIComponents"
+              [uiComponents]="uiComponentsGet"
             ></form-control>
           </grid-item-wrapper>
         </ng-container>
