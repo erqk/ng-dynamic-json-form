@@ -5,12 +5,11 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-import { debounceTime, filter, map, startWith, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { map, startWith, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
 import { ErrorMessageService } from '../../services';
 import { FormDataTransformService } from '../../services/form-data-transform.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'custom-control',
