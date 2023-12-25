@@ -41,7 +41,7 @@ export class DocumentRouterLinkDirective {
   }
 
   private _listenMutation(): void {
-    this._mutationObserver = new MutationObserver(([mutation]) => {
+    this._mutationObserver = new MutationObserver(() => {
       this._highlightActiveRoute();
     });
 
@@ -59,11 +59,15 @@ export class DocumentRouterLinkDirective {
 
     links.forEach((el) => {
       const activeLink =
-        el.href.split('/').pop() === this._router.url.split('/').pop();
+        el.href.split('/').pop() === this._routeClean.split('/').pop();
 
       activeLink
         ? el.classList.add(this.routeActiveClass)
         : el.classList.remove(this.routeActiveClass);
     });
+  }
+
+  private get _routeClean(): string {
+    return this._router.url.split('?')[0].split('#')[0];
   }
 }
