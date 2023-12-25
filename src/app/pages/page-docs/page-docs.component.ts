@@ -85,6 +85,7 @@ export class PageDocsComponent {
   ngOnDestroy(): void {
     this._onDestroy$.next();
     this._onDestroy$.complete();
+    this._docLoaderService.clearCache();
   }
 
   onReady(): void {
@@ -103,6 +104,7 @@ export class PageDocsComponent {
 
   private _scrollToContent(): void {
     const id = this._route.snapshot.fragment?.split('?')[0];
+
     if (!id) {
       window.scrollTo({ top: 0 });
       return;
@@ -111,7 +113,7 @@ export class PageDocsComponent {
     requestAnimationFrame(() => {
       const target = document.querySelector(`#${id}`);
       if (!target) return;
-      scrollToTitle(target, 'auto');
+      scrollToTitle(target, 'smooth');
     });
   }
 

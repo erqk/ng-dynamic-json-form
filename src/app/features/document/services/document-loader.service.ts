@@ -1,7 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, finalize, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  finalize,
+  map,
+  of,
+  tap,
+} from 'rxjs';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
 
@@ -14,10 +22,19 @@ export class DocumentLoaderService {
   private _router = inject(Router);
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
+  private _docCache: { path: string; data: string }[] = [];
 
   docLoading$ = new BehaviorSubject<boolean>(false);
 
   loadDoc$(path: string): Observable<string> {
+    const cacheFound = this._docCache.find(
+      (x) => x.path === path && x.data
+    )?.data;
+
+    if (cacheFound) {
+      return of(cacheFound);
+    }
+
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
@@ -30,6 +47,7 @@ export class DocumentLoaderService {
         responseType: 'text',
       })
       .pipe(
+        tap((x) => this._docCache.push({ path, data: x })),
         finalize(() => this.docLoading$.next(false)),
         catchError((err) => {
           throw err;
@@ -37,11 +55,13 @@ export class DocumentLoaderService {
       );
   }
 
+  clearCache(): void {
+    this._docCache = [];
+  }
+
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
-    const version =
-      this._documentVersionService.versionSaved ??
-      this._documentVersionService.latestVersion;
+    const version = this._documentVersionService.latestVersion;
     const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
@@ -77,10 +97,11 @@ export class DocumentLoaderService {
     return (href: string | null, title: string | null, text: string) => {
       const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
       const useRouter = !!prefix && href?.startsWith(prefix);
+      const routeClean = this._router.url.split('?')[0].split('#')[0];
 
       if (href?.startsWith('#')) {
         return `<a title="${title || text}" [routerLink]
-          href="${this._router.url}${href}">${text}</a>`;
+          href="${routeClean}${href}">${text}</a>`;
       }
 
       if (!useRouter) {

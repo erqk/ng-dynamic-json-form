@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, ElementRef, HostBinding } from '@angular/core';
+import { Component, ElementRef, HostBinding, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
@@ -56,25 +56,22 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
   animations: [FADE_UP_ANIMATION],
 })
 export class SideNavigationPaneComponent {
-  links: SideNaviagionPaneLink[] = [];
-  currentActiveId = ['', ''];
-
+  private _sideNavigationPaneService = inject(SideNavigationPaneService);
+  private _el = inject(ElementRef);
+  private _router = inject(Router);
+  private _location = inject(Location);
   private _currentLinkIndex = 0;
   private _linksFlatten: SideNaviagionPaneLink[] = [];
   private _scrolling = false;
   private _scrollingTimeout: number = 0;
 
-  private _reset$ = new Subject();
-  private _onDestroy$ = new Subject();
+  private readonly _reset$ = new Subject<void>();
+  private readonly _onDestroy$ = new Subject<void>();
+
+  links: SideNaviagionPaneLink[] = [];
+  currentActiveId = ['', ''];
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
-
-  constructor(
-    private _sideNavigationPaneService: SideNavigationPaneService,
-    private _el: ElementRef,
-    private _router: Router,
-    private _location: Location
-  ) {}
 
   ngOnInit(): void {
     this._getLinks();
@@ -82,7 +79,7 @@ export class SideNavigationPaneComponent {
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next(null);
+    this._onDestroy$.next();
     this._onDestroy$.complete();
   }
 
@@ -90,20 +87,15 @@ export class SideNavigationPaneComponent {
     const el = e.target as HTMLElement;
     const newUrl = this._router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
-    const itemIndex = Array.from(
-      (this._el.nativeElement as HTMLElement).children
-    ).indexOf(el);
 
     el.scrollIntoView({
       block: 'center',
     });
 
-    window.history.replaceState(null, '', `${newUrl}#${item.id}`);
+    // window.history.replaceState(null, '', `${newUrl}#${item.id}`);
+    this._router.navigateByUrl(`${newUrl}#${item.id}`);
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
-
-    if (itemIndex === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
-    else this._scrollToContent(item.id);
   }
 
   private _onRouteChange(): void {
@@ -163,7 +155,7 @@ export class SideNavigationPaneComponent {
       lastScrollPosition = window.scrollY;
     };
 
-    this._reset$.next(null);
+    this._reset$.next();
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
         tap(() => highlightVisibleTitle()),
