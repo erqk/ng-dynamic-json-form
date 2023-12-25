@@ -12,7 +12,7 @@ export interface FormControlConfig {
   /**Change state or toggle validators when condition met */
   conditions?: FormControlCondition;
 
-  /**Provide to make this control as a FormGroup */
+  /**Provide to make this control as a FormGroup, cannot use with `formArray` */
   children?: FormControlConfig[];
 
   /**Key of the custom component to use on this control */
@@ -40,7 +40,7 @@ export interface FormControlConfig {
    */
   extra?: FormControlExtra;
 
-  /**Make this control as a FormArray */
+  /**Provide to make this control as a FormArray, cannot use with `children` */
   formArray?: FormArrayConfig;
 
   /**Set to true if you need to take control of validation message */
