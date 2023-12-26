@@ -1,6 +1,6 @@
 <ng-container *ngIf="data">
   <p-dropdown
     [formControl]="control"
-    [options]="data.options || []"
+    [options]="data.options?.data"
   ></p-dropdown>
 </ng-container>

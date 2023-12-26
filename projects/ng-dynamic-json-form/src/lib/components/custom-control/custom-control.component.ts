@@ -8,8 +8,11 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { map, startWith, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
-import { ErrorMessageService } from '../../services';
-import { FormDataTransformService } from '../../services/form-data-transform.service';
+import {
+  ErrorMessageService,
+  FormDataTransformService,
+  OptionsDataService,
+} from '../../services';
 
 @Component({
   selector: 'custom-control',
@@ -19,6 +22,7 @@ import { FormDataTransformService } from '../../services/form-data-transform.ser
 export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _dataTransformService = inject(FormDataTransformService);
   private _errorMessageService = inject(ErrorMessageService);
+  private _optionsDataService = inject(OptionsDataService);
 
   private _onTouched = () => {};
 
@@ -88,6 +92,38 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
           this._control.setErrors(control.errors);
           this.errors$.next(messages);
+        })
+      )
+      .subscribe();
+  }
+
+  fetchOptions(): void {
+    if (
+      !this.data ||
+      !this.data?.options?.sourceList ||
+      !this.data.options.sourceList.length
+    ) {
+      return;
+    }
+
+    this.data.extra = {
+      loading: true,
+    };
+
+    this._optionsDataService
+      .getOptions$(this.data.options)
+      .pipe(
+        tap((x) => {
+          const { sourceAppendPosition, data = [] } = this.data!.options!;
+          this.data!.options = {
+            ...this.data!.options,
+            data:
+              sourceAppendPosition === 'before'
+                ? [...x, ...data]
+                : [...data, ...x],
+          };
+
+          this.data!.extra!['loading'] = false;
         })
       )
       .subscribe();

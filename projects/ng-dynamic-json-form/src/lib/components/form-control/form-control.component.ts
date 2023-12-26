@@ -113,10 +113,11 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
       this._controlComponentRef = componentRef.instance;
       componentRef.instance.data = this.data;
-      componentRef.instance?.registerOnChange(this._onChange);
-      componentRef.instance?.registerOnTouched(this._onTouched);
-      componentRef.instance?.writeValue(this._pendingValue$.value);
+      componentRef.instance.registerOnChange(this._onChange);
+      componentRef.instance.registerOnTouched(this._onTouched);
+      componentRef.instance.writeValue(this._pendingValue$.value);
       componentRef.instance.listenErrors(this.control);
+      componentRef.instance.fetchOptions();
     }, 0);
   }
 }

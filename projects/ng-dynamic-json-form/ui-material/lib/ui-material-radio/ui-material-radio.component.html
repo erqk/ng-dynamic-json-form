@@ -3,13 +3,13 @@
     <div
       class="group-buttons"
       [ngStyle]="{
-        'flex-direction': data.optionsLayout
+        'flex-direction': data.options?.layout
       }"
     >
-      <ng-container *ngFor="let item of data.options">
+      <ng-container *ngFor="let item of data.options?.data">
         <mat-radio-button
           [value]="item.value"
-          [labelPosition]="data.extra?.radio?.labelPosition ?? 'after'"
+          [labelPosition]="data.options?.labelPosition ?? 'after'"
           >{{ item.label }}</mat-radio-button
         >
       </ng-container>

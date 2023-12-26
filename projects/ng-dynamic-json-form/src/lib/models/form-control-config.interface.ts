@@ -49,16 +49,13 @@ export interface FormControlConfig {
   label?: string;
   ngxMaskConfig?: Partial<NgxMaskConfig>;
 
-  /**Options with key value pairs, use with the following elements:
-   * - Dropdown menu
-   * - Radio buttons
-   * - Multi select checkboxes
-   * - ...etc
+  /**A list of data, use with the following input type:
+   * - `checkbox`
+   * - `dropdown`
+   * - `radio`
+   * - ...your custom component
    */
-  options?: FormControlOptions[];
-
-  /**Display options using row or column (options must not be empty) */
-  optionsLayout?: 'column' | 'row';
+  options?: FormControlOptions;
 
   placeholder?: string;
   type?: FormControlType;

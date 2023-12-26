@@ -28,13 +28,16 @@ import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
-import { ErrorMessageService } from './services';
-import { FormConfigInitService } from './services/form-config-init.service';
-import { FormDataTransformService } from './services/form-data-transform.service';
-import { FormGeneratorService } from './services/form-generator.service';
-import { FormStatusService } from './services/form-status.service';
-import { FormValidatorService } from './services/form-validator.service';
-import { GridLayoutService } from './services/grid-layout.service';
+import {
+  ErrorMessageService,
+  FormConfigInitService,
+  FormDataTransformService,
+  FormGeneratorService,
+  FormStatusService,
+  FormValidatorService,
+  GridLayoutService,
+  OptionsDataService,
+} from './services';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -57,6 +60,7 @@ import { GridLayoutService } from './services/grid-layout.service';
     FormStatusService,
     GridLayoutService,
     ErrorMessageService,
+    OptionsDataService,
   ],
 })
 export class NgDynamicJsonFormComponent {

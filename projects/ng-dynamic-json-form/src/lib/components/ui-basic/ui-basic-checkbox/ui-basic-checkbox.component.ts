@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-basic-checkbox',
@@ -12,6 +13,22 @@ import { CustomControlComponent } from '../../custom-control/custom-control.comp
 })
 export class UiBasicCheckboxComponent extends CustomControlComponent {
   override control = new FormControl<any | any[]>('');
+
+  override registerOnChange(fn: any): void {
+    this.control.valueChanges
+      .pipe(
+        map((x) => {
+          if (!Array.isArray(x)) return x;
+
+          try {
+            return x.map((child) => JSON.parse(child));
+          } catch {
+            return x;
+          }
+        })
+      )
+      .subscribe(fn);
+  }
 
   onCheckboxChange(e: Event): void {
     const input = e.target as HTMLInputElement;

@@ -1,24 +1,24 @@
 <ng-container *ngIf="data">
   <div
     class="group-buttons"
-    [ngClass]="{
-      disabled: control.disabled
-    }"
+    [ngClass]="[
+      (control.disabled || data.extra?.['loading'] === true) ? 'disabled' : ''
+    ]"
     [ngStyle]="{
-      'flex-direction': data.optionsLayout
+      'flex-direction': data.options?.layout,
     }"
   >
-    <ng-container *ngFor="let item of data.options">
+    <ng-container *ngFor="let item of data.options?.data">
       <div class="option-button-wrapper">
         <label class="option-button">
-          <span *ngIf="data.extra?.radio?.labelPosition === 'before'">{{
+          <span *ngIf="data.options?.labelPosition === 'before'">{{
             item.label
           }}</span>
 
           <input type="radio" [value]="item.value" [formControl]="control" />
           <span class="marker"></span>
 
-          <span *ngIf="data.extra?.radio?.labelPosition !== 'before'">{{
+          <span *ngIf="data.options?.labelPosition !== 'before'">{{
             item.label
           }}</span>
         </label>

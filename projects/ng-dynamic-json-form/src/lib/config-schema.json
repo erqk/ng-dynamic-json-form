@@ -56,15 +56,30 @@
             "description": "The interface from ngx-mask library (partial).\n Source: https://github.com/JsDaddy/ngx-mask/blob/develop/projects/ngx-mask-lib/src/lib/ngx-mask.config.ts"
           },
           "options": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/optionsConfig"
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/optionsItemConfig"
+                }
+              },
+              "sourceList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/optionsSourceListConfig"
+                }
+              },
+              "sourceAppendPosition": {
+                "type": "string",
+                "enum": ["after", "before"]
+              },
+              "layout": {
+                "type": "string",
+                "enum": ["row", "before"]
+              },
+              "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
             }
-          },
-          "optionsLayout": {
-            "description": "Use with options, no effect if optiosn is empty.",
-            "enum": ["column", "row"],
-            "default": "row"
           },
           "placeholder": {
             "type": "string"
@@ -237,25 +252,43 @@
         }
       }
     },
-    "formControlOptions": {
+    "optionsSourceListConfig": {
       "type": "object",
       "properties": {
-        "label": {
+        "src": {
           "type": "string"
         },
-        "value": {},
-        "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
-      },
-      "required": ["label"]
+        "data": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "labelKey": {
+              "type": "string"
+            },
+            "valueKeys": {
+              "oneOf": [
+                {
+                  "const": "ALL"
+                },
+                {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              ]
+            }
+          }
+        }
+      }
     },
-    "optionsConfig": {
+    "optionsItemConfig": {
       "type": "object",
       "properties": {
         "label": {
           "type": "string"
         },
-        "value": {},
-        "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
+        "value": {}
       },
       "required": ["label"]
     },

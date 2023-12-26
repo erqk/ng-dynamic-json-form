@@ -3,7 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Observable, map, startWith } from 'rxjs';
 import { ValidatorConfig } from '../../models';
-import { ErrorMessageService } from '../../services/error-message.service';
+import { ErrorMessageService } from '../../services';
 
 @Component({
   selector: 'error-message',

@@ -2,16 +2,51 @@
   <div
     class="group-buttons"
     [ngStyle]="{
-      'flex-direction': data.optionsLayout
+      'flex-direction': data.options?.layout
     }"
   >
-    <div *ngFor="let item of data.options" class="field-checkbox">
-      <p-radioButton
-        [inputId]="item.value"
-        [value]="item.value"
-        [formControl]="control"
-      ></p-radioButton>
-      <label [for]="item.value" class="ml-2">{{ item.label }}</label>
-    </div>
+    <ng-container *ngFor="let item of data.options?.data">
+      <label
+        class="option-button"
+        [ngStyle]="{
+          'justify-content':
+            data.options?.labelPosition === 'before' ? 'space-between' : null
+        }"
+      >
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: item.label,
+              isBefore: true
+            }
+          "
+        ></ng-container>
+
+        <p-radioButton
+          [inputId]="item.value"
+          [value]="item.value"
+          [formControl]="control"
+        ></p-radioButton>
+
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: item.label,
+              isBefore: false
+            }
+          "
+        ></ng-container>
+      </label>
+    </ng-container>
   </div>
+
+  <ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
+    <ng-container
+      *ngIf="(data.options?.labelPosition === 'before') === isBefore"
+    >
+      <span>{{ label }}</span>
+    </ng-container>
+  </ng-template>
 </ng-container>
