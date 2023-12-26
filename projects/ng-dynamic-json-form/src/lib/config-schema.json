@@ -52,12 +52,21 @@
           "label": {
             "type": "string"
           },
+          "layout": {
+            "$ref": "#/definitions/layoutConfig"
+          },
           "ngxMaskConfig": {
             "description": "The interface from ngx-mask library (partial).\n Source: https://github.com/JsDaddy/ngx-mask/blob/develop/projects/ngx-mask-lib/src/lib/ngx-mask.config.ts"
           },
           "options": {
             "type": "object",
             "properties": {
+              "containerClass": {
+                "type": "string"
+              },
+              "containerStyles": {
+                "type": "string"
+              },
               "data": {
                 "type": "array",
                 "items": {
@@ -291,6 +300,29 @@
         "value": {}
       },
       "required": ["label"]
+    },
+    "layoutConfig": {
+      "type": "object",
+      "properties": {
+        "hostClass": {
+          "type": "string"
+        },
+        "hostStyles": {
+          "type": "string"
+        },
+        "labelClass": {
+          "type": "string"
+        },
+        "labelStyles": {
+          "type": "string"
+        },
+        "childClass": {
+          "type": "string"
+        },
+        "childStyles": {
+          "type": "string"
+        }
+      }
     },
     "validatorConfig": {
       "type": "array",

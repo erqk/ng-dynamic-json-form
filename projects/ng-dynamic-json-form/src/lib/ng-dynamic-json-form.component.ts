@@ -21,9 +21,9 @@ import Ajv from 'ajv';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
-import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
 import * as schema from './config-schema.json';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
+import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
@@ -35,7 +35,6 @@ import {
   FormGeneratorService,
   FormStatusService,
   FormValidatorService,
-  GridLayoutService,
   OptionsDataService,
 } from './services';
 
@@ -47,10 +46,11 @@ import {
     CommonModule,
     ReactiveFormsModule,
     FormControlComponent,
-    GridItemWrapperComponent,
     ErrorMessageComponent,
     GenerateFormPipe,
     FormArrayHeaderEventPipe,
+    HostIdDirective,
+    ControlLayoutDirective,
   ],
   providers: [
     FormConfigInitService,
@@ -58,7 +58,6 @@ import {
     FormGeneratorService,
     FormValidatorService,
     FormStatusService,
-    GridLayoutService,
     ErrorMessageService,
     OptionsDataService,
   ],

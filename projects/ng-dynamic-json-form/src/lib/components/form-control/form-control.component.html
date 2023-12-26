@@ -1,6 +1,11 @@
 <ng-container *ngIf="data">
   <ng-container *ngIf="data.label">
-    <label class="input-label">{{ data.label }}</label>
+    <label
+      class="input-label"
+      [ngClass]="data.layout?.labelClass"
+      [style]="data.layout?.labelStyles"
+      >{{ data.label }}</label
+    >
   </ng-container>
 
   <ng-container *ngIf="data.description">

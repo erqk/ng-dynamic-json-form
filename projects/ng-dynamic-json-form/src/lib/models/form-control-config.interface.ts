@@ -47,6 +47,16 @@ export interface FormControlConfig {
   hideValidationMessage?: boolean;
 
   label?: string;
+
+  layout?: {
+    hostClass?: string;
+    hostStyles?: string;
+    labelClass?: string;
+    labelStyles?: string;
+    childClass?: string;
+    childStyles?: string;
+  };
+
   ngxMaskConfig?: Partial<NgxMaskConfig>;
 
   /**A list of data, use with the following input type:

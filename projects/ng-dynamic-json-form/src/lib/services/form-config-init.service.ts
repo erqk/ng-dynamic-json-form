@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { GridLayoutService } from './grid-layout.service';
 import { FormControlConfig } from '../models';
 import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
 
@@ -66,10 +65,7 @@ export class FormConfigInitService {
     },
   };
 
-  constructor(private _gridLayoutService: GridLayoutService) {}
-
   init(config: FormControlConfig[]): void {
-    this._gridLayoutService.setGridColumn(config);
     this._initNgxMaskPatterns(config);
   }
 

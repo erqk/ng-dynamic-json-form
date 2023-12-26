@@ -35,7 +35,7 @@
     width: 100%;
   }
 
-  .form-grid-container {
+  .grid-container {
     display: grid;
     column-gap: var(--column-gap);
     row-gap: var(--row-gap);
@@ -76,7 +76,7 @@
         font-weight: normal;
       }
 
-      .form-grid-container {
+      .grid-container {
         row-gap: calc(var(--row-gap) * 0.7);
       }
     }
@@ -143,6 +143,12 @@
   }
 
   // ================= Utilities ======================
+  .disabled {
+    filter: grayscale(1);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
   .sr-only {
     @include utilities.sr-only();
   }

@@ -30,25 +30,31 @@
   let-controlConfigs="controlConfigs"
   let-isNested="isNested"
   let-parentId="parentId"
-  let-gridTemplateColumns="gridTemplateColumns"
+  let-hostLayout="hostLayout"
 >
   <div
-    class="form-grid-container"
-    [ngStyle]="{
-      'grid-template-columns': gridTemplateColumns
+    class="grid-container"
+    [controlLayout]="{
+      applyTarget: 'host',
+      layout: hostLayout
     }"
   >
     <ng-container [formGroup]="parentForm">
       <ng-container *ngFor="let config of controlConfigs">
         <!-- Form control -->
         <ng-container *ngIf="!config.children && !config.formArray">
-          <grid-item-wrapper
+          <div
             class="form-control-container"
+            hostId
+            [controlName]="config.formControlName"
+            [parentId]="parentId"
+            [controlLayout]="{
+              applyTarget: 'host',
+              layout: config?.layout
+            }"
             [ngClass]="{
               'level-1': isNested !== true
             }"
-            [parentId]="parentId"
-            [data]="config"
           >
             <form-control
               [data]="config"
@@ -57,21 +63,31 @@
               [customComponent]="customComponents[config.customComponent]"
               [uiComponents]="uiComponentsGet"
             ></form-control>
-          </grid-item-wrapper>
+          </div>
         </ng-container>
 
         <!-- Form group -->
         <ng-container *ngIf="!!config.children && !config.formArray">
-          <grid-item-wrapper
+          <div
             class="form-group-container"
-            [ngClass]="{
-              'is-nested': isNested === true
-            }"
+            hostId
             [parentId]="parentId"
-            [data]="config"
+            [controlName]="config.formControlName"
+            [controlLayout]="{
+              applyTarget: 'host',
+              isNested: isNested === true,
+              layout: config?.layout
+            }"
           >
             <ng-container *ngIf="config.label">
-              <span class="form-title">{{ config.label }}</span>
+              <label
+                class="form-title"
+                [controlLayout]="{
+                  applyTarget: 'label',
+                  layout: config?.layout
+                }"
+                >{{ config.label }}</label
+              >
             </ng-container>
 
             <ng-container *ngIf="config.description">
@@ -86,10 +102,13 @@
                   (parentId ? parentId + '.' : '') + config.formControlName,
                 parentForm: parentForm.controls[config.formControlName],
                 isNested: true,
-                gridTemplateColumns: config?.cssGrid?.gridTemplateColumns
+                hostLayout: {
+                  hostClass: config?.layout?.childClass,
+                  hostStyles: config?.layout?.childStyles
+                }
               }"
             ></ng-container>
-          </grid-item-wrapper>
+          </div>
         </ng-container>
 
         <!-- Form array -->
@@ -100,13 +119,16 @@
             !!config.formArray.template.length
           "
         >
-          <grid-item-wrapper
+          <div
             class="form-array-container"
-            [ngClass]="{
-              'is-nested': isNested === true
-            }"
+            hostId
             [parentId]="parentId"
-            [data]="config"
+            [controlName]="config.formControlName"
+            [controlLayout]="{
+              applyTarget: 'host',
+              isNested: isNested === true,
+              layout: config?.layout
+            }"
           >
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
@@ -120,7 +142,7 @@
                 formArrayConfig: config.formArray
               }"
             ></ng-container>
-          </grid-item-wrapper>
+          </div>
         </ng-container>
       </ng-container>
     </ng-container>
