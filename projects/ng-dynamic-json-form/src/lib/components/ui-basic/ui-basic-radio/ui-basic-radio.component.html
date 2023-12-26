@@ -1,8 +1,10 @@
 <ng-container *ngIf="data">
   <div
     class="group-buttons"
+    [style]="data.options?.containerStyles"
     [ngClass]="[
-      (control.disabled || data.extra?.['loading'] === true) ? 'disabled' : ''
+      (control.disabled || data.extra?.['_internal_loading'] === true) ? 'disabled' : '',
+      data.options?.containerClass ?? ''
     ]"
     [ngStyle]="{
       'flex-direction': data.options?.layout,

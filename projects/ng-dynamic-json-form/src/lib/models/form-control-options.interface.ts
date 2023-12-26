@@ -15,6 +15,8 @@ export interface OptionSourceConfig {
 }
 
 export interface FormControlOptions {
+  containerClass?: string;
+  containerStyles?: string;
   data?: OptionItem[];
   sourceList?: OptionSourceConfig[];
   sourceAppendPosition?: 'after' | 'before';

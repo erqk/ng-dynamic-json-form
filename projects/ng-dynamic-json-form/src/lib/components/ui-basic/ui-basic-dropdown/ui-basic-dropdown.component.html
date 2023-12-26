@@ -2,7 +2,7 @@
   <div
     class="group-buttons"
     [ngClass]="{
-      disabled: control.disabled || data.extra?.['loading'] === true
+      disabled: control.disabled || data.extra?.['_internal_loading'] === true
     }"
     [ngStyle]="{
       'flex-direction': data.options?.layout

@@ -2,6 +2,11 @@
   <mat-radio-group [formControl]="control">
     <div
       class="group-buttons"
+      [style]="data.options?.containerStyles"
+      [ngClass]="[
+        data.extra?.['_internal_loading'] === true ? 'disabled' : '',
+        data.options?.containerClass ?? ''
+      ]"
       [ngStyle]="{
         'flex-direction': data.options?.layout
       }"

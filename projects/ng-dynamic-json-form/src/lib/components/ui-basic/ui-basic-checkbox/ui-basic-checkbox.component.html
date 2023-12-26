@@ -1,20 +1,22 @@
-<ng-container *ngIf="data && data.options && data.options.data">
+<ng-container *ngIf="data">
   <div
     class="group-buttons"
+    [style]="data.options?.containerStyles"
     [ngClass]="[
-      (control.disabled || data.extra?.['loading'] === true) ? 'disabled' : ''
+      (control.disabled || data.extra?.['_internal_loading'] === true) ? 'disabled' : '',
+      data.options?.containerClass ?? ''
     ]"
     [ngStyle]="{
-      'flex-direction': data.options.layout,
+      'flex-direction': data.options?.layout
     }"
   >
-    <ng-container *ngFor="let item of data.options.data">
+    <ng-container *ngFor="let item of data.options?.data">
       <div class="option-button-wrapper">
         <label
           class="option-button"
           [ngStyle]="{
             'justify-content':
-              data.options.labelPosition === 'before' ? 'space-between' : null
+              data.options?.labelPosition === 'before' ? 'space-between' : null
           }"
         >
           <ng-container
@@ -27,20 +29,22 @@
             "
           ></ng-container>
 
-          <!-- binary checkbox -->
-          <ng-container *ngIf="data.options.data.length === 1">
-            <input type="checkbox" [formControl]="control" />
-          </ng-container>
+          <ng-container *ngIf="data.options && data.options.data">
+            <!-- binary checkbox -->
+            <ng-container *ngIf="data.options.data.length === 1">
+              <input type="checkbox" [formControl]="control" />
+            </ng-container>
 
-          <!-- multi-select checkbox -->
-          <ng-container *ngIf="data.options.data.length > 1">
-            <input
-              type="checkbox"
-              [value]="item.value | json"
-              [checked]="control.value!.includes(item.value)"
-              [disabled]="control.disabled"
-              (change)="onCheckboxChange($event)"
-            />
+            <!-- multi-select checkbox -->
+            <ng-container *ngIf="data.options.data.length > 1">
+              <input
+                type="checkbox"
+                [value]="item.value | json"
+                [checked]="control.value!.includes(item.value)"
+                [disabled]="control.disabled"
+                (change)="onCheckboxChange($event)"
+              />
+            </ng-container>
           </ng-container>
 
           <span class="marker"></span>

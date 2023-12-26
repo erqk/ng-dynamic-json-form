@@ -107,7 +107,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     }
 
     this.data.extra = {
-      loading: true,
+      _internal_loading: true,
     };
 
     this._optionsDataService
@@ -123,7 +123,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
                 : [...data, ...x],
           };
 
-          this.data!.extra!['loading'] = false;
+          this.data!.extra!['_internal_loading'] = false;
         })
       )
       .subscribe();
