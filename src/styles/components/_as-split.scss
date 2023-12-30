@@ -1,8 +1,10 @@
 .as-split-gutter {
   position: relative !important;
-  background-color: var(--primary-500) !important;
+  background-color: var(--border-color-25) !important;
 
   &:hover {
+    background-color: gray !important;
+
     > .as-split-gutter-icon {
       opacity: 1;
     }
@@ -14,7 +16,7 @@
     left: 50% !important;
     transform: translate(-50%) !important;
     width: 1.25rem !important;
-    background-color: rgba(128, 128, 128, 0.25);
+    background-color: rgba(128, 128, 128, 0.15);
     opacity: 0;
   }
 }

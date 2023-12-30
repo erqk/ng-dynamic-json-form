@@ -13,7 +13,7 @@ import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
   ],
 })
 export class UiContentWrapperComponent {
-  @Input() maxWidth = '80rem';
+  @Input() maxWidth = '85rem';
   @HostBinding('@fade-up') fadeUp = true;
   @HostBinding('style.max-width')
   get _maxWidth() {

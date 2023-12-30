@@ -1,300 +1,101 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule, UntypedFormGroup } from '@angular/forms';
-import { AngularSplitModule } from 'angular-split';
+import { Component, inject } from '@angular/core';
+import { FormGroup, UntypedFormGroup } from '@angular/forms';
+import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
   FormControlConfig,
   NgDynamicJsonFormComponent,
 } from 'ng-dynamic-json-form';
-import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
-import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
-import { MarkdownModule } from 'ngx-markdown';
-import {
-  Subject,
-  combineLatest,
-  debounceTime,
-  fromEvent,
-  map,
-  of,
-  takeUntil,
-  tap,
-} from 'rxjs';
-import { PLAYGROUND_CONFIGS } from 'src/app/example/playground-configs/playground-configs.constant';
-import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
-import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
-import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
-import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
-import { ThemeService } from '../../features/theme/services/theme.service';
-import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
+import { combineLatest, debounceTime, map } from 'rxjs';
+import { LayoutService } from 'src/app/core/services/layout.service';
+import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
+import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
+import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
+import { PlaygroundTemplateListComponent } from 'src/app/features/playground/components/playground-template-list/playground-template-list.component';
+import { PlaygroundTemplateDataService } from 'src/app/features/playground/services/playground-template-data.service';
+import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
-  selector: 'app-page-playground',
+  selector: 'app-page-playground-new',
   standalone: true,
   imports: [
     CommonModule,
-    NgDynamicJsonFormComponent,
     UiContentWrapperComponent,
+    PlaygroundEditorComponent,
+    PlaygroundTemplateListComponent,
+    PlaygroundFormInfoComponent,
+    NgDynamicJsonFormComponent,
     AngularSplitModule,
-    FormsModule,
-    MarkdownModule,
   ],
   templateUrl: './page-playground.component.html',
   styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent {
-  headerHeight = 0;
-  windowHeight = 0;
+  private _layoutService = inject(LayoutService);
+  private _langService = inject(LanguageDataService);
+  private _templateDataService = inject(PlaygroundTemplateDataService);
+  private _docVersionService = inject(DocumentVersionService);
 
-  jsonEditor: JSONEditor | null = null;
-  jsonData: FormControlConfig[] | string = [];
+  form = new FormGroup({});
+  configs: FormControlConfig[] | string = [];
+  showEditor = false;
+  currentVersion = this._docVersionService.latestVersion;
 
-  formUI = 'ui-basic';
-  form?: UntypedFormGroup;
+  headerHeight$ = this._layoutService.headerHeight$;
+  windowSize$ = this._layoutService.windowSize$;
+  configs$ = combineLatest([
+    this._templateDataService.currentTemplateKey$,
+    this._langService.language$,
+  ]).pipe(
+    debounceTime(0),
+    map(([key]) => {
+      const examples = this._templateDataService.getExampleTemplate(key);
+      const userTemplates = this._templateDataService.getUserTemplate(key);
 
-  editing = false;
+      return (
+        userTemplates || examples || this._templateDataService.fallbackExample
+      );
+    })
+  );
 
-  customValidators = {
-    firstUppercase: firstUppercaseValidator,
-  };
-  customComponents = {
-    'custom-input': CustomInputComponent,
-    'custom-input-group': CustomInputGroupComponent,
-  };
-  customUIComponents: any = UI_PRIMENG_COMPONENTS;
+  private _defaultAsSplitSizes = [60, 40];
 
-  exampleList = PLAYGROUND_CONFIGS;
-  exampleSelected = 'all';
-
-  formInfoState = {
-    tab: 'value',
-    size: parseInt(window.localStorage.getItem('form-info-width') || '25'),
-    position: 'right',
-  };
-
-  language$ = this._languageDataService.language$;
-  i18nContent$ = this._languageDataService.i18nContent$;
-  onDestroy$ = new Subject();
-
-  constructor(
-    private _languageDataService: LanguageDataService,
-    private _themeService: ThemeService
-  ) {}
-
-  ngOnInit(): void {
-    this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
-    this._initJsonEditor();
-    this._darkThemeEvent();
-    this._setUI();
-    this._languageChangeEvent();
+  onTemplateEdit(value: boolean): void {
+    this.showEditor = value;
   }
 
-  ngAfterViewInit(): void {
-    this._onWindowResize();
-    requestAnimationFrame(() => {
-      this.windowHeight = window.innerHeight;
-      this.headerHeight =
-        document.querySelector('app-header')?.clientHeight || 0;
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
+  onEditorConfirm(e: string | FormControlConfig[]): void {
+    this.configs = e;
+    this.showEditor = false;
   }
 
   onFormGet(e: UntypedFormGroup): void {
     this.form = e;
   }
 
-  generateForm(): void {
-    const content = this._jsonEditorData;
-    if (!content) return;
-
-    this.jsonData = '';
-    requestAnimationFrame(() => {
-      this.jsonData = (content as any)['json'];
-      this.editing = false;
-    });
+  onAsSplitDragEnd(e: IOutputData): void {
+    this.asSplitSizes = e.sizes.map((x) => (typeof x === 'string' ? 50 : x));
   }
 
-  toggleFormEdit(): void {
-    this.editing = !this.editing;
+  resetSplitSizes(): void {
+    this.asSplitSizes = this._defaultAsSplitSizes;
   }
 
-  onFormUiChange(): void {
-    this._setUI();
-    this.generateForm();
-  }
-
-  onExampleChange(): void {
-    this.loadJsonData(false);
-    this.generateForm();
-  }
-
-  loadJsonData(reset = true): void {
-    if (reset) {
-      this._jsonEditorData = this._fallbackJsonData;
+  get asSplitSizes(): number[] {
+    const data = window.localStorage.getItem('as-split-sizes');
+    if (!data) {
+      return this._defaultAsSplitSizes;
     }
-
-    this.jsonEditor?.set(this._jsonEditorData);
-  }
-
-  setFormInfoState(tab: 'value' | 'errors'): void {
-    this.formInfoState.tab = tab;
-  }
-
-  onAsSplitDragEnd(e: { gutterNum: number; sizes: number[] }): void {
-    window.localStorage.setItem('form-info-width', e.sizes[1].toString());
-  }
-
-  private get _fallbackJsonData() {
-    const currentLanguage = this._languageDataService.language$.value;
-    const formConfig = (this.exampleList as any)[this.exampleSelected][
-      currentLanguage
-    ]['config'];
-
-    return { json: formConfig };
-  }
-
-  private get _jsonEditorDataKey(): string {
-    return `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`;
-  }
-
-  private get _jsonEditorData(): Content {
-    const jsonData =
-      window.localStorage.getItem(this._jsonEditorDataKey) ||
-      this._fallbackJsonData;
 
     try {
-      if (typeof jsonData === 'string') {
-        return JSON.parse(jsonData);
-      }
-
-      if (Array.isArray(jsonData)) {
-        return { json: jsonData };
-      }
-
-      return jsonData;
+      return JSON.parse(data);
     } catch {
-      return this._fallbackJsonData;
+      return this._defaultAsSplitSizes;
     }
   }
 
-  private set _jsonEditorData(data: any) {
-    window.localStorage.setItem(this._jsonEditorDataKey, JSON.stringify(data));
-  }
-
-  private _setUI(): void {
-    switch (this.formUI) {
-      case 'ui-primeng':
-        this.customUIComponents = UI_PRIMENG_COMPONENTS;
-        break;
-
-      case 'ui-material':
-        this.customUIComponents = UI_MATERIAL_COMPONENTS;
-        break;
-
-      default:
-        this.customUIComponents = null;
-        break;
-    }
-
-    window.localStorage.setItem('form-ui', this.formUI);
-  }
-
-  private _initJsonEditor(): void {
-    const el = document.querySelector('.json-editor') as HTMLElement;
-    const content = this._jsonEditorData;
-
-    this.jsonEditor = new JSONEditor({
-      target: el,
-      props: {
-        mode: Mode.text,
-        content,
-        onChange: (content, previousContent, status) => {
-          this._jsonEditorData = this._getContent(content);
-        },
-      },
-    });
-  }
-
-  /**To get the consistent result of jsoneditor */
-  private _getContent(input: Content | undefined): Content {
-    let jsonContent = null;
-
-    if (!input) return { json: jsonContent };
-    if ('json' in input) jsonContent = input['json'];
-    if ('text' in input) {
-      try {
-        jsonContent = JSON.parse(input['text'] || 'null');
-      } catch {}
-    }
-
-    return { json: jsonContent };
-  }
-
-  private _languageChangeEvent(): void {
-    this._languageDataService.language$
-      .pipe(
-        tap(() => {
-          this.loadJsonData(false);
-          this.generateForm();
-        }),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
-  }
-
-  private _darkThemeEvent(): void {
-    const setDarkTheme = (dark = false) => {
-      const el = document.querySelector('.json-editor') as HTMLElement;
-
-      if (dark) el.classList.add('jse-theme-dark');
-      else el.classList.remove('jse-theme-dark');
-      this.jsonEditor?.refresh();
-    };
-
-    const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-    const prefersDark$ = of(mediaQueryList).pipe(map((x) => x.matches));
-
-    combineLatest([prefersDark$, this._themeService.theme$])
-      .pipe(
-        debounceTime(0),
-        tap(([prefersDark, currentTheme]) => {
-          const useDark =
-            currentTheme === 'dark' || (currentTheme === 'auto' && prefersDark);
-          setDarkTheme(useDark);
-        }),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
-  }
-
-  private _onWindowResize(): void {
-    const breakpoints = {
-      large: 1400,
-      medium: 768,
-    };
-
-    const action = () =>
-      requestAnimationFrame(() => {
-        if (window.innerWidth <= breakpoints.medium) {
-          this.formInfoState.position = 'bottom';
-        } else {
-          this.formInfoState.position = 'right';
-        }
-
-        this.windowHeight = window.innerHeight;
-      });
-
-    action();
-    fromEvent(window, 'resize')
-      .pipe(
-        debounceTime(200),
-        tap(() => action()),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
+  set asSplitSizes(value: number[]) {
+    window.localStorage.setItem('as-split-sizes', JSON.stringify(value));
   }
 }

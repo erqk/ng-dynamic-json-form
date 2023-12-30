@@ -6,7 +6,9 @@ import {
   RouteConfigLoadStart,
   Router,
 } from '@angular/router';
-import { delay, tap } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { debounceTime, delay, tap } from 'rxjs/operators';
+import { LayoutService } from './core/services/layout.service';
 import { DocumentLoaderService } from './features/document/services/document-loader.service';
 import { DocumentVersionService } from './features/document/services/document-version.service';
 import { LanguageDataService } from './features/language/services/language-data.service';
@@ -22,6 +24,7 @@ export class AppComponent {
   private _docLoaderService = inject(DocumentLoaderService);
   private _docVersionService = inject(DocumentVersionService);
   private _langService = inject(LanguageDataService);
+  private _layoutService = inject(LayoutService);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
@@ -42,9 +45,7 @@ export class AppComponent {
         }
 
         if (x instanceof NavigationEnd) {
-          this._langService.language$.next(
-            this._langService.languageFromUrl ?? 'en'
-          );
+          this._langService.language$.next(this._langService.currentLanguage);
         }
       })
     );
@@ -53,5 +54,19 @@ export class AppComponent {
 
     routeChange$.subscribe();
     docVersions$.subscribe();
+  }
+
+  ngAfterViewInit(): void {
+    this._layoutService.updateHeaderHeight();
+    this._layoutService.updateWindowSize();
+    fromEvent(window, 'resize', { passive: true })
+      .pipe(
+        debounceTime(50),
+        tap(() => {
+          this._layoutService.updateHeaderHeight();
+          this._layoutService.updateWindowSize();
+        })
+      )
+      .subscribe();
   }
 }

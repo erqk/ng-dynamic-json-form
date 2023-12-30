@@ -1,0 +1,16 @@
+<div
+  [ngStyle]="{
+    '--max-height': maxHeight,
+    '--header-height.px': headerHeight$.value
+  }"
+  [ngClass]="[
+    'h-full json-editor-wrapper',
+    'max-h-[calc(var(--max-height)-var(--header-height))]'
+  ]"
+>
+  <div class="flex flex-col h-full">
+    <div
+      class="flex-1 overflow-auto json-editor beauty-scrollbar affect-child"
+    ></div>
+  </div>
+</div>

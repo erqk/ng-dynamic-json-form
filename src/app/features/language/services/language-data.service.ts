@@ -27,13 +27,14 @@ export class LanguageDataService {
     return langFromUrl;
   }
 
-  loadLanguageData$(lang?: LanguageType): Observable<any> {
-    const _lang =
-      lang ??
-      this.languageFromUrl ??
-      window.localStorage.getItem('language') ??
-      'en';
+  get currentLanguage(): LanguageType {
+    return (
+      this.languageFromUrl ?? window.localStorage.getItem('language') ?? 'en'
+    );
+  }
 
+  loadLanguageData$(lang?: LanguageType): Observable<any> {
+    const _lang = lang ?? this.currentLanguage;
     const timestamp = new Date().getTime();
     const cache = this._cache.find((x) => x.lang === _lang)?.data;
     const source$ = !cache

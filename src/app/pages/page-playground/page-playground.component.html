@@ -1,185 +1,95 @@
 <div
-  class="main-content beauty-scrollbar affect-child"
-  [style.--headerHeight.px]="headerHeight + 1"
-  [style.--windowHeight.px]="windowHeight"
+  class="relative z-0 flex"
+  [ngStyle]="{
+    '--header-height.px': headerHeight$.value,
+    '--window-height.px': windowSize$.value.y,
+    '--panel-width': '20rem'
+  }"
 >
-  <as-split
-    [direction]="formInfoState.position === 'right' ? 'horizontal' : 'vertical'"
-    [useTransition]="true"
-    [gutterSize]="6"
-    (dragEnd)="onAsSplitDragEnd($any($event))"
+  <div
+    [ngClass]="[
+      'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
+      'flex items-center',
+      'h-[calc(100vh-var(--header-height))]'
+    ]"
   >
-    <as-split-area [size]="100 - formInfoState.size">
-      <div
-        class="edit-and-preview"
-        [ngClass]="{
-          edit: editing
-        }"
-      >
-        <div class="json-editor-wrapper">
-          <div class="json-editor"></div>
-          <ng-container
-            *ngTemplateOutlet="jsonEditorToolbarTemplate"
-          ></ng-container>
-        </div>
-
-        <div class="backdrop" (click)="toggleFormEdit()"></div>
-
-        <div class="form-preview">
-          <ng-container
-            *ngTemplateOutlet="formPreviewToolbarTemplate"
-          ></ng-container>
-
-          <ui-content-wrapper [maxWidth]="'50rem'">
-            <div class="p-5">
-              <ng-dynamic-json-form
-                [configs]="jsonData"
-                [customValidators]="customValidators"
-                [customComponents]="customComponents"
-                [uiComponents]="customUIComponents"
-                (formGet)="onFormGet($event)"
-              ></ng-dynamic-json-form>
-            </div>
-          </ui-content-wrapper>
-        </div>
-      </div>
-    </as-split-area>
-
-    <as-split-area [size]="formInfoState.size">
-      <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
-    </as-split-area>
-  </as-split>
-</div>
-
-<ng-template #jsonEditorToolbarTemplate>
-  <div class="toolbar">
-    <button type="button" class="btn-reset" (click)="loadJsonData()">
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
-      </svg>
-    </button>
-
-    <button type="button" (click)="generateForm()">
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
-      </svg>
-    </button>
-
-    <button type="button" (click)="toggleFormEdit()">
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-      </svg>
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #formPreviewToolbarTemplate>
-  <div class="toolbar">
-    <div class="ui-selector">
-      <select
-        [(ngModel)]="formUI"
-        [disabled]="editing"
-        (ngModelChange)="onFormUiChange()"
-      >
-        <option [ngValue]="'ui-basic'">
-          UI -
-          {{ i18nContent$.value.PLAYGROUND.UI_LIBRARY.NATIVE_HTML }}
-        </option>
-        <option [ngValue]="'ui-primeng'">UI - PrimeNg</option>
-        <option [ngValue]="'ui-material'">UI - Material</option>
-      </select>
-    </div>
-
-    <div class="example-selector">
-      <select [(ngModel)]="exampleSelected" (ngModelChange)="onExampleChange()">
-        <ng-container *ngFor="let item of exampleList | keyvalue">
-          <option [ngValue]="item.key">
-            {{ $any(exampleList)[item.key][language$.value]["label"] }}
-          </option>
-        </ng-container>
-      </select>
-    </div>
-
-    <button
-      class="btn-edit-form"
-      [disabled]="editing"
-      (click)="toggleFormEdit()"
+    <div
+      [ngClass]="[
+        'flex flex-col shrink-0 pointer-events-auto',
+        'h-full w-[calc(var(--panel-width)+var(--gutter-auto))]',
+        'min-w-[var(--panel-width)]',
+        'border-r border-[var(--border-color-25)]',
+        'pl-[var(--gutter-auto)]',
+        'bg-[var(--body-bg-color)]',
+        showEditor ? 'shadow-2xl' : ''
+      ]"
     >
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-      </svg>
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #formInfoTemplate>
-  <div class="form-info">
-    <div class="detail" [ngSwitch]="formInfoState.tab">
-      <ng-container *ngSwitchCase="'value'">
-        <markdown
-          [data]="form?.value | json | language : 'javascript'"
-        ></markdown>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="'errors'">
-        <markdown
-          [data]="form?.errors | json | language : 'javascript'"
-        ></markdown>
-      </ng-container>
-    </div>
-
-    <div class="bar">
-      <span
-        [ngClass]="{
-          invalid: form?.invalid
-        }"
+      <div
+        [ngClass]="[
+          'flex gap-2 px-4 py-2 m-2 mt-4',
+          'rounded-full text-sm font-bold bg-[rgba(128,128,128,0.1)]'
+        ]"
       >
-        Form status : {{ form?.status ?? "--" }}
-
-        <ng-container *ngIf="form?.status === 'VALID'">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-check2-all" viewBox="0 0 16 16">
-            <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"/>
-            <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"/>
-          </svg>
-        </ng-container>
-
-        <ng-container *ngIf="form?.status === 'INVALID'">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
-            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
-            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
-          </svg>
-        </ng-container>
-      </span>
-
-      <div class="toggle-buttons">
-        <button
-          type="button"
-          [ngClass]="{
-            active: formInfoState.tab === 'value'
-          }"
-          (click)="setFormInfoState('value')"
-        >
-          Value
-        </button>
-
-        <button
-          type="button"
-          [ngClass]="{
-            active: formInfoState.tab === 'errors'
-          }"
-          (click)="setFormInfoState('errors')"
-        >
-          Errors
-        </button>
+        <span>NgDynamicJsonForm</span>
+        <span class="uppercase">{{ currentVersion }}</span>
       </div>
+
+      <app-playground-template-list
+        class="block overflow-hidden"
+        (onEdit)="onTemplateEdit($event)"
+      ></app-playground-template-list>
     </div>
+
+    <app-playground-editor
+      [class]="
+        [
+          'relative -z-10 pointer-events-auto',
+          'h-full w-[calc(100vw-var(--panel-width)-2em)]',
+          'max-w-[calc(85rem-var(--panel-width))]',
+          'max-h-[calc(100%-2rem)]',
+          'shadow-lg',
+          'duration-300 transition-transform ease-[cubic-bezier(.11,.99,.57,1)]',
+          showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]'
+        ].join(' ')
+      "
+      (onConfirm)="onEditorConfirm($event)"
+    ></app-playground-editor>
   </div>
-</ng-template>
+
+  <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
+    <div [ngClass]="['flex-1 w-full', 'pl-[var(--panel-width)]']">
+      <as-split
+        class="!overflow-visible"
+        [useTransition]="true"
+        [gutterSize]="1"
+        [gutterDblClickDuration]="300"
+        (dragEnd)="onAsSplitDragEnd($event)"
+        (gutterDblClick)="resetSplitSizes()"
+      >
+        <as-split-area class="flex !overflow-hidden" [size]="asSplitSizes[0]">
+          <div
+            [ngClass]="[
+              'w-full h-full px-8 py-10',
+              'overflow-auto beauty-scrollbar'
+            ]"
+          >
+            <ng-dynamic-json-form
+              [configs]="(configs$ | async) ?? []"
+              (formGet)="onFormGet($event)"
+            ></ng-dynamic-json-form>
+          </div>
+        </as-split-area>
+
+        <as-split-area
+          [ngClass]="[
+            'sticky top-[var(--header-height)] !overflow-hidden',
+            '!h-[calc(100vh-var(--header-height))]'
+          ]"
+          [size]="asSplitSizes[1]"
+        >
+          <app-playground-form-info [form]="form"></app-playground-form-info>
+        </as-split-area>
+      </as-split>
+    </div>
+  </ui-content-wrapper>
+</div>

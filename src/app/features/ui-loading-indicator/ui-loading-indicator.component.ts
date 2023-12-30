@@ -1,14 +1,14 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import {
   Subject,
-  filter,
   interval,
+  merge,
   switchMap,
   takeUntil,
   takeWhile,
   tap,
-  timer,
+  timer
 } from 'rxjs';
 
 @Component({
@@ -28,7 +28,8 @@ import {
 })
 export class UiLoadingIndicatorComponent {
   private _step = 0;
-  private readonly _onDestroy$ = new Subject();
+  private readonly _cancelTimer$ = new Subject<void>();
+  private readonly _onDestroy$ = new Subject<void>();
 
   @Input() start = false;
 
@@ -37,8 +38,20 @@ export class UiLoadingIndicatorComponent {
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { start } = simpleChanges;
     if (start) {
-      this._addStep();
+      if (this.start) {
+        this._addStep();
+      } else {
+        this.step = '0%';
+        this._cancelTimer$.next();
+      }
     }
+  }
+
+  ngOnDestroy(): void {
+    this._cancelTimer$.next();
+    this._cancelTimer$.complete();
+    this._onDestroy$.next();
+    this._onDestroy$.complete();
   }
 
   private _addStep(): void {
@@ -49,7 +62,7 @@ export class UiLoadingIndicatorComponent {
           this._step += Math.round(Math.random());
           this.step = `${this._step}%`;
         }),
-        takeUntil(this._onDestroy$),
+        takeUntil(merge(this._onDestroy$, this._cancelTimer$)),
         takeWhile(() => this._step < 10)
       )
       .subscribe();

@@ -23,6 +23,10 @@
         border-width: 7px;
       }
     }
+
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
   }
 }
 

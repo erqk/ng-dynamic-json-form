@@ -2,18 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
-import {
-  EMPTY,
-  Subject,
-  catchError,
-  debounceTime,
-  delay,
-  fromEvent,
-  share,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { EMPTY, Subject, catchError, delay, share, switchMap, tap } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocumentIndexComponent } from 'src/app/features/document/components/document-index/document-index.component';
@@ -71,17 +60,6 @@ export class PageDocsComponent {
     })
   );
 
-  ngAfterViewInit(): void {
-    this._layoutService.updateHeaderHeight();
-    fromEvent(window, 'resize', { passive: true })
-      .pipe(
-        debounceTime(100),
-        tap(() => this._layoutService.updateHeaderHeight()),
-        takeUntil(this._onDestroy$)
-      )
-      .subscribe();
-  }
-
   ngOnDestroy(): void {
     this._onDestroy$.next();
     this._onDestroy$.complete();
@@ -125,7 +103,7 @@ export class PageDocsComponent {
           this._router
             .navigateByUrl('/', { skipLocationChange: true })
             .then(() => {
-              this._router.navigateByUrl(`/${x}`);
+              this._router.navigateByUrl(`/${x}`, { replaceUrl: true });
             })
         )
       )

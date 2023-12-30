@@ -86,8 +86,6 @@ button {
 
 @media screen and (max-width: 992px) {
   button {
-    padding-block: 1rem;
-
     &::before {
       content: none;
     }

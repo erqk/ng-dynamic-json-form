@@ -9,9 +9,10 @@ import { PLAYGROUND_CONFIG_MULTI_CONDITION_ZHTW } from './multi-conditions/form-
 import { PLAYGROUND_CONFIG_ALL_EN } from './all/playground-config-all_en.constant';
 import { PLAYGROUND_CONFIG_ALL_ZHTW } from './all/playground-config-all_zh-TW.constant';
 
-interface ConfigItem {
+export interface ConfigItem {
   label: string;
   config: any;
+  key?: string;
 }
 
 export const PLAYGROUND_CONFIGS: {

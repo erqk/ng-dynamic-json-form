@@ -44,6 +44,12 @@
   --bg-color-rgb: 255, 255, 255;
   --text-color-rgb: 80, 80, 100;
 
+  --border-color-25: rgba(128, 128, 128, 0.25);
+  --border-color-50: rgba(128, 128, 128, 0.5);
+
+  --page-max-width: 85rem;
+  --gutter-auto: calc(50% - var(--page-max-width) * 0.5);
+
   color-scheme: light dark;
 
   &.dark {
@@ -95,6 +101,7 @@ button,
 
   &:disabled {
     opacity: 0.5;
+    pointer-events: none;
   }
 }
 

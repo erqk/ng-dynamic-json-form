@@ -40,7 +40,7 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
               item.children?.length && currentActiveId[level - 1] === item.id
           }"
         >
-          <div class="overflow-hidden">
+          <div class="flex flex-col overflow-hidden">
             <ng-container
               *ngFor="let child of item.children"
               [ngTemplateOutlet]="buttonTemplate"
