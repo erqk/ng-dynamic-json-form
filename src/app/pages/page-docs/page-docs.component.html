@@ -1,34 +1,97 @@
-<ui-content-wrapper class="beauty-scrollbar affect-child" [maxWidth]="'var(--page-max-width)'">
-  <div class="grid grid-cols-[auto,3fr,auto] gap-8 items-start">
+<div
+  class="beauty-scrollbar affect-child"
+  [ngStyle]="{
+    '--header-height.px': (headerHeight$ | async) ?? 0,
+    '--window-height.px': (windowSize$ | async)?.y ?? 0
+  }"
+>
+  <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
     <div
-      class="sticky w-64 pt-5 pb-10 px-6 overflow-auto"
-      [ngStyle]="{
-        '--header-height.px': (headerHeight$ | async) ?? 0
-      }"
+      [ngClass]="[
+        'grid-cols-[auto,3fr,auto] gap-8 items-start',
+        'block lg:grid'
+      ]"
     >
-      <app-document-version-selector
-        class="block mb-5"
-      ></app-document-version-selector>
+      <div
+        [ngClass]="[
+          'sticky w-64 pt-5 pb-10 px-6 overflow-auto',
+          'hidden lg:block',
+          'top-[var(--header-height)]',
+          'h-[calc(100vh-var(--header-height))]'
+        ]"
+      >
+        <app-document-version-selector
+          class="block mb-5"
+        ></app-document-version-selector>
 
-      <app-document-index
-        [containerClass]="['grid-cols-1 gap-y-2']"
-      ></app-document-index>
+        <app-document-index [containerClass]="['gap-y-2']"></app-document-index>
+      </div>
+
+      <markdown
+        class="block p-4 lg:p-0 mt-4 lg:mt-10 mb-24 overflow-hidden"
+        docRouterLink
+        [data]="content$ | async"
+        (ready)="onReady()"
+      ></markdown>
+
+      <div
+        [ngClass]="[
+          'sticky w-64 py-10 overflow-auto',
+          'hidden lg:block',
+          'top-[var(--header-height)]',
+          'h-[calc(100vh-var(--header-height))]'
+        ]"
+      >
+        <app-side-navigation-pane></app-side-navigation-pane>
+      </div>
     </div>
+  </ui-content-wrapper>
 
-    <markdown
-      class="overflow-hidden mt-10 mb-48"
-      docRouterLink
-      [data]="content$ | async"
-      (ready)="onReady()"
-    ></markdown>
+  <div
+    [ngClass]="[
+      'block lg:hidden',
+      'fixed top-0 left-0 z-10 w-full h-full',
+      'bg-[rgba(var(--bg-color-rgb),0.25)] backdrop-blur duration-100',
+      showMobileMenu
+        ? 'pointer-events-auto opacity-100'
+        : 'pointer-events-none opacity-0'
+    ]"
+    (click)="toggleMobileMenu(false)"
+  ></div>
 
-    <div
-      class="sticky w-64 py-10 overflow-auto"
-      [ngStyle]="{
-        '--header-height.px': (headerHeight$ | async) ?? 0
-      }"
-    >
-      <app-side-navigation-pane></app-side-navigation-pane>
-    </div>
+  <!-- mobile docs menu -->
+  <div
+    [ngClass]="[
+      'fixed bottom-0 left-0 z-10',
+      'p-6 pb-28',
+      'block lg:hidden',
+      'bg-[rgba(var(--bg-color-rgb),0.95)]',
+      'max-w-[85vw] h-[calc(var(--window-height)-var(--header-height))]',
+      'overflow-auto',
+      'duration-300 transition-transform',
+      showMobileMenu
+        ? 'shadow-2xl translate-x-0'
+        : 'translate-x-[calc(-100%-1rem)]'
+    ]"
+  >
+    <app-document-version-selector
+      class="block mb-5"
+    ></app-document-version-selector>
+    <app-document-index
+      [containerClass]="['gap-y-6 break-keep whitespace-nowrap']"
+    ></app-document-index>
   </div>
-</ui-content-wrapper>
+
+  <button
+    type="button"
+    [ngClass]="[
+      'fixed z-10 bottom-8 left-4',
+      'flex lg:hidden items-center justify-center',
+      'h-12 w-12 p-2 bg-[var(--primary-500)] text-white',
+      '!rounded-full shadow-[rgba(0,0,0,0.5)] shadow-xl'
+    ]"
+    (click)="toggleMobileMenu()"
+  >
+    <i class="bi bi-layout-text-sidebar"></i>
+  </button>
+</div>

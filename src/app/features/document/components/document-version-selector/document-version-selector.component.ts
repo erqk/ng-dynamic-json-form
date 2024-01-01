@@ -10,7 +10,10 @@ import { DocumentVersionService } from '../../services/document-version.service'
   standalone: true,
   imports: [CommonModule],
   template: `
-    <select [value]="currentVersion$ | async" (change)="changeVersion($event)">
+    <select
+      [value]="currentVersion$ | async"
+      (change)="changeVersion($event)"
+    >
       <ng-container *ngFor="let item of versions$ | async">
         <option value="{{ item.value }}">{{ item.label }}</option>
       </ng-container>

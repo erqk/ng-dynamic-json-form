@@ -14,8 +14,18 @@
     "PLAYGROUND": "演示區域"
   },
   "PLAYGROUND": {
-    "UI_LIBRARY": {
-      "NATIVE_HTML": "原生 HTML"
+    "TABS": {
+      "CONFIGS": "設定",
+      "FORM": "表單",
+      "VALUE": "值 / 錯誤"
+    },
+    "TEMPLATE": {
+      "NEW": "新增"
     }
+  },
+  "THEME_SWITCHER": {
+    "SYSTEM": "系統",
+    "LIGHT": "亮色",
+    "DARK": "暗色"
   }
 }

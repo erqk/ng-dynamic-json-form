@@ -1,0 +1,10 @@
+.json-editor {
+  --jse-theme-color: var(--primary-600);
+  --jse-theme-color-highlight: var(--primary-500);
+  --jse-menu-color: var(--primary-100);
+
+  &.jse-theme-dark {
+    --jse-theme-color: var(--primary-200);
+    --jse-menu-color: var(--primary-800);
+  }
+}

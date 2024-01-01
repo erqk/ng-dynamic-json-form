@@ -124,9 +124,13 @@ export class PlaygroundTemplateDataService {
   }
 
   get allTemplateKeys(): string[] {
-    return Object.keys(this._templateList).concat(
-      !this._userTemplateSaved ? [] : Object.keys(this._userTemplateSaved)
-    );
+    return Object.keys(this._templateList)
+      .sort()
+      .concat(
+        !this._userTemplateSaved
+          ? []
+          : Object.keys(this._userTemplateSaved).sort()
+      );
   }
 
   get fallbackExample(): FormControlConfig[] {

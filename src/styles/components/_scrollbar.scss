@@ -1,8 +1,10 @@
 @mixin hidden-scrollbar {
-  display: none;
-  height: 0;
-  visibility: hidden;
-  opacity: 0;
+  &::-webkit-scrollbar {
+    display: none;
+    height: 0;
+    visibility: hidden;
+    opacity: 0;
+  }
 }
 
 @mixin beauty-scrollbar {

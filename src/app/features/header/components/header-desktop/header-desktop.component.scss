@@ -2,12 +2,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: var(--header-height);
-  background-color: rgba(var(--bg-color-rgb), 0.25);
-  backdrop-filter: blur(8px);
-  border-bottom: solid 1px rgb(var(--bg-color-rgb));
-  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.1);
-  padding: 0 1rem;
 
   .content-wrapper {
     flex-direction: row;

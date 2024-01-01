@@ -10,6 +10,7 @@ import { DocumentVersionSelectorComponent } from 'src/app/features/document/comp
 import { DocumentRouterLinkDirective } from 'src/app/features/document/directives/document-router-link.directive';
 import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
 import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
+import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
 import { SideNavigationPaneComponent } from 'src/app/features/side-navigation-pane/side-navigation-pane.component';
 import { SideNavigationPaneService } from 'src/app/features/side-navigation-pane/side-navigation-pane.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
@@ -37,9 +38,13 @@ export class PageDocsComponent {
   private _layoutService = inject(LayoutService);
   private _markdownService = inject(MarkdownService);
   private _sideNavigationPaneService = inject(SideNavigationPaneService);
+  private _langService = inject(LanguageDataService);
   private readonly _onDestroy$ = new Subject<void>();
 
-  headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0), share());
+  showMobileMenu = false;
+
+  headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
+  windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
   content$ = this._route.url.pipe(
     switchMap((urls) => {
@@ -53,6 +58,7 @@ export class PageDocsComponent {
     tap(() => {
       this._setLinkRenderer();
       this._scrollToContent();
+      this.toggleMobileMenu(false);
     }),
     catchError(() => {
       this._reloadDocOnError();
@@ -69,6 +75,10 @@ export class PageDocsComponent {
   onReady(): void {
     this._docLoaderService.wrapTable();
     this._sideNavigationPaneService.buildNavigationLinks();
+  }
+
+  toggleMobileMenu(value?: boolean): void {
+    this.showMobileMenu = value ?? !this.showMobileMenu;
   }
 
   private _setLinkRenderer(): void {
@@ -96,16 +106,18 @@ export class PageDocsComponent {
   }
 
   private _reloadDocOnError(): void {
+    let targetRoute = '';
     this._docLoaderService
       .firstContentPath$()
       .pipe(
-        switchMap((x) =>
-          this._router
-            .navigateByUrl('/', { skipLocationChange: true })
-            .then(() => {
-              this._router.navigateByUrl(`/${x}`, { replaceUrl: true });
-            })
-        )
+        switchMap((x) => {
+          targetRoute = x;
+          return this._router.navigateByUrl('/', { skipLocationChange: true });
+        }),
+        switchMap(() =>
+          this._router.navigateByUrl(`/${targetRoute}`, { replaceUrl: true })
+        ),
+        switchMap(() => this._langService.loadLanguageData$())
       )
       .subscribe();
   }

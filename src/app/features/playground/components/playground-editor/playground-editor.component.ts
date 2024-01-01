@@ -1,11 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormControlConfig } from 'ng-dynamic-json-form/lib/models';
 import {
   Subject,
   combineLatest,
   debounceTime,
+  fromEvent,
   map,
+  merge,
   of,
   takeUntil,
   tap,
@@ -24,6 +33,7 @@ import { PlaygroundTemplateDataService } from '../../services/playground-templat
   styleUrls: ['./playground-editor.component.scss'],
 })
 export class PlaygroundEditorComponent {
+  private _el = inject(ElementRef);
   private _editorDataService = inject(PlaygroundEditorDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
   private _themeService = inject(ThemeService);
@@ -51,7 +61,8 @@ export class PlaygroundEditorComponent {
 
   private _initEditor(): void {
     requestAnimationFrame(() => {
-      const el = document.querySelector('.json-editor') as HTMLElement;
+      const host = this._el.nativeElement as HTMLElement;
+      const el = host.querySelector('.json-editor') as HTMLElement;
 
       this.jsonEditor = new JSONEditor({
         target: el,
@@ -102,18 +113,19 @@ export class PlaygroundEditorComponent {
     };
 
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-    const prefersDark$ = of(mediaQueryList).pipe(map((x) => x.matches));
+    const prefersDark$ = fromEvent(mediaQueryList, 'change', {
+      passive: true,
+    }).pipe(
+      map((x) => (x as MediaQueryListEvent).matches),
+      tap((x) => setDarkTheme(x))
+    );
 
-    combineLatest([prefersDark$, this._themeService.theme$])
-      .pipe(
-        debounceTime(0),
-        tap(([prefersDark, currentTheme]) => {
-          const useDark =
-            currentTheme === 'dark' || (currentTheme === 'auto' && prefersDark);
-          setDarkTheme(useDark);
-        }),
-        takeUntil(this._onDestroy$)
-      )
+    const themeDark$ = this._themeService.theme$.pipe(
+      tap((x) => setDarkTheme(x === 'dark'))
+    );
+
+    merge(prefersDark$, themeDark$)
+      .pipe(takeUntil(this._onDestroy$))
       .subscribe();
   }
 }

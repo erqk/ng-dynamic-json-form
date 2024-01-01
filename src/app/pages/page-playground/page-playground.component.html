@@ -1,95 +1,211 @@
-<div
-  class="relative z-0 flex"
-  [ngStyle]="{
-    '--header-height.px': headerHeight$.value,
-    '--window-height.px': windowSize$.value.y,
-    '--panel-width': '20rem'
-  }"
->
+<!-- desktop -->
+<ng-container *ngIf="windowSize$.value.x >= 1024">
   <div
-    [ngClass]="[
-      'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
-      'flex items-center',
-      'h-[calc(100vh-var(--header-height))]'
-    ]"
+    class="relative z-0 hidden lg:flex"
+    [ngStyle]="{
+      '--header-height.px': headerHeight$.value,
+      '--panel-width': '20rem'
+    }"
   >
     <div
       [ngClass]="[
-        'flex flex-col shrink-0 pointer-events-auto',
-        'h-full w-[calc(var(--panel-width)+var(--gutter-auto))]',
-        'min-w-[var(--panel-width)]',
-        'border-r border-[var(--border-color-25)]',
-        'pl-[var(--gutter-auto)]',
-        'bg-[var(--body-bg-color)]',
-        showEditor ? 'shadow-2xl' : ''
+        'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
+        'flex items-center',
+        'h-[calc(100vh-var(--header-height))]'
       ]"
     >
       <div
         [ngClass]="[
-          'flex gap-2 px-4 py-2 m-2 mt-4',
-          'rounded-full text-sm font-bold bg-[rgba(128,128,128,0.1)]'
+          'flex flex-col shrink-0 pointer-events-auto',
+          'h-full w-[calc(var(--panel-width)+var(--gutter-auto))]',
+          'min-w-[var(--panel-width)]',
+          'border-r border-[var(--border-color-25)]',
+          'pl-[var(--gutter-auto)]',
+          'bg-[var(--body-bg-color)]',
+          showEditor ? 'shadow-2xl' : ''
         ]"
       >
-        <span>NgDynamicJsonForm</span>
-        <span class="uppercase">{{ currentVersion }}</span>
+        <div
+          [ngClass]="[
+            'flex gap-2 px-8 py-2 m-2 mt-4',
+            'rounded-full text-sm font-bold bg-[rgba(128,128,128,0.1)]'
+          ]"
+        >
+          <span>NgDynamicJsonForm</span>
+          <span class="uppercase">{{ currentVersion }}</span>
+        </div>
+
+        <app-playground-template-list
+          class="block overflow-hidden"
+          (onEdit)="onTemplateEdit($event)"
+        ></app-playground-template-list>
       </div>
 
+      <app-playground-editor
+        [class]="
+          [
+            'relative -z-10 pointer-events-auto',
+            'h-full w-[calc(100vw-var(--panel-width)-2em)]',
+            'max-w-[calc(85rem-var(--panel-width))]',
+            'max-h-[calc(100%-2rem)]',
+            'rounded-r-lg shadow-lg overflow-hidden',
+            'duration-300 transition-transform ease-[cubic-bezier(.11,.99,.57,1)]',
+            showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]'
+          ].join(' ')
+        "
+        (onConfirm)="onEditorConfirm($event)"
+      ></app-playground-editor>
+    </div>
+
+    <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
+      <div [ngClass]="['flex-1 w-full', 'pl-[var(--panel-width)]']">
+        <as-split
+          class="!overflow-visible"
+          [useTransition]="true"
+          [gutterSize]="1"
+          [gutterDblClickDuration]="300"
+          (dragEnd)="onAsSplitDragEnd($event)"
+          (gutterDblClick)="resetSplitSizes()"
+        >
+          <as-split-area
+            class="flex flex-col !overflow-hidden"
+            [size]="asSplitSizes[0]"
+          >
+            <div class="w-1/2 m-4 ml-auto">
+              <ng-container
+                *ngTemplateOutlet="formUiSelectTemplate"
+              ></ng-container>
+            </div>
+
+            <div
+              [ngClass]="[
+                'w-full h-full px-8 py-10',
+                'overflow-auto beauty-scrollbar'
+              ]"
+            >
+              <ng-container
+                *ngTemplateOutlet="dynamicFormTemplate"
+              ></ng-container>
+            </div>
+          </as-split-area>
+
+          <as-split-area
+            [ngClass]="[
+              'sticky top-[var(--header-height)] !overflow-hidden',
+              '!h-[calc(100vh-var(--header-height))]'
+            ]"
+            [size]="asSplitSizes[1]"
+          >
+            <app-playground-form-info [form]="form"></app-playground-form-info>
+          </as-split-area>
+        </as-split>
+      </div>
+    </ui-content-wrapper>
+  </div>
+</ng-container>
+
+<!-- mobile -->
+<ng-container *ngIf="windowSize$.value.x < 1024">
+  <div
+    [ngClass]="[
+      'flex flex-col lg:hidden',
+      'h-[calc(var(--window-height)-var(--header-height))] overflow-hidden'
+    ]"
+    [ngStyle]="{
+      '--header-height.px': headerHeight$.value,
+      '--window-height.px': windowSize$.value.y
+    }"
+  >
+    <div
+      [ngClass]="[
+        'sticky top-0 z-10',
+        'grid grid-cols-[repeat(3,1fr)] gap-2',
+        'border-b border-[var(--border-color-25)]',
+        'whitespace-nowrap min-h-12 overflow-auto'
+      ]"
+    >
+      <ng-container *ngFor="let item of mobileTabs$ | async; index as i">
+        <button
+          type="button"
+          [ngClass]="[
+            mobileTabSelected === i
+              ? 'text-[var(--primary-500)] font-bold'
+              : 'text-[rgba(128,128,128,0.75)]',
+            'p-2 uppercase text-xs'
+          ]"
+          (click)="switchMobileTab(i)"
+        >
+          {{ item }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div
+      [ngClass]="[
+        mobileTabSelected === 0 ? 'flex' : 'hidden',
+        'flex-1 flex-col overflow-hidden'
+      ]"
+    >
+      <app-playground-editor
+        class="flex-1 overflow-hidden"
+        (onConfirm)="onEditorConfirm($event)"
+      ></app-playground-editor>
+
       <app-playground-template-list
-        class="block overflow-hidden"
+        class="p-2"
         (onEdit)="onTemplateEdit($event)"
       ></app-playground-template-list>
     </div>
 
-    <app-playground-editor
-      [class]="
-        [
-          'relative -z-10 pointer-events-auto',
-          'h-full w-[calc(100vw-var(--panel-width)-2em)]',
-          'max-w-[calc(85rem-var(--panel-width))]',
-          'max-h-[calc(100%-2rem)]',
-          'shadow-lg',
-          'duration-300 transition-transform ease-[cubic-bezier(.11,.99,.57,1)]',
-          showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]'
-        ].join(' ')
-      "
-      (onConfirm)="onEditorConfirm($event)"
-    ></app-playground-editor>
-  </div>
+    <div
+      [ngClass]="[
+        mobileTabSelected === 1 ? 'block' : 'hidden',
+        'overflow-auto'
+      ]"
+    >
+      <div class="p-4 bg-[rgb(50,50,50,0.75)] text-white">
+        <ng-container
+          *ngTemplateOutlet="
+            formUiSelectTemplate;
+            context: {
+              isMobile: true
+            }
+          "
+        ></ng-container>
+      </div>
 
-  <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
-    <div [ngClass]="['flex-1 w-full', 'pl-[var(--panel-width)]']">
-      <as-split
-        class="!overflow-visible"
-        [useTransition]="true"
-        [gutterSize]="1"
-        [gutterDblClickDuration]="300"
-        (dragEnd)="onAsSplitDragEnd($event)"
-        (gutterDblClick)="resetSplitSizes()"
-      >
-        <as-split-area class="flex !overflow-hidden" [size]="asSplitSizes[0]">
-          <div
-            [ngClass]="[
-              'w-full h-full px-8 py-10',
-              'overflow-auto beauty-scrollbar'
-            ]"
-          >
-            <ng-dynamic-json-form
-              [configs]="(configs$ | async) ?? []"
-              (formGet)="onFormGet($event)"
-            ></ng-dynamic-json-form>
-          </div>
-        </as-split-area>
-
-        <as-split-area
-          [ngClass]="[
-            'sticky top-[var(--header-height)] !overflow-hidden',
-            '!h-[calc(100vh-var(--header-height))]'
-          ]"
-          [size]="asSplitSizes[1]"
-        >
-          <app-playground-form-info [form]="form"></app-playground-form-info>
-        </as-split-area>
-      </as-split>
+      <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
     </div>
-  </ui-content-wrapper>
-</div>
+
+    <app-playground-form-info
+      [ngClass]="[
+        mobileTabSelected === 2 ? 'block' : 'hidden',
+        'h-full overflow-hidden'
+      ]"
+      [form]="form"
+    ></app-playground-form-info>
+  </div>
+</ng-container>
+
+<ng-template #formUiSelectTemplate let-isMobile="isMobile">
+  <div [ngClass]="['flex gap-2 items-center']">
+    <span class="shrink-0 font-bold">UI</span>
+    <select
+      [ngClass]="[isMobile ? 'bg-transparent text-inherit' : '']"
+      [(ngModel)]="currentUi"
+    >
+      <ng-container *ngFor="let item of customUiComponents | keyvalue">
+        <option [ngValue]="item.key">{{ item.key }}</option>
+      </ng-container>
+    </select>
+  </div>
+</ng-template>
+
+<ng-template #dynamicFormTemplate>
+  <ng-dynamic-json-form
+    class="flex flex-col overflow-hidden p-5 text-sm lg:text-base"
+    [configs]="(configs$ | async) ?? []"
+    [uiComponents]="customUiComponents[currentUi]"
+    (formGet)="onFormGet($event)"
+  ></ng-dynamic-json-form>
+</ng-template>

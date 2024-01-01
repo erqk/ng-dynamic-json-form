@@ -8,13 +8,12 @@ import { DocumentLoaderService } from 'src/app/features/document/services/docume
   selector: 'app-language-selector',
   standalone: true,
   imports: [CommonModule],
-  template: `<select
-    (change)="switchLanguage($event)"
-    [value]="language$.value"
-  >
-    <option value="en">English</option>
-    <option value="zh-TW">繁體中文</option>
-  </select>`,
+  template: `
+    <select (change)="switchLanguage($event)" [value]="language$.value">
+      <option value="en">English</option>
+      <option value="zh-TW">繁體中文</option>
+    </select>
+  `,
   styles: [],
 })
 export class LanguageSelectorComponent {

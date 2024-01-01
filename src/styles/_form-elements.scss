@@ -29,7 +29,13 @@ select {
 
   &:focus {
     box-shadow: 0 0 0 3px var(--primary-200);
+    outline: solid 1px var(--primary-500);
   }
+}
+
+select {
+  @apply px-4 py-2 border border-[var(--border-color-25)];
+  @apply hover:border-[var(--primary-500)];
 }
 
 mat-form-field {

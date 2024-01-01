@@ -1,49 +1,107 @@
-<div class="flex flex-col h-full p-2 pb-16 overflow-auto beauty-scrollbar">
+<!-- desktop -->
+<div
+  class="hidden lg:flex flex-col h-full p-2 px-6 pb-16 overflow-auto beauty-scrollbar"
+>
   <ng-container
-    *ngFor="let item of exampleList$ | async"
-    [ngTemplateOutlet]="listItemTemplate"
-    [ngTemplateOutletContext]="{
-      key: item.key,
-      label: item.label
-    }"
-  >
-  </ng-container>
-
-  <ng-container
-    *ngFor="let item of userTemplateList$ | async"
+    *ngFor="let item of list$ | async"
     [ngTemplateOutlet]="listItemTemplate"
     [ngTemplateOutletContext]="{
       key: item.key,
       label: item.label,
-      isUserTemplate: true
+      isUserTemplate: !item.isExample
     }"
-  >
-  </ng-container>
+  ></ng-container>
 
-  <div class="flex gap-2 mt-4">
+  <div class="mt-8">
+    <ng-container *ngTemplateOutlet="templateNameInputTemplate"></ng-container>
+  </div>
+</div>
+
+<!-- mobile -->
+<div class="block lg:hidden">
+  <div
+    [ngClass]="[
+      showTemplateNameInput ? 'hidden' : 'flex',
+      'gap-2 items-center'
+    ]"
+  >
+    <ng-container *ngFor="let item of list$ | async">
+      <ng-container *ngIf="currentTemplateKey$.value === item.key">
+        <ng-container *ngIf="item.isExample">
+          <button type="button" class="p-2" (click)="reset(item.key!)">
+            <i class="bi bi-arrow-repeat"></i>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="!item.isExample">
+          <button type="button" class="p-2" (click)="remove(item.key!)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <select
+      [ngModel]="currentTemplateKey$.value"
+      (ngModelChange)="select($event)"
+    >
+      <ng-container *ngFor="let item of list$ | async">
+        <option [ngValue]="item.key">{{ item.label }}</option>
+      </ng-container>
+    </select>
+
+    <button type="button" class="p-2" (click)="toggleTemplateNameInput(true)">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+  </div>
+
+  <div [ngClass]="[showTemplateNameInput ? 'flex' : 'hidden', 'gap-2']">
+    <ng-container
+      *ngIf="showTemplateNameInput"
+      [ngTemplateOutlet]="templateNameInputTemplate"
+    ></ng-container>
+
+    <button
+      type="button"
+      class="p-2"
+      [ngClass]="{ hidden: nameControl.value }"
+      (click)="toggleTemplateNameInput(false)"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+</div>
+
+<ng-template #templateNameInputTemplate>
+  <div class="flex-1 flex gap-2">
     <input
       type="text"
       [formControl]="nameControl"
       [ngClass]="[
-        'p-1 px-2 border border-transparent bg-transparent',
+        'p-1 px-2 border border-[var(--border-color-50)] lg:border-transparent bg-transparent',
         'hover:border-[var(--border-color-50)] focus:border-[var(--border-color-50)]',
         'hover:bg-[rgb(var(--bg-color-rgb))] focus:bg-[rgb(var(--bg-color-rgb))]'
       ]"
       [placeholder]="i18nContent$.value.PLAYGROUND.TEMPLATE.NEW + '...'"
       (keydown.enter)="newTemplate()"
     />
-    <button
-      type="button"
-      [ngClass]="[!nameControl.value ? 'hidden' : '']"
-      (click)="newTemplate()"
+
+    <div
+      class="shrink-0 flex items-center gap-2"
+      [ngClass]="{
+        hidden: !nameControl.value
+      }"
     >
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-      </svg>
-    </button>
+      <button type="button" class="p-2" (click)="cancelNewTemplate()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <button type="button" class="p-2" (click)="newTemplate()">
+        <i class="bi bi-check2 text-lg"></i>
+      </button>
+    </div>
   </div>
-</div>
+</ng-template>
 
 <ng-template
   #listItemTemplate
@@ -53,10 +111,12 @@
 >
   <button
     type="button"
-    class="relative z-0 flex items-start btn-template-name"
-    [ngClass]="{
-      active: currentTemplateKey$.value === key
-    }"
+    [ngClass]="[
+      'relative z-0 flex items-start btn-template-name',
+      'px-4 py-1',
+      'duration-200',
+      currentTemplateKey$.value === key ? 'active' : ''
+    ]"
     (click)="select(key)"
   >
     <span>{{ label }}</span>
@@ -64,49 +124,32 @@
     <div
       [ngClass]="[
         'absolute top-1/2 right-0 z-10 -translate-y-1/2',
-        'flex gap-1',
+        'flex gap-2',
         'duration-200',
         'template-edit'
       ]"
     >
-      <!-- is example -->
       <ng-container *ngIf="!isUserTemplate && isEditing">
         <button type="button" (click)="reset(key)">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
-          </svg>
+          <i class="bi bi-arrow-repeat"></i>
         </button>
       </ng-container>
 
-      <!-- is user template -->
       <ng-container *ngIf="isUserTemplate">
         <button type="button" (click)="remove(key)">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-          </svg>
+          <i class="bi bi-trash"></i>
         </button>
       </ng-container>
 
       <ng-container *ngIf="!isEditing">
         <button type="button" (click)="edit()">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-          </svg>
+          <i class="bi bi-pencil-square"></i>
         </button>
       </ng-container>
 
       <ng-container *ngIf="isEditing">
         <button type="button" (click)="save(key, isUserTemplate === true)">
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-          </svg>
+          <i class="bi bi-check2 text-lg"></i>
         </button>
       </ng-container>
     </div>

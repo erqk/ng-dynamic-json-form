@@ -1,33 +1,26 @@
-:host {
-    position: relative;
-    width: 2.5rem;
-    height: 2.5rem;
-    z-index: 0;
-}
-
 button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
 }
 
 .menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.2rem;
-    background-color: var(--primary-500);
-    border-radius: 5rem;
-    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
-    display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.2rem;
+  background-color: var(--primary-500);
+  border-radius: 5rem;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+  display: none;
 
-    &.show {
-        display: grid;
-        gap: 0.5rem;
-    }
+  &.show {
+    display: grid;
+    gap: 0.5rem;
+  }
 }

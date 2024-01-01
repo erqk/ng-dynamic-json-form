@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, ElementRef, HostBinding, inject } from '@angular/core';
+import { Component, HostBinding, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
@@ -59,7 +59,6 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
 })
 export class SideNavigationPaneComponent {
   private _sideNavigationPaneService = inject(SideNavigationPaneService);
-  private _el = inject(ElementRef);
   private _router = inject(Router);
   private _location = inject(Location);
   private _currentLinkIndex = 0;
@@ -75,7 +74,7 @@ export class SideNavigationPaneComponent {
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this._getLinks();
     this._onRouteChange();
   }
