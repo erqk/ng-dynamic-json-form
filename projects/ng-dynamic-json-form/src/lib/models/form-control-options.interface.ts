@@ -6,12 +6,12 @@ export interface OptionItem {
 export interface OptionSource {
   src: string;
   method: 'GET' | 'POST';
+  params?: { [key: string]: any };
   data: {
     labelKey: string;
     path?: string;
     valueKeys?: string[];
   };
-  params?: { [key: string]: any };
   slice?: [number, number];
 }
 
