@@ -45,9 +45,10 @@
         <ng-container *ngIf="!config.children && !config.formArray">
           <div
             class="form-control-container"
-            hostId
-            [controlName]="config.formControlName"
-            [parentId]="parentId"
+            [hostId]="{
+              parentId,
+              controlName: config.formControlName,
+            }"
             [controlLayout]="{
               applyTarget: 'host',
               layout: config?.layout
@@ -59,8 +60,9 @@
             <form-control
               [data]="config"
               [control]="parentForm.controls[config.formControlName]"
+              [form]="form"
               [formControlName]="config.formControlName"
-              [customComponent]="customComponents[config.customComponent]"
+              [customComponent]="customComponents?.[config.customComponent]"
               [uiComponents]="uiComponentsGet"
             ></form-control>
           </div>
@@ -70,9 +72,10 @@
         <ng-container *ngIf="!!config.children && !config.formArray">
           <div
             class="form-group-container"
-            hostId
-            [parentId]="parentId"
-            [controlName]="config.formControlName"
+            [hostId]="{
+              parentId,
+              controlName: config.formControlName
+            }"
             [controlLayout]="{
               applyTarget: 'host',
               isNested: isNested === true,
@@ -121,9 +124,10 @@
         >
           <div
             class="form-array-container"
-            hostId
-            [parentId]="parentId"
-            [controlName]="config.formControlName"
+            [hostId]="{
+              parentId,
+              controlName: config.formControlName
+            }"
             [controlLayout]="{
               applyTarget: 'host',
               isNested: isNested === true,
