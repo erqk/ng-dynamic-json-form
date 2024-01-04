@@ -3,23 +3,32 @@ export interface OptionItem {
   value?: any;
 }
 
-export interface OptionSourceConfig {
+export interface OptionSource {
   src: string;
+  method: 'GET' | 'POST';
   data: {
-    path: string;
     labelKey: string;
-    valueKeys: 'ALL' | string[];
+    path?: string;
+    valueKeys?: string[];
   };
-  postParams?: any;
+  params?: { [key: string]: any };
   slice?: [number, number];
 }
 
+export interface OptionTrigger extends OptionSource {
+  action: 'FILTER' | 'REQUEST';
+  triggerValuePath: string;
+  filterMatchPath?: string;
+  debounceTime?: number;
+}
+
 export interface FormControlOptions {
-  containerClass?: string;
-  containerStyles?: string;
   data?: OptionItem[];
-  sourceList?: OptionSourceConfig[];
+  sourceList?: OptionSource[];
   sourceAppendPosition?: 'after' | 'before';
+  trigger?: OptionTrigger;
   layout?: 'row' | 'column';
   labelPosition?: 'before' | 'after';
+  containerClass?: string;
+  containerStyles?: string;
 }

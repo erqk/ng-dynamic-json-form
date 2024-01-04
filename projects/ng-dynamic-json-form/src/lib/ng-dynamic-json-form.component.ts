@@ -8,7 +8,6 @@ import {
   Output,
   PLATFORM_ID,
   Renderer2,
-  SimpleChanges,
   TemplateRef,
   inject,
 } from '@angular/core';
@@ -70,8 +69,9 @@ export class NgDynamicJsonFormComponent {
   private _formGeneratorService = inject(FormGeneratorService);
   private _formStatusService = inject(FormStatusService);
   private _formValidatorService = inject(FormValidatorService);
-  private _reset$ = new Subject();
-  private _onDestroy$ = new Subject();
+  private _optionsDataService = inject(OptionsDataService);
+  private _reset$ = new Subject<void>();
+  private _onDestroy$ = new Subject<void>();
 
   @ContentChild('formArrayGroupHeader')
   formArrayGroupHeaderRef?: TemplateRef<any>;
@@ -83,7 +83,8 @@ export class NgDynamicJsonFormComponent {
    * JSON config:
    * {  ...,
    *    "validators": [
-   *      { "name": "custom",
+   *      {
+   *        "name": "custom",
    *        "value": "firstUppercase"
    *      }
    *    ]
@@ -110,10 +111,10 @@ export class NgDynamicJsonFormComponent {
    *    ...
    * }
    */
-  @Input() customComponents: CustomComponents = {};
+  @Input() customComponents?: CustomComponents;
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: CustomComponents;
+  @Input() uiComponents?: UiComponents;
 
   @Output() formGet = new EventEmitter();
 
@@ -123,24 +124,18 @@ export class NgDynamicJsonFormComponent {
   form?: UntypedFormGroup;
   uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
+  ngOnChanges(): void {
     if (isPlatformServer(this._platformId)) {
       return;
     }
 
-    const { configs, uiComponents } = simpleChanges;
+    this.uiComponentsGet = {
+      ...UI_BASIC_COMPONENTS,
+      ...this.uiComponents,
+    };
 
-    if (configs && configs.currentValue) {
-      this._buildForm();
-    }
-
-    if (uiComponents) {
-      this._setHostUiClass();
-      this.uiComponentsGet = {
-        ...UI_BASIC_COMPONENTS,
-        ...this.uiComponents,
-      };
-    }
+    this._setHostUiClass();
+    this._buildForm();
   }
 
   ngOnInit(): void {
@@ -149,12 +144,15 @@ export class NgDynamicJsonFormComponent {
     }
 
     this._initHostClass();
+    this._setHostUiClass();
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next(null);
+    this._onDestroy$.next();
     this._onDestroy$.complete();
+    this._reset$.next();
     this._reset$.complete();
+    this._optionsDataService.cancelAllRequest();
   }
 
   private _initHostClass(): void {
@@ -169,8 +167,10 @@ export class NgDynamicJsonFormComponent {
 
   private _setHostUiClass(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
+    const useDefaultUi =
+      !this.uiComponents || !Object.keys(this.uiComponents).length;
 
-    !this.uiComponents
+    useDefaultUi
       ? this._renderer2.addClass(hostEl, 'ui-basic')
       : this._renderer2.removeClass(hostEl, 'ui-basic');
   }
@@ -215,7 +215,8 @@ export class NgDynamicJsonFormComponent {
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
-    this._reset$.next(null);
+    this._reset$.next();
+    this._optionsDataService.cancelAllRequest();
     merge(
       this._formStatusService.formErrorEvent$(this.form),
       this._formStatusService.formControlConditonsEvent$(this.form, this.config)

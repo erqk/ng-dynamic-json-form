@@ -76,12 +76,15 @@
               "sourceList": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/definitions/optionsSourceListConfig"
+                  "$ref": "#/definitions/optionsSourceConfig"
                 }
               },
               "sourceAppendPosition": {
                 "type": "string",
                 "enum": ["after", "before"]
+              },
+              "trigger": {
+                "$ref": "#/definitions/optionsTriggerConfig"
               },
               "layout": {
                 "type": "string",
@@ -261,35 +264,56 @@
         }
       }
     },
-    "optionsSourceListConfig": {
+    "optionsSourceConfig": {
       "type": "object",
       "properties": {
         "src": {
           "type": "string"
         },
+        "method": {
+          "enum": ["GET", "POST"]
+        },
         "data": {
           "type": "object",
           "properties": {
-            "path": {
-              "type": "string"
-            },
             "labelKey": {
               "type": "string"
             },
+            "path": {
+              "type": "string"
+            },
             "valueKeys": {
-              "oneOf": [
-                {
-                  "const": "ALL"
-                },
-                {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              ]
+              "type": "array",
+              "items": { "type": "string" }
             }
-          }
+          },
+          "required": ["labelKey"]
         }
-      }
+      },
+      "required": ["src", "method", "data"]
+    },
+    "optionsTriggerConfig": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/optionsSourceConfig"
+        }
+      ],
+      "properties": {
+        "action": {
+          "enum": ["FILTER", "REQUEST"]
+        },
+        "triggerValuePath": {
+          "type": "string"
+        },
+        "filterMatchPath": {
+          "type": "string"
+        },
+        "debounceTime": {
+          "type": "number"
+        }
+      },
+      "required": ["action", "triggerValuePath"]
     },
     "optionsItemConfig": {
       "type": "object",

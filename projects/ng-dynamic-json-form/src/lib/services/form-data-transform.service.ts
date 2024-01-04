@@ -6,7 +6,7 @@ import { FormControlConfig } from '../models';
 export class FormDataTransformService {
   private _localeId = inject(LOCALE_ID);
 
-  inputData(input: unknown, config: FormControlConfig | null): unknown {
+  inputData(input: unknown, config?: FormControlConfig): unknown {
     if (!config) return input;
 
     switch (config.type) {
@@ -18,7 +18,7 @@ export class FormDataTransformService {
     }
   }
 
-  outputData(input: unknown, config: FormControlConfig | null): unknown {
+  outputData(input: unknown, config?: FormControlConfig): unknown {
     if (!config) return input;
 
     switch (config.type) {

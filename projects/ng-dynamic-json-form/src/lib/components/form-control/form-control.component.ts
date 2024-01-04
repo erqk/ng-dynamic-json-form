@@ -12,6 +12,7 @@ import {
   ControlValueAccessor,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -50,17 +51,14 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _onTouched = () => {};
   private readonly _pendingValue$ = new BehaviorSubject<any>('');
 
-  @Input() control: AbstractControl | null = null;
-  @Input() data: FormControlConfig | null = null;
-  @Input() uiComponents: UiComponents = {};
+  @Input() form?: UntypedFormGroup;
+  @Input() control?: AbstractControl;
+  @Input() data?: FormControlConfig;
+  @Input() uiComponents?: UiComponents;
   @Input() customComponent?: Type<CustomControlComponent>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;
-
-  ngOnChanges(): void {
-    this._injectComponent();
-  }
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
@@ -83,6 +81,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this._controlComponentRef?.validate(control) ?? null;
   }
 
+  ngOnInit(): void {
+    this._injectComponent();
+  }
+
   private get _inputType(): string {
     // If `ngxMaskConfig` is specified, we use input with mask
     const defaultInput = !this.data?.ngxMaskConfig ? 'text' : 'textMask';
@@ -103,7 +105,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _injectComponent(): void {
     const inputComponent =
       this.customComponent ||
-      this.uiComponents[this._inputType] ||
+      this.uiComponents?.[this._inputType] ||
       UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
 
@@ -116,8 +118,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
       componentRef.instance.writeValue(this._pendingValue$.value);
-      componentRef.instance.listenErrors(this.control);
-      componentRef.instance.fetchOptions();
+      componentRef.instance['_internal_form'] = this.form;
+      componentRef.instance['_internal_listenErrors'](this.control);
+      componentRef.instance['_internal_fetchOptions']();
     }, 0);
   }
 }

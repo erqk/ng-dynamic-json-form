@@ -26,7 +26,7 @@ import {
   ValidatorConfig,
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
-import { clearEmpties } from '../utils/clear-empties';
+import { clearEmpties } from '../utilities/clear-empties';
 import { FormValidatorService } from './form-validator.service';
 
 @Injectable()
