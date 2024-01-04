@@ -1,23 +1,59 @@
 <ng-container *ngIf="data">
-  <ng-container *ngIf="data.label">
+  <ng-container *ngIf="data.label && !data.layout?.hideLabel">
     <label
       class="input-label"
-      [ngClass]="data.layout?.labelClass"
-      [style]="data.layout?.labelStyles"
+      [controlLayout]="{
+        type: 'label',
+        layout: data.layout
+      }"
       >{{ data.label }}</label
     >
   </ng-container>
 
-  <ng-container *ngIf="data.description">
-    <span class="input-description">{{ data.description }}</span>
-  </ng-container>
+  <!-- Description (before) -->
+  <ng-container
+    *ngIf="data?.description && data?.layout?.descriptionPosition !== 'after'"
+    [ngTemplateOutlet]="descriptionTemplate"
+    [ngTemplateOutletContext]="{
+      description: data.description,
+      layout: data.layout
+    }"
+  ></ng-container>
 </ng-container>
 
+<!-- Input component -->
 <ng-container #componentAnchor></ng-container>
 
-<ng-container *ngIf="!data?.hideValidationMessage">
+<!-- Description (after) -->
+<ng-container
+  *ngIf="data?.description && data?.layout?.descriptionPosition === 'after'"
+  [ngTemplateOutlet]="descriptionTemplate"
+  [ngTemplateOutletContext]="{
+    description: data?.description,
+    layout: data?.layout
+  }"
+></ng-container>
+
+<!-- Validation messages -->
+<ng-container *ngIf="!data?.layout?.hideValidationMessage">
   <error-message
     [control]="control"
     [validators]="data?.validators"
   ></error-message>
 </ng-container>
+
+<!-- Description template -->
+<ng-template
+  #descriptionTemplate
+  let-description="description"
+  let-layout="layout"
+>
+  <span
+    class="input-description"
+    [controlLayout]="{
+      type: 'description',
+      layout
+    }"
+    >{{ description }}</span
+  >
+</ng-template>

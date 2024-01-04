@@ -18,16 +18,6 @@ export interface FormControlConfig {
   /**Key of the custom component to use on this control */
   customComponent?: string;
 
-  /**CSS Grid */
-  cssGrid?: {
-    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row */
-    gridRow?: string;
-    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column */
-    gridColumn?: string;
-    /**https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns */
-    gridTemplateColumns?: string;
-  };
-
   description?: string;
 
   /**Custom data for this control. Example:
@@ -43,9 +33,6 @@ export interface FormControlConfig {
   /**Provide to make this control as a FormArray, cannot use with `children` */
   formArray?: FormArrayConfig;
 
-  /**Set to true if you need to take control of validation message */
-  hideValidationMessage?: boolean;
-
   label?: string;
 
   layout?: {
@@ -55,6 +42,17 @@ export interface FormControlConfig {
     labelStyles?: string;
     childClass?: string;
     childStyles?: string;
+    descriptionClass?: string;
+    descriptionStyles?: string;
+
+    /**Put description before or after input */
+    descriptionPosition?: 'before' | 'after';
+
+    /**Set to true if you need to take control of how to display validation message */
+    hideValidationMessage?: boolean;
+
+    /**Set to true if you need to take control of how to display label */
+    hideLabel?: boolean;
   };
 
   ngxMaskConfig?: Partial<NgxMaskConfig>;
@@ -68,6 +66,10 @@ export interface FormControlConfig {
   options?: FormControlOptions;
 
   placeholder?: string;
+
+  /**Set this input to readonly, and will add a class as a mark for styling */
+  readonly?: boolean;
+
   type?: FormControlType;
   value?: any;
 

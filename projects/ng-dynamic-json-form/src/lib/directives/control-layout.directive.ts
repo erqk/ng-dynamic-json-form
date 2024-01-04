@@ -1,11 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  Input,
-  Renderer2,
-  SimpleChanges,
-  inject,
-} from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2, inject } from '@angular/core';
 import { FormControlConfig } from '../models';
 
 @Directive({
@@ -17,20 +10,19 @@ export class ControlLayoutDirective {
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
-    applyTarget?: 'child' | 'host' | 'label';
-    isNested?: boolean;
+    type?: 'child' | 'host' | 'label' | 'description';
     layout?: FormControlConfig['layout'];
-    classNames?: string;
-    styles?: string;
+    isNested?: boolean;
+    readonly?: boolean;
   };
 
   ngOnChanges(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
     if (!hostEl || !this.controlLayout) return;
 
-    const { applyTarget, isNested, layout } = this.controlLayout;
-    const classNames = layout?.[`${applyTarget ?? 'host'}Class`] ?? '';
-    const styles = layout?.[`${applyTarget ?? 'host'}Styles`] ?? '';
+    const { type, isNested, layout, readonly } = this.controlLayout;
+    const classNames = layout?.[`${type ?? 'host'}Class`] ?? '';
+    const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
 
     if (!layout) return;
     if (classNames.length > 0) {
@@ -46,5 +38,9 @@ export class ControlLayoutDirective {
     isNested
       ? this._renderer2.addClass(hostEl, 'is-nested')
       : this._renderer2.removeClass(hostEl, 'is-nested');
+
+    readonly
+      ? this._renderer2.addClass(hostEl, 'readonly')
+      : this._renderer2.removeClass(hostEl, 'readonly');
   }
 }

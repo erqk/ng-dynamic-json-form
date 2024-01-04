@@ -18,6 +18,7 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
+import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
 import { UiComponents } from '../../models/ui-components.type';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
@@ -27,7 +28,7 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [CommonModule, ErrorMessageComponent],
+  imports: [CommonModule, ErrorMessageComponent, ControlLayoutDirective],
   templateUrl: './form-control.component.html',
   styles: [
     ':host {display: flex; flex-direction: column; gap: 0.35rem; width: 100%}',

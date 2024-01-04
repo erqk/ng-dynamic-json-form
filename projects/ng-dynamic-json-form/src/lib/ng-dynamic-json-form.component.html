@@ -35,7 +35,7 @@
   <div
     class="grid-container"
     [controlLayout]="{
-      applyTarget: 'host',
+      type: 'host',
       layout: hostLayout
     }"
   >
@@ -50,8 +50,9 @@
               controlName: config.formControlName,
             }"
             [controlLayout]="{
-              applyTarget: 'host',
-              layout: config?.layout
+              type: 'host',
+              layout: config?.layout,
+              readonly: config?.readonly
             }"
             [ngClass]="{
               'level-1': isNested !== true
@@ -77,25 +78,28 @@
               controlName: config.formControlName
             }"
             [controlLayout]="{
-              applyTarget: 'host',
+              type: 'host',
               isNested: isNested === true,
-              layout: config?.layout
+              layout: config?.layout,
+              readonly: config?.readonly
             }"
           >
-            <ng-container *ngIf="config.label">
-              <label
-                class="form-title"
-                [controlLayout]="{
-                  applyTarget: 'label',
-                  layout: config?.layout
-                }"
-                >{{ config.label }}</label
-              >
-            </ng-container>
+            <!-- Label -->
+            <ng-container
+              *ngIf="config.label && !config?.layout?.hideLabel"
+              [ngTemplateOutlet]="labelTemplate"
+              [ngTemplateOutletContext]="{
+                label: config?.label,
+                layout: config?.layout
+              }"
+            ></ng-container>
 
-            <ng-container *ngIf="config.description">
-              <span class="form-description">{{ config.description }}</span>
-            </ng-container>
+            <!-- Description -->
+            <ng-container
+              *ngIf="config.description"
+              [ngTemplateOutlet]="descriptionTemplate"
+              [ngTemplateOutletContext]="{ description: config.description }"
+            ></ng-container>
 
             <ng-container
               [ngTemplateOutlet]="formGroupTemplate"
@@ -129,15 +133,17 @@
               controlName: config.formControlName
             }"
             [controlLayout]="{
-              applyTarget: 'host',
+              type: 'host',
               isNested: isNested === true,
-              layout: config?.layout
+              layout: config?.layout,
+              readonly: config?.readonly
             }"
           >
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
               [ngTemplateOutletContext]="{
-                label: config.label,
+                label: config?.layout?.hideLabel ? '' : config.label,
+                layout: config.layout,
                 description: config.description,
                 parentForm: parentForm,
                 validators: config.validators,
@@ -153,9 +159,11 @@
   </div>
 </ng-template>
 
+<!-- FormArray -->
 <ng-template
   #formArrayTemplate
   let-label="label"
+  let-layout="layout"
   let-description="description"
   let-parentForm="parentForm"
   let-validators="validators"
@@ -165,13 +173,23 @@
   let-isNested="isNested"
 >
   <ng-container [formGroup]="parentForm">
-    <ng-container *ngIf="label">
-      <label class="form-title">{{ label }}</label>
-    </ng-container>
+    <!-- Label -->
+    <ng-container
+      *ngIf="label"
+      [ngTemplateOutlet]="labelTemplate"
+      [ngTemplateOutletContext]="{
+        label,
+        layout
+      }"
+    ></ng-container>
 
-    <ng-container *ngIf="description">
-      <span class="form-description">{{ description }}</span>
-    </ng-container>
+    <ng-container
+      *ngIf="description"
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{
+        description
+      }"
+    ></ng-container>
 
     <!-- Show add button when form array is empty -->
     <ng-container
@@ -226,6 +244,24 @@
   </ng-container>
 </ng-template>
 
+<!-- Label template -->
+<ng-template #labelTemplate let-label="label" let-layout="layout">
+  <label
+    class="form-title"
+    [controlLayout]="{
+      type: 'label',
+      layout
+    }"
+    >{{ label }}</label
+  >
+</ng-template>
+
+<!-- Description template -->
+<ng-template #descriptionTemplate let-description="description">
+  <span class="form-description">{{ description }}</span>
+</ng-template>
+
+<!-- Custom header of FormGroup inside FormArray -->
 <ng-template
   #formArrayGroupHeader
   let-index="index"
@@ -257,13 +293,16 @@
   </div>
 </ng-template>
 
+<!-- Default header of FormGroup inside FormArray -->
 <ng-template
   #formArrayDefaultGroupHeader
   let-label="label"
   let-formArray="formArray"
   let-buttonEvent="buttonEvent"
 >
-  <span *ngIf="label" class="label">{{ label }}</span>
+  <ng-container *ngIf="label">
+    <span class="label">{{ label }}</span>
+  </ng-container>
 
   <div class="buttons">
     <button type="button" class="btn-add" (click)="buttonEvent.add()">
