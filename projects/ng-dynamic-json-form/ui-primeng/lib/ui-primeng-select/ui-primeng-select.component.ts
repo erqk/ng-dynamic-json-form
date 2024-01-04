@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
 import { CustomControlComponent } from 'ng-dynamic-json-form';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
-  selector: 'ui-material-dropdown',
+  selector: 'ui-primeng-select',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule],
-  templateUrl: './ui-material-dropdown.component.html',
+  imports: [CommonModule, ReactiveFormsModule, DropdownModule],
+  templateUrl: './ui-primeng-select.component.html',
   styles: [],
 })
-export class UiMaterialDropdownComponent extends CustomControlComponent {
+export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
 }

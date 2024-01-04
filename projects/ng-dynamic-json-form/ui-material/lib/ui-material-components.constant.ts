@@ -1,6 +1,6 @@
 import { UiComponents } from 'ng-dynamic-json-form';
 import { UiMaterialCheckboxComponent } from './ui-material-checkbox/ui-material-checkbox.component';
-import { UiMaterialDropdownComponent } from './ui-material-dropdown/ui-material-dropdown.component';
+import { UiMaterialSelectComponent } from './ui-material-select/ui-material-select.component';
 import { UiMaterialInputMaskComponent } from './ui-material-input-mask/ui-material-input-mask.component';
 import { UiMaterialInputComponent } from './ui-material-input/ui-material-input.component';
 import { UiMaterialRadioComponent } from './ui-material-radio/ui-material-radio.component';
@@ -12,12 +12,12 @@ import { UiMaterialDateComponent } from './ui-material-date/ui-material-date.com
 export const UI_MATERIAL_COMPONENTS: UiComponents = {
   checkbox: UiMaterialCheckboxComponent,
   date: UiMaterialDateComponent,
-  dropdown: UiMaterialDropdownComponent,
   password: UiMaterialInputComponent,
   number: UiMaterialInputComponent,
   email: UiMaterialInputComponent,
   radio: UiMaterialRadioComponent,
   range: UiMaterialRangeComponent,
+  select: UiMaterialSelectComponent,
   switch: UiMaterialSwitchComponent,
   text: UiMaterialInputComponent,
   textMask: UiMaterialInputMaskComponent,
