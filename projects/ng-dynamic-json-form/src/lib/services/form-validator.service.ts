@@ -10,9 +10,11 @@ import { ValidatorConfig } from '../models';
 
 @Injectable()
 export class FormValidatorService {
-  customValidators: { [key: string]: ValidatorFn } = {};
+  customValidators?: { [key: string]: ValidatorFn };
 
   getValidators(input: ValidatorConfig[]): ValidatorFn[] {
+    if (!this.customValidators) return [];
+
     return input.map((item) => {
       let validator: ValidatorFn = Validators.nullValidator;
 
@@ -51,7 +53,7 @@ export class FormValidatorService {
 
         case ValidatorAndConditionEnum.custom:
           validator =
-            this.customValidators[item.value] || Validators.nullValidator;
+            this.customValidators?.[item.value] || Validators.nullValidator;
           break;
       }
 

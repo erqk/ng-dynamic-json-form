@@ -25,6 +25,7 @@ import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
+import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
@@ -62,6 +63,9 @@ import {
   ],
 })
 export class NgDynamicJsonFormComponent {
+  private _ngDynamicJsonFormConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+    optional: true,
+  });
   private _platformId = inject(PLATFORM_ID);
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
@@ -96,7 +100,8 @@ export class NgDynamicJsonFormComponent {
    *    ...
    * }
    */
-  @Input() customValidators: { [key: string]: ValidatorFn } = {};
+  @Input() customValidators?: { [key: string]: ValidatorFn } =
+    this._ngDynamicJsonFormConfig?.customValidators;
 
   /**User defined custom components. The `value` is the `key` of target component.
    * @example
@@ -111,10 +116,12 @@ export class NgDynamicJsonFormComponent {
    *    ...
    * }
    */
-  @Input() customComponents?: CustomComponents;
+  @Input() customComponents?: CustomComponents =
+    this._ngDynamicJsonFormConfig?.customComponents;
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents;
+  @Input() uiComponents?: UiComponents =
+    this._ngDynamicJsonFormConfig?.uiComponents;
 
   @Output() formGet = new EventEmitter();
 
