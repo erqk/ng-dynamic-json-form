@@ -66,12 +66,16 @@ export class OptionsDataService {
         })
       );
 
-    // Must includes the key `filterMatchPath` to ensure filter works properly
+    // Check if `valueKeys` is provided and the value of `filterMatchPath` is included
+    // to ensure filter works properly
     if (filterMatchPath) {
       const valueKeys = config.data.valueKeys || [];
       const key = filterMatchPath.split('.').slice(-1)[0] || '';
-      valueKeys.push(key);
-      config.data.valueKeys = [...new Set(valueKeys)];
+
+      if (valueKeys.length > 0 && !valueKeys.includes(key)) {
+        valueKeys.push(key);
+        config.data.valueKeys = [...new Set(valueKeys)];
+      }
     }
 
     return this._fetchData$(config).pipe(

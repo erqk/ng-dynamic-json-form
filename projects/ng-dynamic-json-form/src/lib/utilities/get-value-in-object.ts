@@ -3,13 +3,11 @@ export function getValueInObject(obj: any, path: string): any {
     return obj;
   }
 
-  const _obj = JSON.parse(JSON.stringify(obj));
-
   try {
     return path
       .split('.')
       .map((x) => x.trim())
-      .reduce((acc, key) => acc[key], _obj);
+      .reduce((acc, key) => acc[key], obj);
   } catch (error) {
     throw error;
   }
