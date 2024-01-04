@@ -86,7 +86,7 @@
           >
             <!-- Label -->
             <ng-container
-              *ngIf="config.label && !config?.layout?.hideLabel"
+              *ngIf="config.label && config?.layout?.hideLabel !== true"
               [ngTemplateOutlet]="labelTemplate"
               [ngTemplateOutletContext]="{
                 label: config?.label,
@@ -142,7 +142,7 @@
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
               [ngTemplateOutletContext]="{
-                label: config?.layout?.hideLabel ? '' : config.label,
+                label: config?.layout?.hideLabel === true ? '' : config.label,
                 layout: config.layout,
                 description: config.description,
                 parentForm: parentForm,

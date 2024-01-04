@@ -1,5 +1,5 @@
 <ng-container *ngIf="data">
-  <ng-container *ngIf="data.label && !data.layout?.hideLabel">
+  <ng-container *ngIf="data.label && data.layout?.hideLabel !== true">
     <label
       class="input-label"
       [controlLayout]="{
@@ -35,7 +35,7 @@
 ></ng-container>
 
 <!-- Validation messages -->
-<ng-container *ngIf="!data?.layout?.hideValidationMessage">
+<ng-container *ngIf="data?.layout?.hideValidationMessage !== true">
   <error-message
     [control]="control"
     [validators]="data?.validators"

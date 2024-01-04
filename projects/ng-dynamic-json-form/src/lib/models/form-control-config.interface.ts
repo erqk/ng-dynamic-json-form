@@ -3,6 +3,7 @@ import { FormArrayConfig } from './form-array-config.interface';
 import { FormControlCondition } from './form-control-condition.type';
 import { FormControlOptions } from './form-control-options.interface';
 import { FormControlType } from './form-control-type.type';
+import { FormLayout } from './form-layout.interface';
 import { ValidatorConfig } from './form-validator-config.interface';
 import { NgxMaskConfig } from './ngx-mask-config.interface';
 
@@ -35,25 +36,7 @@ export interface FormControlConfig {
 
   label?: string;
 
-  layout?: {
-    hostClass?: string;
-    hostStyles?: string;
-    labelClass?: string;
-    labelStyles?: string;
-    childClass?: string;
-    childStyles?: string;
-    descriptionClass?: string;
-    descriptionStyles?: string;
-
-    /**Put description before or after input */
-    descriptionPosition?: 'before' | 'after';
-
-    /**Set to true if you need to take control of how to display validation message */
-    hideValidationMessage?: boolean;
-
-    /**Set to true if you need to take control of how to display label */
-    hideLabel?: boolean;
-  };
+  layout?: FormLayout;
 
   ngxMaskConfig?: Partial<NgxMaskConfig>;
 
@@ -71,6 +54,7 @@ export interface FormControlConfig {
   readonly?: boolean;
 
   type?: FormControlType;
+  
   value?: any;
 
   /**Validators to add to this form control */
