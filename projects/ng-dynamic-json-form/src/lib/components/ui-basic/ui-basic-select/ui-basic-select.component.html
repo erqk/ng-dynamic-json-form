@@ -8,7 +8,7 @@
       'flex-direction': data.options?.layout
     }"
   >
-    <select [formControl]="control">
+    <select [propertyBinding]="data" [formControl]="control">
       <option *ngFor="let item of data.options?.data" [ngValue]="item.value">
         {{ item.label }}
       </option>

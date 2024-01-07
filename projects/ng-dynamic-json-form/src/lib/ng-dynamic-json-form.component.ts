@@ -29,14 +29,15 @@ import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
+  ControlValueService,
   ErrorMessageService,
-  FormConfigInitService,
-  FormDataTransformService,
   FormGeneratorService,
   FormStatusService,
   FormValidatorService,
   OptionsDataService,
 } from './services';
+import { ConfigMappingService } from './services/config-mapping.service';
+import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -53,12 +54,13 @@ import {
     ControlLayoutDirective,
   ],
   providers: [
-    FormConfigInitService,
-    FormDataTransformService,
+    ConfigMappingService,
+    ControlValueService,
+    ErrorMessageService,
     FormGeneratorService,
     FormValidatorService,
     FormStatusService,
-    ErrorMessageService,
+    NgxMaskConfigInitService,
     OptionsDataService,
   ],
 })
@@ -69,7 +71,6 @@ export class NgDynamicJsonFormComponent {
   private _platformId = inject(PLATFORM_ID);
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
-  private _formConfigInitService = inject(FormConfigInitService);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formStatusService = inject(FormStatusService);
   private _formValidatorService = inject(FormValidatorService);
@@ -82,7 +83,10 @@ export class NgDynamicJsonFormComponent {
 
   @Input() configs: FormControlConfig[] | string = [];
 
-  /**User defined custom valiators. The `value` is the `key` of target ValidatorFn.
+  /**
+   * @description
+   * User defined custom valiators. The `value` is the `key` of target ValidatorFn.
+   *
    * @example
    * JSON config:
    * {  ...,
@@ -103,7 +107,10 @@ export class NgDynamicJsonFormComponent {
   @Input() customValidators?: { [key: string]: ValidatorFn } =
     this._ngDynamicJsonFormConfig?.customValidators;
 
-  /**User defined custom components. The `value` is the `key` of target component.
+  /**
+   * @description
+   * User defined custom components. The `value` is the `key` of target component.
+   *
    * @example
    * JSON config:
    * {  ...,
@@ -217,7 +224,6 @@ export class NgDynamicJsonFormComponent {
     if (!this.config || !this.config.length) return;
 
     this.configValidateErrors = [];
-    this._formConfigInitService.init(this.config);
     this._formValidatorService.customValidators = this.customValidators;
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);

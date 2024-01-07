@@ -18,7 +18,7 @@ export class TextareaAutHeightDirective {
   private _hostEl?: HTMLElement;
   private _borderWidth = 0;
 
-  @Input() textareaAutoHeight = true;
+  @Input() autoResize = true;
 
   ngOnInit(): void {
     this._hostEl = this._el.nativeElement as HTMLElement;
@@ -32,7 +32,7 @@ export class TextareaAutHeightDirective {
 
   @HostListener('input', ['$event'])
   onInput(): void {
-    if (!this._hostEl || !this.textareaAutoHeight) return;
+    if (!this._hostEl || !this.autoResize) return;
 
     this._renderer2.removeStyle(this._hostEl, 'height');
     this._renderer2.setStyle(

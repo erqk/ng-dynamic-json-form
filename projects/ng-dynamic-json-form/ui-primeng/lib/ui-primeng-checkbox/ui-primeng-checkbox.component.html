@@ -32,7 +32,11 @@
         <ng-container *ngIf="data.options && data.options.data">
           <!-- binary checkbox -->
           <ng-container *ngIf="data.options.data.length === 1">
-            <p-checkbox [binary]="true" [formControl]="control"></p-checkbox>
+            <p-checkbox
+              [binary]="true"
+              [propertyBinding]="data"
+              [formControl]="control"
+            ></p-checkbox>
           </ng-container>
 
           <!-- multi-select checkbox -->
@@ -42,6 +46,7 @@
               [value]="item.value"
               [disabled]="control.disabled"
               [ngModel]="selectedItems"
+              [propertyBinding]="data"
               (onChange)="onChanged($event)"
             ></p-checkbox>
           </ng-container>

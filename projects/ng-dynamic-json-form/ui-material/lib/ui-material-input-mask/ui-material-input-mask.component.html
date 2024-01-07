@@ -6,9 +6,10 @@
       matInput
       type="text"
       placeholder="{{ data.placeholder }}"
-      [formControl]="control"
+      [propertyBinding]="data"
       [mask]="data.ngxMaskConfig?.mask ?? ''"
       [ngxMaskConfigBinding]="data.ngxMaskConfig"
+      [formControl]="control"
     />
   </mat-form-field>
 </ng-container>

@@ -1,5 +1,9 @@
 <ng-container *ngIf="data">
-  <mat-radio-group [formControl]="control">
+  <mat-radio-group
+    [labelPosition]="data.options?.labelPosition ?? 'after'"
+    [propertyBinding]="data"
+    [formControl]="control"
+  >
     <div
       class="group-buttons"
       [style]="data.options?.containerStyles"
@@ -12,11 +16,9 @@
       }"
     >
       <ng-container *ngFor="let item of data.options?.data">
-        <mat-radio-button
-          [value]="item.value"
-          [labelPosition]="data.options?.labelPosition ?? 'after'"
-          >{{ item.label }}</mat-radio-button
-        >
+        <mat-radio-button [value]="item.value">{{
+          item.label
+        }}</mat-radio-button>
       </ng-container>
     </div>
   </mat-radio-group>

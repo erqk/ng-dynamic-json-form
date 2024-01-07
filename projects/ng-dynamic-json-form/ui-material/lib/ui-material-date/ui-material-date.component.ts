@@ -2,10 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  MatDatepickerInput,
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { CustomControlComponent } from 'ng-dynamic-json-form';
+import {
+  CustomControlComponent,
+  PROPERTY_BINDING_INJECTOR,
+  PropertyBindingDirective,
+} from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-date',
@@ -17,6 +24,13 @@ import { CustomControlComponent } from 'ng-dynamic-json-form';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
+    PropertyBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPERTY_BINDING_INJECTOR,
+      useValue: MatDatepickerInput,
+    },
   ],
   templateUrl: './ui-material-date.component.html',
   styles: [],

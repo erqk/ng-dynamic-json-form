@@ -1,14 +1,34 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
-import { CustomControlComponent } from 'ng-dynamic-json-form';
+import {
+  Checkbox,
+  CheckboxChangeEvent,
+  CheckboxModule,
+} from 'primeng/checkbox';
+import {
+  CustomControlComponent,
+  PROPERTY_BINDING_INJECTOR,
+  PropertyBindingDirective,
+} from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-primeng-checkbox',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, CheckboxModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CheckboxModule,
+    PropertyBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPERTY_BINDING_INJECTOR,
+      useValue: Checkbox,
+    },
+  ],
   templateUrl: './ui-primeng-checkbox.component.html',
   styles: [],
 })

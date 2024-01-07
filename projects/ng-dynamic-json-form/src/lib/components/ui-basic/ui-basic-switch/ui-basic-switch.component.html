@@ -7,23 +7,23 @@
   >
     <label class="option-button switch-button">
       <ng-container
-        *ngIf="data.extra?.switch?.labelPosition === 'before'"
+        *ngIf="data.options?.labelPosition === 'before'"
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
 
-      <input type="checkbox" [formControl]="control" />
+      <input type="checkbox" [propertyBinding]="data" [formControl]="control" />
       <span class="marker"></span>
 
       <ng-container
-        *ngIf="data.extra?.switch?.labelPosition !== 'before'"
+        *ngIf="data.options?.labelPosition !== 'before'"
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
     </label>
   </div>
 
   <ng-template #labelTemplate>
-    <span *ngIf="data.extra?.switch?.label">{{
-      data.extra?.switch?.label
+    <span *ngIf="data.options?.data?.[0]?.label">{{
+      data.options?.data?.[0]?.label
     }}</span>
   </ng-template>
 </ng-container>

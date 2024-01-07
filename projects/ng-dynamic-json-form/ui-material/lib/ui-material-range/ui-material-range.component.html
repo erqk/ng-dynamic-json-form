@@ -1,11 +1,5 @@
 <ng-container *ngIf="data">
-  <mat-slider
-    [min]="data.extra?.range?.min ?? 0"
-    [max]="data.extra?.range?.max ?? 100"
-    [step]="data.extra?.range?.step ?? 1"
-    [showTickMarks]="data.extra?.range?.showTickMarks === true"
-    [discrete]="data.extra?.range?.showCurrentValue === true"
-  >
+  <mat-slider [propertyBinding]="data">
     <input matSliderThumb [formControl]="control" />
   </mat-slider>
 </ng-container>

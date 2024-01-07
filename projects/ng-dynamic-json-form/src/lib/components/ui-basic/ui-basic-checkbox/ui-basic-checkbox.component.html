@@ -32,13 +32,18 @@
           <ng-container *ngIf="data.options && data.options.data">
             <!-- binary checkbox -->
             <ng-container *ngIf="data.options.data.length === 1">
-              <input type="checkbox" [formControl]="control" />
+              <input
+                type="checkbox"
+                [propertyBinding]="data"
+                [formControl]="control"
+              />
             </ng-container>
 
             <!-- multi-select checkbox -->
             <ng-container *ngIf="data.options.data.length > 1">
               <input
                 type="checkbox"
+                [propertyBinding]="data"
                 [value]="item.value | json"
                 [checked]="control.value!.includes(item.value)"
                 [disabled]="control.disabled"

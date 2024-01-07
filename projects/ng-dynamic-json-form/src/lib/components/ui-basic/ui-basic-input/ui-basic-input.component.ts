@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { PropertyBindingDirective } from '../../../directives';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PropertyBindingDirective],
   templateUrl: './ui-basic-input.component.html',
   styles: [],
 })

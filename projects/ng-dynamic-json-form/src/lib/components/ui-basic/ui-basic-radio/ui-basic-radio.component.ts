@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { PropertyBindingDirective } from '../../../directives';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-radio',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PropertyBindingDirective],
   templateUrl: './ui-basic-radio.component.html',
   styles: [],
 })

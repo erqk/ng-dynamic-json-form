@@ -3,11 +3,12 @@ import { Component, ElementRef, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { startWith, tap } from 'rxjs/operators';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
+import { PropertyBindingDirective } from '../../../directives';
 
 @Component({
   selector: 'ui-basic-range',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PropertyBindingDirective],
   templateUrl: './ui-basic-range.component.html',
   styles: [],
 })

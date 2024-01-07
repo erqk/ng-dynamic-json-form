@@ -1,4 +1,3 @@
-import { FormControlExtra } from './extra/form-control-extra.interface';
 import { FormArrayConfig } from './form-array-config.interface';
 import { FormControlCondition } from './form-control-condition.type';
 import { FormControlOptions } from './form-control-options.interface';
@@ -21,15 +20,20 @@ export interface FormControlConfig {
 
   description?: string;
 
-  /**Custom data for this control. Example:
+  /**Properties for the input element or `Directive`. Example:
    *  @example
    *  <textarea
-   *    [rows]="data.extra?.['rows'] || 5"
-   *    [cols]="data.extra?.['cols'] || 30"
+   *    [rows]="extra.rows"
+   *    [cols]="extra.cols"
    *    ...
    *  ></textarea>
+   *
+   * @example
+   * <p-calendar
+   *    [appendTo]="extra.appendTo"
+   * ></p-calendar>
    */
-  extra?: FormControlExtra;
+  extra?: any;
 
   /**Provide to make this control as a FormArray, cannot use with `children` */
   formArray?: FormArrayConfig;
@@ -54,7 +58,7 @@ export interface FormControlConfig {
   readonly?: boolean;
 
   type?: FormControlType;
-  
+
   value?: any;
 
   /**Validators to add to this form control */

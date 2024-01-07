@@ -1,10 +1,8 @@
 <ng-container *ngIf="data">
   <textarea
-    [textareaAutoHeight]="data.extra?.textarea?.autoResize ?? false"
-    [attr.cols]="data.extra?.textarea?.cols ?? 30"
-    [attr.rows]="data.extra?.textarea?.rows ?? 10"
-    [attr.placeholder]="data.placeholder ?? null"
+    textareaAutoHeight
     [ngClass]="{ disabled: control.disabled }"
+    [propertyBinding]="data"
     [formControl]="control"
   ></textarea>
 </ng-container>

@@ -1,25 +1,12 @@
 <ng-container *ngIf="data">
   <mat-form-field class="example-full-width">
     <mat-label>{{ data.label }}</mat-label>
-    <ng-container *ngIf="data.extra?.textarea?.autoResize !== true">
-      <textarea
-        matInput
-        [attr.placeholder]="data.placeholder ?? null"
-        [rows]="data.extra?.textarea?.rows || 5"
-        [cols]="data.extra?.textarea?.cols || 30"
-        [formControl]="control"
-      ></textarea>
-    </ng-container>
-
-    <ng-container *ngIf="data.extra?.textarea?.autoResize === true">
-      <textarea
-        matInput
-        cdkTextareaAutosize
-        [attr.placeholder]="data.placeholder ?? null"
-        [rows]="data.extra?.textarea?.rows || 5"
-        [cols]="data.extra?.textarea?.cols || 30"
-        [formControl]="control"
-      ></textarea>
-    </ng-container>
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      [attr.placeholder]="data.placeholder ?? null"
+      [formControl]="control"
+      [propertyBinding]="data"
+    ></textarea>
   </mat-form-field>
 </ng-container>

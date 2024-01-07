@@ -17,7 +17,12 @@
             item.label
           }}</span>
 
-          <input type="radio" [value]="item.value" [formControl]="control" />
+          <input
+            type="radio"
+            [propertyBinding]="data"
+            [value]="item.value"
+            [formControl]="control"
+          />
           <span class="marker"></span>
 
           <span *ngIf="data.options?.labelPosition !== 'before'">{{

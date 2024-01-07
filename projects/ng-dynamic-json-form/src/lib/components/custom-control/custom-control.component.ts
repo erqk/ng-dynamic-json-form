@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  NgZone,
-  inject,
-} from '@angular/core';
+import { Component, HostListener, ViewChild, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -12,20 +6,14 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { BehaviorSubject, EMPTY, Observable, Subject, from, merge } from 'rxjs';
-import {
-  concatMap,
-  debounceTime,
-  finalize,
-  map,
-  startWith,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { MatFormField } from '@angular/material/form-field';
+import { InputText } from 'primeng/inputtext';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { finalize, map, startWith, tap } from 'rxjs/operators';
 import { FormControlConfig, OptionItem } from '../../models';
 import {
+  ControlValueService,
   ErrorMessageService,
-  FormDataTransformService,
   OptionsDataService,
 } from '../../services';
 
@@ -35,8 +23,7 @@ import {
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  private _internal_ngZone = inject(NgZone);
-  private _internal_dataTransformService = inject(FormDataTransformService);
+  private _internal_controlValueService = inject(ControlValueService);
   private _internal_errorMessageService = inject(ErrorMessageService);
   private _internal_optionsDataService = inject(OptionsDataService);
 
@@ -44,11 +31,11 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   private _internal_onTouched = () => {};
 
-  private _internal_inputData = (input: unknown) =>
-    this._internal_dataTransformService.inputData(input, this.data);
+  private _internal_getInputData = (input: unknown) =>
+    this._internal_controlValueService.mapInputData(input, this.data);
 
-  private _internal_outputData = (input: unknown) =>
-    this._internal_dataTransformService.outputData(input, this.data);
+  private _internal_getOutputData = (input: unknown) =>
+    this._internal_controlValueService.mapOutputData(input, this.data);
 
   /**Can be override by instance of `AbstractControl`
    * @example
@@ -60,6 +47,9 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public data?: FormControlConfig;
   public errors$ = new BehaviorSubject<string[]>([]);
 
+  @ViewChild(InputText) inputTextRef?: InputText;
+  @ViewChild(MatFormField) matFormFielRef?: MatFormField;
+
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {
     this._internal_onTouched();
@@ -67,7 +57,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   writeValue(obj: any): void {
     if (obj === undefined || obj === null || obj === '') return;
-    this._internal_control.setValue(this._internal_inputData(obj));
+    this._internal_control.setValue(this._internal_getInputData(obj));
     this._internal_control.markAsDirty();
     this._internal_control.markAsTouched();
   }
@@ -76,7 +66,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     this._internal_control?.valueChanges
       .pipe(
         startWith(this._internal_control.value),
-        map((x) => this._internal_outputData(x))
+        map((x) => this._internal_getOutputData(x))
       )
       .subscribe(fn);
   }
@@ -109,21 +99,32 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   /**@internal */
+  private _internal_init(
+    form?: UntypedFormGroup,
+    control?: AbstractControl
+  ): void {
+    this._internal_form = form;
+    this._internal_listenErrors(control);
+    this._internal_fetchOptions();
+  }
+
+  /**@internal */
   private _internal_listenErrors(control?: AbstractControl): void {
     if (!control) return;
 
     control.statusChanges
       .pipe(
         startWith(control.status),
-        tap(() => {
-          const messages = this._internal_errorMessageService.getErrorMessages(
-            this._internal_control.errors,
-            this._internal_control.value,
+        map(() =>
+          this._internal_errorMessageService.getErrorMessages(
+            control.errors,
+            control.value,
             this.data?.validators || []
-          );
-
+          )
+        ),
+        tap((x) => {
           this._internal_control.setErrors(control.errors);
-          this.errors$.next(messages);
+          this.errors$.next(x);
         })
       )
       .subscribe();
@@ -138,6 +139,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     const loading = (value: boolean) => {
       if (!this.data) return;
       this.data.extra = {
+        ...this.data.extra,
         _internal_loading: value,
       };
     };

@@ -1,24 +1,18 @@
-import {
-  Directive,
-  Input,
-  SimpleChange,
-  ViewChild,
-  inject,
-} from '@angular/core';
-import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
+import { Directive, Input, SimpleChange, inject } from '@angular/core';
 import { NgxMaskDirective } from 'ngx-mask';
+import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
 
 @Directive({
   selector: '[ngxMaskConfigBinding]',
   standalone: true,
 })
 export class NgxMaskConfigBindingDirective {
-  private _maskRef = inject(NgxMaskDirective);
+  private _maskRef = inject(NgxMaskDirective, { optional: true });
+
   @Input() ngxMaskConfigBinding?: Partial<NgxMaskConfig>;
 
-  ngAfterViewInit(): void {
-    // Bypass NG0100
-    window.setTimeout(() => this._setMaskConfig());
+  ngOnChanges(): void {
+    this._setMaskConfig();
   }
 
   private _setMaskConfig(): void {
@@ -31,7 +25,6 @@ export class NgxMaskConfigBindingDirective {
 
       const currentValue = (this.ngxMaskConfigBinding as any)[key];
       const simpleChange = new SimpleChange(undefined, currentValue, true);
-
       this._maskRef.ngOnChanges({ [key]: simpleChange });
     }
   }

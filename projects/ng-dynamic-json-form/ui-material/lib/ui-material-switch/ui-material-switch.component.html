@@ -1,7 +1,8 @@
 <ng-container *ngIf="data">
   <mat-slide-toggle
-    [labelPosition]="data.extra?.switch?.labelPosition ?? 'after'"
+    [labelPosition]="data.options?.labelPosition ?? 'after'"
+    [propertyBinding]="data"
     [formControl]="control"
-    >{{ data.extra?.switch?.label }}</mat-slide-toggle
+    >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
   >
 </ng-container>

@@ -2,7 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { NgxMaskConfigBindingDirective } from '../../../directives';
+import {
+  NgxMaskConfigBindingDirective,
+  PropertyBindingDirective,
+} from '../../../directives';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
@@ -13,6 +16,7 @@ import { CustomControlComponent } from '../../custom-control/custom-control.comp
     ReactiveFormsModule,
     NgxMaskDirective,
     NgxMaskConfigBindingDirective,
+    PropertyBindingDirective,
   ],
   templateUrl: './ui-basic-input-mask.component.html',
   providers: [provideNgxMask()],

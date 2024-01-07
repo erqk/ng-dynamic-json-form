@@ -3,7 +3,8 @@
     [ngClass]="{
       disabled: data.extra?.['_internal_loading'] === true
     }"
-    [formControl]="control"
+    [propertyBinding]="data"
     [options]="data.options?.data"
+    [formControl]="control"
   ></p-dropdown>
 </ng-container>

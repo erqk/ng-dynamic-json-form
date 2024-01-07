@@ -4,9 +4,11 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
   NgxMaskConfigBindingDirective,
+  PROPERTY_BINDING_INJECTOR,
+  PropertyBindingDirective,
 } from 'ng-dynamic-json-form';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputText, InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'ui-primeng-input-mask',
@@ -17,10 +19,17 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     NgxMaskDirective,
     NgxMaskConfigBindingDirective,
+    PropertyBindingDirective,
+  ],
+  providers: [
+    provideNgxMask(),
+    {
+      provide: PROPERTY_BINDING_INJECTOR,
+      useClass: InputText,
+    },
   ],
   templateUrl: './ui-primeng-input-mask.component.html',
   styles: [],
-  providers: [provideNgxMask()],
 })
 export class UiPrimengInputMaskComponent extends CustomControlComponent {
   override control = new FormControl('');

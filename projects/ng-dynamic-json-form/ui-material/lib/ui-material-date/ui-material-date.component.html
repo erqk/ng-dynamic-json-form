@@ -5,9 +5,8 @@
       readonly
       matInput
       [matDatepicker]="picker"
-      [min]="data.extra?.date?.min"
-      [max]="data.extra?.date?.max"
       [formControl]="control"
+      [propertyBinding]="data"
     />
     <mat-hint>{{ data.placeholder }}</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

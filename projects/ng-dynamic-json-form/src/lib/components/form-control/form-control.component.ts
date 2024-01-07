@@ -6,6 +6,7 @@ import {
   ViewChild,
   ViewContainerRef,
   forwardRef,
+  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -21,6 +22,7 @@ import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constan
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
 import { UiComponents } from '../../models/ui-components.type';
+import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
@@ -47,6 +49,7 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
+  private _configMappingService = inject(ConfigMappingService);
   private _controlComponentRef?: CustomControlComponent;
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
@@ -115,13 +118,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       const componentRef = this.componentAnchor.createComponent(inputComponent);
 
       this._controlComponentRef = componentRef.instance;
-      componentRef.instance.data = this.data;
+      componentRef.instance.data = this._configMappingService.mapCorrectConfig(
+        this.data
+      );
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
       componentRef.instance.writeValue(this._pendingValue$.value);
-      componentRef.instance['_internal_form'] = this.form;
-      componentRef.instance['_internal_listenErrors'](this.control);
-      componentRef.instance['_internal_fetchOptions']();
+      componentRef.instance['_internal_init'](this.form, this.control);
     }, 0);
   }
 }

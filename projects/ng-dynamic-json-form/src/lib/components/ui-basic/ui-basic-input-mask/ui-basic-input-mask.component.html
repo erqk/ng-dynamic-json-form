@@ -1,10 +1,11 @@
 <ng-container *ngIf="data">
   <input
     type="text"
-    [attr.placeholder]="data.placeholder ?? ''"
     [ngClass]="{ disabled: control.disabled }"
-    [formControl]="control"
+    [attr.placeholder]="data.placeholder ?? ''"
     [mask]="data.ngxMaskConfig?.mask ?? ''"
     [ngxMaskConfigBinding]="data.ngxMaskConfig"
+    [propertyBinding]="data"
+    [formControl]="control"
   />
 </ng-container>

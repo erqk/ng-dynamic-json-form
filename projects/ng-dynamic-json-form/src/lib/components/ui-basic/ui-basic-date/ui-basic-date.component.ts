@@ -2,17 +2,23 @@ import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
+import { PropertyBindingDirective } from '../../../directives';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
   selector: 'ui-basic-date',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PropertyBindingDirective],
   templateUrl: './ui-basic-date.component.html',
   styles: [],
 })
 export class UiBasicDateComponent extends CustomControlComponent {
   private _locale = inject(LOCALE_ID);
+
+  dateSettings = {
+    min: '',
+    max: '',
+  };
 
   override control = new FormGroup({
     date: new FormControl(''),
@@ -38,11 +44,15 @@ export class UiBasicDateComponent extends CustomControlComponent {
       .subscribe(fn);
   }
 
+  ngOnInit(): void {
+    this._setMinMaxDate();
+  }
+
   private get _dateTimeFormatted(): string {
     const outputFormat = this.data?.extra?.date?.outputFormat;
     const controlValue = this.control.value;
     const date =
-      this.data?.extra?.date?.selectTime === true
+      this.data?.extra?.showTime === true
         ? new Date(`${controlValue.date}T${controlValue.time}`)
         : new Date(controlValue.time!);
 
@@ -51,5 +61,19 @@ export class UiBasicDateComponent extends CustomControlComponent {
     return outputFormat
       ? formatDate(dateISO, outputFormat, this._locale)
       : dateISO;
+  }
+
+  private _setMinMaxDate(): void {
+    if (!this.data?.extra) return;
+
+    const { min = '', max = '' } = this.data.extra;
+
+    if (min) {
+      this.dateSettings.min = formatDate(min, 'yyyy-MM-dd', this._locale);
+    }
+
+    if (max) {
+      this.dateSettings.max = formatDate(max, 'yyyy-MM-dd', this._locale);
+    }
   }
 }

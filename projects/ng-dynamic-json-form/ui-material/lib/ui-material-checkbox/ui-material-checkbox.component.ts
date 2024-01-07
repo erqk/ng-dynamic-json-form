@@ -2,11 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
+  MatCheckbox,
   MatCheckboxChange,
   MatCheckboxModule,
 } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { CustomControlComponent } from 'ng-dynamic-json-form';
+import {
+  CustomControlComponent,
+  PROPERTY_BINDING_INJECTOR,
+  PropertyBindingDirective,
+} from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-checkbox',
@@ -16,6 +21,13 @@ import { CustomControlComponent } from 'ng-dynamic-json-form';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatInputModule,
+    PropertyBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPERTY_BINDING_INJECTOR,
+      useValue: MatCheckbox,
+    },
   ],
   templateUrl: './ui-material-checkbox.component.html',
   styles: [],

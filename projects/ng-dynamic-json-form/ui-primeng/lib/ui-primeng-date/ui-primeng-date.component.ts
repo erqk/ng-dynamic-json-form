@@ -1,13 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CustomControlComponent } from 'ng-dynamic-json-form';
-import { CalendarModule } from 'primeng/calendar';
+import {
+  CustomControlComponent,
+  PROPERTY_BINDING_INJECTOR,
+  PropertyBindingDirective,
+} from 'ng-dynamic-json-form';
+import { Calendar, CalendarModule } from 'primeng/calendar';
 
 @Component({
   selector: 'ui-primeng-date',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CalendarModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CalendarModule,
+    FormsModule,
+    PropertyBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPERTY_BINDING_INJECTOR,
+      useValue: Calendar,
+    },
+  ],
   templateUrl: './ui-primeng-date.component.html',
   styles: [],
 })

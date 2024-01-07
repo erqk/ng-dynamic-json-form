@@ -3,10 +3,10 @@ import { Injectable, LOCALE_ID, inject } from '@angular/core';
 import { FormControlConfig } from '../models';
 
 @Injectable()
-export class FormDataTransformService {
+export class ControlValueService {
   private _localeId = inject(LOCALE_ID);
 
-  inputData(input: unknown, config?: FormControlConfig): unknown {
+  mapInputData(input: unknown, config?: FormControlConfig): unknown {
     if (!config) return input;
 
     switch (config.type) {
@@ -18,7 +18,7 @@ export class FormDataTransformService {
     }
   }
 
-  outputData(input: unknown, config?: FormControlConfig): unknown {
+  mapOutputData(input: unknown, config?: FormControlConfig): unknown {
     if (!config) return input;
 
     switch (config.type) {
