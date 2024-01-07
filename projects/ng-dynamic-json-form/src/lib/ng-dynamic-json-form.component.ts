@@ -9,6 +9,7 @@ import {
   PLATFORM_ID,
   Renderer2,
   TemplateRef,
+  Type,
   inject,
 } from '@angular/core';
 import {
@@ -30,13 +31,12 @@ import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
   ControlValueService,
-  ErrorMessageService,
   FormGeneratorService,
   FormStatusService,
-  FormValidatorService,
   OptionsDataService,
 } from './services';
 import { ConfigMappingService } from './services/config-mapping.service';
+import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 
 @Component({
@@ -56,10 +56,9 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
   providers: [
     ConfigMappingService,
     ControlValueService,
-    ErrorMessageService,
     FormGeneratorService,
-    FormValidatorService,
     FormStatusService,
+    FormValidationService,
     NgxMaskConfigInitService,
     OptionsDataService,
   ],
@@ -73,7 +72,7 @@ export class NgDynamicJsonFormComponent {
   private _renderer2 = inject(Renderer2);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formStatusService = inject(FormStatusService);
-  private _formValidatorService = inject(FormValidatorService);
+  private _formValidationService = inject(FormValidationService);
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
   private _onDestroy$ = new Subject<void>();
@@ -129,6 +128,10 @@ export class NgDynamicJsonFormComponent {
   /**Form control components built with other libraries */
   @Input() uiComponents?: UiComponents =
     this._ngDynamicJsonFormConfig?.uiComponents;
+
+  /**Provide custom component for validation message */
+  @Input() errorMessageComponent?: Type<ErrorMessageComponent> =
+    this._ngDynamicJsonFormConfig?.errorMessageComponent;
 
   @Output() formGet = new EventEmitter();
 
@@ -224,14 +227,14 @@ export class NgDynamicJsonFormComponent {
     if (!this.config || !this.config.length) return;
 
     this.configValidateErrors = [];
-    this._formValidatorService.customValidators = this.customValidators;
+    this._formValidationService.customValidators = this.customValidators;
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
     this._reset$.next();
     this._optionsDataService.cancelAllRequest();
     merge(
-      this._formStatusService.formErrorEvent$(this.form),
+      this._formValidationService.formErrorEvent$(this.form),
       this._formStatusService.formControlConditonsEvent$(this.form, this.config)
     )
       .pipe(takeUntil(merge(this._reset$, this._onDestroy$)))

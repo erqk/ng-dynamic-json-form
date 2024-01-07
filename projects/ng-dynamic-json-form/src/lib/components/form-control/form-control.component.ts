@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   Input,
   Type,
@@ -49,6 +50,7 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
+  private _cd = inject(ChangeDetectorRef);
   private _configMappingService = inject(ConfigMappingService);
   private _controlComponentRef?: CustomControlComponent;
   private _onChange = (_: any) => {};
@@ -60,9 +62,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() data?: FormControlConfig;
   @Input() uiComponents?: UiComponents;
   @Input() customComponent?: Type<CustomControlComponent>;
+  @Input() errorMessageComponent?: Type<ErrorMessageComponent>;
 
-  @ViewChild('componentAnchor', { read: ViewContainerRef })
-  componentAnchor!: ViewContainerRef;
+  @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
+  inputComponentAnchor!: ViewContainerRef;
+
+  @ViewChild('errorComponentAnchor', { read: ViewContainerRef })
+  errorComponentAnchor!: ViewContainerRef;
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
@@ -86,7 +92,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   ngOnInit(): void {
-    this._injectComponent();
+    requestAnimationFrame(() => {
+      this._injectInputComponent();
+      this._injectErrorMessageComponent();
+    });
   }
 
   private get _inputType(): string {
@@ -106,25 +115,36 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
   }
 
-  private _injectComponent(): void {
+  private _injectInputComponent(): void {
     const inputComponent =
       this.customComponent ||
       this.uiComponents?.[this._inputType] ||
       UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
 
-    window.setTimeout(() => {
-      this.componentAnchor.clear();
-      const componentRef = this.componentAnchor.createComponent(inputComponent);
+    this.inputComponentAnchor.clear();
+    const componentRef =
+      this.inputComponentAnchor.createComponent(inputComponent);
 
-      this._controlComponentRef = componentRef.instance;
-      componentRef.instance.data = this._configMappingService.mapCorrectConfig(
-        this.data
-      );
-      componentRef.instance.registerOnChange(this._onChange);
-      componentRef.instance.registerOnTouched(this._onTouched);
-      componentRef.instance.writeValue(this._pendingValue$.value);
-      componentRef.instance['_internal_init'](this.form, this.control);
-    }, 0);
+    this._controlComponentRef = componentRef.instance;
+    componentRef.instance.data = this._configMappingService.mapCorrectConfig(
+      this.data
+    );
+    componentRef.instance.registerOnChange(this._onChange);
+    componentRef.instance.registerOnTouched(this._onTouched);
+    componentRef.instance.writeValue(this._pendingValue$.value);
+    componentRef.instance['_internal_init'](this.form, this.control);
+  }
+
+  private _injectErrorMessageComponent(): void {
+    if (!this.errorMessageComponent || !this.errorComponentAnchor) return;
+
+    this.errorComponentAnchor.clear();
+    const componentRef = this.errorComponentAnchor.createComponent(
+      this.errorMessageComponent
+    );
+
+    componentRef.instance.control = this.control;
+    componentRef.instance.validators = this.data?.validators;
   }
 }

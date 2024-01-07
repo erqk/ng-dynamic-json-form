@@ -1,18 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable, map, startWith } from 'rxjs';
+import { Subject, startWith, takeUntil, tap } from 'rxjs';
 import { ValidatorConfig } from '../../models';
-import { ErrorMessageService } from '../../services';
+import { FormValidationService } from '../../services/form-validation.service';
 
 @Component({
   selector: 'error-message',
-  template: ` <ng-container
-    *ngIf="control && control.errors && (control?.touched || control?.value)"
-  >
-    <!-- TODO: Reduce the nesting level, and control the display of message using css -->
+  template: ` <ng-container>
     <div class="errors-container">
-      <ng-container *ngFor="let error of errors$ | async">
+      <ng-container *ngFor="let error of errorsMessages">
         <div class="error">{{ error }}</div>
       </ng-container>
     </div>
@@ -21,25 +18,32 @@ import { ErrorMessageService } from '../../services';
   imports: [CommonModule],
 })
 export class ErrorMessageComponent {
-  private _errorMessageService = inject(ErrorMessageService);
+  private _internal_formValidationService = inject(FormValidationService);
+  private readonly _internal_reset$ = new Subject<void>();
 
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
 
-  errors$?: Observable<string[]>;
+  errorsMessages: string[] = [];
 
-  ngOnChanges(): void {
-    if (!this.control || !this.validators?.length) return;
+  ngOnInit(): void {
+    const { control, validators = [] } = this;
+    if (!control || !validators.length) return;
 
-    this.errors$ = this.control.statusChanges.pipe(
-      startWith(this.control.status),
-      map(() =>
-        this._errorMessageService.getErrorMessages(
-          this.control?.errors ?? null,
-          this.control?.value ?? '',
-          this.validators || []
-        )
+    this._internal_reset$.next();
+    control.statusChanges
+      .pipe(
+        startWith(control.status),
+        tap(() => {
+          this.errorsMessages =
+            this._internal_formValidationService.getErrorMessages(
+              control.errors,
+              control.value,
+              validators
+            );
+        }),
+        takeUntil(this._internal_reset$)
       )
-    );
+      .subscribe();
   }
 }

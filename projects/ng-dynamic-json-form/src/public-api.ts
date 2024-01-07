@@ -3,6 +3,7 @@
  */
 
 export * from './lib/components/custom-control/custom-control.component';
+export * from './lib/components/error-message/error-message.component';
 export * from './lib/directives';
 export * from './lib/models';
 export * from './lib/ng-dynamic-json-form.component';

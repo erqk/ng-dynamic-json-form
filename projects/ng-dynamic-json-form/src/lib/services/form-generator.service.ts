@@ -9,7 +9,7 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { FormControlConfig } from '../models/form-control-config.interface';
 import { FormStatusService } from './form-status.service';
-import { FormValidatorService } from './form-validator.service';
+import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormGeneratorService {
@@ -17,7 +17,7 @@ export class FormGeneratorService {
 
   constructor(
     private _formStatusService: FormStatusService,
-    private _formValidatorService: FormValidatorService
+    private _formValidationService: FormValidationService
   ) {}
 
   generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
@@ -30,7 +30,7 @@ export class FormGeneratorService {
         !!item.formArray && !!item.formArray.template.length && !item.children;
 
       let control: AbstractControl | null = null;
-      const validators = this._formValidatorService.getValidators(
+      const validators = this._formValidationService.getValidators(
         item.validators ?? []
       );
 

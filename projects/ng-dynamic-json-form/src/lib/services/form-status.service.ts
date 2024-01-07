@@ -1,12 +1,5 @@
 import { Injectable, RendererFactory2, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormGroup,
-  ValidationErrors,
-  isFormArray,
-  isFormControl,
-  isFormGroup,
-} from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import {
   Observable,
   debounceTime,
@@ -26,29 +19,17 @@ import {
   ValidatorConfig,
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
-import { clearEmpties } from '../utilities/clear-empties';
-import { FormValidatorService } from './form-validator.service';
+import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormStatusService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
-  private _formValidatorService = inject(FormValidatorService);
+  private _formValidationService = inject(FormValidationService);
   private _controlStatusUpdating = false;
 
   /**To differentiate the host element from multiple ng-dynamic-json-form instances */
   hostIndex = 0;
-
-  formErrorEvent$(form: FormGroup): Observable<any> {
-    return form.statusChanges.pipe(
-      startWith(form.status),
-      debounceTime(0),
-      tap(() => {
-        const errors = this._getFormErrors(form);
-        form.setErrors(errors);
-      })
-    );
-  }
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -73,51 +54,6 @@ export class FormStatusService {
         this._controlStatusUpdating = false;
       })
     );
-  }
-
-  /**Get all the errors under this `FormGroup` following the hierachy
-   * @example
-   * root: {
-   *  control1: ValidationErrors,
-   *  control2: {
-   *    childA: ValidationErrors
-   *  }
-   * }
-   */
-  private _getFormErrors(
-    control: AbstractControl,
-    prevResult?: ValidationErrors | null
-  ): ValidationErrors | null {
-    const controlErrors = control.errors;
-    let result = prevResult ? { ...prevResult } : null;
-    let errorsGet = null;
-
-    if (isFormControl(control)) {
-      errorsGet = controlErrors;
-    }
-
-    if (isFormGroup(control)) {
-      errorsGet = Object.keys(control.controls).reduce((acc, key) => {
-        const err = this._getFormErrors(control.controls[key], result);
-        return err ? { ...acc, [key]: err } : acc;
-      }, {});
-    }
-
-    if (isFormArray(control)) {
-      const childrenErrors = control.controls
-        .map((x) => this._getFormErrors(x, result))
-        .filter((x) => !!x);
-
-      errorsGet = {
-        ...controlErrors,
-        ...childrenErrors,
-      };
-    }
-
-    result = clearEmpties({ ...result, ...errorsGet });
-
-    const noErrors = !result || !Object.keys(result).length;
-    return noErrors ? null : result;
   }
 
   private _updateControlStatus(
@@ -211,8 +147,8 @@ export class FormStatusService {
       // Let `undefined` pass the filter because this validator it's not under control of conditions.
       return bool === undefined ? true : bool;
     });
-    
-    const validators = this._formValidatorService.getValidators(configFilterd);
+
+    const validators = this._formValidationService.getValidators(configFilterd);
 
     control.setValidators(validators);
     control.updateValueAndValidity();

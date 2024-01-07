@@ -19,27 +19,32 @@
       layout: data.layout
     }"
   ></ng-container>
-</ng-container>
 
-<!-- Input component -->
-<ng-container #componentAnchor></ng-container>
+  <!-- Input component -->
+  <ng-container #inputComponentAnchor></ng-container>
 
-<!-- Description (after) -->
-<ng-container
-  *ngIf="data?.description && data?.layout?.descriptionPosition === 'after'"
-  [ngTemplateOutlet]="descriptionTemplate"
-  [ngTemplateOutletContext]="{
-    description: data?.description,
-    layout: data?.layout
-  }"
-></ng-container>
+  <!-- Description (after) -->
+  <ng-container
+    *ngIf="data?.description && data?.layout?.descriptionPosition === 'after'"
+    [ngTemplateOutlet]="descriptionTemplate"
+    [ngTemplateOutletContext]="{
+      description: data.description,
+      layout: data.layout
+    }"
+  ></ng-container>
 
-<!-- Validation messages -->
-<ng-container *ngIf="data?.layout?.hideValidationMessage !== true">
-  <error-message
-    [control]="control"
-    [validators]="data?.validators"
-  ></error-message>
+  <ng-container *ngIf="data?.layout?.hideErrorMessage !== true">
+    <!-- Custom error message component -->
+    <ng-container #errorComponentAnchor></ng-container>
+
+    <!-- Default error message component -->
+    <ng-container *ngIf="!errorMessageComponent">
+      <error-message
+        [control]="control"
+        [validators]="data.validators"
+      ></error-message>
+    </ng-container>
+  </ng-container>
 </ng-container>
 
 <!-- Description template -->

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormControlGroupCondition } from '../models';
 import { FormStatusService } from './form-status.service';
-import { FormValidatorService } from './form-validator.service';
+import { FormValidationService } from './form-validation.service';
 
 const formGroup = new FormGroup({
   address: new FormGroup({
@@ -61,7 +61,7 @@ describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () 
     TestBed.configureTestingModule({
       providers: [
         FormStatusService,
-        FormValidatorService,
+        FormValidationService,
         {
           provide: RendererFactory2,
           useValue: renderFactory2Spy,
