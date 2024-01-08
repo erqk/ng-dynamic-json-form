@@ -95,7 +95,9 @@
       }
     }
 
-    form-control > * {
+    form-control > *,
+    .input-component > *,
+    .loading-component > * {
       display: flex;
       flex-direction: column;
     }

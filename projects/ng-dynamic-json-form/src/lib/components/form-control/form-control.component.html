@@ -21,12 +21,15 @@
   ></ng-container>
 
   <!-- Input component -->
-  <div [ngClass]="{ hidden: loading && loadingComponent }">
+  <div
+    class="input-component"
+    [ngClass]="{ hidden: loading && loadingComponent }"
+  >
     <ng-container #inputComponentAnchor></ng-container>
   </div>
 
   <!-- Loading component -->
-  <div [ngClass]="{ hidden: !loading }">
+  <div class="loading-component" [ngClass]="{ hidden: !loading }">
     <ng-container #loadingComponentAnchor></ng-container>
   </div>
 
