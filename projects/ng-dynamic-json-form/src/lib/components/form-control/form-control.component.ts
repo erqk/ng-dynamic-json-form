@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  ComponentRef,
+  ElementRef,
   Input,
   Type,
   ViewChild,
@@ -18,11 +20,13 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { Observable, finalize, tap } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
 import { ControlLayoutDirective } from '../../directives';
-import { FormControlConfig } from '../../models';
+import { FormControlConfig, OptionItem } from '../../models';
 import { UiComponents } from '../../models/ui-components.type';
+import { OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -51,7 +55,9 @@ import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
+  private _el = inject(ElementRef);
   private _configMappingService = inject(ConfigMappingService);
+  private _optionsDataService = inject(OptionsDataService);
   private _controlComponentRef?: CustomControlComponent;
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
@@ -63,12 +69,18 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() uiComponents?: UiComponents;
   @Input() customComponent?: Type<CustomControlComponent>;
   @Input() errorMessageComponent?: Type<ErrorMessageComponent>;
+  @Input() loadingComponent?: Type<any>;
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
 
   @ViewChild('errorComponentAnchor', { read: ViewContainerRef })
   errorComponentAnchor!: ViewContainerRef;
+
+  @ViewChild('loadingComponentAnchor', { read: ViewContainerRef })
+  loadingComponentAnchor!: ViewContainerRef;
+
+  loading = false;
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
@@ -93,8 +105,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   ngOnInit(): void {
     requestAnimationFrame(() => {
+      this._injectLoadingComponent();
       this._injectInputComponent();
       this._injectErrorMessageComponent();
+      this._fetchOptions();
     });
   }
 
@@ -115,6 +129,17 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
   }
 
+  private _injectComponent<T>(
+    vcr?: ViewContainerRef,
+    component?: Type<T>
+  ): ComponentRef<T> | null {
+    if (!vcr || !component) return null;
+
+    vcr.clear();
+    const componentRef = vcr.createComponent(component);
+    return componentRef;
+  }
+
   private _injectInputComponent(): void {
     const inputComponent =
       this.customComponent ||
@@ -122,9 +147,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
 
-    this.inputComponentAnchor.clear();
-    const componentRef =
-      this.inputComponentAnchor.createComponent(inputComponent);
+    const componentRef = this._injectComponent(
+      this.inputComponentAnchor,
+      inputComponent
+    );
+
+    if (!componentRef) return;
 
     this._controlComponentRef = componentRef.instance;
     componentRef.instance.data = this._configMappingService.mapCorrectConfig(
@@ -133,18 +161,89 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     componentRef.instance.registerOnChange(this._onChange);
     componentRef.instance.registerOnTouched(this._onTouched);
     componentRef.instance.writeValue(this._pendingValue$.value);
-    componentRef.instance['_internal_init'](this.form, this.control);
+    componentRef.instance['_internal_init'](this.control);
   }
 
   private _injectErrorMessageComponent(): void {
-    if (!this.errorMessageComponent || !this.errorComponentAnchor) return;
-
-    this.errorComponentAnchor.clear();
-    const componentRef = this.errorComponentAnchor.createComponent(
+    const componentRef = this._injectComponent(
+      this.errorComponentAnchor,
       this.errorMessageComponent
     );
 
+    if (!componentRef) return;
+
     componentRef.instance.control = this.control;
     componentRef.instance.validators = this.data?.validators;
+  }
+
+  private _injectLoadingComponent(): void {
+    this._injectComponent(this.loadingComponentAnchor, this.loadingComponent);
+  }
+
+  private _fetchOptions(): void {
+    if (!this.data || !this.data.options) {
+      return;
+    }
+
+    const { data: existingOptions = [], sourceAppendPosition } =
+      this.data.options;
+
+    const setData = (
+      source: Observable<OptionItem[]>
+    ): Observable<OptionItem[]> =>
+      source.pipe(
+        tap((x) => {
+          const appendBefore = sourceAppendPosition === 'before';
+          const dataGet = appendBefore
+            ? x.concat(existingOptions)
+            : existingOptions.concat(x);
+
+          this.data!.options!.data = dataGet;
+          this._setLoading(false);
+        }),
+        finalize(() => this._setLoading(false))
+      );
+
+    if (!this.form || !this.data.options.trigger) {
+      this._setLoading(true);
+      this._optionsDataService
+        .getOptions$(this.data.options)
+        .pipe(setData)
+        .subscribe();
+
+      return;
+    }
+
+    const trigger = this.data.options.trigger;
+    if (!trigger.action) return;
+
+    const optionsOnTrigger$ =
+      trigger.action === 'FILTER'
+        ? this._optionsDataService.filterOptionsOnTrigger$(this.form, trigger)
+        : this._optionsDataService.requestOptionsOnTrigger$(this.form, trigger);
+
+    this._setLoading(true);
+    optionsOnTrigger$
+      .pipe(
+        setData,
+        tap((x) => {
+          const clearData = !x.length || x.length > 1;
+          const autoValue = clearData ? '' : x[0].value;
+          this.control?.setValue(autoValue);
+        })
+      )
+      .subscribe();
+  }
+
+  private _setLoading(value: boolean): void {
+    const host = this._el.nativeElement as HTMLElement;
+
+    this.loading = value;
+
+    if (!this.loadingComponent) {
+      this.loading
+        ? host.classList.add('disabled')
+        : host.classList.remove('disabled');
+    }
   }
 }

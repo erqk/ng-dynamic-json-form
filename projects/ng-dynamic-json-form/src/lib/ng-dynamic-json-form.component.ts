@@ -64,7 +64,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
   ],
 })
 export class NgDynamicJsonFormComponent {
-  private _ngDynamicJsonFormConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+  private _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
   private _platformId = inject(PLATFORM_ID);
@@ -104,7 +104,7 @@ export class NgDynamicJsonFormComponent {
    * }
    */
   @Input() customValidators?: { [key: string]: ValidatorFn } =
-    this._ngDynamicJsonFormConfig?.customValidators;
+    this._providerConfig?.customValidators;
 
   /**
    * @description
@@ -123,15 +123,17 @@ export class NgDynamicJsonFormComponent {
    * }
    */
   @Input() customComponents?: CustomComponents =
-    this._ngDynamicJsonFormConfig?.customComponents;
+    this._providerConfig?.customComponents;
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents =
-    this._ngDynamicJsonFormConfig?.uiComponents;
+  @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
 
   /**Provide custom component for validation message */
   @Input() errorMessageComponent?: Type<ErrorMessageComponent> =
-    this._ngDynamicJsonFormConfig?.errorMessageComponent;
+    this._providerConfig?.errorMessageComponent;
+
+  @Input() loadingComponent?: Type<any> =
+    this._providerConfig?.loadingComponent;
 
   @Output() formGet = new EventEmitter();
 

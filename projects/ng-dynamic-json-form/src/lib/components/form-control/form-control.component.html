@@ -21,7 +21,14 @@
   ></ng-container>
 
   <!-- Input component -->
-  <ng-container #inputComponentAnchor></ng-container>
+  <div [ngClass]="{ hidden: loading && loadingComponent }">
+    <ng-container #inputComponentAnchor></ng-container>
+  </div>
+
+  <!-- Loading component -->
+  <div [ngClass]="{ hidden: !loading }">
+    <ng-container #loadingComponentAnchor></ng-container>
+  </div>
 
   <!-- Description (after) -->
   <ng-container
@@ -33,7 +40,11 @@
     }"
   ></ng-container>
 
-  <ng-container *ngIf="data?.layout?.hideErrorMessage !== true">
+  <div
+    [ngClass]="{
+      hidden: !control?.errors || data.layout?.hideErrorMessage === true
+    }"
+  >
     <!-- Custom error message component -->
     <ng-container #errorComponentAnchor></ng-container>
 
@@ -44,7 +55,7 @@
         [validators]="data.validators"
       ></error-message>
     </ng-container>
-  </ng-container>
+  </div>
 </ng-container>
 
 <!-- Description template -->

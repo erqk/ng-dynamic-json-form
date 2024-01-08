@@ -2,20 +2,15 @@ import { Component, HostListener, ViewChild, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { InputText } from 'primeng/inputtext';
-import { Observable, Subject } from 'rxjs';
-import { finalize, map, startWith, takeUntil, tap } from 'rxjs/operators';
-import { FormControlConfig, OptionItem } from '../../models';
-import {
-  ControlValueService,
-  FormValidationService,
-  OptionsDataService,
-} from '../../services';
+import { Subject } from 'rxjs';
+import { map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { FormControlConfig } from '../../models';
+import { ControlValueService, FormValidationService } from '../../services';
 
 @Component({
   selector: 'custom-control',
@@ -25,9 +20,6 @@ import {
 export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _internal_controlValueService = inject(ControlValueService);
   private _internal_formValidationService = inject(FormValidationService);
-  private _internal_optionsDataService = inject(OptionsDataService);
-
-  private _internal_form?: UntypedFormGroup;
 
   private _internal_onTouched = () => {};
 
@@ -100,15 +92,13 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     return this.control;
   }
 
-  /**@internal */
-  private _internal_init(
-    form?: UntypedFormGroup,
-    control?: AbstractControl
-  ): void {
+  /**
+   * @internal
+   * Init event after component creation. Called by FormControlComponent.
+   */
+  private _internal_init(control?: AbstractControl): void {
     this._internal_init$.next();
-    this._internal_form = form;
     this._internal_listenErrors(control);
-    this._internal_fetchOptions();
   }
 
   /**@internal */
@@ -129,74 +119,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
             );
         }),
         takeUntil(this._internal_init$)
-      )
-      .subscribe();
-  }
-
-  /**@internal */
-  private _internal_fetchOptions(): void {
-    if (!this.data || !this.data.options) {
-      return;
-    }
-
-    const loading = (value: boolean) => {
-      if (!this.data) return;
-      this.data.extra = {
-        ...this.data.extra,
-        _internal_loading: value,
-      };
-    };
-
-    const existingOptions = this.data.options.data || [];
-
-    const setData = (
-      source: Observable<OptionItem[]>
-    ): Observable<OptionItem[]> =>
-      source.pipe(
-        tap((x) => {
-          this.data!.options!.data =
-            this.data!.options?.sourceAppendPosition === 'before'
-              ? x.concat(existingOptions)
-              : existingOptions.concat(x);
-
-          loading(false);
-        }),
-        finalize(() => loading(false))
-      );
-
-    if (!this._internal_form || !this.data.options.trigger) {
-      loading(true);
-      this._internal_optionsDataService
-        .getOptions$(this.data.options)
-        .pipe(setData)
-        .subscribe();
-
-      return;
-    }
-
-    const trigger = this.data.options.trigger;
-    if (!trigger.action) return;
-
-    const optionsOnTrigger$ =
-      trigger.action === 'FILTER'
-        ? this._internal_optionsDataService.filterOptionsOnTrigger$(
-            this._internal_form,
-            trigger
-          )
-        : this._internal_optionsDataService.requestOptionsOnTrigger$(
-            this._internal_form,
-            trigger
-          );
-
-    loading(true);
-    optionsOnTrigger$
-      .pipe(
-        setData,
-        tap((x) => {
-          const clearData = !x.length || x.length > 1;
-          const autoValue = clearData ? '' : x[0].value;
-          this._internal_control.setValue(autoValue);
-        })
       )
       .subscribe();
   }
