@@ -23,7 +23,7 @@
     }
 
     ~ .marker {
-      border: solid calc(var(--input-border-width) + 0.01em) var(--color-border);
+      border: solid calc(var(--input-border-width) + 1px) var(--color-border);
       border-radius: 0.25em;
 
       &::before {
