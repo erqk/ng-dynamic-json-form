@@ -1,10 +1,12 @@
 import { formatDate } from '@angular/common';
 import { Injectable, LOCALE_ID, inject } from '@angular/core';
 import { FormControlConfig } from '../models';
+import { NG_DYNAMIC_JSON_FORM_CONFIG } from '../ng-dynamic-json-form.config';
 
 @Injectable()
 export class ControlValueService {
   private _localeId = inject(LOCALE_ID);
+  private _config = inject(NG_DYNAMIC_JSON_FORM_CONFIG, { optional: true });
 
   mapInputData(input: unknown, config?: FormControlConfig): unknown {
     if (!config) return input;
@@ -23,7 +25,7 @@ export class ControlValueService {
 
     switch (config.type) {
       case 'date':
-        return this._getOutputDate(input, config.extra?.date?.outputFormat);
+        return this._getOutputDate(input);
 
       default:
         return input;
@@ -40,8 +42,9 @@ export class ControlValueService {
     }
   }
 
-  private _getOutputDate(input: any, format?: string): Date | string {
+  private _getOutputDate(input: any): Date | string {
     if (!(input instanceof Date)) return '';
+    const format = this._config?.outputDateFormat;
     return format ? formatDate(input, format, this._localeId) : input;
   }
 }

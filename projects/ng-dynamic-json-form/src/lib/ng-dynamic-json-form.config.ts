@@ -9,6 +9,7 @@ interface FormConfig {
   uiComponents?: { [key: string]: Type<CustomControlComponent> };
   errorMessageComponent?: Type<ErrorMessageComponent>;
   loadingComponent?: Type<any>;
+  outputDateFormat?: string;
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(

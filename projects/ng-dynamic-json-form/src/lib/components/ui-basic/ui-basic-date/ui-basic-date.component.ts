@@ -3,6 +3,7 @@ import { Component, LOCALE_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import { PropertyBindingDirective } from '../../../directives';
+import { NG_DYNAMIC_JSON_FORM_CONFIG } from '../../../ng-dynamic-json-form.config';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { CustomControlComponent } from '../../custom-control/custom-control.comp
 })
 export class UiBasicDateComponent extends CustomControlComponent {
   private _locale = inject(LOCALE_ID);
+  private _config = inject(NG_DYNAMIC_JSON_FORM_CONFIG);
 
   dateSettings = {
     min: '',
@@ -49,7 +51,7 @@ export class UiBasicDateComponent extends CustomControlComponent {
   }
 
   private get _dateTimeFormatted(): string {
-    const outputFormat = this.data?.extra?.date?.outputFormat;
+    const outputFormat = this._config.outputDateFormat;
     const controlValue = this.control.value;
     const date =
       this.data?.extra?.showTime === true
