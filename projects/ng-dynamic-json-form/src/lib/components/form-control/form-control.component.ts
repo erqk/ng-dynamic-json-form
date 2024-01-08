@@ -113,8 +113,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   private get _inputType(): string {
-    // If `ngxMaskConfig` is specified, we use input with mask
-    const defaultInput = !this.data?.ngxMaskConfig ? 'text' : 'textMask';
+    const defaultInput = !this.data?.inputMask ? 'text' : 'textMask';
 
     // Fallback to text input if `type` is not specified.
     if (!this.data?.type) return defaultInput;

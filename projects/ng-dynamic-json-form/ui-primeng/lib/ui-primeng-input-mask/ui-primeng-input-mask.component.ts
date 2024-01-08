@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  NgxMaskConfigBindingDirective,
+  NgxMaskBindingDirective,
   PROPERTY_BINDING_INJECTOR,
   PropertyBindingDirective,
 } from 'ng-dynamic-json-form';
@@ -18,7 +18,7 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
     ReactiveFormsModule,
     InputTextModule,
     NgxMaskDirective,
-    NgxMaskConfigBindingDirective,
+    NgxMaskBindingDirective,
     PropertyBindingDirective,
   ],
   providers: [

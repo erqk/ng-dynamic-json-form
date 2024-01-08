@@ -7,8 +7,8 @@
       type="text"
       placeholder="{{ data.placeholder }}"
       [propertyBinding]="data"
-      [mask]="data.ngxMaskConfig?.mask ?? ''"
-      [ngxMaskConfigBinding]="data.ngxMaskConfig"
+      [mask]="data.inputMask?.mask ?? ''"
+      [ngxMaskBinding]="data.inputMask"
       [formControl]="control"
     />
   </mat-form-field>

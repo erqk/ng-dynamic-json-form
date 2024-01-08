@@ -9,7 +9,7 @@ export class ConfigMappingService {
   mapCorrectConfig(input?: FormControlConfig): FormControlConfig | undefined {
     if (!input) return undefined;
 
-    const { extra, ngxMaskConfig } = input;
+    const { extra, inputMask } = input;
 
     if (extra) {
       input.extra = Object.keys(extra).reduce((acc, key) => {
@@ -21,8 +21,8 @@ export class ConfigMappingService {
       }, extra);
     }
 
-    if (ngxMaskConfig) {
-      input.ngxMaskConfig = this._maskConfigInitService.getConfig(input);
+    if (inputMask) {
+      input.inputMask = this._maskConfigInitService.getConfig(input);
     }
 
     return input;

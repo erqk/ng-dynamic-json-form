@@ -4,7 +4,7 @@
     pInputText
     [attr.placeholder]="data.placeholder ?? null"
     [formControl]="control"
-    [mask]="data.ngxMaskConfig?.mask ?? ''"
-    [ngxMaskConfigBinding]="data.ngxMaskConfig"
+    [mask]="data.inputMask?.mask ?? ''"
+    [ngxMaskBinding]="data.inputMask"
   />
 </ng-container>

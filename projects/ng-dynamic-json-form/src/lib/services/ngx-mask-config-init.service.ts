@@ -66,7 +66,7 @@ export class NgxMaskConfigInitService {
   };
 
   /**
-   * @description Init `ngxMaskConfig` before bind it to the `mask` directive.
+   * @description Init `inputMask` before bind it to the `mask` directive.
    *
    * **Why ?**
    *
@@ -74,13 +74,13 @@ export class NgxMaskConfigInitService {
    * we need to set all the default value because they will be overwritten by ngx-mask
    */
   getConfig(input: FormControlConfig): Partial<NgxMaskConfig> | undefined {
-    const { ngxMaskConfig } = input;
-    if (!ngxMaskConfig) return undefined;
+    const { inputMask } = input;
+    if (!inputMask) return undefined;
 
-    const { specialCharacters, patterns } = ngxMaskConfig;
+    const { specialCharacters, patterns } = inputMask;
 
     const result = {
-      ...ngxMaskConfig,
+      ...inputMask,
       specialCharacters: Array.isArray(specialCharacters)
         ? specialCharacters
         : this._defaultSpecialCharacters,

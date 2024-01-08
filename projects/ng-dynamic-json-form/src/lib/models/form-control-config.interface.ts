@@ -42,7 +42,8 @@ export interface FormControlConfig {
 
   layout?: FormLayout;
 
-  ngxMaskConfig?: Partial<NgxMaskConfig>;
+  /**Config for ngx-mask, provide to use input with masking */
+  inputMask?: Partial<NgxMaskConfig>;
 
   /**A list of data, use with the following input type:
    * - `checkbox`

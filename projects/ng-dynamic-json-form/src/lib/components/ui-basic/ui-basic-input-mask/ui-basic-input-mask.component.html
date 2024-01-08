@@ -3,8 +3,8 @@
     type="text"
     [ngClass]="{ disabled: control.disabled }"
     [attr.placeholder]="data.placeholder ?? ''"
-    [mask]="data.ngxMaskConfig?.mask ?? ''"
-    [ngxMaskConfigBinding]="data.ngxMaskConfig"
+    [mask]="data.inputMask?.mask ?? ''"
+    [ngxMaskBinding]="data.inputMask"
     [propertyBinding]="data"
     [formControl]="control"
   />
