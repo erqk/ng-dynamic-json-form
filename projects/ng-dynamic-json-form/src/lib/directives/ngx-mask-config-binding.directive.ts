@@ -21,7 +21,7 @@ export class NgxMaskConfigBindingDirective {
     this._maskRef.validation = false;
 
     for (const key in this.ngxMaskConfigBinding) {
-      if (key === 'mask' || key === 'validation') continue;
+      if (key === 'mask') continue;
 
       const currentValue = (this.ngxMaskConfigBinding as any)[key];
       const simpleChange = new SimpleChange(undefined, currentValue, true);
