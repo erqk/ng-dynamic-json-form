@@ -9,7 +9,6 @@ import {
   PLATFORM_ID,
   Renderer2,
   TemplateRef,
-  Type,
   inject,
 } from '@angular/core';
 import {
@@ -20,13 +19,18 @@ import {
 import Ajv from 'ajv';
 import { Subject, merge, takeUntil } from 'rxjs';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import * as schema from './config-schema.json';
 import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
-import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
+import {
+  LayoutComponents,
+  LayoutTemplates,
+  NG_DYNAMIC_JSON_FORM_CONFIG,
+} from './ng-dynamic-json-form.config';
 import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
 import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
@@ -52,6 +56,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     FormArrayHeaderEventPipe,
     HostIdDirective,
     ControlLayoutDirective,
+    FormArrayItemHeaderComponent,
   ],
   providers: [
     ConfigMappingService,
@@ -128,12 +133,19 @@ export class NgDynamicJsonFormComponent {
   /**Form control components built with other libraries */
   @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
 
-  /**Provide custom component for validation message */
-  @Input() errorMessageComponent?: Type<ErrorMessageComponent> =
-    this._providerConfig?.errorMessageComponent;
+  /**Custom components for loading and error message */
+  @Input() layoutComponents?: LayoutComponents =
+    this._providerConfig?.layoutComponents;
 
-  @Input() loadingComponent?: Type<any> =
-    this._providerConfig?.loadingComponent;
+  /**Custom templates for loading and error message */
+  @Input() layoutTemplates?: LayoutTemplates =
+    this._providerConfig?.layoutTemplates;
+
+  /**
+   * Custom templates for input, suitable for input using only `FormControl`.
+   * To use `FormGroup` or `FormArray`, use `CustomControlComponent` instead.
+   */
+  @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
 
   @Output() formGet = new EventEmitter();
 

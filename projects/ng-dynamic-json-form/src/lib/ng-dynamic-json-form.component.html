@@ -55,7 +55,7 @@
               readonly: config?.readonly
             }"
             [ngClass]="{
-              'level-1': isNested !== true
+              'big-title': isNested !== true
             }"
           >
             <form-control
@@ -63,10 +63,11 @@
               [control]="parentForm.controls[config.formControlName]"
               [form]="form"
               [formControlName]="config.formControlName"
-              [customComponent]="customComponents?.[config.customComponent]"
+              [customComponent]="customComponents?.[config?.customComponent]"
               [uiComponents]="uiComponentsGet"
-              [errorMessageComponent]="errorMessageComponent"
-              [loadingComponent]="loadingComponent"
+              [layoutComponents]="layoutComponents"
+              [layoutTemplates]="layoutTemplates"
+              [inputTemplates]="inputTemplates"
             ></form-control>
           </div>
         </ng-container>
@@ -100,7 +101,10 @@
             <ng-container
               *ngIf="config.description"
               [ngTemplateOutlet]="descriptionTemplate"
-              [ngTemplateOutletContext]="{ description: config.description }"
+              [ngTemplateOutletContext]="{
+                description: config.description,
+                layout: config.layout
+              }"
             ></ng-container>
 
             <ng-container
@@ -110,10 +114,10 @@
                 parentId:
                   (parentId ? parentId + '.' : '') + config.formControlName,
                 parentForm: parentForm.controls[config.formControlName],
-                isNested: true,
+                isNested: true && !(config?.layout?.hideLabel === true || !config?.label),
                 hostLayout: {
                   hostClass: config?.layout?.childClass,
-                  hostStyles: config?.layout?.childStyles
+                  hostStyles: config?.layout?.childStyles,
                 }
               }"
             ></ng-container>
@@ -189,22 +193,22 @@
       *ngIf="description"
       [ngTemplateOutlet]="descriptionTemplate"
       [ngTemplateOutletContext]="{
-        description
+        description,
+        layout
       }"
     ></ng-container>
 
     <!-- Show add button when form array is empty -->
     <ng-container
-      *ngIf="
-        formArrayConfig.editable === true && formArray.controls.length === 0
-      "
-      [ngTemplateOutlet]="formArrayGroupHeader"
-      [ngTemplateOutletContext]="{
-          label,
-          formArray,
-          formArrayConfig
-        }"
-    ></ng-container>
+      *ngIf="formArrayConfig.editable === true && !formArray.controls.length"
+    >
+      <form-array-item-header
+        [config]="formArrayConfig"
+        [formArray]="formArray"
+        [layoutComponents]="layoutComponents"
+        [layoutTemplates]="layoutTemplates"
+      ></form-array-item-header>
+    </ng-container>
 
     <ng-container formArrayName="{{ formArrayName }}">
       <error-message
@@ -217,16 +221,13 @@
       >
         <div class="group">
           <!-- FormGroup header -->
-          <ng-container
-            *ngIf="formArrayConfig.editable === true"
-            [ngTemplateOutlet]="formArrayGroupHeader"
-            [ngTemplateOutletContext]="{
-              index,
-              label,
-              formArray,
-              formArrayConfig
-            }"
-          ></ng-container>
+          <form-array-item-header
+            [config]="formArrayConfig"
+            [formArray]="formArray"
+            [index]="index"
+            [layoutComponents]="layoutComponents"
+            [layoutTemplates]="layoutTemplates"
+          ></form-array-item-header>
 
           <!-- FormGroup -->
           <ng-container
@@ -259,62 +260,17 @@
 </ng-template>
 
 <!-- Description template -->
-<ng-template #descriptionTemplate let-description="description">
-  <span class="form-description">{{ description }}</span>
-</ng-template>
-
-<!-- Custom header of FormGroup inside FormArray -->
 <ng-template
-  #formArrayGroupHeader
-  let-index="index"
-  let-label="label"
-  let-formArray="formArray"
-  let-formArrayConfig="formArrayConfig"
+  #descriptionTemplate
+  let-description="description"
+  let-layout="layout"
 >
-  <div
-    [ngClass]="{
-      'form-array-group-header-custom': formArrayGroupHeaderRef,
-      'form-array-group-header': !formArrayGroupHeaderRef
+  <span
+    class="form-description"
+    [controlLayout]="{
+      type: 'description',
+      layout
     }"
+    >{{ description }}</span
   >
-    <ng-container
-      [ngTemplateOutlet]="
-        formArrayGroupHeaderRef ?? formArrayDefaultGroupHeader
-      "
-      [ngTemplateOutletContext]="{
-        label: formArray.length
-          ? formArrayConfig.templateLabel + ' ' + (index + 1)
-          : '',
-        index,
-        formArray,
-        templateForm: formArrayConfig.template | generateForm,
-        buttonEvent:
-          formArray | formArrayHeaderEvent : formArrayConfig.template : index
-      }"
-    ></ng-container>
-  </div>
-</ng-template>
-
-<!-- Default header of FormGroup inside FormArray -->
-<ng-template
-  #formArrayDefaultGroupHeader
-  let-label="label"
-  let-formArray="formArray"
-  let-buttonEvent="buttonEvent"
->
-  <ng-container *ngIf="label">
-    <span class="label">{{ label }}</span>
-  </ng-container>
-
-  <div class="buttons">
-    <button type="button" class="btn-add" (click)="buttonEvent.add()">
-      <span></span>
-    </button>
-
-    <ng-container *ngIf="formArray.length > 0">
-      <button type="button" class="btn-remove" (click)="buttonEvent.remove()">
-        <span></span>
-      </button>
-    </ng-container>
-  </div>
 </ng-template>

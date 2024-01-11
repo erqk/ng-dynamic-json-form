@@ -1,0 +1,55 @@
+<ng-container *ngIf="config && formArray">
+  <ng-container
+    *ngIf="
+      !layoutTemplates?.formArrayItemHeader &&
+      !layoutComponents?.formArrayItemHeader
+    "
+  >
+    <!-- Show add button only when form array is empty -->
+    <div class="header">
+      <ng-container *ngIf="formArray.length > 0 && config.templateLabel">
+        <div class="label">
+          <span>{{ config.templateLabel }}</span>
+          <span style="margin-left: 0.25rem">{{ index + 1 }}</span>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="config.editable === true">
+        <div class="buttons">
+          <button type="button" class="btn-add" (click)="buttonEvent.add()">
+            <span></span>
+          </button>
+
+          <ng-container *ngIf="formArray.length > 0">
+            <button
+              type="button"
+              class="btn-remove"
+              (click)="buttonEvent.remove()"
+            >
+              <span></span>
+            </button>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- Custom template -->
+  <ng-container
+    *ngIf="layoutTemplates?.formArrayItemHeader"
+    [ngTemplateOutlet]="layoutTemplates!.formArrayItemHeader!"
+    [ngTemplateOutletContext]="{
+      label: config.templateLabel,
+      index,
+      formArray,
+      templateForm,
+      buttonEvent
+    }"
+  ></ng-container>
+</ng-container>
+
+<!-- Custom component -->
+<ng-container
+  *ngIf="layoutComponents?.formArrayItemHeader"
+  #componentAnchor
+></ng-container>

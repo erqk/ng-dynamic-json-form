@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Subject, startWith, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { ValidatorConfig } from '../../models';
 import { FormValidationService } from '../../services/form-validation.service';
 
@@ -9,7 +9,7 @@ import { FormValidationService } from '../../services/form-validation.service';
   selector: 'error-message',
   template: ` <ng-container>
     <div class="errors-container">
-      <ng-container *ngFor="let error of errorsMessages">
+      <ng-container *ngFor="let error of errorMessages">
         <div class="error">{{ error }}</div>
       </ng-container>
     </div>
@@ -24,24 +24,14 @@ export class ErrorMessageComponent {
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
 
-  errorsMessages: string[] = [];
+  errorMessages: string[] = [];
 
   ngOnInit(): void {
-    const { control, validators = [] } = this;
-    if (!control || !validators.length) return;
-
     this._internal_reset$.next();
-    control.statusChanges
+    this._internal_formValidationService
+      .getErrorMessages$(this.control, this.validators)
       .pipe(
-        startWith(control.status),
-        tap(() => {
-          this.errorsMessages =
-            this._internal_formValidationService.getErrorMessages(
-              control.errors,
-              control.value,
-              validators
-            );
-        }),
+        tap((x) => (this.errorMessages = x)),
         takeUntil(this._internal_reset$)
       )
       .subscribe();

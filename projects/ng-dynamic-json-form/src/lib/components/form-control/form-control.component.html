@@ -23,14 +23,40 @@
   <!-- Input component -->
   <div
     class="input-component"
-    [ngClass]="{ hidden: loading && loadingComponent }"
+    [ngClass]="{
+      hidden: loading && (layoutComponents?.loading || layoutTemplates?.loading)
+    }"
   >
-    <ng-container #inputComponentAnchor></ng-container>
+    <ng-container
+      *ngIf="inputTemplates?.[data?.customComponent ?? '']"
+      [ngTemplateOutlet]="inputTemplates![data.customComponent!]"
+      [ngTemplateOutletContext]="{
+        control,
+        data,
+        errorMessages
+      }"
+    ></ng-container>
+
+    <ng-container
+      *ngIf="!inputTemplates?.[data?.customComponent ?? '']"
+      #inputComponentAnchor
+    ></ng-container>
   </div>
 
-  <!-- Loading component -->
   <div class="loading-component" [ngClass]="{ hidden: !loading }">
-    <ng-container #loadingComponentAnchor></ng-container>
+    <!-- Loading component -->
+    <ng-container *ngIf="layoutComponents?.loading">
+      <ng-container
+        *ngComponentOutlet="layoutComponents!.loading!"
+      ></ng-container>
+    </ng-container>
+
+    <!-- Loading template -->
+    <ng-container
+      *ngIf="layoutTemplates?.loading"
+      [ngTemplateOutlet]="layoutTemplates!.loading!"
+    >
+    </ng-container>
   </div>
 
   <!-- Description (after) -->
@@ -50,9 +76,19 @@
   >
     <!-- Custom error message component -->
     <ng-container #errorComponentAnchor></ng-container>
+    <ng-container
+      *ngIf="layoutTemplates?.errorMessage"
+      [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
+      [ngTemplateOutletContext]="{
+        control,
+        messages: errorMessages
+      }"
+    ></ng-container>
 
     <!-- Default error message component -->
-    <ng-container *ngIf="!errorMessageComponent">
+    <ng-container
+      *ngIf="!layoutComponents?.errorMessage && !layoutTemplates?.errorMessage"
+    >
       <error-message
         [control]="control"
         [validators]="data.validators"
@@ -68,7 +104,7 @@
   let-layout="layout"
 >
   <span
-    class="input-description"
+    class="form-description"
     [controlLayout]="{
       type: 'description',
       layout

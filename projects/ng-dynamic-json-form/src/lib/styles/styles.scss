@@ -1,5 +1,4 @@
 @use "./option-button" as option-button;
-@use "./form-array" as form-array;
 @use "./utilities" as utilities;
 @use "./ui-basic/ui-basic";
 
@@ -21,9 +20,9 @@
   --options-column-gap: 1.85em;
   --options-row-gap: 0.25em;
 
-  --form-array-group-divider-color: #e1e1e1;
-  --form-array-aroup-divider-weight: 1px;
-  --form-array-group-divider-spacing: 2em;
+  --form-array-item-divider-color: #e1e1e1;
+  --form-array-item-divider-weight: 1px;
+  --form-array-item-divider-spacing: 2em;
 
   --drop-shadow: 0 0 0.25rem 0.8rem rgba(0, 0, 0, 0.2);
 
@@ -45,8 +44,8 @@
     word-break: break-all;
   }
 
-  .form-description,
-  .input-description {
+  .form-description {
+    display: block;
     margin-bottom: 0.5rem;
     color: gray;
     white-space: pre-wrap;
@@ -88,7 +87,7 @@
   .form-control-container {
     min-width: 0;
 
-    &.level-1 {
+    &.big-title {
       .input-label {
         font-weight: 700;
         font-size: var(--font-size-title);
@@ -120,7 +119,16 @@
     @include option-button.option-button-wrapper();
   }
 
-  @include form-array.form-array-container();
+  .form-array-container {
+    .group {
+      + .group {
+        margin-top: var(--form-array-item-divider-spacing);
+        padding-top: var(--form-array-item-divider-spacing);
+        border-top: solid var(--form-array-item-divider-weight)
+          var(--form-array-item-divider-color);
+      }
+    }
+  }
 
   // ==================== Errors ======================
   .config-validation-error {

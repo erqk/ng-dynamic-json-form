@@ -5,6 +5,7 @@ import {
   ComponentRef,
   ElementRef,
   Input,
+  TemplateRef,
   Type,
   ViewChild,
   ViewContainerRef,
@@ -20,13 +21,17 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Observable, finalize, tap } from 'rxjs';
+import { Observable, Subject, finalize, takeUntil, tap } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig, OptionItem } from '../../models';
 import { UiComponents } from '../../models/ui-components.type';
-import { OptionsDataService } from '../../services';
+import {
+  LayoutComponents,
+  LayoutTemplates,
+} from '../../ng-dynamic-json-form.config';
+import { FormValidationService, OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -58,10 +63,15 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _el = inject(ElementRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
+  private _formValidationService = inject(FormValidationService);
+
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
+
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
+
+  private readonly _onDestroy$ = new Subject<void>();
   private readonly _pendingValue$ = new BehaviorSubject<any>('');
 
   @Input() form?: UntypedFormGroup;
@@ -69,8 +79,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() data?: FormControlConfig;
   @Input() uiComponents?: UiComponents;
   @Input() customComponent?: Type<CustomControlComponent>;
-  @Input() errorMessageComponent?: Type<ErrorMessageComponent>;
-  @Input() loadingComponent?: Type<any>;
+  @Input() layoutComponents?: LayoutComponents;
+  @Input() layoutTemplates?: LayoutTemplates;
+  @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
@@ -78,10 +89,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @ViewChild('errorComponentAnchor', { read: ViewContainerRef })
   errorComponentAnchor!: ViewContainerRef;
 
-  @ViewChild('loadingComponentAnchor', { read: ViewContainerRef })
-  loadingComponentAnchor!: ViewContainerRef;
-
   loading = false;
+  errorMessages: string[] = [];
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
@@ -107,9 +116,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   ngOnInit(): void {
     requestAnimationFrame(() => {
-      this._injectLoadingComponent();
       this._injectInputComponent();
       this._injectErrorMessageComponent();
+      this._getErrorMessages();
       this._fetchOptions();
     });
   }
@@ -166,19 +175,17 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   private _injectErrorMessageComponent(): void {
+    if (!this.layoutComponents?.errorMessage) return;
+
     const componentRef = this._injectComponent(
       this.errorComponentAnchor,
-      this.errorMessageComponent
+      this.layoutComponents.errorMessage
     );
 
     if (!componentRef) return;
 
     componentRef.instance.control = this.control;
     componentRef.instance.validators = this.data?.validators;
-  }
-
-  private _injectLoadingComponent(): void {
-    this._injectComponent(this.loadingComponentAnchor, this.loadingComponent);
   }
 
   private _fetchOptions(): void {
@@ -243,12 +250,24 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       .subscribe();
   }
 
+  private _getErrorMessages(): void {
+    this._formValidationService
+      .getErrorMessages$(this.control, this.data?.validators)
+      .pipe(
+        tap((x) => (this.errorMessages = x)),
+        takeUntil(this._onDestroy$)
+      )
+      .subscribe();
+  }
+
   private _setLoading(value: boolean): void {
     const host = this._el.nativeElement as HTMLElement;
+    const noCustomLoading =
+      !this.layoutComponents?.loading && !this.layoutTemplates?.loading;
 
     this.loading = value;
 
-    if (!this.loadingComponent) {
+    if (noCustomLoading) {
       this.loading
         ? host.classList.add('disabled')
         : host.classList.remove('disabled');
