@@ -59,6 +59,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
   private _controlComponentRef?: CustomControlComponent;
+  private _patchingValue = false;
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
   private readonly _pendingValue$ = new BehaviorSubject<any>('');
@@ -84,6 +85,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
+    this._patchingValue = true;
     this._controlComponentRef?.writeValue(obj);
   }
 
@@ -226,6 +228,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       .pipe(
         setData,
         tap((x) => {
+          // For patchValue() or setValue() of this control to work properly
+          // Otherwise the value will get overwritten
+          if (this._patchingValue) {
+            this._patchingValue = false;
+            return;
+          }
+
           const clearData = !x.length || x.length > 1;
           const autoValue = clearData ? '' : x[0].value;
           this.control?.setValue(autoValue);
