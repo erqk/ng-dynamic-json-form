@@ -1,12 +1,12 @@
 export type FormControlType =
   | 'checkbox'
   | 'date'
-  | 'dropdown'
   | 'email'
   | 'number'
   | 'password'
   | 'radio'
   | 'range'
+  | 'select'
   | 'switch'
   | 'text'
   | 'textarea'
