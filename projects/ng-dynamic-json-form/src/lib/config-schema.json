@@ -80,15 +80,14 @@
                 }
               },
               "sourceAppendPosition": {
-                "type": "string",
-                "enum": ["after", "before"]
+                "$ref": "#/definitions/labelPositionConfig"
               },
               "trigger": {
                 "$ref": "#/definitions/optionsTriggerConfig"
               },
               "layout": {
                 "type": "string",
-                "enum": ["row", "before"]
+                "enum": ["row", "column"]
               },
               "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
             }
@@ -125,7 +124,7 @@
           "type": "number"
         }
       },
-      "required": ["templateLabel", "template"]
+      "required": ["template"]
     },
     "conditionIfConfig": {
       "type": "array",
