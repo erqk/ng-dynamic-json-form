@@ -18,11 +18,11 @@ import {
 } from '@angular/forms';
 import Ajv from 'ajv';
 import { Subject, merge, takeUntil } from 'rxjs';
+import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import * as schema from './config-schema.json';
-import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';

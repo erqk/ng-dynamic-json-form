@@ -8,19 +8,22 @@
       disabled: control.disabled
     }"
   >
-    <!-- <input
+    <input
       type="range"
-      [propertyBinding]="{ properties: data.extra }"
+      [ngStyle]="{
+        'background-size': valuePosition
+      }"
+      [propsBinding]="[data.extra]"
       [formControl]="control"
-    /> -->
+    />
 
-    <!-- <ng-container *ngIf="data.extra?.showCurrentValue">
+    <ng-container *ngIf="data.extra?.showCurrentValue">
       <div class="current-value" [style.--left]="valuePosition">
         {{ control.value }}
       </div>
-    </ng-container> -->
+    </ng-container>
 
-    <!-- <ng-container *ngIf="data.extra?.showTickMarks">
+    <ng-container *ngIf="data.extra?.showTickMarks">
       <div class="tick-marks-container">
         <ng-container *ngFor="let mark of tickMarks; index as i">
           <span class="tick-mark"></span>
@@ -29,8 +32,6 @@
 
       <div class="min-number">{{ data.extra?.min }}</div>
       <div class="max-number">{{ data.extra?.max }}</div>
-    </ng-container> -->
+    </ng-container>
   </div>
 </ng-container>
-
-{{ controlValue }}

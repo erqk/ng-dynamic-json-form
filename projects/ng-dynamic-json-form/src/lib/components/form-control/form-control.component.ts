@@ -23,7 +23,8 @@ import {
 } from '@angular/forms';
 import { Observable, Subject, finalize, takeUntil, tap } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { UI_BASIC_COMPONENTS } from '../../constants/ui-basic-components.constant';
+import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
+import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig, OptionItem } from '../../models';
 import { UiComponents } from '../../models/ui-components.type';
@@ -35,7 +36,6 @@ import { FormValidationService, OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { UiBasicInputComponent } from '../ui-basic/ui-basic-input/ui-basic-input.component';
 
 @Component({
   selector: 'form-control',

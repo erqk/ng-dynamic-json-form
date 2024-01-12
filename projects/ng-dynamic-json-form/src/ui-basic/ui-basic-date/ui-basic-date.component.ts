@@ -2,9 +2,11 @@ import { CommonModule, formatDate } from '@angular/common';
 import { Component, LOCALE_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
-import { PropsBindingDirective } from '../../../directives';
-import { NG_DYNAMIC_JSON_FORM_CONFIG } from '../../../ng-dynamic-json-form.config';
-import { CustomControlComponent } from '../../custom-control/custom-control.component';
+import {
+  CustomControlComponent,
+  NG_DYNAMIC_JSON_FORM_CONFIG,
+  PropsBindingDirective,
+} from '../../public-api';
 
 @Component({
   selector: 'ui-basic-date',

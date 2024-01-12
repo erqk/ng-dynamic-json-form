@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
+  CustomControlComponent,
   PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
   TextareaAutHeightDirective,
-} from '../../../directives';
-import { CustomControlComponent } from '../../custom-control/custom-control.component';
+} from '../../public-api';
 
 @Component({
   selector: 'ui-basic-textarea',

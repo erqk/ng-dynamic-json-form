@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import {
+  CustomControlComponent,
   PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
-} from '../../../directives';
-import { CustomControlComponent } from '../../custom-control/custom-control.component';
+} from '../../public-api';
 
 @Component({
   selector: 'ui-basic-input',
