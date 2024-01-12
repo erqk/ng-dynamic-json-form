@@ -9,7 +9,7 @@ import {
   isFormControl,
   isFormGroup,
 } from '@angular/forms';
-import { Observable, debounceTime, startWith, tap } from 'rxjs';
+import { EMPTY, Observable, debounceTime, map, startWith, tap } from 'rxjs';
 import { ValidatorConfig } from '../models';
 import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 import { clearEmpties } from '../utilities/clear-empties';
@@ -41,8 +41,24 @@ export class FormValidationService {
     );
   }
 
+  getErrorMessages$(
+    control: AbstractControl | null | undefined,
+    validators?: ValidatorConfig[]
+  ): Observable<string[]> {
+    if (!control || !validators?.length) {
+      return EMPTY;
+    }
+
+    return control.statusChanges.pipe(
+      startWith(control.status),
+      map(() =>
+        this._getErrorMessages(control.errors, control.value, validators)
+      )
+    );
+  }
+
   /**Get the error messages of the control */
-  getErrorMessages(
+  private _getErrorMessages(
     controlErrors: ValidationErrors | null,
     controlValue: any,
     validatorConfigs: ValidatorConfig[]
