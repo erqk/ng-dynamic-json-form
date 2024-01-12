@@ -7,7 +7,7 @@ export interface FormArrayConfig {
    * By default, the label will be suffix by a number,
    * which tells the position of the current `FormGroup`.
    */
-  templateLabel: string;
+  templateLabel?: string;
 
   /**Data to tell how to construct each `FormGroup` in this `FormArray` */
   template: FormControlConfig[];
