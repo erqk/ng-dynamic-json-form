@@ -1,11 +1,7 @@
 <ng-container *ngIf="data">
-  <mat-form-field
-    [ngClass]="{
-      disabled: data.extra?.['_internal_loading'] === true
-    }"
-  >
+  <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
-    <mat-select [propertyBinding]="data" [formControl]="control">
+    <mat-select [propsBinding]="[data.extra]" [formControl]="control">
       <mat-option *ngFor="let item of data.options?.data" [value]="item.value">
         {{ item.label }}
       </mat-option>

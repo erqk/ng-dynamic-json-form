@@ -2,10 +2,7 @@
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
-    [ngClass]="[
-      data.extra?.['_internal_loading'] === true ? 'disabled' : '',
-      data.options?.containerClass ?? ''
-    ]"
+    [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
       'flex-direction': data.options?.layout
     }"
@@ -15,7 +12,7 @@
       <mat-checkbox
         [labelPosition]="data.options.labelPosition ?? 'after'"
         [formControl]="control"
-        [propertyBinding]="data"
+        [propsBinding]="[data.extra]"
         >{{ data.options.data?.[0]?.label }}</mat-checkbox
       >
     </ng-container>
@@ -30,7 +27,7 @@
           [value]="item.value ?? false"
           [checked]="control.value.includes(item.value)"
           [disabled]="control.disabled"
-          [propertyBinding]="data"
+          [propsBinding]="[data.extra]"
           (change)="onCheckboxChange($event)"
           >{{ item.label }}</mat-checkbox
         >

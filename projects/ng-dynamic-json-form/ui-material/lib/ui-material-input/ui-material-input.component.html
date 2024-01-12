@@ -6,7 +6,7 @@
       matInput
       placeholder="{{ data.placeholder }}"
       [attr.type]="data.type ?? 'text'"
-      [propertyBinding]="data"
+      [propsBinding]="[data.extra]"
       [formControl]="control"
     />
   </mat-form-field>

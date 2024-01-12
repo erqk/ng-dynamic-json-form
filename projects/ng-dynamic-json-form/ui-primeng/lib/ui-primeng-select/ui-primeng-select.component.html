@@ -1,9 +1,6 @@
 <ng-container *ngIf="data">
   <p-dropdown
-    [ngClass]="{
-      disabled: data.extra?.['_internal_loading'] === true
-    }"
-    [propertyBinding]="data"
+    [propsBinding]="[data.extra]"
     [options]="data.options?.data"
     [formControl]="control"
   ></p-dropdown>

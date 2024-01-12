@@ -8,8 +8,8 @@ import {
 } from '@angular/material/slide-toggle';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -20,12 +20,12 @@ import {
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatInputModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatSlideToggle,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatSlideToggle],
     },
   ],
   templateUrl: './ui-material-switch.component.html',

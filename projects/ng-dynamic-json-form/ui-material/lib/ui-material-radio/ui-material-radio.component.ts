@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioGroup, MatRadioModule } from '@angular/material/radio';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -17,12 +17,12 @@ import {
     ReactiveFormsModule,
     MatRadioModule,
     MatInputModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatRadioGroup,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatRadioGroup],
     },
   ],
   templateUrl: './ui-material-radio.component.html',

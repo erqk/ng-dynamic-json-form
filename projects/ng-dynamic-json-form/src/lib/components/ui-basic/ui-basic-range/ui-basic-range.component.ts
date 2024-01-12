@@ -3,12 +3,12 @@ import { Component, ElementRef, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { startWith, tap } from 'rxjs/operators';
 import { CustomControlComponent } from '../../custom-control/custom-control.component';
-import { PropertyBindingDirective } from '../../../directives';
+import { PropsBindingDirective } from '../../../directives';
 
 @Component({
   selector: 'ui-basic-range',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PropertyBindingDirective],
+  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-range.component.html',
   styles: [],
 })
@@ -25,29 +25,34 @@ export class UiBasicRangeComponent extends CustomControlComponent {
 
   ngAfterViewInit(): void {
     this._updateSlider();
-    this.control?.valueChanges
-      .pipe(
-        startWith(this.control.value),
-        tap(() => this._updateSlider())
-      )
-      .subscribe();
+    // this.control?.valueChanges
+    //   .pipe(
+    //     startWith(this.control.value),
+    //     tap(() => this._updateSlider())
+    //   )
+    //   .subscribe();
   }
 
   get valuePosition(): string {
-    const min = this.data?.extra?.range?.min ?? 0;
-    const max = this.data?.extra?.range?.max ?? 0;
+    const min = this.data?.extra?.min ?? 0;
+    const max = this.data?.extra?.max ?? 0;
 
+    // console.log(min, max);
     return `${((this.control.value! - min) / (max - min)) * 100}%`;
   }
 
+  get controlValue(): any {
+    // console.log('control value...');
+    return this.control.value;
+  }
+
   private _getTickMarksCount(): void {
-    if (!this.data?.extra?.range || !this.data.extra.range.showTickMarks) {
+    if (!this.data?.extra || !this.data.extra.showTickMarks) {
       return;
     }
 
-    const diff =
-      (this.data.extra.range.max ?? 1) - (this.data.extra.range.min ?? 1);
-    const steps = this.data.extra.range.step ?? 1;
+    const diff = (this.data.extra.max ?? 1) - (this.data.extra.min ?? 1);
+    const steps = this.data.extra.step ?? 1;
     if (diff === 0) return;
 
     this.tickMarks = Array.from(Array(Math.ceil(diff / steps) + 1).keys()).map(

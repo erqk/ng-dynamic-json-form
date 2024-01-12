@@ -1,12 +1,12 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatInput, MatInputModule } from '@angular/material/input';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -16,12 +16,12 @@ import {
     CommonModule,
     ReactiveFormsModule,
     MatInputModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: CdkTextareaAutosize,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [CdkTextareaAutosize],
     },
   ],
   templateUrl: './ui-material-textarea.component.html',

@@ -79,8 +79,9 @@ export class NgxMaskConfigInitService {
 
     const { specialCharacters, patterns } = inputMask;
 
-    const result = {
+    const result: Partial<NgxMaskConfig> = {
       ...inputMask,
+      validation: false,
       specialCharacters: Array.isArray(specialCharacters)
         ? specialCharacters
         : this._defaultSpecialCharacters,

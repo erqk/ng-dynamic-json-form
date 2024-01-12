@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 
@@ -15,12 +15,12 @@ import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
     CommonModule,
     ReactiveFormsModule,
     RadioButtonModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: RadioButton,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [RadioButton],
     },
   ],
   templateUrl: './ui-primeng-radio.component.html',

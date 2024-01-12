@@ -10,8 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -24,12 +24,12 @@ import {
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatDatepickerInput,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatDatepickerInput],
     },
   ],
   templateUrl: './ui-material-date.component.html',

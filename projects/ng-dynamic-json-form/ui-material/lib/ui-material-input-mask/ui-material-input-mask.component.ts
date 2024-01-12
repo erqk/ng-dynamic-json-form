@@ -4,9 +4,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  NgxMaskBindingDirective,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
@@ -18,16 +17,15 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     ReactiveFormsModule,
     MatInputModule,
     NgxMaskDirective,
-    NgxMaskBindingDirective,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   templateUrl: './ui-material-input-mask.component.html',
   styles: [],
   providers: [
     provideNgxMask(),
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatInput,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatInput, NgxMaskDirective],
     },
   ],
 })

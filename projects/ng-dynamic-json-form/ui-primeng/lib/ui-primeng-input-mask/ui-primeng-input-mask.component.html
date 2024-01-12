@@ -5,6 +5,6 @@
     [attr.placeholder]="data.placeholder ?? null"
     [formControl]="control"
     [mask]="data.inputMask?.mask ?? ''"
-    [ngxMaskBinding]="data.inputMask"
+    [propsBinding]="[data.extra, data.inputMask]"
   />
 </ng-container>

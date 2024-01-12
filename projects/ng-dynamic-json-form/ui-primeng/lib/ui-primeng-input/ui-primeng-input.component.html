@@ -3,7 +3,7 @@
     pInputText
     [type]="data.type ?? 'text'"
     [attr.placeholder]="data.placeholder ?? null"
-    [propertyBinding]="data"
+    [propsBinding]="[data.extra]"
     [formControl]="control"
   />
 </ng-container>

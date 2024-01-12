@@ -2,10 +2,7 @@
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
-    [ngClass]="[
-      (control.disabled || data.extra?.['_internal_loading'] === true) ? 'disabled' : '',
-      data.options?.containerClass ?? ''
-    ]"
+    [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
       'flex-direction': data.options?.layout,
     }"
@@ -19,7 +16,7 @@
 
           <input
             type="radio"
-            [propertyBinding]="data"
+            [propsBinding]="[data.extra]"
             [value]="item.value"
             [formControl]="control"
           />

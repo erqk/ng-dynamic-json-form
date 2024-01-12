@@ -5,8 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -17,12 +17,12 @@ import {
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatInput,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatInput],
     },
   ],
   templateUrl: './ui-material-input.component.html',

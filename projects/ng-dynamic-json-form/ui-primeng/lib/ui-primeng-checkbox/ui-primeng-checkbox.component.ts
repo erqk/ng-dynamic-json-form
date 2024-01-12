@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  CustomControlComponent,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
+} from 'ng-dynamic-json-form';
+import {
   Checkbox,
   CheckboxChangeEvent,
   CheckboxModule,
 } from 'primeng/checkbox';
-import {
-  CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
-} from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-primeng-checkbox',
@@ -21,12 +21,12 @@ import {
     FormsModule,
     ReactiveFormsModule,
     CheckboxModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: Checkbox,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [Checkbox],
     },
   ],
   templateUrl: './ui-primeng-checkbox.component.html',

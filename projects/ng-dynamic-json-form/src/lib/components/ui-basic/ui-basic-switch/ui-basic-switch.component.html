@@ -11,7 +11,11 @@
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
 
-      <input type="checkbox" [propertyBinding]="data" [formControl]="control" />
+      <input
+        type="checkbox"
+        [propsBinding]="[data.extra]"
+        [formControl]="control"
+      />
       <span class="marker"></span>
 
       <ng-container

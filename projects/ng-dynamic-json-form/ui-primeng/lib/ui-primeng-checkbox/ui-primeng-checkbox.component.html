@@ -2,10 +2,7 @@
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
-    [ngClass]="[
-      data.extra?.['_internal_loading'] === true ? 'disabled' : '',
-      data.options?.containerClass ?? ''
-    ]"
+    [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
       'flex-direction': data.options?.layout
     }"
@@ -34,7 +31,7 @@
           <ng-container *ngIf="data.options.data.length === 1">
             <p-checkbox
               [binary]="true"
-              [propertyBinding]="data"
+              [propsBinding]="[data.extra]"
               [formControl]="control"
             ></p-checkbox>
           </ng-container>
@@ -46,7 +43,7 @@
               [value]="item.value"
               [disabled]="control.disabled"
               [ngModel]="selectedItems"
-              [propertyBinding]="data"
+              [propsBinding]="[data.extra]"
               (onChange)="onChanged($event)"
             ></p-checkbox>
           </ng-container>

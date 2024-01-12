@@ -2,7 +2,7 @@
   <textarea
     pInputTextarea
     [attr.placeholder]="data.placeholder ?? null"
-    [propertyBinding]="data"
+    [propsBinding]="[data.extra]"
     [formControl]="control"
   ></textarea>
 </ng-container>

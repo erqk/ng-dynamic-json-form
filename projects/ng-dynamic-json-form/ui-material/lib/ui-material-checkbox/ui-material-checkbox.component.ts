@@ -9,8 +9,8 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
-  PROPERTY_BINDING_INJECTOR,
-  PropertyBindingDirective,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -21,12 +21,12 @@ import {
     ReactiveFormsModule,
     MatCheckboxModule,
     MatInputModule,
-    PropertyBindingDirective,
+    PropsBindingDirective,
   ],
   providers: [
     {
-      provide: PROPERTY_BINDING_INJECTOR,
-      useValue: MatCheckbox,
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [MatCheckbox],
     },
   ],
   templateUrl: './ui-material-checkbox.component.html',

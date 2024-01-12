@@ -6,7 +6,7 @@
       cdkTextareaAutosize
       [attr.placeholder]="data.placeholder ?? null"
       [formControl]="control"
-      [propertyBinding]="data"
+      [propsBinding]="[data.extra]"
     ></textarea>
   </mat-form-field>
 </ng-container>

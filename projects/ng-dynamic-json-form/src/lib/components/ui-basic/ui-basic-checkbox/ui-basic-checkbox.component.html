@@ -1,11 +1,9 @@
+{{ controlValue }}
 <ng-container *ngIf="data">
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
-    [ngClass]="[
-      (control.disabled || data.extra?.['_internal_loading'] === true) ? 'disabled' : '',
-      data.options?.containerClass ?? ''
-    ]"
+    [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
       'flex-direction': data.options?.layout
     }"
@@ -34,7 +32,7 @@
             <ng-container *ngIf="data.options.data.length === 1">
               <input
                 type="checkbox"
-                [propertyBinding]="data"
+                [propsBinding]="[data.extra]"
                 [formControl]="control"
               />
             </ng-container>
@@ -43,7 +41,7 @@
             <ng-container *ngIf="data.options.data.length > 1">
               <input
                 type="checkbox"
-                [propertyBinding]="data"
+                [propsBinding]="[data.extra]"
                 [value]="item.value | json"
                 [checked]="control.value!.includes(item.value)"
                 [disabled]="control.disabled"

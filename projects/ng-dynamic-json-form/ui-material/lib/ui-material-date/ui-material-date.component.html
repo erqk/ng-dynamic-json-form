@@ -6,7 +6,7 @@
       matInput
       [matDatepicker]="picker"
       [formControl]="control"
-      [propertyBinding]="data"
+      [propsBinding]="[data.extra]"
     />
     <mat-hint>{{ data.placeholder }}</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
