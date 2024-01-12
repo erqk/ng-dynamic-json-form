@@ -36,7 +36,7 @@ import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
   ControlValueService,
   FormGeneratorService,
-  FormStatusService,
+  FormConditionsService,
   OptionsDataService,
 } from './services';
 import { ConfigMappingService } from './services/config-mapping.service';
@@ -62,7 +62,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     ConfigMappingService,
     ControlValueService,
     FormGeneratorService,
-    FormStatusService,
+    FormConditionsService,
     FormValidationService,
     NgxMaskConfigInitService,
     OptionsDataService,
@@ -76,7 +76,7 @@ export class NgDynamicJsonFormComponent {
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
   private _formGeneratorService = inject(FormGeneratorService);
-  private _formStatusService = inject(FormStatusService);
+  private _formStatusService = inject(FormConditionsService);
   private _formValidationService = inject(FormValidationService);
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
@@ -188,12 +188,9 @@ export class NgDynamicJsonFormComponent {
 
   private _initHostClass(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
-    const dynamicFormsFound = document.querySelectorAll('ng-dynamic-json-form');
-    const hostIndex = Array.from(dynamicFormsFound).indexOf(hostEl);
 
     this._renderer2.addClass(hostEl, 'ng-dynamic-json-form');
-    this._renderer2.addClass(hostEl, `index-${hostIndex}`);
-    this._formStatusService.hostIndex = hostIndex;
+    this._formStatusService.hostEl = hostEl;
   }
 
   private _setHostUiClass(): void {

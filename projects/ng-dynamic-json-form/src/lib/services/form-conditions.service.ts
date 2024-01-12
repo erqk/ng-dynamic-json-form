@@ -22,7 +22,7 @@ import { ConditionExtracted } from '../models/condition-extracted.interface';
 import { FormValidationService } from './form-validation.service';
 
 @Injectable()
-export class FormStatusService {
+export class FormConditionsService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _formValidationService = inject(FormValidationService);
@@ -30,6 +30,9 @@ export class FormStatusService {
 
   /**To differentiate the host element from multiple ng-dynamic-json-form instances */
   hostIndex = 0;
+
+  /**The host element for each NgDynamicJsonForm instance */
+  hostEl: HTMLElement | null = null;
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -95,21 +98,20 @@ export class FormStatusService {
     }
   }
 
-  /**Get the target element by using:
-   * - `hostIndex` on each `ng-dynamic-json-form`
-   * - `id` on each `grid-item-wrapper`
-   */
+  /**Get the target element by using `id` on each `div` inside current NgDynamicJsonForm instance */
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
     const promise$ = new Promise<HTMLElement | null>((resolve) => {
       requestAnimationFrame(() => {
-        const hostClass = `ng-dynamic-json-form.index-${this.hostIndex}`;
+        if (!this.hostEl) {
+          resolve(null);
+        }
 
         // Must escape the "." character so that querySelector will work correctly
-        const element = document.querySelector(
-          `${hostClass} grid-item-wrapper#${controlPath.replace('.', '\\.')}`
+        const element = this.hostEl!.querySelector(
+          `div#${controlPath.replace('.', '\\.')}`
         ) as HTMLElement | null;
 
-        resolve(element);
+        !element ? resolve(null) : resolve(element);
       });
     });
 

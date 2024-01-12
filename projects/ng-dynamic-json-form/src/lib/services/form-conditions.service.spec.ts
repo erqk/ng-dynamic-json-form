@@ -2,7 +2,7 @@ import { RendererFactory2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormControlGroupCondition } from '../models';
-import { FormStatusService } from './form-status.service';
+import { FormConditionsService } from './form-conditions.service';
 import { FormValidationService } from './form-validation.service';
 
 const formGroup = new FormGroup({
@@ -30,7 +30,7 @@ const formGroup = new FormGroup({
 });
 
 describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () => {
-  let service: FormStatusService;
+  let service: FormConditionsService;
 
   const conditionsA: FormControlGroupCondition = {
     '&&': [
@@ -60,7 +60,7 @@ describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () 
 
     TestBed.configureTestingModule({
       providers: [
-        FormStatusService,
+        FormConditionsService,
         FormValidationService,
         {
           provide: RendererFactory2,
@@ -69,7 +69,7 @@ describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () 
       ],
     });
 
-    service = TestBed.inject(FormStatusService);
+    service = TestBed.inject(FormConditionsService);
   });
 
   const { basicInfo } = formGroup.controls;

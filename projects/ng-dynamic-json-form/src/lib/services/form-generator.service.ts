@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { FormControlConfig } from '../models/form-control-config.interface';
-import { FormStatusService } from './form-status.service';
+import { FormConditionsService } from './form-conditions.service';
 import { FormValidationService } from './form-validation.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class FormGeneratorService {
   private _reset$ = new Subject();
 
   constructor(
-    private _formStatusService: FormStatusService,
+    private _formConditionsService: FormConditionsService,
     private _formValidationService: FormValidationService
   ) {}
 
@@ -84,7 +84,7 @@ export class FormGeneratorService {
       const formGroup = this.generateFormGroup(data);
       formArray.push(formGroup);
 
-      this._formStatusService
+      this._formConditionsService
         .formControlConditonsEvent$(formGroup, data)
         .pipe(takeUntil(this._reset$))
         .subscribe();
