@@ -20,6 +20,7 @@ import {
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
 import { FormValidationService } from './form-validation.service';
+import { getValueInObject } from '../utilities/get-value-in-object';
 
 @Injectable()
 export class FormConditionsService {
@@ -172,7 +173,7 @@ export class FormConditionsService {
         const controls = Object.values(conditions)
           .filter((x) => !!x)
           .flatMap((x) => this._getFlattenIfConditions(x!))
-          .map((x) => form.get(x[0]))
+          .map((x) => form.get(this._getControlPath(x[0])))
           .filter((x) => !!x) as AbstractControl[];
 
         result.push(...controls);
@@ -237,6 +238,8 @@ export class FormConditionsService {
           targetControlPath,
           result
         ).filter(({ targetControlPath: left }) => {
+          // Filter the duplicated conditions,
+          // to make sure `valueChanges` will trigger only once for each control
           return !result.some(({ targetControlPath: right }) => left === right);
         });
 
@@ -272,10 +275,17 @@ export class FormConditionsService {
 
     const predicateFn = (value: FormControlIfCondition) => {
       const [controlPath, operator, controlValue] = value;
-      const control = form.get(controlPath);
+      const valuePath = controlPath.split(',')?.[1]?.trim();
+      const control = form.get(this._getControlPath(controlPath));
 
       if (!control) return undefined;
-      return this._booleanResult(control.value, controlValue, operator);
+
+      // Get the value for the specific property if valuePath is provided
+      const currentValue = !valuePath
+        ? control.value
+        : getValueInObject(control.value, valuePath);
+
+      return this._booleanResult(currentValue, controlValue, operator);
     };
 
     switch (groupOperator) {
@@ -319,5 +329,11 @@ export class FormConditionsService {
       case '<':
         return left < right;
     }
+  }
+
+  /**Get the proper control path from the config if the path contains ',' */
+  private _getControlPath(path: string): string {
+    const paths = path.split(',');
+    return paths[0].trim();
   }
 }
