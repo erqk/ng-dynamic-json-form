@@ -13,7 +13,7 @@
       }"
     >
       <ng-container *ngFor="let item of data.options?.data">
-        <mat-radio-button [value]="item.value">{{
+        <mat-radio-button [value]="item.value | json">{{
           item.label
         }}</mat-radio-button>
       </ng-container>

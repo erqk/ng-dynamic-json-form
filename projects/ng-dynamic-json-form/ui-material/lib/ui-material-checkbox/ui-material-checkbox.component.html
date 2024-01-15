@@ -24,8 +24,8 @@
       <ng-container *ngFor="let item of data.options.data">
         <mat-checkbox
           [labelPosition]="data.options.labelPosition ?? 'after'"
-          [value]="item.value ?? false"
-          [checked]="control.value.includes(item.value)"
+          [value]="item.value | json"
+          [checked]="control.value.includes(item.value | json)"
           [disabled]="control.disabled"
           [propsBinding]="[data.extra]"
           (change)="onCheckboxChange($event)"

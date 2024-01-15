@@ -2,9 +2,11 @@
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
     <mat-select [propsBinding]="[data.extra]" [formControl]="control">
-      <mat-option *ngFor="let item of data.options?.data" [value]="item.value">
-        {{ item.label }}
-      </mat-option>
+      <ng-container *ngFor="let item of data.options?.data">
+        <mat-option [value]="item.value | json">
+          {{ item.label }}
+        </mat-option>
+      </ng-container>
     </mat-select>
   </mat-form-field>
 </ng-container>

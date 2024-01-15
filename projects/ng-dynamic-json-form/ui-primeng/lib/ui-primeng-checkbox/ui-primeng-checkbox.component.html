@@ -42,7 +42,7 @@
               [name]="'group'"
               [value]="item.value"
               [disabled]="control.disabled"
-              [ngModel]="selectedItems"
+              [(ngModel)]="selectedItems"
               [propsBinding]="[data.extra]"
               (onChange)="onChanged($event)"
             ></p-checkbox>

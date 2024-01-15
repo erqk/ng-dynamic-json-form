@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCheckbox,
@@ -8,10 +8,12 @@ import {
 } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import {
+  ControlValueService,
   CustomControlComponent,
   PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
 } from 'ng-dynamic-json-form';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-material-checkbox',
@@ -33,7 +35,23 @@ import {
   styles: [],
 })
 export class UiMaterialCheckboxComponent extends CustomControlComponent {
+  private _controlValueService = inject(ControlValueService);
   override control = new FormControl<any | any[]>('');
+
+  override writeValue(obj: any): void {
+    const value =
+      this.data?.options?.data?.length === 1
+        ? obj
+        : this._controlValueService.getOptionsValue('stringified', obj);
+        
+    this.control.setValue(value);
+  }
+
+  override registerOnChange(fn: any): void {
+    this.control.valueChanges
+      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
+      .subscribe(fn);
+  }
 
   onCheckboxChange(e: MatCheckboxChange): void {
     const oldValue = Array.isArray(this.control.value)

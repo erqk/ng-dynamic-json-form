@@ -26,8 +26,7 @@
         ></ng-container>
 
         <p-radioButton
-          [inputId]="item.value"
-          [value]="item.value"
+          [value]="item.value | json"
           [propsBinding]="[data.extra]"
           [formControl]="control"
         ></p-radioButton>

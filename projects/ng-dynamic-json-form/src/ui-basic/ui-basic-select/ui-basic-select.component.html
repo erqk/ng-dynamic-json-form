@@ -8,13 +8,12 @@
       'flex-direction': data.options?.layout
     }"
   >
-    <select
-      [propsBinding]="[data.extra]"
-      [formControl]="control"
-    >
-      <option *ngFor="let item of data.options?.data" [ngValue]="item.value">
-        {{ item.label }}
-      </option>
+    <select [propsBinding]="[data.extra]" [formControl]="control">
+      <ng-container *ngFor="let item of data.options?.data">
+        <option [value]="item.value | json">
+          {{ item.label }}
+        </option>
+      </ng-container>
     </select>
   </div>
 </ng-container>
