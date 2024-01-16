@@ -196,7 +196,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     const event$ = !trigger
       ? service.getOptions$(this.data.options).pipe(
           tap((x) => this._setOptionsData(x)),
-          finalize(() => this._setLoading(false))
+          finalize(() => (this.loading = false))
         )
       : optionsOnTriggers$().pipe(
           tap((x) => {
@@ -212,10 +212,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
             this._patchingValue = false;
           }),
-          finalize(() => this._setLoading(false))
+          finalize(() => (this.loading = false))
         );
 
-    this._setLoading(true);
+    this.loading = true;
     event$.subscribe();
   }
 
@@ -233,7 +233,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       : existingOptions.concat(options);
 
     this.data.options.data = dataGet;
-    this._setLoading(false);
+    this.loading = false;
     this._cd.detectChanges();
   }
 
@@ -245,20 +245,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
         takeUntil(this._onDestroy$)
       )
       .subscribe();
-  }
-
-  private _setLoading(value: boolean): void {
-    const host = this._el.nativeElement as HTMLElement;
-    const noCustomLoading =
-      !this.layoutComponents?.loading && !this.layoutTemplates?.loading;
-
-    this.loading = value;
-
-    if (noCustomLoading) {
-      this.loading
-        ? host.classList.add('disabled')
-        : host.classList.remove('disabled');
-    }
   }
 
   private get _inputType(): string {

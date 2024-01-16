@@ -2,7 +2,10 @@
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
-    [ngClass]="[data.options?.containerClass ?? '']"
+    [ngClass]="[
+      data.options?.containerClass ?? '',
+      control.disabled ? 'disabled' : ''
+    ]"
     [ngStyle]="{
       'flex-direction': data.options?.layout
     }"

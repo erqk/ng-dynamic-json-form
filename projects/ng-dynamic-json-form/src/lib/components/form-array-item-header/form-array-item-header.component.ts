@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   HostBinding,
   Input,
   SimpleChanges,
@@ -9,6 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { tap } from 'rxjs';
 import { FormArrayConfig } from '../../models';
 import {
   LayoutComponents,
@@ -24,7 +26,9 @@ import { FormGeneratorService } from '../../services';
   styleUrls: ['./form-array-item-header.component.scss'],
 })
 export class FormArrayItemHeaderComponent {
+  private readonly _el = inject(ElementRef);
   private readonly _formGeneratorService = inject(FormGeneratorService);
+  private _disabled = false;
 
   @Input() index = 0;
   @Input() config?: FormArrayConfig;
@@ -52,6 +56,20 @@ export class FormArrayItemHeaderComponent {
     }
   }
 
+  ngOnInit(): void {
+    const host = this._el.nativeElement as HTMLElement;
+    this.formArray?.statusChanges
+      .pipe(
+        tap(() => {
+          this._disabled = this.formArray?.disabled ?? false;
+          this._disabled
+            ? host.classList.add('disabled')
+            : host.classList.remove('disabled');
+        })
+      )
+      .subscribe();
+  }
+
   ngAfterViewInit(): void {
     this._injectComponent();
     this._generateTemplateForm();
@@ -74,6 +92,8 @@ export class FormArrayItemHeaderComponent {
   }
 
   private _addItem(): void {
+    if (this._disabled) return;
+
     const template = this.config?.template;
     const formArray = this.formArray;
 
@@ -81,6 +101,7 @@ export class FormArrayItemHeaderComponent {
 
     const formGroup = this._formGeneratorService.generateFormGroup(template);
 
+    // Prevent NG0100
     window.setTimeout(() => {
       if (!this.index && this.index !== 0) formArray!.push(formGroup);
       else formArray!.insert(this.index + 1, formGroup);
@@ -88,7 +109,10 @@ export class FormArrayItemHeaderComponent {
   }
 
   private _removeItem(): void {
-    if (!this.formArray || !this.formArray.length) return;
+    if (!this.formArray || !this.formArray.length || this._disabled) {
+      return;
+    }
+
     this.formArray.removeAt(this.index ?? this.formArray.length - 1);
   }
 
