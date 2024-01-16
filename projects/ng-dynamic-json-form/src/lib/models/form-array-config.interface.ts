@@ -1,16 +1,16 @@
 import { FormControlConfig as FormControlConfig } from './form-control-config.interface';
 
 export interface FormArrayConfig {
+  /**Data to tell how to construct each `FormGroup` in this `FormArray` */
+  template: FormControlConfig[];
+
   /**Label for each `FormGroup` in this `FormArray`.
-   * You can pass your custom template to overwite it.
+   * You can pass custom template to overwite it.
    *
    * By default, the label will be suffix by a number,
    * which tells the position of the current `FormGroup`.
    */
   templateLabel?: string;
-
-  /**Data to tell how to construct each `FormGroup` in this `FormArray` */
-  template: FormControlConfig[];
 
   /**Numbers of `FormGroup` to generate at initial.
    *

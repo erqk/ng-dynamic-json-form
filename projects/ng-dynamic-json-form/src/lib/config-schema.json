@@ -47,7 +47,7 @@
           "formArray": { "$ref": "#/definitions/formArrayConfig" },
           "hideValidationMessage": {
             "type": "boolean",
-            "description": "Set to true if you need to take control of validation message"
+            "description": "Set to true to take control of validation message"
           },
           "label": {
             "type": "string"

@@ -49,7 +49,7 @@ export interface FormControlConfig {
    * - `checkbox`
    * - `dropdown`
    * - `radio`
-   * - ...your custom component
+   * - ...custom component type
    */
   options?: FormControlOptions;
 

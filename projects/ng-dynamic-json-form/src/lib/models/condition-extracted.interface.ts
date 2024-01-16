@@ -5,10 +5,10 @@ import { AbstractControl } from '@angular/forms';
 export interface ConditionExtracted {
   conditions: FormControlCondition;
 
-  /**`AbstractControl` that you need to toggle it's status */
+  /**`AbstractControl` that needs to toggle it's status */
   targetControl: AbstractControl;
 
-  /**Path to the `AbstractControl` that you need to toggle it's status */
+  /**Path to the `AbstractControl` that needs to toggle it's status */
   targetControlPath: string;
 
   validators: ValidatorConfig[];
