@@ -36,7 +36,7 @@ export class FormValidationService {
       debounceTime(0),
       tap(() => {
         const errors = this._getFormErrors(form);
-        form.setErrors(errors);
+        form.setErrors(errors, { emitEvent: false });
       })
     );
   }

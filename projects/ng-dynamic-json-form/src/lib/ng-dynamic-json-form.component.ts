@@ -1,5 +1,7 @@
 import { CommonModule, isPlatformServer } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -17,7 +19,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import Ajv from 'ajv';
-import { Subject, merge, takeUntil } from 'rxjs';
+import { Subject, debounceTime, merge, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -45,6 +47,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
@@ -71,6 +74,7 @@ export class NgDynamicJsonFormComponent {
     optional: true,
   });
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _cd = inject(ChangeDetectorRef);
   private readonly _el = inject(ElementRef);
   private readonly _renderer2 = inject(Renderer2);
   private readonly _formGeneratorService = inject(FormGeneratorService);
@@ -250,7 +254,11 @@ export class NgDynamicJsonFormComponent {
       this._formValidationService.formErrorEvent$(this.form),
       this._formStatusService.formControlConditonsEvent$(this.form, this.config)
     )
-      .pipe(takeUntil(merge(this._reset$, this._onDestroy$)))
+      .pipe(
+        debounceTime(100),
+        tap(() => this._cd.detectChanges()),
+        takeUntil(merge(this._reset$, this._onDestroy$))
+      )
       .subscribe();
   }
 }

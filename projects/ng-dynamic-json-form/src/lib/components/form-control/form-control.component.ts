@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ComponentRef,
   ElementRef,
@@ -56,6 +57,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
+  private readonly _cd = inject(ChangeDetectorRef);
   private readonly _el = inject(ElementRef);
   private readonly _configMappingService = inject(ConfigMappingService);
   private readonly _optionsDataService = inject(OptionsDataService);
@@ -115,29 +117,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this._controlComponentRef?.validate(control) ?? null;
   }
 
-  ngOnInit(): void {
-    requestAnimationFrame(() => {
-      this._injectInputComponent();
-      this._injectErrorMessageComponent();
-      this._getErrorMessages();
-      this._fetchOptions();
-    });
-  }
-
-  private get _inputType(): string {
-    const defaultInput = !this.data?.inputMask ? 'text' : 'textMask';
-
-    // Fallback to text input if `type` is not specified.
-    if (!this.data?.type) return defaultInput;
-
-    switch (this.data?.type) {
-      case 'number':
-      case 'text':
-        return defaultInput;
-
-      default:
-        return this.data.type;
-    }
+  ngAfterViewInit(): void {
+    this._getErrorMessages();
+    this._fetchOptions();
+    this._injectInputComponent();
+    this._injectErrorMessageComponent();
+    this._cd.detectChanges();
   }
 
   private _injectComponent<T>(
@@ -166,13 +151,15 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     if (!componentRef) return;
 
     this._controlComponentRef = componentRef.instance;
+
     componentRef.instance.data = this._configMappingService.mapCorrectConfig(
       this.data
     );
+
+    componentRef.instance['_internal_init'](this.control);
     componentRef.instance.registerOnChange(this._onChange);
     componentRef.instance.registerOnTouched(this._onTouched);
     componentRef.instance.writeValue(this._pendingValue$.value);
-    componentRef.instance['_internal_init'](this.control);
   }
 
   private _injectErrorMessageComponent(): void {
@@ -247,6 +234,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
     this.data.options.data = dataGet;
     this._setLoading(false);
+    this._cd.detectChanges();
   }
 
   private _getErrorMessages(): void {
@@ -270,6 +258,22 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       this.loading
         ? host.classList.add('disabled')
         : host.classList.remove('disabled');
+    }
+  }
+
+  private get _inputType(): string {
+    const defaultInput = !this.data?.inputMask ? 'text' : 'textMask';
+
+    // Fallback to text input if `type` is not specified.
+    if (!this.data?.type) return defaultInput;
+
+    switch (this.data?.type) {
+      case 'number':
+      case 'text':
+        return defaultInput;
+
+      default:
+        return this.data.type;
     }
   }
 }
