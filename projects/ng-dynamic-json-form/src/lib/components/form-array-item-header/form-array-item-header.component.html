@@ -39,7 +39,7 @@
     *ngIf="layoutTemplates?.formArrayItemHeader"
     [ngTemplateOutlet]="layoutTemplates!.formArrayItemHeader!"
     [ngTemplateOutletContext]="{
-      label: config.templateLabel,
+      config,
       index,
       formArray,
       templateForm,

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
   ComponentRef,
   ElementRef,
+  HostBinding,
   Input,
   TemplateRef,
   Type,
@@ -21,7 +21,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Observable, Subject, finalize, takeUntil, tap } from 'rxjs';
+import { EMPTY, Subject, finalize, takeUntil, tap } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
@@ -42,9 +42,6 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   standalone: true,
   imports: [CommonModule, ErrorMessageComponent, ControlLayoutDirective],
   templateUrl: './form-control.component.html',
-  styles: [
-    ':host {display: flex; flex-direction: column; gap: 0.35rem; width: 100%}',
-  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -59,14 +56,16 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
-  private _cd = inject(ChangeDetectorRef);
-  private _el = inject(ElementRef);
-  private _configMappingService = inject(ConfigMappingService);
-  private _optionsDataService = inject(OptionsDataService);
-  private _formValidationService = inject(FormValidationService);
+  private readonly _el = inject(ElementRef);
+  private readonly _configMappingService = inject(ConfigMappingService);
+  private readonly _optionsDataService = inject(OptionsDataService);
+  private readonly _formValidationService = inject(FormValidationService);
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
+
+  /**To prevent data keep concating */
+  private _existingOptions: OptionItem[] = [];
 
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
@@ -88,6 +87,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   @ViewChild('errorComponentAnchor', { read: ViewContainerRef })
   errorComponentAnchor!: ViewContainerRef;
+
+  @HostBinding('class.form-control') hostClass = true;
 
   loading = false;
   errorMessages: string[] = [];
@@ -193,61 +194,59 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       return;
     }
 
-    const { data: existingOptions = [], sourceAppendPosition } =
-      this.data.options;
+    this._existingOptions = this.data.options.data || [];
+    const service = this._optionsDataService;
+    const trigger = this.data.options.trigger;
 
-    const setData = (
-      source: Observable<OptionItem[]>
-    ): Observable<OptionItem[]> =>
-      source.pipe(
-        tap((x) => {
-          const appendBefore = sourceAppendPosition === 'before';
-          const dataGet = appendBefore
-            ? x.concat(existingOptions)
-            : existingOptions.concat(x);
+    const optionsOnTriggers$ = () => {
+      if (!trigger || !trigger.action || !this.form) return EMPTY;
 
-          this.data!.options!.data = dataGet;
-          this._setLoading(false);
-        }),
-        finalize(() => this._setLoading(false))
-      );
+      return trigger.action === 'FILTER'
+        ? service.filterOptionsOnTrigger$(this.form, trigger)
+        : service.requestOptionsOnTrigger$(this.form, trigger);
+    };
 
-    if (!this.form || !this.data.options.trigger) {
-      this._setLoading(true);
-      this._optionsDataService
-        .getOptions$(this.data.options)
-        .pipe(setData)
-        .subscribe();
+    const event$ = !trigger
+      ? service.getOptions$(this.data.options).pipe(
+          tap((x) => this._setOptionsData(x)),
+          finalize(() => this._setLoading(false))
+        )
+      : optionsOnTriggers$().pipe(
+          tap((x) => {
+            this._setOptionsData(x);
 
+            // For patchValue() or setValue() of this control to work properly
+            // Otherwise the value will get overwritten
+            if (!this._patchingValue) {
+              const clearData = !x.length || x.length > 1;
+              const autoValue = clearData ? '' : x[0].value;
+              this._controlComponentRef?.writeValue(autoValue);
+            }
+
+            this._patchingValue = false;
+          }),
+          finalize(() => this._setLoading(false))
+        );
+
+    this._setLoading(true);
+    event$.subscribe();
+  }
+
+  private _setOptionsData(options: OptionItem[]): void {
+    if (!this.data || !this.data.options) {
       return;
     }
 
-    const trigger = this.data.options.trigger;
-    if (!trigger.action) return;
+    const existingOptions = this._existingOptions;
+    const { sourceAppendPosition } = this.data.options;
 
-    const optionsOnTrigger$ =
-      trigger.action === 'FILTER'
-        ? this._optionsDataService.filterOptionsOnTrigger$(this.form, trigger)
-        : this._optionsDataService.requestOptionsOnTrigger$(this.form, trigger);
+    const appendBefore = sourceAppendPosition === 'before';
+    const dataGet = appendBefore
+      ? options.concat(existingOptions)
+      : existingOptions.concat(options);
 
-    this._setLoading(true);
-    optionsOnTrigger$
-      .pipe(
-        setData,
-        tap((x) => {
-          // For patchValue() or setValue() of this control to work properly
-          // Otherwise the value will get overwritten
-          if (this._patchingValue) {
-            this._patchingValue = false;
-            return;
-          }
-
-          const clearData = !x.length || x.length > 1;
-          const autoValue = clearData ? '' : x[0].value;
-          this.control?.setValue(autoValue);
-        })
-      )
-      .subscribe();
+    this.data.options.data = dataGet;
+    this._setLoading(false);
   }
 
   private _getErrorMessages(): void {

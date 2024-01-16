@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  HostBinding,
   Input,
   SimpleChanges,
   ViewChild,
@@ -13,18 +14,17 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import { FormArrayHeaderEventPipe, GenerateFormPipe } from '../../pipes';
 import { FormGeneratorService } from '../../services';
 
 @Component({
   selector: 'form-array-item-header',
   standalone: true,
-  imports: [CommonModule, GenerateFormPipe, FormArrayHeaderEventPipe],
+  imports: [CommonModule],
   templateUrl: './form-array-item-header.component.html',
   styleUrls: ['./form-array-item-header.component.scss'],
 })
 export class FormArrayItemHeaderComponent {
-  private _formGeneratorService = inject(FormGeneratorService);
+  private readonly _formGeneratorService = inject(FormGeneratorService);
 
   @Input() index = 0;
   @Input() config?: FormArrayConfig;
@@ -34,6 +34,8 @@ export class FormArrayItemHeaderComponent {
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
+
+  @HostBinding('class.form-array-item-header') hostClass = true;
 
   templateForm?: UntypedFormGroup;
   buttonEvent = {
@@ -50,11 +52,9 @@ export class FormArrayItemHeaderComponent {
     }
   }
 
-  ngOnInit(): void {
-    requestAnimationFrame(() => {
-      this._injectComponent();
-      this._generateTemplateForm();
-    });
+  ngAfterViewInit(): void {
+    this._injectComponent();
+    this._generateTemplateForm();
   }
 
   private _injectComponent(): void {
@@ -75,13 +75,16 @@ export class FormArrayItemHeaderComponent {
 
   private _addItem(): void {
     const template = this.config?.template;
+    const formArray = this.formArray;
 
-    if (!this.formArray || !template) return;
+    if (!formArray || !template) return;
 
     const formGroup = this._formGeneratorService.generateFormGroup(template);
 
-    if (!this.index && this.index !== 0) this.formArray.push(formGroup);
-    else this.formArray.insert(this.index + 1, formGroup);
+    window.setTimeout(() => {
+      if (!this.index && this.index !== 0) formArray!.push(formGroup);
+      else formArray!.insert(this.index + 1, formGroup);
+    });
   }
 
   private _removeItem(): void {

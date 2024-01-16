@@ -1,9 +1,9 @@
 import { CommonModule, isPlatformServer } from '@angular/common';
 import {
   Component,
-  ContentChild,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   Output,
   PLATFORM_ID,
@@ -22,6 +22,7 @@ import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
+import { FormTitleComponent } from './components/form-title/form-title.component';
 import * as schema from './config-schema.json';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
@@ -31,12 +32,10 @@ import {
   LayoutTemplates,
   NG_DYNAMIC_JSON_FORM_CONFIG,
 } from './ng-dynamic-json-form.config';
-import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
-import { GenerateFormPipe } from './pipes/generate-form.pipe';
 import {
   ControlValueService,
-  FormGeneratorService,
   FormConditionsService,
+  FormGeneratorService,
   OptionsDataService,
 } from './services';
 import { ConfigMappingService } from './services/config-mapping.service';
@@ -52,11 +51,10 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     ReactiveFormsModule,
     FormControlComponent,
     ErrorMessageComponent,
-    GenerateFormPipe,
-    FormArrayHeaderEventPipe,
     HostIdDirective,
     ControlLayoutDirective,
     FormArrayItemHeaderComponent,
+    FormTitleComponent,
   ],
   providers: [
     ConfigMappingService,
@@ -69,21 +67,26 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
   ],
 })
 export class NgDynamicJsonFormComponent {
-  private _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+  private readonly _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
-  private _platformId = inject(PLATFORM_ID);
-  private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
-  private _formGeneratorService = inject(FormGeneratorService);
-  private _formStatusService = inject(FormConditionsService);
-  private _formValidationService = inject(FormValidationService);
-  private _optionsDataService = inject(OptionsDataService);
-  private _reset$ = new Subject<void>();
-  private _onDestroy$ = new Subject<void>();
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _el = inject(ElementRef);
+  private readonly _renderer2 = inject(Renderer2);
+  private readonly _formGeneratorService = inject(FormGeneratorService);
+  private readonly _formStatusService = inject(FormConditionsService);
+  private readonly _formValidationService = inject(FormValidationService);
+  private readonly _optionsDataService = inject(OptionsDataService);
+  private readonly _reset$ = new Subject<void>();
+  private readonly _onDestroy$ = new Subject<void>();
 
-  @ContentChild('formArrayGroupHeader')
-  formArrayGroupHeaderRef?: TemplateRef<any>;
+  private _onTouched = () => {};
+
+  config: FormControlConfig[] = [];
+  configValidateErrors: string[] = [];
+
+  form?: UntypedFormGroup;
+  uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
 
   @Input() configs: FormControlConfig[] | string = [];
 
@@ -149,11 +152,10 @@ export class NgDynamicJsonFormComponent {
 
   @Output() formGet = new EventEmitter();
 
-  config: FormControlConfig[] = [];
-  configValidateErrors: string[] = [];
-
-  form?: UntypedFormGroup;
-  uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
+  @HostListener('focusout', ['$event'])
+  onFocusOut(): void {
+    this._onTouched();
+  }
 
   ngOnChanges(): void {
     if (isPlatformServer(this._platformId)) {

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!configs"> Please pass in your JSON string </ng-container>
+<ng-container *ngIf="!configs"> Please pass in JSON string </ng-container>
 
 <ng-container *ngIf="!!configValidateErrors?.length">
   <div class="config-validation-error">
@@ -54,9 +54,6 @@
               layout: config?.layout,
               readonly: config?.readonly
             }"
-            [ngClass]="{
-              'big-title': isNested !== true
-            }"
           >
             <form-control
               [data]="config"
@@ -90,12 +87,13 @@
             <!-- Label -->
             <ng-container
               *ngIf="config.label && config?.layout?.hideLabel !== true"
-              [ngTemplateOutlet]="labelTemplate"
-              [ngTemplateOutletContext]="{
-                label: config?.label,
-                layout: config?.layout
-              }"
-            ></ng-container>
+            >
+              <form-title
+                [label]="config?.label"
+                [layout]="config?.layout"
+                [collapsibleEl]="formGroupChildren"
+              ></form-title>
+            </ng-container>
 
             <!-- Description -->
             <ng-container
@@ -107,9 +105,10 @@
               }"
             ></ng-container>
 
-            <ng-container
-              [ngTemplateOutlet]="formGroupTemplate"
-              [ngTemplateOutletContext]="{
+            <div #formGroupChildren>
+              <ng-container
+                [ngTemplateOutlet]="formGroupTemplate"
+                [ngTemplateOutletContext]="{
                 controlConfigs: config.children,
                 parentId:
                   (parentId ? parentId + '.' : '') + config.formControlName,
@@ -120,7 +119,8 @@
                   hostStyles: config?.layout?.childStyles,
                 }
               }"
-            ></ng-container>
+              ></ng-container>
+            </div>
           </div>
         </ng-container>
 
@@ -180,83 +180,72 @@
 >
   <ng-container [formGroup]="parentForm">
     <!-- Label -->
-    <ng-container
-      *ngIf="label"
-      [ngTemplateOutlet]="labelTemplate"
-      [ngTemplateOutletContext]="{
-        label,
-        layout
-      }"
-    ></ng-container>
+    <ng-container *ngIf="label">
+      <form-title
+        [label]="label"
+        [layout]="layout"
+        [collapsibleEl]="formArrayChildren"
+      ></form-title>
+    </ng-container>
 
-    <ng-container
-      *ngIf="description"
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{
+    <div #formArrayChildren>
+      <ng-container
+        *ngIf="description"
+        [ngTemplateOutlet]="descriptionTemplate"
+        [ngTemplateOutletContext]="{
         description,
         layout
       }"
-    ></ng-container>
+      ></ng-container>
 
-    <!-- Show add button when form array is empty -->
-    <ng-container
-      *ngIf="formArrayConfig.editable === true && !formArray.controls.length"
-    >
-      <form-array-item-header
-        [config]="formArrayConfig"
-        [formArray]="formArray"
-        [layoutComponents]="layoutComponents"
-        [layoutTemplates]="layoutTemplates"
-      ></form-array-item-header>
-    </ng-container>
-
-    <ng-container formArrayName="{{ formArrayName }}">
-      <error-message
-        [control]="formArray"
-        [validators]="validators"
-      ></error-message>
-
+      <!-- Show add button when form array is empty -->
       <ng-container
-        *ngFor="let formGroup of formArray.controls; index as index"
+        *ngIf="formArrayConfig.editable === true && !formArray.controls.length"
       >
-        <div class="group">
-          <!-- FormGroup header -->
-          <form-array-item-header
-            [config]="formArrayConfig"
-            [formArray]="formArray"
-            [index]="index"
-            [layoutComponents]="layoutComponents"
-            [layoutTemplates]="layoutTemplates"
-          ></form-array-item-header>
-
-          <!-- FormGroup -->
-          <ng-container
-            *ngTemplateOutlet="
-              formGroupTemplate;
-              context: {
-                parentId: formArrayName,
-                parentForm: formGroup,
-                isNested: true,
-                controlConfigs: formArrayConfig.template
-              }
-            "
-          ></ng-container>
-        </div>
+        <form-array-item-header
+          [config]="formArrayConfig"
+          [formArray]="formArray"
+          [layoutComponents]="layoutComponents"
+          [layoutTemplates]="layoutTemplates"
+        ></form-array-item-header>
       </ng-container>
-    </ng-container>
-  </ng-container>
-</ng-template>
 
-<!-- Label template -->
-<ng-template #labelTemplate let-label="label" let-layout="layout">
-  <label
-    class="form-title"
-    [controlLayout]="{
-      type: 'label',
-      layout
-    }"
-    >{{ label }}</label
-  >
+      <ng-container formArrayName="{{ formArrayName }}">
+        <error-message
+          [control]="formArray"
+          [validators]="validators"
+        ></error-message>
+
+        <ng-container
+          *ngFor="let formGroup of formArray.controls; index as index"
+        >
+          <div class="group">
+            <!-- FormGroup header -->
+            <form-array-item-header
+              [config]="formArrayConfig"
+              [formArray]="formArray"
+              [index]="index"
+              [layoutComponents]="layoutComponents"
+              [layoutTemplates]="layoutTemplates"
+            ></form-array-item-header>
+
+            <!-- FormGroup -->
+            <ng-container
+              *ngTemplateOutlet="
+                formGroupTemplate;
+                context: {
+                  parentId: formArrayName,
+                  parentForm: formGroup,
+                  isNested: true,
+                  controlConfigs: formArrayConfig.template
+                }
+              "
+            ></ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
 </ng-template>
 
 <!-- Description template -->

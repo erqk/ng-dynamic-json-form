@@ -20,13 +20,13 @@
     }"
   ></ng-container>
 
-  <!-- Input component -->
   <div
-    class="input-component"
+    class="input-container"
     [ngClass]="{
       hidden: loading && (layoutComponents?.loading || layoutTemplates?.loading)
     }"
   >
+    <!-- Input template -->
     <ng-container
       *ngIf="inputTemplates?.[data?.customComponent ?? '']"
       [ngTemplateOutlet]="inputTemplates![data.customComponent!]"
@@ -37,13 +37,14 @@
       }"
     ></ng-container>
 
+    <!-- Input component -->
     <ng-container
       *ngIf="!inputTemplates?.[data?.customComponent ?? '']"
       #inputComponentAnchor
     ></ng-container>
   </div>
 
-  <div class="loading-component" [ngClass]="{ hidden: !loading }">
+  <div class="loading-container" [ngClass]="{ hidden: !loading }">
     <!-- Loading component -->
     <ng-container *ngIf="layoutComponents?.loading">
       <ng-container
@@ -70,6 +71,7 @@
   ></ng-container>
 
   <div
+    class="errors-container"
     [ngClass]="{
       hidden: !control?.errors || data.layout?.hideErrorMessage === true
     }"

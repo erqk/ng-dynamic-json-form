@@ -1,12 +1,10 @@
-import { Component, HostListener, ViewChild, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
-import { InputText } from 'primeng/inputtext';
 import { Subject } from 'rxjs';
 import { map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
@@ -18,15 +16,17 @@ import { ControlValueService, FormValidationService } from '../../services';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  private _internal_controlValueService = inject(ControlValueService);
-  private _internal_formValidationService = inject(FormValidationService);
+  private readonly _internal_controlValueService = inject(ControlValueService);
+  private readonly _internal_formValidationService = inject(
+    FormValidationService
+  );
 
   private _internal_onTouched = () => {};
 
-  private _internal_getInputData = (input: unknown) =>
+  private readonly _internal_getInputData = (input: unknown) =>
     this._internal_controlValueService.mapInputData(input, this.data);
 
-  private _internal_getOutputData = (input: unknown) =>
+  private readonly _internal_getOutputData = (input: unknown) =>
     this._internal_controlValueService.mapOutputData(input, this.data);
 
   private readonly _internal_init$ = new Subject<void>();
@@ -37,12 +37,9 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
    * public override control = new FormGroup() 'or' new UntypedFormGroup();
    * public override control = new FormArray() 'or' new UntypedFormArray();
    */
-  public control?: any;
+  public control?: AbstractControl;
   public data?: FormControlConfig;
   public errorMessages: string[] = [];
-
-  @ViewChild(InputText) inputTextRef?: InputText;
-  @ViewChild(MatFormField) matFormFielRef?: MatFormField;
 
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {
@@ -50,13 +47,16 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   writeValue(obj: any): void {
-    if (obj === undefined || obj === null || obj === '') return;
-    this._internal_control.setValue(this._internal_getInputData(obj));
+    this._internal_control.patchValue(this._internal_getInputData(obj));
     this._internal_control.markAsDirty();
     this._internal_control.markAsTouched();
   }
 
   registerOnChange(fn: any): void {
+    if (this.data?.readonly === true) {
+      return;
+    }
+
     this._internal_control?.valueChanges
       .pipe(
         startWith(this._internal_control.value),
@@ -73,7 +73,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     isDisabled
       ? this._internal_control?.disable()
       : this._internal_control?.enable();
-    this._internal_control?.updateValueAndValidity();
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
