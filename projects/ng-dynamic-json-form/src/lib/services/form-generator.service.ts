@@ -85,7 +85,7 @@ export class FormGeneratorService {
       formArray.push(formGroup);
 
       this._formConditionsService
-        .formControlConditonsEvent$(formGroup, data)
+        .formConditionsEvent$(formGroup, data)
         .pipe(takeUntil(this._reset$))
         .subscribe();
     }

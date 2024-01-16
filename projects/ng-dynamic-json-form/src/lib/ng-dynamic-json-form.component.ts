@@ -11,15 +11,23 @@ import {
   PLATFORM_ID,
   Renderer2,
   TemplateRef,
+  forwardRef,
   inject,
 } from '@angular/core';
 import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormRecord,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
   UntypedFormGroup,
+  ValidationErrors,
+  Validator,
   ValidatorFn,
 } from '@angular/forms';
 import Ajv from 'ajv';
-import { Subject, debounceTime, merge, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -67,9 +75,21 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     FormValidationService,
     NgxMaskConfigInitService,
     OptionsDataService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
+    },
   ],
 })
-export class NgDynamicJsonFormComponent {
+export class NgDynamicJsonFormComponent
+  implements ControlValueAccessor, Validator
+{
   private readonly _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
@@ -78,13 +98,14 @@ export class NgDynamicJsonFormComponent {
   private readonly _el = inject(ElementRef);
   private readonly _renderer2 = inject(Renderer2);
   private readonly _formGeneratorService = inject(FormGeneratorService);
-  private readonly _formStatusService = inject(FormConditionsService);
+  private readonly _formConditionsService = inject(FormConditionsService);
   private readonly _formValidationService = inject(FormValidationService);
   private readonly _optionsDataService = inject(OptionsDataService);
   private readonly _reset$ = new Subject<void>();
   private readonly _onDestroy$ = new Subject<void>();
 
   private _onTouched = () => {};
+  private _onChange = (x: any) => {};
 
   config: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
@@ -158,7 +179,9 @@ export class NgDynamicJsonFormComponent {
 
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {
-    this._onTouched();
+    requestAnimationFrame(() => {
+      this._onTouched();
+    });
   }
 
   ngOnChanges(): void {
@@ -192,11 +215,35 @@ export class NgDynamicJsonFormComponent {
     this._optionsDataService.cancelAllRequest();
   }
 
+  validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    return this.form?.errors ?? null;
+  }
+
+  registerOnValidatorChange?(fn: () => void): void {
+    return;
+  }
+
+  writeValue(obj: any): void {
+    this.form?.patchValue(obj);
+  }
+
+  registerOnChange(fn: any): void {
+    this._onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this._onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    isDisabled ? this.form?.disable() : this.form?.enable();
+  }
+
   private _initHostClass(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
 
     this._renderer2.addClass(hostEl, 'ng-dynamic-json-form');
-    this._formStatusService.hostEl = hostEl;
+    this._formConditionsService.hostEl = hostEl;
   }
 
   private _setHostUiClass(): void {
@@ -248,14 +295,28 @@ export class NgDynamicJsonFormComponent {
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
+    this._setupFormListeners();
+  }
+
+  private _setupFormListeners(): void {
+    if (!this.form) return;
+
+    const errors$ = this._formValidationService.formErrorEvent$(this.form);
+    const conditions$ = this._formConditionsService.formConditionsEvent$(
+      this.form,
+      this.config
+    );
+    const valueChanges$ = this.form.valueChanges.pipe(
+      startWith(this.form.value),
+      debounceTime(0),
+      tap((x) => this._onChange(x))
+    );
+
     this._reset$.next();
     this._optionsDataService.cancelAllRequest();
-    merge(
-      this._formValidationService.formErrorEvent$(this.form),
-      this._formStatusService.formControlConditonsEvent$(this.form, this.config)
-    )
+
+    merge(valueChanges$, conditions$, errors$)
       .pipe(
-        debounceTime(100),
         tap(() => this._cd.detectChanges()),
         takeUntil(merge(this._reset$, this._onDestroy$))
       )

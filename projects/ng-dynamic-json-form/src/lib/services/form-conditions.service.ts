@@ -39,7 +39,7 @@ export class FormConditionsService {
    * @param form The root form
    * @param configs The JSON data
    */
-  formControlConditonsEvent$(
+  formConditionsEvent$(
     form: FormGroup,
     configs: FormControlConfig[]
   ): Observable<any> {
