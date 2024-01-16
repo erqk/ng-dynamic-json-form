@@ -5,17 +5,24 @@
 .ng-dynamic-json-form {
   --color-primary: #3b82f6;
   --color-primary-lighter: #bfdbfe;
+  --color-description: gray;
   --color-error: #ff4747;
   --color-border: gray;
 
+  --font-family: "Roboto", "Noto Sans TC", "Noto Sans SC", system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
   --font-size-title: 1.2em;
-  --font-size-subtitle: 1em;
+  --font-size-label: 1em;
+  --font-size-description: 0.925em;
+  --font-size-error: 0.925em;
+  --font-weight-title: 700;
+  --font-weight-label: 500;
 
   --input-border-width: 1px;
 
   --row-gap: 1.5em;
   --column-gap: 1em;
-  --group-gap: 2em;
 
   --options-column-gap: 1.85em;
   --options-row-gap: 0.25em;
@@ -24,11 +31,7 @@
   --form-array-item-divider-weight: 1px;
   --form-array-item-divider-spacing: 2em;
 
-  --drop-shadow: 0 0 0.25rem 0.8rem rgba(0, 0, 0, 0.2);
-
-  font-family: "Roboto", "Noto Sans TC", "Noto Sans SC", system-ui,
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell,
-    "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-family);
 
   .grid-container {
     display: grid;
@@ -38,39 +41,24 @@
 
   .form-title {
     display: block;
-    margin-bottom: 1rem;
     font-size: var(--font-size-title);
-    font-weight: 700;
+    font-weight: var(--font-weight-title);
+    margin-bottom: 0.5em;
     word-break: break-all;
   }
 
   .form-description {
     display: block;
     margin-bottom: 0.5rem;
-    color: gray;
+    color: var(--color-description);
+    font-size: var(--font-size-description);
     white-space: pre-wrap;
     word-break: break-all;
   }
 
   .form-group-container,
   .form-array-container {
-    margin: var(--group-gap) 0;
-
     &.is-nested {
-      margin: calc(var(--group-gap) * 0.25) 0;
-
-      // Title of nested FormGroup inside FormArray
-      .form-title {
-        font-size: var(--font-size-subtitle);
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
-
-      // Label under nested FormGroup of FormArray
-      .input-label {
-        font-weight: normal;
-      }
-
       .grid-container {
         row-gap: calc(var(--row-gap) * 0.7);
       }
@@ -83,29 +71,57 @@
     }
   }
 
-  // ==================== FormControl ======================
-  .form-control-container {
-    min-width: 0;
-
-    &.big-title {
-      .input-label {
-        font-weight: 700;
-        font-size: var(--font-size-title);
+  .form-array-container {
+    .form-array-item-header {
+      &:first-of-type {
+        display: block;
+        margin-top: 1em;
       }
     }
 
-    form-control > *,
-    .input-component > *,
-    .loading-component > * {
-      display: flex;
-      flex-direction: column;
-    }
+    .group {
+      &:first-of-type {
+        margin-top: 1em;
+      }
 
-    .input-label {
-      display: block;
-      font-weight: 500;
-      font-size: var(--font-size-subtitle);
+      + .group {
+        margin-top: calc(var(--form-array-item-divider-spacing) * 2);
+        padding-top: var(--form-array-item-divider-spacing);
+        border-top: solid var(--form-array-item-divider-weight)
+          var(--form-array-item-divider-color);
+      }
+
+      .form-array-item-header {
+        margin-top: 0;
+      }
     }
+  }
+
+  .form-control > *,
+  .input-container > *,
+  .loading-container > * {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-label {
+    display: block;
+    font-weight: var(--font-weight-label);
+    font-size: var(--font-size-label);
+  }
+
+  .input-container {
+    margin-top: 0.25em;
+  }
+
+  .collapsible-container {
+    overflow: hidden;
+    transition: 0.2s ease;
+  }
+
+  // ==================== FormControl ======================
+  .form-control-container {
+    min-width: 0;
 
     // Wrapper for checkboxes, radio buttons
     .group-buttons {
@@ -119,30 +135,19 @@
     @include option-button.option-button-wrapper();
   }
 
-  .form-array-container {
-    .group {
-      + .group {
-        margin-top: var(--form-array-item-divider-spacing);
-        padding-top: var(--form-array-item-divider-spacing);
-        border-top: solid var(--form-array-item-divider-weight)
-          var(--form-array-item-divider-color);
-      }
-    }
-  }
-
   // ==================== Errors ======================
   .config-validation-error {
     color: var(--color-error);
     white-space: pre-wrap;
   }
 
-  .errors-container {
-    font-size: 0.95rem;
-
-    .error {
-      margin-top: 0.35rem;
-      color: var(--color-error);
-    }
+  .error-message {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--font-size-error);
+    color: var(--color-error);
+    line-height: 1.25em;
+    margin-top: 0.25em;
   }
 
   // ================= Utilities ======================
