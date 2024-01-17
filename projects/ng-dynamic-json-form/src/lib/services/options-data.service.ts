@@ -107,6 +107,11 @@ export class OptionsDataService {
     this._requests = [];
   }
 
+  onDestroy(): void {
+    this.cancelAllRequest();
+    this._cancelAll$.complete();
+  }
+
   private _fetchData$(
     config: OptionSource,
     controlValue?: any

@@ -214,7 +214,9 @@ export class NgDynamicJsonFormComponent
     this._onDestroy$.complete();
     this._reset$.next();
     this._reset$.complete();
-    this._optionsDataService.cancelAllRequest();
+    this._formGeneratorService.reset$.next();
+    this._formGeneratorService.reset$.complete();
+    this._optionsDataService.onDestroy();
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
@@ -297,7 +299,7 @@ export class NgDynamicJsonFormComponent
 
     this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.config;
-    
+
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
