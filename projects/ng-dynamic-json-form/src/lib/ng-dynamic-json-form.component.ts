@@ -168,8 +168,7 @@ export class NgDynamicJsonFormComponent
     this._providerConfig?.layoutComponents;
 
   /**Custom templates for loading and error message */
-  @Input() layoutTemplates?: LayoutTemplates =
-    this._providerConfig?.layoutTemplates;
+  @Input() layoutTemplates?: LayoutTemplates;
 
   /**
    * Custom templates for input, suitable for input using only `FormControl`.

@@ -10,7 +10,6 @@ interface FormConfig {
   customComponents?: CustomComponents;
   uiComponents?: UiComponents;
   layoutComponents?: LayoutComponents;
-  layoutTemplates?: LayoutTemplates;
   outputDateFormat?: string;
 }
 
