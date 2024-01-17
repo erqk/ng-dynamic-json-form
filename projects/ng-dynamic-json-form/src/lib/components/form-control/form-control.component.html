@@ -24,7 +24,7 @@
     class="input-container"
     [ngClass]="{
       disabled: !useCustomLoading && loading,
-      hidden: !useCustomLoading && loading
+      hidden: useCustomLoading && loading
     }"
   >
     <!-- Input template -->
