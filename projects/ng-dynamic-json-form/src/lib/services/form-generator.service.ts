@@ -13,7 +13,7 @@ import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormGeneratorService {
-  private _reset$ = new Subject();
+  readonly reset$ = new Subject<void>();
 
   constructor(
     private _formConditionsService: FormConditionsService,
@@ -77,16 +77,19 @@ export class FormGeneratorService {
       validators,
     });
 
-    if (!count) formArray;
+    if (!count) {
+      return formArray;
+    }
 
-    this._reset$.next(null);
     for (let i = 0; i < count; i++) {
       const formGroup = this.generateFormGroup(data);
       formArray.push(formGroup);
 
+      // FormGroup inside FormArray will be harder to track the control because we have to take care of index.
+      // So we just create a new listener for each FormGroup.
       this._formConditionsService
         .formConditionsEvent$(formGroup, data)
-        .pipe(takeUntil(this._reset$))
+        .pipe(takeUntil(this.reset$))
         .subscribe();
     }
 

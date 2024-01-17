@@ -293,15 +293,18 @@ export class NgDynamicJsonFormComponent
     if (!this.config || !this.config.length) return;
 
     this.configValidateErrors = [];
+    this._clearListeners();
+
     this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.config;
+    
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
-    this._setupFormListeners();
+    this._setupListeners();
   }
 
-  private _setupFormListeners(): void {
+  private _setupListeners(): void {
     if (!this.form) return;
 
     const errors$ = this._formValidationService.formErrorEvent$(this.form);
@@ -315,14 +318,17 @@ export class NgDynamicJsonFormComponent
       tap((x) => this._onChange(x))
     );
 
-    this._reset$.next();
-    this._optionsDataService.cancelAllRequest();
-
     merge(valueChanges$, conditions$, errors$)
       .pipe(
         tap(() => this._cd.detectChanges()),
         takeUntil(merge(this._reset$, this._onDestroy$))
       )
       .subscribe();
+  }
+
+  private _clearListeners(): void {
+    this._reset$.next();
+    this._formGeneratorService.reset$.next();
+    this._optionsDataService.cancelAllRequest();
   }
 }
