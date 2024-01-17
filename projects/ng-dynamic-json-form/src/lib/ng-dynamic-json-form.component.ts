@@ -17,7 +17,6 @@ import {
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormRecord,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
@@ -49,6 +48,7 @@ import {
   OptionsDataService,
 } from './services';
 import { ConfigMappingService } from './services/config-mapping.service';
+import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 
@@ -73,6 +73,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     FormGeneratorService,
     FormConditionsService,
     FormValidationService,
+    FormPatcherService,
     NgxMaskConfigInitService,
     OptionsDataService,
     {
@@ -100,6 +101,7 @@ export class NgDynamicJsonFormComponent
   private readonly _formGeneratorService = inject(FormGeneratorService);
   private readonly _formConditionsService = inject(FormConditionsService);
   private readonly _formValidationService = inject(FormValidationService);
+  private readonly _formPatcherService = inject(FormPatcherService);
   private readonly _optionsDataService = inject(OptionsDataService);
   private readonly _reset$ = new Subject<void>();
   private readonly _onDestroy$ = new Subject<void>();
@@ -224,7 +226,7 @@ export class NgDynamicJsonFormComponent
   }
 
   writeValue(obj: any): void {
-    this.form?.patchValue(obj);
+    this._formPatcherService.patchForm(this.form, obj);
   }
 
   registerOnChange(fn: any): void {
@@ -292,6 +294,7 @@ export class NgDynamicJsonFormComponent
 
     this.configValidateErrors = [];
     this._formValidationService.customValidators = this.customValidators;
+    this._formPatcherService.config = this.config;
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
