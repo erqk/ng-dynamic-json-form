@@ -55,7 +55,7 @@ export interface FormControlConfig {
 
   placeholder?: string;
 
-  /**Set this input to readonly, and will add a class as a mark for styling */
+  /**Set this input to readonly, and will add a class `readonly` for styling */
   readonly?: boolean;
 
   type?: FormControlType;

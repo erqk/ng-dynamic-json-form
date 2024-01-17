@@ -161,6 +161,15 @@
     display: none !important;
   }
 
+  .readonly {
+    pointer-events: none;
+
+    input, textarea {
+      border: none;
+      padding: 0;
+    }
+  }
+
   .sr-only {
     @include utilities.sr-only();
   }

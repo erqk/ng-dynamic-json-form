@@ -53,10 +53,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnChange(fn: any): void {
-    if (this.data?.readonly === true) {
-      return;
-    }
-
     this._internal_control?.valueChanges
       .pipe(
         startWith(this._internal_control.value),

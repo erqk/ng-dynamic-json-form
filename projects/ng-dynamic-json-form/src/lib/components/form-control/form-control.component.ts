@@ -58,6 +58,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private readonly _cd = inject(ChangeDetectorRef);
+  private readonly _el = inject(ElementRef);
   private readonly _configMappingService = inject(ConfigMappingService);
   private readonly _optionsDataService = inject(OptionsDataService);
   private readonly _formValidationService = inject(FormValidationService);
@@ -117,14 +118,27 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this._controlComponentRef?.validate(control) ?? null;
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    this._setReadonlyStyle();
     this._getErrorMessages();
     this._fetchOptions();
-    this._injectInputComponent();
-    this._injectErrorMessageComponent();
     this.useCustomLoading =
       !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
+  }
+
+  ngAfterViewInit(): void {
+    this._injectInputComponent();
+    this._injectErrorMessageComponent();
     this._cd.detectChanges();
+  }
+
+  private _setReadonlyStyle(): void {
+    const host = this._el.nativeElement as HTMLElement;
+    const readonly = this.data?.readonly === true;
+
+    readonly
+      ? host.classList.add('readonly')
+      : host.classList.remove('readonly');
   }
 
   private _injectComponent<T>(
@@ -159,9 +173,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     );
 
     componentRef.instance['_internal_init'](this.control);
-    componentRef.instance.registerOnChange(this._onChange);
-    componentRef.instance.registerOnTouched(this._onTouched);
     componentRef.instance.writeValue(this._pendingValue$.value);
+
+    if (!this.data?.readonly) {
+      componentRef.instance.registerOnChange(this._onChange);
+      componentRef.instance.registerOnTouched(this._onTouched);
+    }
   }
 
   private _injectErrorMessageComponent(): void {

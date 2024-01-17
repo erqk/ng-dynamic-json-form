@@ -28,10 +28,15 @@ export class TextareaAutHeightDirective {
     this._borderWidth = Math.ceil(
       parseFloat(window.getComputedStyle(this._hostEl).borderWidth)
     );
+    this._setHeight();
   }
 
   @HostListener('input', ['$event'])
   onInput(): void {
+    this._setHeight();
+  }
+
+  private _setHeight(): void {
     if (!this._hostEl || !this.autoResize) return;
 
     this._renderer2.removeStyle(this._hostEl, 'height');
