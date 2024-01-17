@@ -5,7 +5,10 @@
       type: 'label',
       layout
     }"
-    (click)="onClick()"
+    [ngStyle]="{
+      cursor: collapsible ? 'pointer' : 'normal'
+    }"
+    (click)="toggle()"
   >
     <span>{{ label }}</span>
 
@@ -33,6 +36,7 @@
   *ngIf="customTemplate"
   [ngTemplateOutlet]="customTemplate"
   [ngTemplateOutletContext]="{
-    click: event.click
+    label,
+    toggle,
   }"
 ></ng-container>

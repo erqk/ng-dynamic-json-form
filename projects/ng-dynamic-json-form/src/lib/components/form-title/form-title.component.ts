@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Renderer2, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Renderer2,
+  ViewChild,
+  ViewContainerRef,
+  inject,
+} from '@angular/core';
 import { Subject, filter, fromEvent, takeUntil, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
@@ -25,10 +32,17 @@ export class FormTitleComponent {
   @Input() customComponent?: LayoutComponents['formTitle'];
   @Input() customTemplate?: LayoutTemplates['formTitle'];
 
+  @ViewChild('componentAnchor', { read: ViewContainerRef })
+  componentAnchor?: ViewContainerRef;
+
   collapsible = false;
   expand = false;
-  event = {
-    click: () => this.onClick(),
+
+  toggle = () => {
+    if (!this._collapsible) return;
+
+    this.expand = !this.expand;
+    this._setElementHeight();
   };
 
   ngOnInit(): void {
@@ -39,15 +53,26 @@ export class FormTitleComponent {
   ngAfterViewInit(): void {
     if (!this.collapsibleEl || !this.collapsible) return;
 
+    if (this.customComponent) {
+      this._injectComponent();
+      return;
+    }
+
     this._initCollapsibleEl();
     this._listenTransition();
   }
 
-  onClick(): void {
-    if (!this._collapsible) return;
+  private _injectComponent(): void {
+    if (!this.componentAnchor || !this.customComponent) {
+      return;
+    }
 
-    this.expand = !this.expand;
-    this._setElementHeight();
+    const componentRef = this.componentAnchor.createComponent(
+      this.customComponent
+    );
+    componentRef.instance.label = this.label;
+    componentRef.instance.layout = this.layout;
+    componentRef.instance.collapsibleEl = this.collapsibleEl;
   }
 
   private _listenTransition(): void {
