@@ -23,8 +23,8 @@
   <div
     class="input-container"
     [ngClass]="{
-      disabled: loading,
-      hidden: loading && (layoutComponents?.loading || layoutTemplates?.loading)
+      disabled: !useCustomLoading && loading,
+      hidden: !useCustomLoading && loading
     }"
   >
     <!-- Input template -->

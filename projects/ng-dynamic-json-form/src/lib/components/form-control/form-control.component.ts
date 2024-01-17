@@ -58,7 +58,6 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private readonly _cd = inject(ChangeDetectorRef);
-  private readonly _el = inject(ElementRef);
   private readonly _configMappingService = inject(ConfigMappingService);
   private readonly _optionsDataService = inject(OptionsDataService);
   private readonly _formValidationService = inject(FormValidationService);
@@ -94,6 +93,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   loading = false;
   errorMessages: string[] = [];
+  useCustomLoading = false;
 
   writeValue(obj: any): void {
     this._pendingValue$.next(obj);
@@ -122,6 +122,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._fetchOptions();
     this._injectInputComponent();
     this._injectErrorMessageComponent();
+    this.useCustomLoading =
+      !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
     this._cd.detectChanges();
   }
 

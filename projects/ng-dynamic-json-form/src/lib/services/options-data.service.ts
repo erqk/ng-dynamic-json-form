@@ -31,9 +31,9 @@ import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
 
 @Injectable()
 export class OptionsDataService {
-  private _http = inject(HttpClient);
+  private readonly _http = inject(HttpClient);
+  private readonly _cancelAll$ = new Subject<void>();
   private _requests: { src: string; data: BehaviorSubject<any> }[] = [];
-  private _cancelAll$ = new Subject<void>();
 
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
     const { sourceList } = config;

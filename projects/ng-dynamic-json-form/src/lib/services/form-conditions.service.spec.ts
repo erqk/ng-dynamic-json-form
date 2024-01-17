@@ -29,29 +29,29 @@ const formGroup = new FormGroup({
   temperature: new FormControl(0),
 });
 
+const conditionsA: FormControlGroupCondition = {
+  '&&': [
+    ['basicInfo.age', '>', 20],
+    ['basicInfo.name', '===', 'Andrew'],
+    {
+      '||': [
+        ['basicInfo.showEmail', '===', false],
+        ['basicInfo.gender', '===', '0'],
+      ],
+    },
+  ],
+};
+
+const conditionsB: FormControlGroupCondition = {
+  '||': [
+    ['basicInfo.age', '>', 50],
+    ['basicInfo.age', '>', 20],
+    ['basicInfo.showEmail', '===', true],
+  ],
+};
+
 describe(`Condition: {name: Andrew, age: 18, showEmail: true, gender: '0'}`, () => {
   let service: FormConditionsService;
-
-  const conditionsA: FormControlGroupCondition = {
-    '&&': [
-      ['basicInfo.age', '>', 20],
-      ['basicInfo.name', '===', 'Andrew'],
-      {
-        '||': [
-          ['basicInfo.showEmail', '===', false],
-          ['basicInfo.gender', '===', '0'],
-        ],
-      },
-    ],
-  };
-
-  const conditionsB: FormControlGroupCondition = {
-    '||': [
-      ['basicInfo.age', '>', 50],
-      ['basicInfo.age', '>', 20],
-      ['basicInfo.showEmail', '===', true],
-    ],
-  };
 
   beforeEach(() => {
     const renderFactory2Spy = jasmine.createSpyObj('RendererFactory2', [

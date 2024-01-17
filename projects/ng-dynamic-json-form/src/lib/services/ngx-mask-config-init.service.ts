@@ -4,7 +4,7 @@ import { NgxMaskConfig } from '../models/ngx-mask-config.interface';
 
 @Injectable()
 export class NgxMaskConfigInitService {
-  private _defaultSpecialCharacters: string[] = [
+  private readonly _defaultSpecialCharacters: string[] = [
     '-',
     '/',
     '(',
@@ -21,7 +21,7 @@ export class NgxMaskConfigInitService {
     "'",
   ];
 
-  private _defaultPatterns: NgxMaskConfig['patterns'] = {
+  private readonly _defaultPatterns: NgxMaskConfig['patterns'] = {
     '0': {
       pattern: new RegExp('\\d'),
     },

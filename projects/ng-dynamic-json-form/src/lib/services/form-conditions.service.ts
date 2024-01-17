@@ -25,8 +25,8 @@ import { getValueInObject } from '../utilities/get-value-in-object';
 @Injectable()
 export class FormConditionsService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
-  private _formValidationService = inject(FormValidationService);
+  private readonly _renderer2 = inject(RendererFactory2).createRenderer(null, null);
+  private readonly _formValidationService = inject(FormValidationService);
   private _controlStatusUpdating = false;
 
   /**To differentiate the host element from multiple ng-dynamic-json-form instances */
