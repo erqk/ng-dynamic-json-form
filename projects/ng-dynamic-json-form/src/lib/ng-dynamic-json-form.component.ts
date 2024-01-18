@@ -123,7 +123,8 @@ export class NgDynamicJsonFormComponent
    *
    * @example
    * JSON config:
-   * {  ...,
+   * {  
+   *    ...
    *    "validators": [
    *      {
    *        "name": "custom",
@@ -147,7 +148,8 @@ export class NgDynamicJsonFormComponent
    *
    * @example
    * JSON config:
-   * {  ...,
+   * {  
+   *    ...
    *    "customComponent": "compA"
    * }
    *
