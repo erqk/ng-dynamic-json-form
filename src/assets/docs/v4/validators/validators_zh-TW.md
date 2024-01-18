@@ -1,4 +1,4 @@
-# Validators
+# 驗證器 (validators)
 
 ## Properties
 
@@ -10,9 +10,9 @@ export interface ValidatorConfig {
 }
 ```
 
-> Use `{{value}}` as a placeholder to display the current control's value.
+> 可使用 `{{value}}` 當 placeholder，來顯示當前控制器的值。
 
-## Built-in validators
+## 內建驗證器
 
 | name         | value  |
 | :----------- | :----- |
@@ -25,13 +25,13 @@ export interface ValidatorConfig {
 | pattern      | string |
 | email        | -      |
 
-> The validators are come from [Angular's built-in validators](https://angular.io/api/forms/Validators), except `email` that's using this pattern: `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/`.
+> 除了 `email` 使用的是 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 正則表達式，其餘的驗證器皆來自於 [Angular 內建的驗證器](https://angular.tw/api/forms/Validators)。
 
-## Custom validators
+## 自訂驗證器
 
-Put all your custom `ValidatorFn` into an object, then bind it to `customValidators`.
+建立自訂的 `ValidatorFn`，然後將它們放到一個物件內並綁定到 `customValidators`。
 
-### Setup using provider
+### 使用 provider
 
 ```javascript
 import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
@@ -48,7 +48,7 @@ import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
 }
 ```
 
-### Setup using property binding
+### 使用 property binding
 
 ```javascript
 validators = {
@@ -64,9 +64,9 @@ validators = {
 ></ng-dynamic-json-form>
 ```
 
-### Usage
+### 用法
 
-Specify `name` by using the key inside `customValidators` to use the validador.
+將 `name` 設定為 `customValidators` 內目標驗證器的 key 值。
 
 ```json
 {
@@ -80,7 +80,7 @@ Specify `name` by using the key inside `customValidators` to use the validador.
 }
 ```
 
-## Example
+## 例子
 
 ```json
 {
@@ -88,7 +88,7 @@ Specify `name` by using the key inside `customValidators` to use the validador.
   "validators": [
     {
       "name": "required",
-      "message": "Please type your name"
+      "message": "請輸入你的名字"
     },
     {
       "name": "minLength",
@@ -97,7 +97,7 @@ Specify `name` by using the key inside `customValidators` to use the validador.
     {
       "name": "pattern",
       "value": "\\D+",
-      "message": "The current value contains invalid characters: {{value}}"
+      "message": "存在不符合條件的字符: {{value}}"
     },
     {
       "name": "firstUppercase"

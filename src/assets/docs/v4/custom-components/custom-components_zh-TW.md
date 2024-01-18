@@ -1,37 +1,37 @@
-# Custom Components
+# 自訂元件
 
-## Create the component
+## 建立元件
 
-[ControlValueAccessor]: https://angular.io/api/forms/ControlValueAccessor
-[FormControlConfig]: ../../v4/form-control-config/form-control-config_en.md
-[Validator]: https://angular.io/api/forms/Validator
+[ControlValueAccessor]: https://angular.tw/api/forms/ControlValueAccessor
+[FormControlConfig]: ../../v4/form-control-config/form-control-config_zh-TW.md
+[Validator]: https://angular.tw/api/forms/Validator
 
-Create a component that extends `CustomControlComponent`. It provides all the methods inside [ControlValueAccessor] and [Validator].
+建立一個繼承 `CustomControlComponent` 的元件，此元件含有 [ControlValueAccessor] 和 [Validator] 一模一樣的方法提供使用。
 
-> It's not required to provide `NG_VALUE_ACCESSOR` and `NG_VALIDATORS`, as all the implementation happens under the hood.
+> 不需要在 provider 特別注入 `NG_VALUE_ACCESSOR` 和 `NG_VALIDATORS`，已交由底層處理。
 
 ### Properties
 
-The properties that can be used to build custom component.
+可用於建立自訂元件的 property 列表。
 
-| Property      | Type                | Description                                                      |
-| :------------ | :------------------ | :--------------------------------------------------------------- |
-| control       | `AbstractControl`   | The control of this component. Must override and instantiate it. |
-| data          | [FormControlConfig] | The config for this input.                                       |
-| errorMessages | `string[]`          | Array of error message of this control.                          |
+| Property      | 類型                | 說明                                       |
+| :------------ | :------------------ | :----------------------------------------- |
+| control       | `AbstractControl`   | 此元件的控制器。必須 override 並建立實體。 |
+| data          | [FormControlConfig] | 此元件的設定。                             |
+| errorMessages | `string[]`          | 此控制器的錯誤訊息陣列。                   |
 
-### Example
+### 例子
 
 ```javascript
 export class UiBasicDateComponent extends CustomControlComponent {
 
-  // This control can be override to FormControl, FormGroup or FormArray.
+  // 可 override 為 FormControl, FormGroup 或者 FormArray。
   override control = new FormGroup({
     date: new FormControl(''),
     time: new FormControl(''),
   });
 
-  // Map input data
+  // 轉換寫入的資料
   override writeValue(obj: any): void {
     ...
     this.control.patchValue({
@@ -40,7 +40,7 @@ export class UiBasicDateComponent extends CustomControlComponent {
     });
   }
 
-  // Map output data
+  // 轉換輸出的資料
   override registerOnChange(fn: any): void {
     this.control.valueChanges
       .pipe(
@@ -52,15 +52,17 @@ export class UiBasicDateComponent extends CustomControlComponent {
 }
 ```
 
-## Usage
+## 用法
 
-### Using component
+### 使用元件
 
-Pass the data into `customComponents` using provider or property binding
+使用 provider 或者 property binding 的方式將元件綁定到 `customComponents`。
 
-#### Setup using provider
+#### 使用 provider
 
 ```javascript
+import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
+
 {
   ...
   providers: [
@@ -74,7 +76,7 @@ Pass the data into `customComponents` using provider or property binding
 }
 ```
 
-#### Setup using property binding
+#### 使用 property binding
 
 ```javascript
 import { CustomComponents } from 'ng-dynamic-json-form';
@@ -94,9 +96,9 @@ components: CustomComponents = {
 ></ng-dynamic-json-form>
 ```
 
-#### Config data
+#### 表單設定
 
-Set the `customComponent` to the key of the target component to use.
+將 `customComponent` 設定為目標自訂元件的 key。
 
 ```json
 [
@@ -111,9 +113,9 @@ Set the `customComponent` to the key of the target component to use.
 ]
 ```
 
-### Using &lt;ng-template&gt;
+### 使用 &lt;ng-template&gt;
 
-Only support the input that using only `FormControl`. The template variables are same with the properties inside `CustomControlComponent`.
+只支援使用 `FormControl` 控制器的元件。Template 所提供的變數和 `CustomControlComponent` 的 property 一致。
 
 ```html
 <ng-dynamic-json-form
@@ -135,34 +137,34 @@ Only support the input that using only `FormControl`. The template variables are
 </ng-dynamic-json-form>
 ```
 
-## Custom UI Components
+## 自訂 UI 元件
 
-### Pre-made UI components
+### 現成的 UI 元件
 
-Here are some components from other UI libraries that were ready to use.
+此列表提供可立即使用的 UI 元件。
 
 [PrimeNg]: https://www.npmjs.com/package/primeng
 [Angular Material]: https://www.npmjs.com/package/@angular/material
 
-| UI library         | constant               | Path                             |
+| UI 元件庫          | 常數                   | 路徑                             |
 | :----------------- | :--------------------- | -------------------------------- |
 | [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
 | [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
 
-> The corresponding library must get installed first.
+> 相關 UI 元件庫必須先安裝，才能使用。
 
 <br>
 
-Import them and bind it to `uiComponents` by using provider or property binding.
+選擇其中一個，並使用 provider 或 property binding 的方式將其綁定到 `uiComponents`。
 
-#### Setup using provider
+#### 使用 provider
 
 ```javascript
 import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 
 {
-  ...,
+  ...
   providers: [
     provideNgDynamicJsonForm({
       uiComponents: UI_PRIMENG_COMPONENTS
@@ -171,7 +173,7 @@ import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
 }
 ```
 
-#### Setup using property binding
+#### 使用 property binding
 
 ```javascript
 import { UI_PRIMENG_COMPONENTS } from "ng-dynamic-json-form/ui-primeng";
@@ -187,15 +189,15 @@ uiComponents = UI_PRIMENG_COMPONENTS;
 ></ng-dynamic-json-form>
 ```
 
-### Create custom UI components
+### 建立自訂 UI 元件
 
-Similar to custom components, build components that extend `CustomControlComponent`.
+與自訂元件相似，建立一個繼承 `CustomControlComponent` 的元件。
 
-> Can choose to create a new UI component list, or extends the existing one.
+> 可以建立一個全新的 UI 元件列表，或者從現有的元件列表擴充。
 
 <br>
 
-For example, create a `HTMLEditorComponent` and set the key `htmlEditor`.
+例如, 建立一個 `HTMLEditorComponent`，然後設定 key 為 `htmlEditor`。
 
 ```javascript
 import { UiComponents } from "ng-dynamic-json-form";
@@ -203,11 +205,11 @@ import { HTMLEditorComponent } from "src/app/features/html-editor/html-editor.co
 
 myUiComponents: UiComponents = {
   ...UI_PRIMENG_COMPONENTS,
-  htmlEditor: HTMLEditorComponent, // extends the other input types
+  htmlEditor: HTMLEditorComponent
 };
 ```
 
-Then, specify the `type` with the key `htmlEditor` to make this input use `HTMLEditorComponent`.
+然後將 `type` 設定為 `htmlEditor`，則會使用剛剛建立的 `HTMLEditorComponent` 元件。
 
 ```json
 {

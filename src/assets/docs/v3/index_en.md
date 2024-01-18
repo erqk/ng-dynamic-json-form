@@ -18,7 +18,7 @@
 
 [Custom UI Component](../v3/api/api-custom-ui-component/api-custom-ui-component_en.md)
 
-[Custom validators](../v3/api/api-validators/api-validators_en.md)
+[Custom validators](../v3/api/api-custom-validators/api-custom-validators_en.md)
 
 [CSS Grid](../v3/api/api-css-grid/api-css-grid_en.md)
 

@@ -171,7 +171,7 @@ This is what the default header will look like:
 
 ### Custom header
 
-To use header with different layout and styling, use `ng-template` with the selector `#formArrayGroupHeader`.
+If the default header doesn't fits you, you can pass your own header by using `ng-template` with the selector `#formArrayGroupHeader`.
 
 <!-- prettier-ignore -->
 ```html

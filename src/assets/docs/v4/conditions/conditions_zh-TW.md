@@ -1,21 +1,21 @@
-# Conditions
+# 條件 (conditions)
 
-Apply conditional rendering and conditional validators to the input. For example:
+設定特定條件下顯示輸入元件，或變更驗證器。例如：
 
-- `A` input is hidden until `B` is filled or `C` is set to value X.
-- Add validator X to `A` control when `B` control's value is N.
+- `A` 輸入框為隱藏狀態，直到 `B` 欄位已填寫或 `C` 的值為 X。
+- 當 `A` 控制器的值為 N，則 `B` 控制器加入驗證器 X。
 
 ## Properties
 
 ```javascript
 {
   "coditions": {
-    [name]: {
-      [groupOperator]: [
-        [controlPath, operator, targetValue],
+    [名稱]: {
+      [群組運算子]: [
+        [控制器路徑, 運算子, 目標值],
         ...
         {
-          [groupOperator]: [...]
+          [群組運算子]: [...]
         }
       ]
     }
@@ -25,13 +25,13 @@ Apply conditional rendering and conditional validators to the input. For example
 
 <table>
   <thead>
-    <th>property</th>
-    <th style="width: 35%">value</th>
-    <th>description</th>
+    <th style="width: 20%">Property</th>
+    <th style="width: 35%">值</th>
+    <th>說明</th>
   </thead>
   <tbody>
     <tr>
-      <td>name</td>
+      <td>名稱</td>
       <td>
         <code>hidden</code>,
         <code>requied</code>,
@@ -42,12 +42,12 @@ Apply conditional rendering and conditional validators to the input. For example
         <code>maxLength</code>,
         <code>email</code>,
         <code>pattern</code>,
-        <code>...customValidatorKey</code>
+        <code>...自訂驗證器的 key</code>
       </td>
-      <td>Validator or state to toggle.</td>
+      <td>驗證器/狀態的切換。</td>
     </tr>
     <tr>
-      <td>operator</td>
+      <td>運算子</td>
       <td>
         <code>!==</code>,
         <code>===</code>,
@@ -56,39 +56,39 @@ Apply conditional rendering and conditional validators to the input. For example
         <code>>=</code>,
         <code><=</code>
       </td>
-      <td>Operator to evaluate control's value with target value.</td>
+      <td>用來處理控制器的值和目標值的運算子。</td>
     </tr>
     <tr>
-      <td>groupOperator</td>
+      <td>群組運算子</td>
       <td>
         <code>&&</code>,
         <code>||</code>
       </td>
-      <td>Operator to use in it's children. It's no difference if it has only one child.</td>
+      <td>運算子層用。若子層只有一個條件，使用上則無區別。</td>
     </tr>
     <tr>
-      <td>controlPath</td>
+      <td>控制器路徑</td>
       <td>string</td>
       <td>
-        Path to the control in the form. If it's a FormArray, then the path is start from the FormGroup inside.<br><br>
-        If the value is an object and need to compare the property, use <code>,</code> separator to join control path and object property path.
+        目標控制器在此表單上的路徑。如果是 FormArray，起始點為內部的 FormGroup。<br><br>
+        如果控制器的值為物件，且需要比對該物件內某個欄位的值，請用 <code>,</code> 分隔符號來將控制器路徑和該欄位值的路徑串接。
       </td>
     </tr>
     <tr>
-      <td>targetValue</td>
+      <td>目標值</td>
       <td>any</td>
-      <td>Target value to trigger condition.</td>
+      <td>觸發條件的值。</td>
     </tr>
   </tbody>
 </table>
 
-## Example
+## 例子
 
-### Toggle visibility
+### 切換顯示狀態
 
 ```javascript
 if (toggles.checkbox === false) {
-  /** Hide this control */
+  /** 隱藏此控制器 */
 }
 ```
 
@@ -105,11 +105,11 @@ if (toggles.checkbox === false) {
 }
 ```
 
-### Toggle disabled
+### 切換禁用狀態
 
 ```javascript
 if (toggles.checkbox === false) {
-  /** Disable this control */
+  /** 禁用此控制器 */
 }
 ```
 
@@ -126,17 +126,17 @@ if (toggles.checkbox === false) {
 }
 ```
 
-### Toggle validators
+### 切換驗證器
 
-To toggle validator, make sure the target validator is provided in `validators` array.
+使用條件切換驗證器之前，請確認 `validators` 陣列內已設定需要切換的驗證器。
 
 ```javascript
 if (toggles.checkbox === true || age > 20) {
-  /** Add Validators.required to this control */
+  /** 加入 Validators.required 驗證器 */
 }
 
 if (toggles.switch === false) {
-  /** Add firstUppercase validator to this control */
+  /** 加入 firstUppercase 驗證器 */
 }
 ```
 
@@ -168,11 +168,11 @@ if (toggles.switch === false) {
 }
 ```
 
-### Multi conditions
+### 多重條件
 
 ```javascript
-if (age > 20 && name === "Andrew" && (toggles.checkbox === false || toggles.switch === false)) {
-  /** Add Validators.required to this input */
+if (age > 20 && name === "王小明" && (toggles.checkbox === false || toggles.switch === false)) {
+  /** 加入 Validators.required 驗證器 */
 }
 ```
 
@@ -183,7 +183,7 @@ if (age > 20 && name === "Andrew" && (toggles.checkbox === false || toggles.swit
     "required": {
       "&&": [
         ["age", ">", 20],
-        ["name", "===", "Andrew"],
+        ["name", "===", "王小明"],
         {
           "||": [
             ["toggles.checkbox", "===", false],

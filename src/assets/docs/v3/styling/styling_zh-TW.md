@@ -154,22 +154,6 @@
 
 ### 預設標頭
 
-預設標頭的樣式和排版:
-
-<div class="ng-dynamic-json-form" style="border: solid 1px rgba(128, 128, 128, 0.35); padding: 1rem; border-radius: 0.35rem;">
-  <div class="form-array-container" style="margin: 0;">
-    <div class="form-array-group-header" style="margin: 0;">
-      <span class="label">Header label</span>
-      <div class="buttons">
-        <button type="button" class="btn-add"><span></span></button>
-        <button type="button" class="btn-remove"><span></span></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 自訂標頭
-
 如果你想用自訂的版型和樣式，可以使用 `ng-template` 並加上 `#formArrayGroupHeader` 選擇器。
 
 <!-- prettier-ignore -->
