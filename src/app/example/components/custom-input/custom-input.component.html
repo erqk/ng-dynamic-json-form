@@ -1,6 +1,6 @@
 <app-source-code-viewer [source]="source">
   <ng-container *ngIf="control">
-    <input type="text" [formControl]="control" />
+    <input type="text" class="border" [formControl]="control" />
 
     <ng-container *ngIf="control.errors">
       <div>{{ control.errors | json }}</div>

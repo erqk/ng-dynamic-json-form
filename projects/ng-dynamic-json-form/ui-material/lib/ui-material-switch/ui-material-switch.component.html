@@ -1,9 +1,8 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <mat-slide-toggle
-    [labelPosition]="data.extra?.switch?.labelPosition ?? 'after'"
+    [labelPosition]="data.options?.labelPosition ?? 'after'"
+    [propsBinding]="[data.extra]"
     [formControl]="control"
-    >{{ data.extra?.switch?.label }}</mat-slide-toggle
+    >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
   >
-  
-  <mat-error>{{ errors$ | async }}</mat-error>
 </ng-container>

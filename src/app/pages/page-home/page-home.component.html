@@ -1,122 +1,45 @@
-<div class="banner">
-  <div class="logo">
-    <img src="assets/logo.svg" />
+<div
+  class="page"
+  [ngStyle]="{
+    'margin-top.px': headerHeight$.value * -1
+  }"
+>
+  <div class="banner">
+    <div class="logo">
+      <img src="assets/logo.svg" />
+    </div>
+
+    <h1>NgDynamicJsonForm</h1>
+    <p>{{ i18nContent$.value.INTRODUCTION.BRIEF }}</p>
+
+    <button type="button" class="btn-start" [routerLink]="'/getting-started'">
+      {{ i18nContent$.value.MENU.GETTING_STARTED }}
+    </button>
   </div>
 
-  <h1>NgDynamicJsonForm</h1>
-  <p>{{ i18nContent$.value.INTRODUCTION.BRIEF }}</p>
+  <ng-container *ngIf="features$ | async as features">
+    <div class="relative z-0 py-[10vw] overflow-hidden">
+      <ui-content-wrapper class="p-10" [maxWidth]="'70rem'">
+        <ul class="features">
+          <li>{{ features.CONDITIONS }}</li>
+          <li>{{ features.NESTED_LEVELS }}</li>
+          <li>{{ features.VALIDATORS }}</li>
+          <li>{{ features.CUSTOM_COMPONENTS }}</li>
+          <li>{{ features.LAYOUT }}</li>
+          <li>{{ features.UI_LIBRARY }}</li>
+        </ul>
+      </ui-content-wrapper>
 
-  <button type="button" class="btn-start" [routerLink]="'/getting-started'">
-    {{ i18nContent$.value.MENU.GETTING_STARTED }}
-  </button>
-</div>
-
-<!-- <app-content-wrapper
-  *ngIf="features$ | async as features; else loadingTemplate"
->
-  <markdown [data]="features"></markdown>
-</app-content-wrapper>
-
-<ng-template #loadingTemplate>
-  <app-loading-indicator #loadingIndicator></app-loading-indicator>
-</ng-template> -->
-
-<ng-container *ngIf="features$ | async as features">
-  <app-content-wrapper>
-    <div class="feature-section">
-      <div class="illustration">
-        <div style="height: 100%"></div>
-        <div style="height: 50%; top: 35%; left: -40%"></div>
-        <div style="top: 40%; left: 32%; width: 20%"></div>
-        <div style="top: 35%; left: -45%; width: 70%"></div>
-        <div style="top: 58%; left: -65%"></div>
-        <div style="top: 6%; left: 10%"></div>
-      </div>
-      <p>{{ features.NESTED_LEVELS }}</p>
-    </div>
-
-    <div class="feature-section width-auto">
-      <div class="illustration">
-        <div style="top: 100%; left: 25%">...</div>
-        <div style="top: 85%; left: -30%">Validators.required</div>
-        <div style="top: 68%; left: 5%">Validators.maxLength(10)</div>
-        <div style="top: 50%; left: -65%">Validators.minLength(1)</div>
-        <div style="top: 25%; left: 25%">Validators.max(10)</div>
-        <div style="top: 42%; left: -22%">Validators.min(1)</div>
-        <div style="top: 0; left: 0">Validators.pattern(...)</div>
-      </div>
-      <p>{{ features.VALIDATORS }}</p>
-    </div>
-
-    <div class="feature-section">
-      <div class="illustration visibility">
-        <div
-          style="top: 40%; left: 10%; height: 40%"
-          [class.active]="visibleLayer === 2"
-        ></div>
-        <div
-          style="top: 25%; left: 5%; height: 40%"
-          [class.active]="visibleLayer === 1"
-        ></div>
-        <div style="height: 40%" [class.active]="visibleLayer === 0"></div>
-
-        <div class="radio-buttons" style="left: -25%; top: 90%">
-          <ng-container *ngFor="let item of [0, 1, 2]">
-            <button
-              [class.active]="visibleLayer === item"
-              (click)="setVisibleLayer(item)"
-            ></button>
-          </ng-container>
+      <div class="absolute -z-10 right-[3rem] bottom-[3rem]">
+        <div class="illustration">
+          <div style="height: 100%"></div>
+          <div style="height: 50%; top: 35%; left: -40%"></div>
+          <div style="top: 40%; left: 32%; width: 20%"></div>
+          <div style="top: 35%; left: -45%; width: 70%"></div>
+          <div style="top: 58%; left: -65%"></div>
+          <div style="top: 6%; left: 10%"></div>
         </div>
       </div>
-      <p>{{ features.STATUS_BINDING }}</p>
     </div>
-
-    <div class="feature-section">
-      <div class="illustration mb-0">
-        <div style="top: 0; left: 0"></div>
-        <div style="top: 20%; left: -25%; width: 70%"></div>
-        <div style="top: 27%; left: 56%; width: 25%"></div>
-        <div style="top: 40%; left: -45%; width: 25%"></div>
-        <div style="top: 48%; left: -10%; width: 70%"></div>
-      </div>
-      <p>{{ features.CSS_GRID }}</p>
-    </div>
-
-    <div class="feature-section">
-      <div class="illustration mb-0">
-        <div
-          style="
-            top: 0%;
-            left: -5%;
-            width: 15%;
-            height: 30%;
-            transform: rotate(27deg) skew(165deg, 52deg);
-          "
-        ></div>
-        <div style="top: 0%; left: 35%; width: 20%; height: 70%"></div>
-        <div style="top: 55%; left: -10%; width: 50%"></div>
-        <div style="top: 10%; left: 0; height: 22%"></div>
-        <div
-          style="
-            top: 12%;
-            left: 90%;
-            width: 15%;
-            height: 30%;
-            transform: rotate(22deg) skew(165deg, 52deg);
-          "
-        ></div>
-        <div
-          style="
-            top: 46%;
-            left: 9%;
-            width: 10%;
-            height: 20%;
-            transform: rotate(27deg) skew(165deg, 52deg);
-          "
-        ></div>
-      </div>
-      <p>{{ features.CUSTOM_COMPONENTS }}</p>
-    </div>
-  </app-content-wrapper>
-</ng-container>
+  </ng-container>
+</div>

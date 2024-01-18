@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 import { LanguageDataService } from '../../features/language/services/language-data.service';
 import { RouterModule } from '@angular/router';
-import { LoadingIndicatorComponent } from 'src/app/shared/loading-indicator/loading-indicator.component';
+import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
+import { LayoutService } from 'src/app/core/services/layout.service';
 
 @Component({
   selector: 'app-page-home',
@@ -15,8 +16,8 @@ import { map, switchMap } from 'rxjs/operators';
     CommonModule,
     RouterModule,
     MarkdownModule,
-    ContentWrapperComponent,
-    LoadingIndicatorComponent,
+    UiContentWrapperComponent,
+    UiLoadingIndicatorComponent,
   ],
   templateUrl: './page-home.component.html',
   styleUrls: ['./page-home.component.scss'],
@@ -24,6 +25,7 @@ import { map, switchMap } from 'rxjs/operators';
 export class PageHomeComponent {
   private _http = inject(HttpClient);
   private _languageDataService = inject(LanguageDataService);
+  private _layoutService = inject(LayoutService);
   isLoading = false;
   visibleLayer = 0;
 
@@ -33,10 +35,11 @@ export class PageHomeComponent {
         responseType: 'text',
       })
     ),
-    map(x => JSON.parse(x)['FEATURES'])
+    map((x) => JSON.parse(x)['FEATURES'])
   );
 
   i18nContent$ = this._languageDataService.i18nContent$;
+  headerHeight$ = this._layoutService.headerHeight$;
 
   setVisibleLayer(index: number): void {
     this.visibleLayer = index;

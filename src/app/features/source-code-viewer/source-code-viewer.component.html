@@ -1,0 +1,30 @@
+<div [ngClass]="['flex gap-8', 'ml-auto mb-4']">
+  <p-checkbox
+    label="HTML"
+    [value]="'html'"
+    [(ngModel)]="selectedTabs"
+  ></p-checkbox>
+  <p-checkbox
+    label="TS"
+    [value]="'ts'"
+    [(ngModel)]="selectedTabs"
+  ></p-checkbox>
+</div>
+
+<div
+  class="beauty-scrollbar affect-child"
+  [ngClass]="[
+    'beauty-scrollbar affect-child',
+    !selectedTabs.length ? '' : 'mb-4'
+  ]"
+>
+  <ng-container *ngIf="selectedTabs.includes('html')">
+    <markdown [data]="markdown.html | language : 'html'"></markdown>
+  </ng-container>
+
+  <ng-container *ngIf="selectedTabs.includes('ts')">
+    <markdown [data]="markdown.ts | language : 'javascript'"></markdown>
+  </ng-container>
+</div>
+
+<ng-content></ng-content>

@@ -1,0 +1,15 @@
+.docs-index-container {
+  display: grid;
+  place-items: flex-start;
+
+  a {
+    &:hover {
+      color: var(--primary-500);
+    }
+    
+    &.active {
+      color: var(--primary-500);
+      font-weight: bold;
+    }
+  }
+}

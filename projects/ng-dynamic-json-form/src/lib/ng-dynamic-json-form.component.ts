@@ -1,130 +1,204 @@
 import { CommonModule, isPlatformServer } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  ContentChild,
   ElementRef,
   EventEmitter,
-  Inject,
+  HostListener,
   Input,
   Output,
   PLATFORM_ID,
   Renderer2,
-  SimpleChanges,
   TemplateRef,
-  Type,
-  ViewChild,
+  forwardRef,
+  inject,
 } from '@angular/core';
 import {
-  FormArray,
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
   UntypedFormGroup,
+  ValidationErrors,
+  Validator,
   ValidatorFn,
 } from '@angular/forms';
-import { Subject, merge, takeUntil } from 'rxjs';
-import { NgDynamicJsonFormCustomComponent } from './components/custom-component-base/custom-component-base.component';
+import Ajv from 'ajv';
+import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
+import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
+import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
-import { GridItemWrapperComponent } from './components/grid-item-wrapper/grid-item-wrapper.component';
-import { UI_BASIC_COMPONENTS } from './constants/ui-basic-components.constant';
+import { FormTitleComponent } from './components/form-title/form-title.component';
+import * as schema from './config-schema.json';
+import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
-import { ErrorMessageService } from './services';
-import { FormConfigInitService } from './services/form-config-init.service';
-import { FormGeneratorService } from './services/form-generator.service';
-import { FormStatusService } from './services/form-status.service';
-import { FormValidatorService } from './services/form-validator.service';
-import { GridLayoutService } from './services/grid-layout.service';
-import { GenerateFormPipe } from './pipes/generate-form.pipe';
-import { FormArrayHeaderEventPipe } from './pipes/form-array-header-event.pipe';
+import { CustomComponents } from './models/custom-components.type';
+import {
+  LayoutComponents,
+  LayoutTemplates,
+  NG_DYNAMIC_JSON_FORM_CONFIG,
+} from './ng-dynamic-json-form.config';
+import {
+  ControlValueService,
+  FormConditionsService,
+  FormGeneratorService,
+  OptionsDataService,
+} from './services';
+import { ConfigMappingService } from './services/config-mapping.service';
+import { FormPatcherService } from './services/form-patcher.service';
+import { FormValidationService } from './services/form-validation.service';
+import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormControlComponent,
-    GridItemWrapperComponent,
     ErrorMessageComponent,
-    GenerateFormPipe,
-    FormArrayHeaderEventPipe,
+    HostIdDirective,
+    ControlLayoutDirective,
+    FormArrayItemHeaderComponent,
+    FormTitleComponent,
   ],
   providers: [
-    FormConfigInitService,
+    ConfigMappingService,
+    ControlValueService,
     FormGeneratorService,
-    FormValidatorService,
-    FormStatusService,
-    GridLayoutService,
-    ErrorMessageService,
+    FormConditionsService,
+    FormValidationService,
+    FormPatcherService,
+    NgxMaskConfigInitService,
+    OptionsDataService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
+    },
   ],
 })
-export class NgDynamicJsonFormComponent {
-  @ContentChild('formArrayGroupHeader')
-  formArrayGroupHeaderRef?: TemplateRef<any>;
+export class NgDynamicJsonFormComponent
+  implements ControlValueAccessor, Validator
+{
+  private readonly _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+    optional: true,
+  });
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _cd = inject(ChangeDetectorRef);
+  private readonly _el = inject(ElementRef);
+  private readonly _renderer2 = inject(Renderer2);
+  private readonly _formGeneratorService = inject(FormGeneratorService);
+  private readonly _formConditionsService = inject(FormConditionsService);
+  private readonly _formValidationService = inject(FormValidationService);
+  private readonly _formPatcherService = inject(FormPatcherService);
+  private readonly _optionsDataService = inject(OptionsDataService);
+  private readonly _reset$ = new Subject<void>();
+  private readonly _onDestroy$ = new Subject<void>();
 
-  @Input() jsonData: FormControlConfig[] | string = [];
+  private _onTouched = () => {};
+  private _onChange = (x: any) => {};
 
-  /**User defined custom valiators
+  config: FormControlConfig[] = [];
+  configValidateErrors: string[] = [];
+
+  form?: UntypedFormGroup;
+  uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
+
+  @Input() configs: FormControlConfig[] | string = [];
+
+  /**
+   * @description
+   * User defined custom valiators. The `value` is the `key` of target ValidatorFn.
    *
-   * The `key` will be use to match with `value` of validator named "custom":
    * @example
-   * {
-   *  //...
-   *  "validators": [
-   *    { "name": "custom", "value": "..." }
-   *  ]
+   * JSON config:
+   * {  
+   *    ...
+   *    "validators": [
+   *      {
+   *        "name": "custom",
+   *        "value": "firstUppercase"
+   *      }
+   *    ]
+   * }
+   *
+   * validators = {
+   *    firstUppercase: firstUppercaseValidator,
+   *    url: urlValidator,
+   *    ...
    * }
    */
-  @Input() customValidators: { [key: string]: ValidatorFn } = {};
+  @Input() customValidators?: { [key: string]: ValidatorFn } =
+    this._providerConfig?.customValidators;
 
-  /**User defined custom components
-   * The `key` will be use to match with `customComponent`:
+  /**
+   * @description
+   * User defined custom components. The `value` is the `key` of target component.
+   *
    * @example
-   * {
-   *  //...
-   *  "customComponent": "..."
+   * JSON config:
+   * {  
+   *    ...
+   *    "customComponent": "compA"
+   * }
+   *
+   * components = {
+   *    compA: YourComponentA,
+   *    compB: YourComponentB,
+   *    ...
    * }
    */
-  @Input() customComponents: {
-    [key: string]: Type<NgDynamicJsonFormCustomComponent>;
-  } = {};
+  @Input() customComponents?: CustomComponents =
+    this._providerConfig?.customComponents;
 
   /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents;
+  @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
+
+  /**Custom components for loading and error message */
+  @Input() layoutComponents?: LayoutComponents =
+    this._providerConfig?.layoutComponents;
+
+  /**Custom templates for loading and error message */
+  @Input() layoutTemplates?: LayoutTemplates;
+
+  /**
+   * Custom templates for input, suitable for input using only `FormControl`.
+   * To use `FormGroup` or `FormArray`, use `CustomControlComponent` instead.
+   */
+  @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
 
   @Output() formGet = new EventEmitter();
 
-  form?: UntypedFormGroup;
-  basicUIComponents = UI_BASIC_COMPONENTS;
+  @HostListener('focusout', ['$event'])
+  onFocusOut(): void {
+    requestAnimationFrame(() => {
+      this._onTouched();
+    });
+  }
 
-  config: FormControlConfig[] = [];
-  private _reset$ = new Subject();
-  private _onDestroy$ = new Subject();
-
-  constructor(
-    @Inject(PLATFORM_ID) private _platformId: Object,
-    private _el: ElementRef,
-    private _renderer2: Renderer2,
-    private _formConfigInitService: FormConfigInitService,
-    private _formGeneratorService: FormGeneratorService,
-    private _formStatusService: FormStatusService,
-    private _formValidatorService: FormValidatorService
-  ) {}
-
-  ngOnChanges(simpleChanges: SimpleChanges): void {
+  ngOnChanges(): void {
     if (isPlatformServer(this._platformId)) {
       return;
     }
 
-    const { jsonData, uiComponents } = simpleChanges;
+    this.uiComponentsGet = {
+      ...UI_BASIC_COMPONENTS,
+      ...this.uiComponents,
+    };
 
-    if (jsonData) {
-      this._buildForm();
-    }
-
-    if (uiComponents) {
-      this._setHostUiClass();
-    }
+    this._setHostUiClass();
+    this._buildForm();
   }
 
   ngOnInit(): void {
@@ -137,69 +211,127 @@ export class NgDynamicJsonFormComponent {
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next(null);
+    this._onDestroy$.next();
     this._onDestroy$.complete();
+    this._reset$.next();
     this._reset$.complete();
+    this._formGeneratorService.reset$.next();
+    this._formGeneratorService.reset$.complete();
+    this._optionsDataService.onDestroy();
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    return this.form?.errors ?? null;
+  }
+
+  registerOnValidatorChange?(fn: () => void): void {
+    return;
+  }
+
+  writeValue(obj: any): void {
+    this._formPatcherService.patchForm(this.form, obj);
+  }
+
+  registerOnChange(fn: any): void {
+    this._onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this._onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    isDisabled ? this.form?.disable() : this.form?.enable();
   }
 
   private _initHostClass(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
-    const dynamicFormsFound = document.querySelectorAll('ng-dynamic-json-form');
-    const hostIndex = Array.from(dynamicFormsFound).indexOf(hostEl);
 
     this._renderer2.addClass(hostEl, 'ng-dynamic-json-form');
-    this._renderer2.addClass(hostEl, `index-${hostIndex}`);
-    this._formStatusService.hostIndex = hostIndex;
+    this._formConditionsService.hostEl = hostEl;
   }
 
   private _setHostUiClass(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
+    const useDefaultUi =
+      !this.uiComponents || !Object.keys(this.uiComponents).length;
 
-    if (!this.uiComponents) {
-      this._renderer2.addClass(hostEl, 'ui-basic');
-    } else {
-      this._renderer2.removeClass(hostEl, 'ui-basic');
-    }
+    useDefaultUi
+      ? this._renderer2.addClass(hostEl, 'ui-basic')
+      : this._renderer2.removeClass(hostEl, 'ui-basic');
   }
 
-  private get _jsonDataValid(): boolean {
-    if (!this.jsonData) {
-      return false;
-    }
+  private _validateAndGetConfig(): FormControlConfig[] | null {
+    if (!this.configs) return null;
 
-    if (typeof this.jsonData === 'string') {
-      try {
-        JSON.parse(this.jsonData);
-      } catch (e) {
-        return false;
+    const data = Array.isArray(this.configs)
+      ? { config: this.configs }
+      : this.configs;
+
+    try {
+      const ajv = new Ajv({ allErrors: true });
+      const validate = ajv.compile(schema);
+      const parsed = JSON.parse(JSON.stringify(data));
+      const valid = validate(parsed);
+
+      if (!valid) {
+        this.configValidateErrors = [
+          ...(validate.errors ?? []).map((x) => JSON.stringify(x)),
+        ];
+        return null;
       }
-    }
 
-    if (Array.isArray(this.jsonData)) {
-      return !!this.jsonData.length;
+      return (parsed as any)['config'] ?? null;
+    } catch (err: any) {
+      // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+      this.configValidateErrors = [
+        JSON.stringify(err, Object.getOwnPropertyNames(err)),
+      ];
+      return null;
     }
-
-    return true;
   }
 
   private _buildForm(): void {
-    if (!this._jsonDataValid) return;
+    this.config = this._validateAndGetConfig() ?? [];
+    if (!this.config || !this.config.length) return;
 
-    this.config = Array.isArray(this.jsonData)
-      ? JSON.parse(JSON.stringify(this.jsonData))
-      : JSON.parse(this.jsonData);
+    this.configValidateErrors = [];
+    this._clearListeners();
 
-    this._formConfigInitService.init(this.config);
-    this._formValidatorService.customValidators = this.customValidators;
+    this._formValidationService.customValidators = this.customValidators;
+    this._formPatcherService.config = this.config;
+
     this.form = this._formGeneratorService.generateFormGroup(this.config);
     this.formGet.emit(this.form);
 
-    this._reset$.next(null);
-    merge(
-      this._formStatusService.formErrorEvent$(this.form),
-      this._formStatusService.formControlConditonsEvent$(this.form, this.config)
-    )
-      .pipe(takeUntil(merge(this._reset$, this._onDestroy$)))
+    this._setupListeners();
+  }
+
+  private _setupListeners(): void {
+    if (!this.form) return;
+
+    const errors$ = this._formValidationService.formErrorEvent$(this.form);
+    const conditions$ = this._formConditionsService.formConditionsEvent$(
+      this.form,
+      this.config
+    );
+    const valueChanges$ = this.form.valueChanges.pipe(
+      startWith(this.form.value),
+      debounceTime(0),
+      tap((x) => this._onChange(x))
+    );
+
+    merge(valueChanges$, conditions$, errors$)
+      .pipe(
+        tap(() => this._cd.detectChanges()),
+        takeUntil(merge(this._reset$, this._onDestroy$))
+      )
       .subscribe();
+  }
+
+  private _clearListeners(): void {
+    this._reset$.next();
+    this._formGeneratorService.reset$.next();
+    this._optionsDataService.cancelAllRequest();
   }
 }

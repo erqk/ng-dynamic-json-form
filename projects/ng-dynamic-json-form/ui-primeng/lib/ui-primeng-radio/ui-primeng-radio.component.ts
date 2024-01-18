@@ -1,14 +1,45 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import {
+  ControlValueService,
+  CustomControlComponent,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
+} from 'ng-dynamic-json-form';
+import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-primeng-radio',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RadioButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RadioButtonModule,
+    PropsBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [RadioButton],
+    },
+  ],
   templateUrl: './ui-primeng-radio.component.html',
   styles: [],
 })
-export class UiPrimengRadioComponent extends NgDynamicJsonFormCustomComponent {}
+export class UiPrimengRadioComponent extends CustomControlComponent {
+  private _controlValueService = inject(ControlValueService);
+  override control = new UntypedFormControl('');
+
+  override writeValue(obj: any): void {
+    const value = this._controlValueService.getOptionsValue('stringified', obj);
+    this.control.setValue(value);
+  }
+
+  override registerOnChange(fn: any): void {
+    this.control.valueChanges
+      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
+      .subscribe(fn);
+  }
+}

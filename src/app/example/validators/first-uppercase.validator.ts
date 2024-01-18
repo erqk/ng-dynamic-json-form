@@ -8,5 +8,5 @@ export function firstUppercaseValidator(
 
   return RegExp(/[A-Z]/).test(control.value[0])
     ? null
-    : { errors: 'Make sure your first letter is uppercase' };
+    : { uppercase: 'Make sure your first letter is uppercase' };
 }

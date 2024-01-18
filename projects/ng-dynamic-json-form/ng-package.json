@@ -9,6 +9,11 @@
       "input": "./src/lib/styles",
       "output": "./lib/styles",
       "glob": "**/*.scss"
+    },
+    {
+      "input": "./src/lib",
+      "output": "./lib",
+      "glob": "**/*.json"
     }
   ]
 }

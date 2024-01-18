@@ -1,52 +1,88 @@
 markdown {
-  h2 {
-    margin-top: 6.5rem;
-
-    &:first-of-type {
-      margin-top: unset;
-    }
+  > *:first-child {
+    margin-top: 0 !important;
   }
 
+  h1,
+  h2,
   h3 {
-    margin: 2.5rem 0 1rem;
+    color: var(--primary-600);
+    margin-top: 2rem;
+  }
+
+  h4,
+  h5,
+  h6 {
+    margin-top: 0.65rem;
+  }
+
+  h1,
+  *:not(h1) + h2 {
+    margin-top: 3.5rem;
+  }
+
+  h2 + h3,
+  h3 + h4,
+  h4 + h5,
+  h5 + h6 {
+    margin-top: 0;
   }
 
   a {
     position: relative;
     color: var(--primary-500);
+    text-align: center;
     z-index: 0;
 
     &:hover {
-      text-decoration: none;
-
-      &::after {
-        width: 100%;
-        transition: 0.5s;
-      }
+      text-decoration: underline;
     }
+  }
 
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      width: 0;
-      background-color: var(--primary-500);
+  hr {
+    margin: 2.5rem 0;
+  }
+
+  ol {
+    list-style: decimal;
+    margin-block-start: 0.5rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  ul {
+    margin: 0.5rem 0;
+
+    li {
+      --marker-size: 0.35em;
+
+      position: relative;
+      padding-inline-start: 1rem;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: calc(1em - var(--marker-size));
+        left: 0;
+        width: var(--marker-size);
+        height: var(--marker-size);
+        border-radius: 50%;
+        background-color: var(--primary-600);
+      }
     }
   }
 
   pre {
     border-radius: 0.5rem;
-    box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.25);
+    max-height: 100%;
   }
 
   code {
     &:not([class*="lang"]) {
       display: inline-block;
-      padding: 0.15rem 0.25rem;
+      padding: 0 0.25rem;
       margin: 0.1rem;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      border: solid 1px rgba(128, 128, 128, 0.2);
       background-color: rgba(128, 128, 128, 0.1);
       color: var(--primary-500);
       border-radius: 3px;
@@ -61,6 +97,7 @@ markdown {
     border-left: solid 8px var(--primary-500);
     border-radius: 0.2rem;
     background-color: var(--primary-100);
+    color: var(--primary-900);
 
     p {
       margin-block: 0.25rem;
@@ -74,10 +111,11 @@ markdown {
 
     th {
       padding: 0.5rem;
-      border-bottom: solid 1px gray;
-      color: rgba(128, 128, 128, 0.65);
-      font-size: 0.875rem;
+      border-block: solid 1px rgba(128, 128, 128, 0.5);
+      color: rgba(128, 128, 128, 1);
+      font-weight: normal;
       text-transform: uppercase;
+      text-align: start;
     }
 
     td {
@@ -86,7 +124,7 @@ markdown {
     }
 
     tr:nth-child(even) {
-      background-color: rgba(128, 128, 128, 0.035);
+      background-color: rgba(128, 128, 128, 0.065);
     }
   }
 
@@ -94,6 +132,7 @@ markdown {
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    margin: 2rem 0;
   }
 
   .multi-column {
@@ -103,13 +142,25 @@ markdown {
     grid-template-columns: repeat(var(--column-count), 1fr);
     gap: 1rem;
   }
-}
 
-.form-info {
-  markdown {
+  .code-wrapper {
+    position: relative;
+    z-index: 0;
+
     pre {
-      box-shadow: none;
-      border-radius: 0;
+      padding-right: 5rem;
+    }
+
+    .code-tag {
+      position: absolute;
+      top: 0.5rem;
+      right: 0;
+      color: rgb(128, 128, 128);
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.2rem;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+      z-index: 1;
     }
   }
 }

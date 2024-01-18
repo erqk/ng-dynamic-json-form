@@ -1,315 +1,151 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
+  FormGroup,
   FormsModule,
-  UntypedFormArray,
+  ReactiveFormsModule,
+  UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
-import { AngularSplitModule } from 'angular-split';
+import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
   FormControlConfig,
   NgDynamicJsonFormComponent,
+  UiComponents,
+  provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
-import { MarkdownModule } from 'ngx-markdown';
-import {
-  Subject,
-  combineLatest,
-  debounceTime,
-  fromEvent,
-  map,
-  of,
-  takeUntil,
-  tap,
-} from 'rxjs';
-import { PLAYGROUND_CONFIGS } from 'src/app/example/playground-configs/playground-configs.constant';
-import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
-import { CustomInputGroupComponent } from '../../example/components/custom-input-group/custom-input-group.component';
-import { CustomInputComponent } from '../../example/components/custom-input/custom-input.component';
-import { firstUppercaseValidator } from '../../example/validators/first-uppercase.validator';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
-import { ThemeService } from '../../features/theme/services/theme.service';
-import { ContentWrapperComponent } from '../../shared/content-wrapper/content-wrapper.component';
+import { Observable, combineLatest, debounceTime, map } from 'rxjs';
+import { LayoutService } from 'src/app/core/services/layout.service';
+import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
+import { CustomInputGroupComponent } from 'src/app/example/components/custom-input-group/custom-input-group.component';
+import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
+import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
+import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
+import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
+import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
+import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
+import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
+import { PlaygroundTemplateListComponent } from 'src/app/features/playground/components/playground-template-list/playground-template-list.component';
+import { PlaygroundEditorDataService } from 'src/app/features/playground/services/playground-editor-data.service';
+import { PlaygroundSettingsService } from 'src/app/features/playground/services/playground-settings.service';
+import { PlaygroundTemplateDataService } from 'src/app/features/playground/services/playground-template-data.service';
+import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
+import { Content } from 'vanilla-jsoneditor';
 
 @Component({
   selector: 'app-page-playground',
   standalone: true,
   imports: [
     CommonModule,
-    NgDynamicJsonFormComponent,
-    ContentWrapperComponent,
-    AngularSplitModule,
     FormsModule,
-    MarkdownModule,
+    ReactiveFormsModule,
+    UiContentWrapperComponent,
+    HeaderTabBarComponent,
+    PlaygroundEditorComponent,
+    PlaygroundTemplateListComponent,
+    PlaygroundFormInfoComponent,
+    NgDynamicJsonFormComponent,
+    AngularSplitModule,
+  ],
+  providers: [
+    provideNgDynamicJsonForm({
+      customValidators: {
+        firstUppercase: firstUppercaseValidator,
+      },
+      customComponents: {
+        'custom-input': CustomInputComponent,
+        'custom-input-group': CustomInputGroupComponent,
+      },
+      layoutComponents: {
+        loading: CustomLoadingComponent,
+        errorMessage: CustomErrorMessageComponent,
+      },
+    }),
   ],
   templateUrl: './page-playground.component.html',
   styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent {
-  headerHeight = 0;
-  windowHeight = 0;
+  private _layoutService = inject(LayoutService);
+  private _langService = inject(LanguageDataService);
+  private _templateDataService = inject(PlaygroundTemplateDataService);
+  private _docVersionService = inject(DocumentVersionService);
+  private _playgroundSettingsService = inject(PlaygroundSettingsService);
+  private _editorDataService = inject(PlaygroundEditorDataService);
 
-  jsonEditor: JSONEditor | null = null;
-  jsonData: FormControlConfig[] | string = [];
+  form = new FormGroup({});
+  formControl = new UntypedFormControl('');
 
-  formUI = 'ui-basic';
-  form?: UntypedFormGroup;
+  configs: FormControlConfig[] | string = [];
+  showEditor = false;
+  currentVersion = this._docVersionService.latestVersion;
+  mobileTabSelected = 0;
+  asSplitSizes = this._playgroundSettingsService.asSplitSizes;
 
-  editing = false;
-
-  customValidators = {
-    firstUppercase: firstUppercaseValidator,
+  customUiComponents: { [key: string]: UiComponents | undefined } = {
+    '--': undefined,
+    PrimeNg: UI_PRIMENG_COMPONENTS,
+    'Angular Material': UI_MATERIAL_COMPONENTS,
   };
-  customComponents = {
-    'custom-input': CustomInputComponent,
-    'custom-input-group': CustomInputGroupComponent,
-  };
-  customUIComponents: any = UI_PRIMENG_COMPONENTS;
+  currentUi =
+    this._playgroundSettingsService.formUi ||
+    Object.keys(this.customUiComponents)[0];
 
-  exampleList = PLAYGROUND_CONFIGS;
-  exampleSelected = 'all';
+  headerHeight$ = this._layoutService.headerHeight$;
+  windowSize$ = this._layoutService.windowSize$;
 
-  formInfoState = {
-    tab: 'value',
-    size: parseInt(window.localStorage.getItem('form-info-width') || '25'),
-    position: 'right',
-  };
+  mobileTabs$: Observable<string[]> = this._langService.i18nContent$.pipe(
+    map((x) => x['PLAYGROUND']['TABS']),
+    map((x) => Object.values(x))
+  );
 
-  language$ = this._languageDataService.language$;
-  i18nContent$ = this._languageDataService.i18nContent$;
-  onDestroy$ = new Subject();
+  editorData$ = this._editorDataService.configEditorData$;
 
-  constructor(
-    private _languageDataService: LanguageDataService,
-    private _themeService: ThemeService
-  ) {}
+  configs$ = combineLatest([
+    this._templateDataService.currentTemplateKey$,
+    this._langService.language$,
+  ]).pipe(
+    debounceTime(0),
+    map(([key]) => {
+      const examples = this._templateDataService.getExampleTemplate(key);
+      const userTemplates = this._templateDataService.getUserTemplate(key);
 
-  ngOnInit(): void {
-    this.formUI = window.localStorage.getItem('form-ui') ?? 'ui-basic';
-    this._initJsonEditor();
-    this._darkThemeEvent();
-    this._languageChangeEvent();
-    this._setUI();
-    this.generateForm();
-  }
+      return (
+        userTemplates || examples || this._templateDataService.fallbackExample
+      );
+    })
+  );
 
-  ngAfterViewInit(): void {
-    this._onWindowResize();
-    requestAnimationFrame(() => {
-      this.windowHeight = window.innerHeight;
-      this.headerHeight =
-        document.querySelector('app-header')?.clientHeight || 0;
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
+  onTemplateEdit(value: boolean): void {
+    this.showEditor = value;
   }
 
   onFormGet(e: UntypedFormGroup): void {
     this.form = e;
   }
 
-  generateForm(): void {
-    const content = this._savedJson;
-    if (!content) return;
-
-    this.jsonData = '';
-    requestAnimationFrame(() => {
-      this.jsonData = (content as any).json;
-      this.editing = false;
-    });
+  onFormUiChange(e: string): void {
+    this.currentUi = this._playgroundSettingsService.formUi = e;
   }
 
-  toggleFormEdit(): void {
-    this.editing = !this.editing;
+  onAsSplitDragEnd(e: IOutputData): void {
+    this.asSplitSizes = this._playgroundSettingsService.asSplitSizes =
+      e.sizes.map((x) => (typeof x === 'string' ? 50 : x));
   }
 
-  onFormUiChange(): void {
-    this._setUI();
-    this.generateForm();
+  resetSplitSizes(): void {
+    this.asSplitSizes = this._playgroundSettingsService.asSplitSizes =
+      this._playgroundSettingsService.defaultAsSplitSizes;
   }
 
-  onExampleChange(): void {
-    this.loadJsonData(false);
-    this.generateForm();
+  switchMobileTab(i: number): void {
+    this.mobileTabSelected = i;
   }
 
-  loadJsonData(reset = true): void {
-    let content: any = null;
-
-    if (reset) {
-      content = this._fallbackJsonData;
-      this._saveEditorContent(this._fallbackJsonData);
-    } else {
-      content = this._savedJson;
-    }
-
-    this.jsonEditor?.set(content);
-  }
-
-  setFormInfoState(tab: 'value' | 'errors'): void {
-    this.formInfoState.tab = tab;
-  }
-
-  onAsSplitDragEnd(e: { gutterNum: number; sizes: number[] }): void {
-    window.localStorage.setItem('form-info-width', e.sizes[1].toString());
-  }
-
-  private get _fallbackJsonData() {
-    const currentLanguage = this._languageDataService.language$.value;
-    const formConfig = (this.exampleList as any)[this.exampleSelected][
-      currentLanguage
-    ]['config'];
-
-    return { json: formConfig };
-  }
-
-  private get _savedJson(): Content {
-    const jsonData =
-      window.sessionStorage.getItem(
-        `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`
-      ) || this._fallbackJsonData;
-
-    let content = null;
-    try {
-      const data =
-        typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
-      content = Array.isArray(data) ? { json: data } : data;
-    } catch (e) {}
-
-    return content;
-  }
-
-  private _setUI(): void {
-    switch (this.formUI) {
-      case 'ui-primeng':
-        this.customUIComponents = UI_PRIMENG_COMPONENTS;
-        break;
-
-      case 'ui-material':
-        this.customUIComponents = UI_MATERIAL_COMPONENTS;
-        break;
-
-      default:
-        this.customUIComponents = null;
-        break;
-    }
-
-    window.localStorage.setItem('form-ui', this.formUI);
-  }
-
-  private _saveEditorContent(input: any): void {
-    window.sessionStorage.setItem(
-      `jsonEditorContent-${this.exampleSelected}-${this.language$.value}`,
-      JSON.stringify(input)
-    );
-  }
-
-  private _initJsonEditor(): void {
-    const el = document.querySelector('.json-editor') as HTMLElement;
-    const content = this._savedJson;
-    const playgroundThis = this;
-
-    this.jsonEditor = new JSONEditor({
-      target: el,
-      props: {
-        mode: Mode.text,
-        content,
-        onChange(content, previousContent, status) {
-          const contentParsed = playgroundThis._getContent(content);
-          playgroundThis._saveEditorContent(contentParsed);
-        },
-      },
-    });
-
-    this._saveEditorContent(content);
-  }
-
-  /**To get the consistent result of jsoneditor */
-  private _getContent(input: Content | undefined): Content {
-    let jsonContent = null;
-
-    if (!input) {
-      return { json: jsonContent };
-    }
-
-    if ('json' in input && input.json) {
-      jsonContent = input.json;
-    }
-
-    if ('text' in input && input.text) {
-      try {
-        jsonContent = JSON.parse(input.text);
-      } catch (e) {}
-    }
-
-    return { json: jsonContent };
-  }
-
-  private _languageChangeEvent(): void {
-    this._languageDataService.language$
-      .pipe(
-        tap(() => {
-          this.loadJsonData();
-          this.generateForm();
-        }),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
-  }
-
-  private _darkThemeEvent(): void {
-    const setDarkTheme = (dark = false) => {
-      const el = document.querySelector('.json-editor') as HTMLElement;
-
-      if (dark) el.classList.add('jse-theme-dark');
-      else el.classList.remove('jse-theme-dark');
-      this.jsonEditor?.refresh();
-    };
-
-    const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-    const prefersDark$ = of(mediaQueryList).pipe(map((x) => x.matches));
-
-    combineLatest([prefersDark$, this._themeService.theme$])
-      .pipe(
-        debounceTime(0),
-        tap(([prefersDark, currentTheme]) => {
-          const useDark =
-            currentTheme === 'dark' || (currentTheme === 'auto' && prefersDark);
-          setDarkTheme(useDark);
-        }),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
-  }
-
-  private _onWindowResize(): void {
-    const breakpoints = {
-      large: 1400,
-      medium: 768,
-    };
-
-    const action = () =>
-      requestAnimationFrame(() => {
-        if (window.innerWidth <= breakpoints.medium) {
-          this.formInfoState.position = 'bottom';
-        } else {
-          this.formInfoState.position = 'right';
-        }
-
-        this.windowHeight = window.innerHeight;
-      });
-
-    action();
-    fromEvent(window, 'resize')
-      .pipe(
-        debounceTime(200),
-        tap(() => action()),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
+  onConfigEditing(e: Content): void {
+    this._editorDataService.saveModifiedData(e);
   }
 }

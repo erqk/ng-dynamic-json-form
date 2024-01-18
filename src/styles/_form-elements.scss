@@ -1,35 +1,22 @@
 .ng-dynamic-json-form {
   --color-primary: var(--primary-500);
-  --color-primary-lighter: var(--primary-200);
+  --color-border: rgba(128, 128, 128, 0.5);
+  --input-border-width: 0.1em;
+  --form-array-group-divider-color: var(--border-color-25);
 }
 
 input,
 textarea,
 .ng-dynamic-json-form.ui-basic input,
 .ng-dynamic-json-form.ui-basic textarea {
-  border: solid 1px rgba(128, 128, 128, 0.35);
   background-color: rgb(var(--bg-color-rgb));
   color: rgb(var(--text-color-rgb));
-
-  &:hover {
-    border-color: var(--primary-500);
-  }
-
-  &:focus {
-    border-color: var(--primary-600);
-  }
 }
 
 select,
 .ng-dynamic-json-form.ui-basic select {
-  border: solid 1px rgba(128, 128, 128, 0.35);
   background-color: rgb(var(--bg-color-rgb));
   color: rgb(var(--text-color-rgb));
-
-  &:hover,
-  &:focus {
-    border: solid 1px var(--primary-600);
-  }
 }
 
 input,
@@ -39,10 +26,11 @@ select {
   border-radius: 0.5rem;
   font-size: inherit;
   outline: none;
+}
 
-  &:focus {
-    box-shadow: 0 0 0 3px var(--primary-200);
-  }
+select {
+  @apply px-4 py-2 border border-[var(--border-color-25)];
+  @apply hover:border-[var(--primary-500)];
 }
 
 mat-form-field {

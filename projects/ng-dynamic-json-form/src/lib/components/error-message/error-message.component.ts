@@ -1,42 +1,49 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Input,
+  inject,
+} from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable, debounceTime, startWith, switchMap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { ValidatorConfig } from '../../models';
-import { ErrorMessageService } from '../../services/error-message.service';
+import { FormValidationService } from '../../services/form-validation.service';
 
 @Component({
   selector: 'error-message',
-  template: ` <ng-container
-    *ngIf="control && control.errors && (control?.touched || control?.value)"
-  >
-    <div class="errors-container">
-      <ng-container *ngFor="let error of errors$ | async">
-        <div class="error">{{ error }}</div>
-      </ng-container>
-    </div>
+  template: ` <ng-container *ngFor="let error of errorMessages">
+    <div>{{ error }}</div>
   </ng-container>`,
   standalone: true,
   imports: [CommonModule],
 })
 export class ErrorMessageComponent {
-  private _errorMessageService = inject(ErrorMessageService);
+  private readonly _cd = inject(ChangeDetectorRef);
+  private readonly _internal_formValidationService = inject(
+    FormValidationService
+  );
+  private readonly _internal_reset$ = new Subject<void>();
 
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
 
-  errors$?: Observable<string[]>;
+  @HostBinding('class.error-message') hostClass = true;
+
+  errorMessages: string[] = [];
 
   ngOnInit(): void {
-    this.errors$ = this.control?.valueChanges.pipe(
-      startWith(this.control.value),
-      debounceTime(0),
-      switchMap(() =>
-        this._errorMessageService.getErrors$(
-          this.control!,
-          this.validators || []
-        )
+    this._internal_reset$.next();
+    this._internal_formValidationService
+      .getErrorMessages$(this.control, this.validators)
+      .pipe(
+        tap((x) => {
+          this.errorMessages = x;
+          this._cd.detectChanges();
+        }),
+        takeUntil(this._internal_reset$)
       )
-    );
+      .subscribe();
   }
 }

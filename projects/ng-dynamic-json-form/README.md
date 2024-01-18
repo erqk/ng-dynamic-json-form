@@ -2,21 +2,18 @@
 
 # NgDynamicJsonForm
 
-Generate Angular reactive form with just using JSON data. Your form can be very simple to very complex, with automatic status binding, and it supports other UI libraries!
+Generate Angular reactive form with JSON data. Support conditional rendering and validators toggle, and third party UI libraries.
 
 ## Features
 
-- Create `FormControl`, `FormGroup` and `FormArray`, with as many nested level as you wish.
-- Support Angular built in validators and your own build custom validators.
-- Toggle specific `AbstractControl` status (hidden or disabled) and validators depends on other `AbstractControl`'s value.
-- Flexible input field layout using the CSS grid.
-- Support custom component.
-- Support other UI libraries.
+- Conditional visibility and validators based on the value of other control.
+- Create FormControl, FormGroup and FormArray, with unlimited nesting level.
+- Supports Angular built in validators and custom validators.
+- Support custom components.
+- Support third party UI libraries.
+- Flexible form layout.
 
 ## Documentation and demo
 
-[Getting started](https://erqk.github.io/ng-dynamic-json-form/getting-started)
-
-[API](https://erqk.github.io/ng-dynamic-json-form/api)
-
+[Documentation](https://erqk.github.io/ng-dynamic-json-form/docs)
 [Playground](https://erqk.github.io/ng-dynamic-json-form/playground)

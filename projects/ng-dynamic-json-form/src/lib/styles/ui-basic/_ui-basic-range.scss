@@ -13,9 +13,9 @@
   input[type="range"] {
     appearance: none;
     width: 100%;
-    height: 0.25rem;
+    height: 0.25em;
     padding: 0;
-    margin: 0.5rem 0;
+    margin: 0.5em 0;
     background: rgba(128, 128, 128, 0.2);
     background-image: linear-gradient(
       var(--color-primary),
@@ -23,7 +23,7 @@
     );
     background-repeat: no-repeat;
     border: none;
-    border-radius: 1rem;
+    border-radius: 1em;
     outline: none;
 
     &:focus {
@@ -33,11 +33,11 @@
     &:active,
     &:focus {
       &::-webkit-slider-thumb {
-        box-shadow: 0 0 0 0.5rem rgba(128, 128, 128, 0.25);
+        box-shadow: 0 0 0 0.5em rgba(128, 128, 128, 0.25);
       }
 
       &::-moz-range-thumb {
-        box-shadow: 0 0 0 0.5rem rgba(128, 128, 128, 0.25);
+        box-shadow: 0 0 0 0.5em rgba(128, 128, 128, 0.25);
       }
     }
 
@@ -53,7 +53,7 @@
 
 @mixin range-input {
   .range-input {
-    --slider-thumb-size: 1.35rem;
+    --slider-thumb-size: 1.35em;
 
     position: relative;
     display: flex;
@@ -77,7 +77,7 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      height: 0.25rem;
+      height: 0.25em;
       padding: 0 calc(var(--slider-thumb-size) * 0.5);
       pointer-events: none;
       z-index: -1;
@@ -132,8 +132,8 @@
       word-break: keep-all;
       background-color: var(--color-primary);
       color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.2rem;
+      padding: 0.25em 0.5em;
+      border-radius: 0.2em;
       opacity: 0;
       transition: opacity 0.2s;
       z-index: 1;

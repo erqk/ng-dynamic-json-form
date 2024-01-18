@@ -1,0 +1,105 @@
+:host {
+  --color-active: var(--primary-500);
+
+  display: flex;
+  flex-direction: column;
+}
+
+:host-context(.dark) {
+  :host {
+    --color-active: rgb(var(--text-color-rgb));
+  }
+}
+
+button {
+  position: relative;
+  padding: 0.35rem 1.5rem;
+  text-decoration: none;
+  color: rgba(128, 128, 128, 1);
+  background-color: unset;
+  font-size: inherit;
+  font-weight: normal;
+  text-align: left;
+  z-index: 0;
+  cursor: pointer;
+  transition: 0s;
+
+  @mixin left-border {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background-color: rgba(128, 128, 128, 0.25);
+    }
+  }
+
+  @include left-border;
+
+  &:hover,
+  &.active {
+    background-color: unset;
+    color: var(--color-active);
+    font-weight: 500;
+
+    &::before,
+    + .sub-titles::before {
+      background-color: var(--primary-500);
+    }
+  }
+
+  + .sub-titles {
+    position: relative;
+    z-index: 0;
+
+    @include left-border;
+  }
+}
+
+.sub-titles {
+  display: grid;
+  grid-template-rows: 0fr;
+  font-size: 0.95rem;
+  transition: 0.2s;
+
+  &.active {
+    grid-template-rows: 1fr;
+  }
+
+  button {
+    margin-left: 1rem;
+    padding: 0.25rem 1.5rem;
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --color-active: rgb(var(--text-color-rgb));
+  }
+}
+
+@media screen and (max-width: 992px) {
+  button {
+    &::before {
+      content: none;
+    }
+
+    + .sub-titles {
+      &::before {
+        content: none;
+      }
+    }
+  }
+
+  .sub-titles {
+    button {
+      padding: 0.8rem 2rem;
+    }
+  }
+}

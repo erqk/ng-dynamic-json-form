@@ -1,0 +1,24 @@
+a {
+  &:hover,
+  &.active {
+    opacity: 1;
+    font-weight: bold;
+  }
+}
+
+.indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  height: 4px;
+  border-radius: 1rem;
+  background-color: var(--primary-500);
+  transition: 0.5s cubic-bezier(0.54, -0.49, 0, 1.32);
+}
+
+@media screen and (max-width: 992px) {
+  :host {
+    overflow: hidden;
+  }
+}

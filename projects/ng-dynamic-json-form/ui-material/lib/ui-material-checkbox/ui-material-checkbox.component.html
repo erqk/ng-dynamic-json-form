@@ -1,33 +1,37 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <div
     class="group-buttons"
+    [style]="data.options?.containerStyles"
+    [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
-      'flex-direction': data.optionsLayout
+      'flex-direction': data.options?.layout
     }"
   >
     <!-- binary checkbox -->
-    <ng-container *ngIf="data.options && data.options.length === 1">
+    <ng-container *ngIf="data.options && data.options.data?.length === 1">
       <mat-checkbox
-        [labelPosition]="data.extra?.checkbox?.labelPosition ?? 'after'"
+        [labelPosition]="data.options.labelPosition ?? 'after'"
         [formControl]="control"
-        >{{ data.options[0].label }}</mat-checkbox
+        [propsBinding]="[data.extra]"
+        >{{ data.options.data?.[0]?.label }}</mat-checkbox
       >
     </ng-container>
 
     <!-- muli-select checkbox -->
-    <ng-container *ngIf="data.options && data.options.length > 1">
-      <ng-container *ngFor="let item of data.options">
+    <ng-container
+      *ngIf="data.options && data.options.data && data.options.data.length > 1"
+    >
+      <ng-container *ngFor="let item of data.options.data">
         <mat-checkbox
-          [labelPosition]="data.extra?.checkbox?.labelPosition ?? 'after'"
-          [value]="item.value ?? false"
-          [checked]="control.value.includes(item.value)"
+          [labelPosition]="data.options.labelPosition ?? 'after'"
+          [value]="item.value | json"
+          [checked]="control.value.includes(item.value | json)"
           [disabled]="control.disabled"
+          [propsBinding]="[data.extra]"
           (change)="onCheckboxChange($event)"
           >{{ item.label }}</mat-checkbox
         >
       </ng-container>
     </ng-container>
   </div>
-
-  <mat-error>{{ errors$ | async }}</mat-error>
 </ng-container>

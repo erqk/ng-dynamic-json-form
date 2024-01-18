@@ -1,0 +1,367 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NgDynamicJSONForm Config",
+  "description": "Form control config for the NgDynamicJSONForm",
+  "type": "object",
+  "properties": {
+    "config": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "formControlName": {
+            "type": "string"
+          },
+          "conditions": {
+            "$ref": "#/definitions/conditionConfig"
+          },
+          "children": {
+            "$ref": "#/properties/config"
+          },
+          "customComponent": {
+            "type": "string"
+          },
+          "cssGrid": {
+            "type": "object",
+            "properties": {
+              "gridRow": {
+                "type": "string",
+                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row"
+              },
+              "gridColumn": {
+                "type": "string",
+                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column"
+              },
+              "gridTemplateColumns": {
+                "type": "string",
+                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns"
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "extra": {
+            "$ref": "#/definitions/extraConfig"
+          },
+          "formArray": { "$ref": "#/definitions/formArrayConfig" },
+          "hideValidationMessage": {
+            "type": "boolean",
+            "description": "Set to true to take control of validation message"
+          },
+          "label": {
+            "type": "string"
+          },
+          "layout": {
+            "$ref": "#/definitions/layoutConfig"
+          },
+          "ngxMaskConfig": {
+            "description": "The interface from ngx-mask library (partial).\n Source: https://github.com/JsDaddy/ngx-mask/blob/develop/projects/ngx-mask-lib/src/lib/ngx-mask.config.ts"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "containerClass": {
+                "type": "string"
+              },
+              "containerStyles": {
+                "type": "string"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/optionsItemConfig"
+                }
+              },
+              "sourceList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/optionsSourceConfig"
+                }
+              },
+              "sourceAppendPosition": {
+                "$ref": "#/definitions/labelPositionConfig"
+              },
+              "trigger": {
+                "$ref": "#/definitions/optionsTriggerConfig"
+              },
+              "layout": {
+                "type": "string",
+                "enum": ["row", "column"]
+              },
+              "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
+            }
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "value": {},
+          "validators": { "$ref": "#/definitions/validatorConfig" }
+        },
+        "required": ["formControlName"]
+      }
+    }
+  },
+  "definitions": {
+    "formArrayConfig": {
+      "type": "object",
+      "description": "Provide this to make this control as a FormArray",
+      "properties": {
+        "templateLabel": {
+          "type": "string"
+        },
+        "template": { "$ref": "#/properties/config" },
+        "length": {
+          "type": "number"
+        },
+        "editable": {
+          "type": "boolean"
+        },
+        "minLength": {
+          "type": "number"
+        },
+        "maxLength": {
+          "type": "number"
+        }
+      },
+      "required": ["template"]
+    },
+    "conditionIfConfig": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": [
+        { "type": "string" },
+        { "enum": ["===", "!==", ">=", ">", "<=", "<"] },
+        {}
+      ]
+    },
+    "conditionGroupConfig": {
+      "type": "object",
+      "properties": {
+        "&&": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        },
+        "||": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditionConfig": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/conditionGroupConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "labelPositionConfig": {
+      "enum": ["after", "before"],
+      "default": "after"
+    },
+    "extraConfig": {
+      "type": "object",
+      "properties": {
+        "checkbox": {
+          "type": "object",
+          "properties": {
+            "labelPosition": {
+              "$ref": "#/definitions/labelPositionConfig"
+            }
+          }
+        },
+        "date": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "string"
+            },
+            "max": {
+              "type": "string"
+            },
+            "selectTime": {
+              "type": "boolean"
+            },
+            "displayFormat": {
+              "type": "string"
+            },
+            "outputFormat": {
+              "type": "string"
+            }
+          }
+        },
+        "radio": {
+          "type": "object",
+          "properties": {
+            "labelPosition": {
+              "$ref": "#/definitions/labelPositionConfig"
+            }
+          }
+        },
+        "range": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "step": {
+              "type": "number"
+            },
+            "showInput": {
+              "type": "boolean"
+            },
+            "showCurrentValue": {
+              "type": "boolean"
+            },
+            "showTickMarks": {
+              "type": "boolean"
+            }
+          }
+        },
+        "switch": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "labelPosition": {
+              "$ref": "#/definitions/labelPositionConfig"
+            }
+          }
+        },
+        "textarea": {
+          "type": "object",
+          "properties": {
+            "rows": {
+              "type": "number"
+            },
+            "cols": {
+              "type": "number"
+            },
+            "autoResize": {
+              "type": "boolean",
+              "description": "Auto change the textarea height to fit content"
+            }
+          }
+        }
+      }
+    },
+    "optionsSourceConfig": {
+      "type": "object",
+      "properties": {
+        "src": {
+          "type": "string"
+        },
+        "method": {
+          "enum": ["GET", "POST"]
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "labelKey": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "valueKeys": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["labelKey"]
+        }
+      },
+      "required": ["src", "method", "data"]
+    },
+    "optionsTriggerConfig": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/optionsSourceConfig"
+        }
+      ],
+      "properties": {
+        "action": {
+          "enum": ["FILTER", "REQUEST"]
+        },
+        "triggerValuePath": {
+          "type": "string"
+        },
+        "filterMatchPath": {
+          "type": "string"
+        },
+        "debounceTime": {
+          "type": "number"
+        }
+      },
+      "required": ["action", "triggerValuePath"]
+    },
+    "optionsItemConfig": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": ["label"]
+    },
+    "layoutConfig": {
+      "type": "object",
+      "properties": {
+        "hostClass": {
+          "type": "string"
+        },
+        "hostStyles": {
+          "type": "string"
+        },
+        "labelClass": {
+          "type": "string"
+        },
+        "labelStyles": {
+          "type": "string"
+        },
+        "childClass": {
+          "type": "string"
+        },
+        "childStyles": {
+          "type": "string"
+        }
+      }
+    },
+    "validatorConfig": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {},
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  }
+}
