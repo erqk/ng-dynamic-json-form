@@ -1,6 +1,6 @@
 {
   "name": "ng-dynamic-json-form",
-  "version": "3.4.0",
+  "version": "4.0.0",
   "author": {
     "name": "erqk",
     "url": "https://github.com/erqk"
@@ -19,12 +19,13 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0",
-    "ngx-mask": "^16.0.3"
+    "@angular/core": ">=14",
+    "@angular/common": ">=14",
+    "ngx-mask": ">16"
   },
-  "dependencies": {
-    "tslib": "^2.3.0"
+  "devDependencies": {
+    "tslib": "^2.3.0",
+    "ngx-mask": "^16.0.3"
   },
   "exports": {
     "./styles": {
