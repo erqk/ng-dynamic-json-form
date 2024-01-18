@@ -7,17 +7,17 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { FormControlConfig } from '../models/form-control-config.model';
-import { FormStatusService } from './form-status.service';
-import { FormValidatorService } from './form-validator.service';
+import { FormControlConfig } from '../models/form-control-config.interface';
+import { FormConditionsService } from './form-conditions.service';
+import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormGeneratorService {
-  private _reset$ = new Subject();
+  readonly reset$ = new Subject<void>();
 
   constructor(
-    private _formStatusService: FormStatusService,
-    private _formValidatorService: FormValidatorService
+    private _formConditionsService: FormConditionsService,
+    private _formValidationService: FormValidationService
   ) {}
 
   generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
@@ -30,7 +30,7 @@ export class FormGeneratorService {
         !!item.formArray && !!item.formArray.template.length && !item.children;
 
       let control: AbstractControl | null = null;
-      const validators = this._formValidatorService.getValidators(
+      const validators = this._formValidationService.getValidators(
         item.validators ?? []
       );
 
@@ -77,16 +77,19 @@ export class FormGeneratorService {
       validators,
     });
 
-    if (!count) formArray;
+    if (!count) {
+      return formArray;
+    }
 
-    this._reset$.next(null);
     for (let i = 0; i < count; i++) {
       const formGroup = this.generateFormGroup(data);
       formArray.push(formGroup);
 
-      this._formStatusService
-        .formControlConditonsEvent$(formGroup, data)
-        .pipe(takeUntil(this._reset$))
+      // FormGroup inside FormArray will be harder to track the control because we have to take care of index.
+      // So we just create a new listener for each FormGroup.
+      this._formConditionsService
+        .formConditionsEvent$(formGroup, data)
+        .pipe(takeUntil(this.reset$))
         .subscribe();
     }
 

@@ -1,0 +1,13 @@
+<button
+  type="button"
+  [ngClass]="[
+    'flex items-center justify-center',
+    'w-16 lg:w-10 h-10',
+    'rounded-lg lg:rounded-full',
+    'hover:bg-[var(--primary-500)] hover:text-white',
+    'border border-[var(--border-color-25)] lg:border-0'
+  ]"
+  (click)="switchTheme()"
+>
+  <i [class]="currentTheme.class"></i>
+</button>

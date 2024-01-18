@@ -1,43 +1,40 @@
-import { CommonModule, formatDate } from '@angular/common';
-import { Component, LOCALE_ID, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgDynamicJsonFormCustomComponent } from 'ng-dynamic-json-form';
-import { CalendarModule } from 'primeng/calendar';
-import { map } from 'rxjs';
+import {
+  CustomControlComponent,
+  PROPS_BINDING_INJECTORS,
+  PropsBindingDirective,
+} from 'ng-dynamic-json-form';
+import { Calendar, CalendarModule } from 'primeng/calendar';
 
 @Component({
   selector: 'ui-primeng-date',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CalendarModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CalendarModule,
+    FormsModule,
+    PropsBindingDirective,
+  ],
+  providers: [
+    {
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [Calendar],
+    },
+  ],
   templateUrl: './ui-primeng-date.component.html',
   styles: [],
 })
-export class UiPrimengDateComponent extends NgDynamicJsonFormCustomComponent {
-  private _locale = inject(LOCALE_ID);
+export class UiPrimengDateComponent extends CustomControlComponent {
+  override control = new FormControl(new Date());
 
-  override viewControl = new FormControl(new Date());
   minDate?: Date;
   maxDate?: Date;
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     this._setMinMaxDate();
-  }
-
-  override readControlValue(obj: any): void {
-    if (!obj) return;
-    this.viewControl.setValue(new Date(obj));
-  }
-
-  override registerControlChange(fn: any): void {
-    this.viewControl.valueChanges
-      .pipe(
-        map((x) => {
-          const outputFormat = this.data?.extra?.date?.outputFormat;
-          return outputFormat ? formatDate(x!, outputFormat, this._locale) : x;
-        })
-      )
-      .subscribe(fn);
   }
 
   private _setMinMaxDate(): void {

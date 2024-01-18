@@ -1,18 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   Observable,
   catchError,
-  delay,
-  from,
+  finalize,
   map,
-  merge,
-  mergeMap,
   of,
-  switchMap,
   tap,
-  toArray,
 } from 'rxjs';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
@@ -21,48 +17,59 @@ import { DocumentVersionService } from './document-version.service';
   providedIn: 'root',
 })
 export class DocumentLoaderService {
+  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
+  private _router = inject(Router);
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
+  private _docCache: { path: string; data: string }[] = [];
 
-  documentLoading$ = new BehaviorSubject<boolean>(false);
+  docLoading$ = new BehaviorSubject<boolean>(false);
 
-  getDocumentContent$(
-    parentDirectory: string,
-    hasTableOfContent = false
-  ): Observable<string> {
-    const content$ = (tableOfContent: string[]) =>
-      from(tableOfContent).pipe(
-        mergeMap((x, i) => {
-          const basePath = `assets/docs/v${
-            this._documentVersionService.currentVersion
-          }${hasTableOfContent ? '/' + parentDirectory : ''}`;
-          const filePath = `${basePath}/${x}/${x}_${this._languageDataService.language$.value}.md`;
+  loadDoc$(path: string): Observable<string> {
+    const cacheFound = this._docCache.find(
+      (x) => x.path === path && x.data
+    )?.data;
 
-          return this._http
-            .get(filePath, { responseType: 'text' })
-            .pipe(map((x) => ({ index: i, content: x })));
-        }),
-        toArray(),
-        map((x) =>
-          x
-            .sort((a, b) => a.index - b.index)
-            .map((x) => x.content)
-            .join('')
-        ),
-        catchError(() => {
-          return of('');
+    if (cacheFound) {
+      return of(cacheFound);
+    }
+
+    const lang = this._languageDataService.language$.value;
+    const pathSegments = path.split('/');
+    const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
+    const timestamp = new Date().getTime();
+    const _path = path.endsWith('.md') ? path : `${path}/${filename}`;
+
+    this.docLoading$.next(true);
+    return this._http
+      .get(`assets/docs/${_path}?q=${timestamp}`, {
+        responseType: 'text',
+      })
+      .pipe(
+        tap((x) => this._docCache.push({ path, data: x })),
+        finalize(() => this.docLoading$.next(false)),
+        catchError((err) => {
+          throw err;
         })
       );
+  }
 
-    return this._settings$.pipe(
-      switchMap(() =>
-        hasTableOfContent
-          ? this._getTableOfContent$(parentDirectory)
-          : of([parentDirectory])
-      ),
-      switchMap((x) => (x.length ? content$(x) : of(''))),
-      tap(() => this.documentLoading$.next(false))
+  clearCache(): void {
+    this._docCache = [];
+  }
+
+  firstContentPath$(useDefaultLang = false): Observable<string> {
+    const lang = this._languageDataService.language$.value;
+    const version = this._documentVersionService.latestVersion;
+    const indexPath = `assets/docs/${version}/index_${
+      useDefaultLang ? 'en' : lang
+    }.md`;
+
+    return this._http.get(indexPath, { responseType: 'text' }).pipe(
+      map((x) => x.match(/(\.+\/){1,}.+\.md/)?.[0]),
+      map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
+      catchError(() => this.firstContentPath$(true))
     );
   }
 
@@ -74,34 +81,95 @@ export class DocumentLoaderService {
     for (const table of tables) {
       const tableWrapper = document.createElement('div');
       const tableCloned = table.cloneNode(true);
+
       tableWrapper.classList.add('table-wrapper');
       tableWrapper.appendChild(tableCloned);
-      table.insertAdjacentElement('beforebegin', tableWrapper);
+      this._renderer2.appendChild(tableWrapper, tableCloned);
+      this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
       table.remove();
     }
   }
 
-  private _getTableOfContent$(parentDirectory: string): Observable<string[]> {
-    const basePath = `assets/docs/v${this._documentVersionService.currentVersion}/${parentDirectory}`;
-    const filePath = `${basePath}/table-of-content.json`;
+  markdownLinkRenderFn(
+    routePrefix: string,
+    replaceHref?: { searchValue: string | RegExp; replaceValue: string }
+  ) {
+    return (href: string | null, title: string | null, text: string) => {
+      const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
+      const useRouter = !!prefix && href?.startsWith(prefix);
+      const routeClean = this._router.url.split('?')[0].split('#')[0];
 
-    return this._http.get(filePath, { responseType: 'text' }).pipe(
-      map((x) => JSON.parse(x)),
-      catchError(() => {
-        return of([]);
-      })
-    );
+      if (href?.startsWith('#')) {
+        return `<a title="${title || text}" [routerLink]
+          href="${routeClean}${href}">${text}</a>`;
+      }
+
+      if (!useRouter) {
+        return `<a target="_blank" rel="noreferrer noopener"
+          title="${title || text}" href="${href}">${text}</a>`;
+      }
+
+      const _href = href
+        ?.substring(prefix.length)
+        .replace(
+          replaceHref?.searchValue || '',
+          replaceHref?.replaceValue || ''
+        );
+
+      const newHref = routePrefix ? `/${routePrefix}/${_href}` : _href;
+
+      return `<a title="${title || text}" [routerLink]
+        href="${newHref}">${text}</a>`;
+    };
   }
 
-  private get _settings$(): Observable<any> {
-    return merge(
-      this._languageDataService.language$,
-      this._documentVersionService.currentVersion$
-    ).pipe(
-      // https://github.com/angular/angular/issues/23522#issuecomment-385015819
-      // add delay(0) before set the `documentLoading$` value to avoid NG0100
-      delay(0),
-      tap(() => this.documentLoading$.next(true))
-    );
+  updateUrl(): void {
+    if (!this._router.url.includes('.md')) return;
+
+    const currentRoute = this._router.url;
+    const { versionFromUrl, currentVersion } = this._documentVersionService;
+    const { language$, languageFromUrl } = this._languageDataService;
+    const newRoute = currentRoute
+      .replace(versionFromUrl ?? currentVersion, currentVersion)
+      .replace(`_${languageFromUrl}.md` ?? '', `_${language$.value}.md`);
+
+    this._router.navigateByUrl(newRoute);
+  }
+
+  /**Add tag to indicate the type of file of the current */
+  setCodeViewerTag(): void {
+    const viewers = document.querySelectorAll('pre[class^="language-"]');
+
+    const createTagEl = (parentEl: HTMLElement, text: string) => {
+      const el = document.createElement('span');
+      el.classList.add('code-tag');
+      this._renderer2.setProperty(el, 'innerText', text);
+      this._renderer2.appendChild(parentEl, el);
+    };
+
+    for (const item of Array.from(viewers)) {
+      const el = item as HTMLElement;
+      const type = el.classList.toString().replace('language-', '');
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('code-wrapper');
+      this._renderer2.appendChild(wrapper, el.cloneNode(true));
+      this._renderer2.insertBefore(el.parentElement, wrapper, el);
+      el.remove();
+
+      switch (type) {
+        case 'html':
+          createTagEl(wrapper, 'HTML');
+          break;
+
+        case 'javascript':
+          createTagEl(wrapper, 'TS');
+          break;
+
+        case 'json':
+          createTagEl(wrapper, 'JSON');
+          break;
+      }
+    }
   }
 }

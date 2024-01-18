@@ -1,0 +1,86 @@
+<ng-container *ngIf="control">
+  <div class="flex flex-col h-full">
+    <div
+      [ngClass]="[
+        'p-4 pb-2 h-full whitespace-pre',
+        'overflow-hidden beauty-scrollbar affect-child'
+      ]"
+    >
+      <markdown
+        class="block h-full overflow-hidden"
+        [ngClass]="{
+          hidden: selectedTab !== 0
+        }"
+        [data]="control.value | json | language : 'javascript'"
+      ></markdown>
+
+      <markdown
+        class="block h-full overflow-hidden"
+        [ngClass]="{
+          hidden: selectedTab !== 1
+        }"
+        [data]="control.errors | json | language : 'javascript'"
+      ></markdown>
+
+      <div
+        class="flex flex-col gap-2 h-full"
+        [ngClass]="{
+          hidden: selectedTab !== 2
+        }"
+      >
+        <app-playground-editor
+          class="block flex-1 overflow-hidden"
+          [data]="{ json: control.value }"
+          [mainMenuBar]="false"
+          [navigationBar]="false"
+          [statusBar]="false"
+          (onEditing)="onEditing($event)"
+        ></app-playground-editor>
+
+        <div class="flex flex-wrap gap-2">
+          <ng-container *ngFor="let item of editToolbar">
+            <button
+              type="button"
+              class="p-1 border border-[var(--border-color-50)] rounded-md text-sm"
+              (click)="item.action()"
+            >
+              {{ item.label }}
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div [ngClass]="['grid grid-cols-3 gap-1 mt-auto m-4']">
+      <ng-container *ngFor="let item of tabs; index as i">
+        <button
+          type="button"
+          [ngClass]="[
+            'flex items-center justify-center gap-1',
+            'p-2 rounded-md',
+            'hover:bg-[color-mix(in_srgb,var(--primary-50)90%,var(--primary-700))]',
+            'text-sm lg:text-base',
+            selectedTab === i
+              ? 'text-[var(--primary-500)] font-bold bg-[color-mix(in_srgb,var(--primary-50)90%,var(--primary-700))]'
+              : 'text-inherit'
+          ]"
+          (click)="switchTab(i)"
+        >
+          <ng-container *ngIf="item.icon">
+            <i
+              class="text-lg"
+              [ngClass]="[
+                item.icon,
+                !control.errors ? 'text-inherit' : 'text-red-500'
+              ]"
+            ></i>
+          </ng-container>
+
+          <ng-container *ngIf="!item.icon">
+            <span>{{ item.label }}</span>
+          </ng-container>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

@@ -1,100 +1,50 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, Renderer2, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Subject, skip, takeUntil, tap } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-theme-switcher',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <button
-      type="button"
-      class="btn-menu"
-      [innerHTML]="currentTheme.svg"
-      (click)="toggleMenu()"
-    ></button>
-    <div class="menu" [class.show]="showMenu">
-      <ng-container *ngFor="let item of themeIcons">
-        <button
-          type="button"
-          [innerHTML]="item.svg"
-          (click)="switchTheme(item.name)"
-        ></button>
-      </ng-container>
-    </div>
-  `,
-  styleUrls: ['./theme-switcher.component.scss'],
+  imports: [CommonModule, FormsModule],
+  templateUrl: './theme-switcher.component.html',
+  styles: [],
 })
 export class ThemeSwitcherComponent {
-  @HostListener('document:click', ['$event'])
-  onClick(e: MouseEvent): void {
-    const hostElement = this._el.nativeElement as HTMLElement;
-    const clickedItem = e.target as HTMLElement;
+  private _renderer2 = inject(Renderer2);
+  private _themeService = inject(ThemeService);
+  private readonly _onDestroy$ = new Subject<void>();
 
-    if (!hostElement.contains(clickedItem)) {
-      this.showMenu = false;
-    }
-  }
-
-  themeIcons = [
-    {
-      name: 'auto',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-      </svg>`,
-    },
-    {
-      name: 'light',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-high-fill" viewBox="0 0 16 16">
-        <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-      </svg>`,
-    },
-    {
-      name: 'dark',
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
-        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
-        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
-      </svg>`,
-    },
-  ].map((x) => ({
-    ...x,
-    svg: this._domSanitizer.bypassSecurityTrustHtml(x.svg),
-  }));
-
-  showMenu = false;
-  currentTheme = this.themeIcons[0];
-
-  constructor(
-    private _domSanitizer: DomSanitizer,
-    private _el: ElementRef,
-    private _themeService: ThemeService
-  ) {}
+  themes = this._themeService.themes;
+  currentTheme =
+    this.themes.find((x) => x.key === this._themeService.savedTheme) ||
+    this.themes[0];
 
   ngOnInit(): void {
-    this._initTheme();
+    this.switchTheme(this.currentTheme.key as 'light' | 'dark');
+    this._themeService
+      .prefersDark$()
+      .pipe(
+        skip(1),
+        tap((x) => this.switchTheme(x ? 'dark' : 'light')),
+        takeUntil(this._onDestroy$)
+      )
+      .subscribe();
   }
 
-  private _initTheme(): void {
-    const themeSaved = window.localStorage.getItem('theme') || 'auto';
-    this.switchTheme(themeSaved);
-  }
-
-  switchTheme(name: string): void {
+  switchTheme(theme?: 'light' | 'dark'): void {
     const html = document.querySelector('html');
+    const nextTheme = this.themes.find((x) => {
+      if (theme) return x.key === theme;
+      return x.key !== this.currentTheme.key;
+    });
 
-    html?.setAttribute('class', '');
-    html?.classList.add(name);
+    if (!nextTheme) return;
 
-    this.currentTheme =
-      this.themeIcons.find((x) => x.name === name) || this.themeIcons[0];
-    this.showMenu = false;
-
-    window.localStorage.setItem('theme', name);
-    this._themeService.theme$.next(name);
-  }
-
-  toggleMenu(): void {
-    this.showMenu = !this.showMenu;
+    this.currentTheme = nextTheme;
+    this._renderer2.setAttribute(html, 'class', nextTheme.key);
+    this._themeService.theme$.next(nextTheme.key);
+    this._themeService.savedTheme = nextTheme.key;
   }
 }

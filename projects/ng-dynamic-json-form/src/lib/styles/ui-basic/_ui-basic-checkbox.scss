@@ -1,9 +1,19 @@
+@use "../utilities" as utilities;
+
 @mixin checkbox {
   input[type="checkbox"] {
-    display: none;
+    @include utilities.sr-only();
+
+    &:focus-visible {
+      ~ .marker {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.25em var(--color-primary-lighter);
+      }
+    }
 
     &:checked {
       ~ .marker {
+        border-color: var(--color-primary);
         background-color: var(--color-primary);
 
         &::before {
@@ -13,18 +23,18 @@
     }
 
     ~ .marker {
-      border: solid 2px var(--color-primary);
-      border-radius: 0.25rem;
+      border: solid calc(var(--input-border-width) + 1px) var(--color-border);
+      border-radius: 0.25em;
 
       &::before {
         content: "";
         position: absolute;
-        top: calc(50% - 0.1rem);
+        top: calc(50% - 0.1em);
         left: 50%;
         transform: translate(-50%, -50%) rotate(45deg);
-        width: 30%;
-        height: 60%;
-        border: solid 2px white;
+        width: 35%;
+        height: 65%;
+        border: solid 0.15em white;
         border-left: none;
         border-top: none;
         opacity: 0;

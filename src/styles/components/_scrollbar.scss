@@ -1,0 +1,51 @@
+@mixin hidden-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+    height: 0;
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@mixin beauty-scrollbar {
+  @media (min-width: 992px) {
+    &::-webkit-scrollbar {
+      background-color: transparent;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: gray;
+      border-radius: 1rem;
+      background-clip: content-box;
+      border: solid 8px transparent;
+
+      &:hover {
+        border-width: 7px;
+      }
+    }
+
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+  }
+}
+
+.beauty-scrollbar {
+  @include beauty-scrollbar();
+
+  &.affect-child {
+    * {
+      @include beauty-scrollbar();
+    }
+  }
+}
+
+.hidden-scrollbar {
+  @include hidden-scrollbar();
+}
+
+body {
+  @include beauty-scrollbar();
+}

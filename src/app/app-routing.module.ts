@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './layout/layout.component';
-import { PagePlaygroundComponent } from './pages/page-playground/page-playground.component';
+import {
+  RouterModule,
+  Routes,
+  UrlMatchResult,
+  UrlSegment,
+} from '@angular/router';
 
 const routes: Routes = [
   {
@@ -12,35 +15,17 @@ const routes: Routes = [
       ),
   },
   {
-    path: '',
-    component: LayoutComponent,
-    children: [
-      {
-        path: 'getting-started',
-        loadComponent: () =>
-          import(
-            './pages/page-getting-started/page-getting-started.component'
-          ).then((c) => c.PageGettingStartedComponent),
-      },
-      {
-        path: 'api',
-        loadComponent: () =>
-          import('./pages/page-api/page-api.component').then(
-            (c) => c.PageApiComponent
-          ),
-      },
-      {
-        path: 'styling',
-        loadComponent: () =>
-          import('./pages/page-styling/page-styling.component').then(
-            (c) => c.PageStylingComponent
-          ),
-      },
-    ],
+    matcher: (segments: UrlSegment[]): UrlMatchResult | null => {
+      const invalidRoute = !segments.length || segments[0].path !== 'docs';
+      return invalidRoute ? null : { consumed: segments };
+    },
+    loadComponent: () =>
+      import('./pages/page-docs/page-docs.component').then(
+        (c) => c.PageDocsComponent
+      ),
   },
   {
     path: 'playground',
-    // component: PagePlaygroundComponent,
     loadComponent: () =>
       import('./pages/page-playground/page-playground.component').then(
         (c) => c.PagePlaygroundComponent
@@ -49,11 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
-    }),
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

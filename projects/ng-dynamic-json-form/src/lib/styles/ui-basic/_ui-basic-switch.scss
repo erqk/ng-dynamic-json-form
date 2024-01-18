@@ -1,14 +1,27 @@
+@use "../utilities" as utilities;
+
 @mixin switch-button {
   .switch-button {
-    --switch-width: 2.5rem;
-    --switch-height: 1.5rem;
+    --switch-width: 2.5em;
+    --switch-height: 1.5em;
     --dot-size: calc(var(--switch-height) * 0.65);
     --dot-padding: calc((var(--switch-height) - var(--dot-size)) * 0.5);
 
     > input[type="checkbox"] {
-      display: none;
+      @include utilities.sr-only();
+
+      &:focus-visible {
+        ~ .marker {
+          outline: solid calc(var(--input-border-width) + 0.01em) var(--color-primary);
+          box-shadow: 0 0 0 0.35em var(--color-primary-lighter);
+        }
+      }
 
       &:checked {
+        ~ .marker {
+          outline: none;
+        }
+
         ~ .marker::before {
           background-color: var(--color-primary);
         }
@@ -38,6 +51,7 @@
       background-color: rgba(128, 128, 128, 0.35);
       overflow: hidden;
       transition: 0.2s;
+      transition-property: background-color, transform;
       z-index: 0;
 
       &::after {

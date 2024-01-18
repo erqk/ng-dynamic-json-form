@@ -13,28 +13,29 @@
 
   input,
   textarea {
-    padding: 0.75rem 1rem;
+    padding: 0.75em 1em;
     font-size: inherit;
-    border: solid 1px lightgray;
-    border-radius: 0.5rem;
+    border: solid var(--input-border-width) var(--color-border);
+    border-radius: 0.5em;
     outline: none;
+    width: 100%;
 
     &:hover {
       border-color: var(--color-primary);
     }
 
-    &:focus {
+    &:focus-visible {
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-primary-lighter);
+      box-shadow: 0 0 0 0.2em var(--color-primary-lighter);
     }
   }
 
   .option-button {
-    --markerSize: 1.35rem;
+    --markerSize: 1.35em;
 
     &:hover {
       .marker {
-        box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0.2em 0.8em rgba(0, 0, 0, 0.2);
       }
     }
 
@@ -46,17 +47,12 @@
       height: var(--markerSize);
       cursor: pointer;
       transition: 0.25s;
+      transition-property: background-color, box-shadow, border-color;
       z-index: 0;
     }
 
     @include radio.radio();
     @include checkbox.checkbox();
-  }
-
-  .disabled {
-    --color-primary: gray;
-    opacity: 0.5;
-    pointer-events: none;
   }
 
   @include date.date-input();

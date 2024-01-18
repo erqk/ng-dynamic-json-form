@@ -1,23 +1,26 @@
-<ng-container *ngIf="control && data">
+<ng-container *ngIf="data">
   <div class="option-button-wrapper">
     <label class="option-button">
       <ng-container
-        *ngIf="data.extra?.switch?.labelPosition === 'before'"
+        *ngIf="data.options?.labelPosition === 'before'"
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
 
-      <p-inputSwitch [formControl]="control">123</p-inputSwitch>
+      <p-inputSwitch
+        [propsBinding]="[data.extra]"
+        [formControl]="control"
+      ></p-inputSwitch>
 
       <ng-container
-        *ngIf="data.extra?.switch?.labelPosition !== 'before'"
+        *ngIf="data.options?.labelPosition !== 'before'"
         [ngTemplateOutlet]="labelTemplate"
       ></ng-container>
     </label>
   </div>
 
   <ng-template #labelTemplate>
-    <ng-container *ngIf="data.extra?.switch?.label">
-      <span>{{ data.extra?.switch?.label }}</span>
-    </ng-container>
+    <span *ngIf="data.options?.data?.[0]?.label">{{
+      data.options?.data?.[0]?.label
+    }}</span>
   </ng-template>
 </ng-container>

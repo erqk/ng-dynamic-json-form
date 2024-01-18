@@ -1,6 +1,6 @@
 import { UiComponents } from 'ng-dynamic-json-form';
 import { UiMaterialCheckboxComponent } from './ui-material-checkbox/ui-material-checkbox.component';
-import { UiMaterialDropdownComponent } from './ui-material-dropdown/ui-material-dropdown.component';
+import { UiMaterialSelectComponent } from './ui-material-select/ui-material-select.component';
 import { UiMaterialInputMaskComponent } from './ui-material-input-mask/ui-material-input-mask.component';
 import { UiMaterialInputComponent } from './ui-material-input/ui-material-input.component';
 import { UiMaterialRadioComponent } from './ui-material-radio/ui-material-radio.component';
@@ -10,16 +10,16 @@ import { UiMaterialTextareaComponent } from './ui-material-textarea/ui-material-
 import { UiMaterialDateComponent } from './ui-material-date/ui-material-date.component';
 
 export const UI_MATERIAL_COMPONENTS: UiComponents = {
-  checkbox: { type: 'material', component: UiMaterialCheckboxComponent },
-  date: { type: 'material', component: UiMaterialDateComponent },
-  dropdown: { type: 'material', component: UiMaterialDropdownComponent },
-  password: { type: 'material', component: UiMaterialInputComponent },
-  number: { type: 'material', component: UiMaterialInputComponent },
-  email: { type: 'material', component: UiMaterialInputComponent },
-  radio: { type: 'material', component: UiMaterialRadioComponent },
-  range: { type: 'material', component: UiMaterialRangeComponent },
-  switch: { type: 'material', component: UiMaterialSwitchComponent },
-  text: { type: 'material', component: UiMaterialInputComponent },
-  textMask: { type: 'material', component: UiMaterialInputMaskComponent },
-  textarea: { type: 'material', component: UiMaterialTextareaComponent },
+  checkbox: UiMaterialCheckboxComponent,
+  date: UiMaterialDateComponent,
+  password: UiMaterialInputComponent,
+  number: UiMaterialInputComponent,
+  email: UiMaterialInputComponent,
+  radio: UiMaterialRadioComponent,
+  range: UiMaterialRangeComponent,
+  select: UiMaterialSelectComponent,
+  switch: UiMaterialSwitchComponent,
+  text: UiMaterialInputComponent,
+  textMask: UiMaterialInputMaskComponent,
+  textarea: UiMaterialTextareaComponent,
 };
