@@ -4,7 +4,11 @@
 
 .ng-dynamic-json-form {
   --color-primary: #3b82f6;
-  --color-primary-lighter: #bfdbfe;
+  --color-primary-lighter: color-mix(
+    in srgb,
+    var(--color-primary) 30%,
+    white 0%
+  );
   --color-description: gray;
   --color-error: #ff4747;
   --color-border: gray;
@@ -164,7 +168,8 @@
   .readonly {
     pointer-events: none;
 
-    input, textarea {
+    input,
+    textarea {
       border: none;
       padding: 0;
     }
