@@ -2,6 +2,8 @@
 
 The additional data that is use to render the input. It will try to bind the properties to the target component, directive, or element. We can also pass in any data and set it later in our custom component.
 
+> If date value in pass in the form of `"Date(...)"` string, then it will convert to a Date object.
+
 > For custom UI component, auto binding won't work. Since we have full control over the component, we need to do property binding manually.
 
 ## Binding target
