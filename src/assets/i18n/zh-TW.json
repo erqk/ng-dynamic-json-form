@@ -4,7 +4,8 @@
     "CUSTOM_COMPONENTS": "可依照需求建立自訂元件。",
     "LAYOUT": "可靈活的建立各種版型的表單。",
     "NESTED_LEVELS": "不限層級的巢狀 FormControl、FormGroup、FormArray。",
-    "VALIDATORS": "支援 Angular 內建驗證器和自訂驗證器。"
+    "VALIDATORS": "支援 Angular 內建驗證器和自訂驗證器。",
+    "UI_LIBRARY": "支援第三方 UI 套件。"
   },
   "INTRODUCTION": {
     "BRIEF": "從 JSON 資料動態生成 Angular 表單。可設定條件切換顯示狀態和驗證器，並支援第三方 UI 套件。"

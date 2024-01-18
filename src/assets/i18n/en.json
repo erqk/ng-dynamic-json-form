@@ -4,7 +4,8 @@
     "CUSTOM_COMPONENTS": "Support custom components.",
     "LAYOUT": "Flexible form layout.",
     "NESTED_LEVELS": "Create FormControl, FormGroup and FormArray, with unlimited nesting level.",
-    "VALIDATORS": "Supports Angular built in validators and custom validators."
+    "VALIDATORS": "Supports Angular built in validators and custom validators.",
+    "UI_LIBRARY": "Support third party UI libraries."
   },
   "INTRODUCTION": {
     "BRIEF": "Generate Angular reactive form with JSON data. Support conditional rendering and validators toggle, and third party UI libraries."
