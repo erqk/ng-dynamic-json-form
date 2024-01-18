@@ -1,6 +1,6 @@
 {
   "name": "ng-dynamic-json-form",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": {
     "name": "erqk",
     "url": "https://github.com/erqk"
@@ -21,7 +21,7 @@
   "peerDependencies": {
     "@angular/core": ">=14",
     "@angular/common": ">=14",
-    "ngx-mask": ">16"
+    "ngx-mask": ">=14"
   },
   "devDependencies": {
     "tslib": "^2.3.0",
