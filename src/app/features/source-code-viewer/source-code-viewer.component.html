@@ -1,23 +1,30 @@
-<div class="tabs">
-  <ng-container *ngFor="let item of tabs">
-    <button [class.active]="currentTab === item" (click)="currentTab = item">
-      {{ item.toUpperCase() }}
-    </button>
+<div [ngClass]="['flex gap-8', 'ml-auto mb-4']">
+  <p-checkbox
+    label="HTML"
+    [value]="'html'"
+    [(ngModel)]="selectedTabs"
+  ></p-checkbox>
+  <p-checkbox
+    label="TS"
+    [value]="'ts'"
+    [(ngModel)]="selectedTabs"
+  ></p-checkbox>
+</div>
+
+<div
+  class="beauty-scrollbar affect-child"
+  [ngClass]="[
+    'beauty-scrollbar affect-child',
+    !selectedTabs.length ? '' : 'mb-4'
+  ]"
+>
+  <ng-container *ngIf="selectedTabs.includes('html')">
+    <markdown [data]="markdown.html | language : 'html'"></markdown>
+  </ng-container>
+
+  <ng-container *ngIf="selectedTabs.includes('ts')">
+    <markdown [data]="markdown.ts | language : 'javascript'"></markdown>
   </ng-container>
 </div>
 
-<ng-container [ngSwitch]="currentTab">
-  <ng-container *ngSwitchCase="'html'">
-    <markdown [data]="markdown[currentTab] | language : 'html'"></markdown
-  ></ng-container>
-
-  <ng-container *ngSwitchCase="'ts'">
-    <markdown [data]="markdown[currentTab] | language : 'javascript'"></markdown
-  ></ng-container>
-
-  <ng-container *ngSwitchCase="'result'">
-    <ng-content></ng-content>
-  </ng-container>
-  <!-- <div class="result">
-  </div> -->
-</ng-container>
+<ng-content></ng-content>

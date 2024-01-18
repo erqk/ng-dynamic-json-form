@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
+import { LayoutService } from 'src/app/core/services/layout.service';
 
 @Component({
   selector: 'app-page-home',
@@ -24,6 +25,7 @@ import { map, switchMap } from 'rxjs/operators';
 export class PageHomeComponent {
   private _http = inject(HttpClient);
   private _languageDataService = inject(LanguageDataService);
+  private _layoutService = inject(LayoutService);
   isLoading = false;
   visibleLayer = 0;
 
@@ -33,10 +35,11 @@ export class PageHomeComponent {
         responseType: 'text',
       })
     ),
-    map(x => JSON.parse(x)['FEATURES'])
+    map((x) => JSON.parse(x)['FEATURES'])
   );
 
   i18nContent$ = this._languageDataService.i18nContent$;
+  headerHeight$ = this._layoutService.headerHeight$;
 
   setVisibleLayer(index: number): void {
     this.visibleLayer = index;

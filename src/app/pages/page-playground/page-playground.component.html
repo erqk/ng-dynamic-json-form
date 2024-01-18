@@ -7,6 +7,7 @@
       '--panel-width': '20rem'
     }"
   >
+    <!-- Template list and editor -->
     <div
       [ngClass]="[
         'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
@@ -53,12 +54,14 @@
             showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]'
           ].join(' ')
         "
-        (onConfirm)="onEditorConfirm($event)"
+        [data]="editorData$ | async"
+        (onEditing)="onConfigEditing($event)"
       ></app-playground-editor>
     </div>
 
     <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
       <div [ngClass]="['flex-1 w-full', 'pl-[var(--panel-width)]']">
+        <!-- Form content -->
         <as-split
           class="!overflow-visible"
           [useTransition]="true"
@@ -71,12 +74,14 @@
             class="flex flex-col !overflow-hidden"
             [size]="asSplitSizes[0]"
           >
+            <!-- UI library select -->
             <div class="w-1/2 m-4 ml-auto">
               <ng-container
                 *ngTemplateOutlet="formUiSelectTemplate"
               ></ng-container>
             </div>
 
+            <!-- Form -->
             <div
               [ngClass]="[
                 'w-full h-full px-8 py-10',
@@ -89,6 +94,7 @@
             </div>
           </as-split-area>
 
+          <!-- Form info -->
           <as-split-area
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
@@ -96,7 +102,7 @@
             ]"
             [size]="asSplitSizes[1]"
           >
-            <app-playground-form-info [form]="form"></app-playground-form-info>
+            <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
           </as-split-area>
         </as-split>
       </div>
@@ -116,6 +122,7 @@
       '--window-height.px': windowSize$.value.y
     }"
   >
+    <!-- Tabs -->
     <div
       [ngClass]="[
         'sticky top-0 z-10',
@@ -140,6 +147,7 @@
       </ng-container>
     </div>
 
+    <!-- Template list and editor -->
     <div
       [ngClass]="[
         mobileTabSelected === 0 ? 'flex' : 'hidden',
@@ -148,7 +156,8 @@
     >
       <app-playground-editor
         class="flex-1 overflow-hidden"
-        (onConfirm)="onEditorConfirm($event)"
+        [data]="editorData$ | async"
+        (onEditing)="onConfigEditing($event)"
       ></app-playground-editor>
 
       <app-playground-template-list
@@ -157,6 +166,7 @@
       ></app-playground-template-list>
     </div>
 
+    <!-- Form -->
     <div
       [ngClass]="[
         mobileTabSelected === 1 ? 'block' : 'hidden',
@@ -177,13 +187,15 @@
       <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
     </div>
 
-    <app-playground-form-info
+    <!-- Form info -->
+    <div
       [ngClass]="[
         mobileTabSelected === 2 ? 'block' : 'hidden',
         'h-full overflow-hidden'
       ]"
-      [form]="form"
-    ></app-playground-form-info>
+    >
+      <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
+    </div>
   </div>
 </ng-container>
 
@@ -192,7 +204,8 @@
     <span class="shrink-0 font-bold">UI</span>
     <select
       [ngClass]="[isMobile ? 'bg-transparent text-inherit' : '']"
-      [(ngModel)]="currentUi"
+      [ngModel]="currentUi"
+      (ngModelChange)="onFormUiChange($event)"
     >
       <ng-container *ngFor="let item of customUiComponents | keyvalue">
         <option [ngValue]="item.key">{{ item.key }}</option>
@@ -203,9 +216,14 @@
 
 <ng-template #dynamicFormTemplate>
   <ng-dynamic-json-form
-    class="flex flex-col overflow-hidden p-5 text-sm lg:text-base"
+    class="flex flex-col p-5 text-sm lg:text-base"
     [configs]="(configs$ | async) ?? []"
     [uiComponents]="customUiComponents[currentUi]"
+    [formControl]="formControl"
     (formGet)="onFormGet($event)"
   ></ng-dynamic-json-form>
+</ng-template>
+
+<ng-template #formInfoTemplate>
+  <app-playground-form-info [control]="formControl"></app-playground-form-info>
 </ng-template>

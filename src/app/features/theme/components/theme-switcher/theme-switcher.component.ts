@@ -1,129 +1,50 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ThemeService } from '../../services/theme.service';
+import { Component, Renderer2, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Subject, skip, takeUntil, tap } from 'rxjs';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-theme-switcher',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="relative z-0 hidden lg:block">
-      <button
-        type="button"
-        [ngClass]="[
-          'rounded-full ',
-          showMenu
-            ? 'bg-[var(--primary-500)] text-white'
-            : 'hover:bg-[var(--primary-500)] hover:text-white'
-        ]"
-        (click)="toggleMenu()"
-      >
-        <i [class]="currentTheme.class"></i>
-      </button>
-
-      <div
-        [ngClass]="[
-          'absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 z-0',
-          'p-1 rounded-full bg-[var(--primary-500)]',
-          'text-white',
-          showMenu ? 'grid gap-1' : 'hidden'
-        ]"
-      >
-        <ng-container *ngFor="let item of themeIcons">
-          <button
-            type="button"
-            class="hover:bg-[var(--primary-400)]"
-            (click)="switchTheme(item.name)"
-          >
-            <i [class]="item.class"></i>
-          </button>
-        </ng-container>
-      </div>
-    </div>
-
-    <div class="block lg:hidden">
-      <select
-        [ngModel]="currentTheme"
-        (ngModelChange)="switchTheme($event.name)"
-      >
-        <ng-container *ngFor="let item of themeIcons">
-          <option [ngValue]="item">
-            {{ item?.code }}
-          </option>
-        </ng-container>
-      </select>
-    </div>
-  `,
-  styleUrls: ['./theme-switcher.component.scss'],
+  templateUrl: './theme-switcher.component.html',
+  styles: [],
 })
 export class ThemeSwitcherComponent {
-  @HostListener('document:click', ['$event'])
-  onClick(e: MouseEvent): void {
-    const hostElement = this._el.nativeElement as HTMLElement;
-    const clickedItem = e.target as HTMLElement;
+  private _renderer2 = inject(Renderer2);
+  private _themeService = inject(ThemeService);
+  private readonly _onDestroy$ = new Subject<void>();
 
-    if (!hostElement.contains(clickedItem)) {
-      this.showMenu = false;
-    }
-  }
-
-  themeIcons = [
-    {
-      name: 'auto',
-      class: 'bi bi-circle-half',
-      code: '📱',
-    },
-    {
-      name: 'light',
-      class: 'bi bi-brightness-high-fill',
-      code: '🔆',
-    },
-    {
-      name: 'dark',
-      class: 'bi bi-moon-stars-fill',
-      code: '🌃',
-    },
-  ];
-
-  showMenu = false;
-  currentTheme = this.themeIcons[0];
-
-  constructor(
-    private _domSanitizer: DomSanitizer,
-    private _el: ElementRef,
-    private _themeService: ThemeService
-  ) {}
+  themes = this._themeService.themes;
+  currentTheme =
+    this.themes.find((x) => x.key === this._themeService.savedTheme) ||
+    this.themes[0];
 
   ngOnInit(): void {
-    this._initTheme();
+    this.switchTheme(this.currentTheme.key as 'light' | 'dark');
+    this._themeService
+      .prefersDark$()
+      .pipe(
+        skip(1),
+        tap((x) => this.switchTheme(x ? 'dark' : 'light')),
+        takeUntil(this._onDestroy$)
+      )
+      .subscribe();
   }
 
-  private _initTheme(): void {
-    const themeSaved = window.localStorage.getItem('theme') || 'auto';
-    this.switchTheme(themeSaved);
-  }
-
-  switchTheme(name: string): void {
+  switchTheme(theme?: 'light' | 'dark'): void {
     const html = document.querySelector('html');
+    const nextTheme = this.themes.find((x) => {
+      if (theme) return x.key === theme;
+      return x.key !== this.currentTheme.key;
+    });
 
-    html?.setAttribute('class', '');
-    html?.classList.add(name);
+    if (!nextTheme) return;
 
-    this.currentTheme =
-      this.themeIcons.find((x) => x.name === name) || this.themeIcons[0];
-    this.showMenu = false;
-
-    window.localStorage.setItem('theme', name);
-    this._themeService.theme$.next(name);
-  }
-
-  toggleMenu(): void {
-    this.showMenu = !this.showMenu;
-  }
-
-  onThemeChange(e: any): void {
-    console.log(e);
+    this.currentTheme = nextTheme;
+    this._renderer2.setAttribute(html, 'class', nextTheme.key);
+    this._themeService.theme$.next(nextTheme.key);
+    this._themeService.savedTheme = nextTheme.key;
   }
 }

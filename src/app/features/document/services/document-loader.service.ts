@@ -131,8 +131,45 @@ export class DocumentLoaderService {
     const { language$, languageFromUrl } = this._languageDataService;
     const newRoute = currentRoute
       .replace(versionFromUrl ?? currentVersion, currentVersion)
-      .replace(languageFromUrl ?? '', language$.value);
+      .replace(`_${languageFromUrl}.md` ?? '', `_${language$.value}.md`);
 
     this._router.navigateByUrl(newRoute);
+  }
+
+  /**Add tag to indicate the type of file of the current */
+  setCodeViewerTag(): void {
+    const viewers = document.querySelectorAll('pre[class^="language-"]');
+
+    const createTagEl = (parentEl: HTMLElement, text: string) => {
+      const el = document.createElement('span');
+      el.classList.add('code-tag');
+      this._renderer2.setProperty(el, 'innerText', text);
+      this._renderer2.appendChild(parentEl, el);
+    };
+
+    for (const item of Array.from(viewers)) {
+      const el = item as HTMLElement;
+      const type = el.classList.toString().replace('language-', '');
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('code-wrapper');
+      this._renderer2.appendChild(wrapper, el.cloneNode(true));
+      this._renderer2.insertBefore(el.parentElement, wrapper, el);
+      el.remove();
+
+      switch (type) {
+        case 'html':
+          createTagEl(wrapper, 'HTML');
+          break;
+
+        case 'javascript':
+          createTagEl(wrapper, 'TS');
+          break;
+
+        case 'json':
+          createTagEl(wrapper, 'JSON');
+          break;
+      }
+    }
   }
 }

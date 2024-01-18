@@ -8,12 +8,10 @@ import {
   map,
   startWith,
 } from 'rxjs';
-import {
-  ConfigItem,
-  PLAYGROUND_CONFIGS,
-} from 'src/app/example/playground-configs/playground-configs.constant';
 import { LanguageType } from '../../language/language.type';
 import { LanguageDataService } from '../../language/services/language-data.service';
+import { PLAYGROUND_CONFIGS } from '../constants/playground-configs.constant';
+import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +20,7 @@ export class PlaygroundTemplateDataService {
   private _langService = inject(LanguageDataService);
   private _templateList = PLAYGROUND_CONFIGS;
 
-  localStorageUpdated$ = new Subject<void>();
+  browserStorageUpdated$ = new Subject<void>();
 
   currentTemplateKey$ = new BehaviorSubject<string>(
     Object.keys(this._templateList)[0]
@@ -30,7 +28,7 @@ export class PlaygroundTemplateDataService {
 
   exampleList$ = combineLatest([
     this._langService.language$,
-    this.localStorageUpdated$.pipe(startWith(null)),
+    this.browserStorageUpdated$.pipe(startWith(null)),
   ]).pipe(
     debounceTime(0),
     map(([lang]) =>
@@ -40,11 +38,11 @@ export class PlaygroundTemplateDataService {
           key,
         });
         return acc;
-      }, [] as ConfigItem[])
+      }, [] as PlaygroundConfigItem[])
     )
   );
 
-  userTemplateList$ = this.localStorageUpdated$.pipe(
+  userTemplateList$ = this.browserStorageUpdated$.pipe(
     startWith(null),
     map(() => {
       if (!this._userTemplateSaved) {
@@ -56,7 +54,7 @@ export class PlaygroundTemplateDataService {
         .reduce((acc, key) => {
           acc.push({ key, label: key, config: this._userTemplateSaved![key] });
           return acc;
-        }, [] as ConfigItem[]);
+        }, [] as PlaygroundConfigItem[]);
     })
   );
 
@@ -86,12 +84,12 @@ export class PlaygroundTemplateDataService {
           },
         };
 
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       this._exampleSavedTemplateKey,
       JSON.stringify(newData)
     );
 
-    this.localStorageUpdated$.next();
+    this.browserStorageUpdated$.next();
   }
 
   getUserTemplate(key: string): FormControlConfig[] | null {
@@ -120,7 +118,7 @@ export class PlaygroundTemplateDataService {
       JSON.stringify(newData)
     );
 
-    this.localStorageUpdated$.next();
+    this.browserStorageUpdated$.next();
   }
 
   get allTemplateKeys(): string[] {
@@ -158,7 +156,7 @@ export class PlaygroundTemplateDataService {
       [k in LanguageType]: FormControlConfig[];
     };
   } | null {
-    const savedData = window.localStorage.getItem(
+    const savedData = window.sessionStorage.getItem(
       this._exampleSavedTemplateKey
     );
 

@@ -4,22 +4,3 @@
   flex-direction: column;
   z-index: 0;
 }
-
-.tabs {
-  display: flex;
-  margin-left: auto;
-  margin-bottom: 1rem;
-  background-color: rgba(var(--bg-color-rgb), 0.75);
-  z-index: 1;
-
-  button {
-    background-color: unset;
-    color: gray;
-    border-radius: 10rem;
-
-    &.active {
-      background-color: var(--color-primary);
-      color: white;
-    }
-  }
-}

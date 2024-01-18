@@ -1,8 +1,8 @@
 .ng-dynamic-json-form {
   --color-primary: var(--primary-500);
-  --color-primary-lighter: var(--primary-200);
   --color-border: rgba(128, 128, 128, 0.5);
   --input-border-width: 0.1em;
+  --form-array-group-divider-color: var(--border-color-25);
 }
 
 input,
@@ -26,11 +26,6 @@ select {
   border-radius: 0.5rem;
   font-size: inherit;
   outline: none;
-
-  &:focus {
-    box-shadow: 0 0 0 3px var(--primary-200);
-    outline: solid 1px var(--primary-500);
-  }
 }
 
 select {

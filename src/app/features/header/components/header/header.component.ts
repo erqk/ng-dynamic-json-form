@@ -18,7 +18,7 @@ import { Subject, fromEvent } from 'rxjs';
         'border-b',
         'duration-200',
         showBackground
-          ? 'border-[var(--border-color-25)] bg-[rgba(var(--bg-color-rgb),0.9)] backdrop-blur'
+          ? 'border-[var(--border-color-25)] bg-[rgba(var(--body-bg-color-rgb),0.6)] backdrop-blur'
           : 'border-transparent'
       ]"
     >
@@ -54,7 +54,7 @@ export class HeaderComponent {
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
     this.showBackground =
-      window.scrollY > this._layoutService.headerHeight$.value * 0.25;
+      window.scrollY > this._layoutService.headerHeight$.value * 0.5;
   }
 
   ngAfterViewInit(): void {

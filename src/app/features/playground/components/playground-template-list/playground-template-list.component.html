@@ -25,20 +25,24 @@
       'gap-2 items-center'
     ]"
   >
-    <ng-container *ngFor="let item of list$ | async">
-      <ng-container *ngIf="currentTemplateKey$.value === item.key">
-        <ng-container *ngIf="item.isExample">
-          <button type="button" class="p-2" (click)="reset(item.key!)">
-            <i class="bi bi-arrow-repeat"></i>
-          </button>
-        </ng-container>
-
-        <ng-container *ngIf="!item.isExample">
-          <button type="button" class="p-2" (click)="remove(item.key!)">
-            <i class="bi bi-trash"></i>
-          </button>
-        </ng-container>
-      </ng-container>
+    <ng-container *ngIf="currentTemplate$ | async as currentTemplate">
+      <button
+        type="button"
+        class="p-2"
+        (click)="
+          currentTemplate.isExample
+            ? reset(currentTemplate.key || '')
+            : remove(currentTemplate.key || '')
+        "
+      >
+        <i
+          class="bi"
+          [ngClass]="{
+            'bi-arrow-repeat': currentTemplate.isExample,
+            'bi-trash': !currentTemplate.isExample
+          }"
+        ></i>
+      </button>
     </ng-container>
 
     <select
@@ -50,9 +54,21 @@
       </ng-container>
     </select>
 
+    <!-- Add new template -->
     <button type="button" class="p-2" (click)="toggleTemplateNameInput(true)">
       <i class="bi bi-plus-lg"></i>
     </button>
+
+    <!-- Save template -->
+    <ng-container *ngIf="currentTemplate$ | async as currentTemplate">
+      <button
+        type="button"
+        class="p-2"
+        (click)="save(currentTemplate.key || '', !currentTemplate.isExample)"
+      >
+        <i class="bi bi-floppy"></i>
+      </button>
+    </ng-container>
   </div>
 
   <div [ngClass]="[showTemplateNameInput ? 'flex' : 'hidden', 'gap-2']">
@@ -61,6 +77,7 @@
       [ngTemplateOutlet]="templateNameInputTemplate"
     ></ng-container>
 
+    <!-- Cancel add template -->
     <button
       type="button"
       class="p-2"
@@ -113,7 +130,7 @@
     type="button"
     [ngClass]="[
       'relative z-0 flex items-start btn-template-name',
-      'px-4 py-1',
+      'px-4 py-1 text-start',
       'duration-200',
       currentTemplateKey$.value === key ? 'active' : ''
     ]"
@@ -124,32 +141,38 @@
     <div
       [ngClass]="[
         'absolute top-1/2 right-0 z-10 -translate-y-1/2',
-        'flex gap-2',
+        'flex items-center gap-2 h-full',
+        'bg-[rgba(var(--body-bg-color-rgb),0.65)]',
+        'opacity-0 pointer-events-none',
         'duration-200',
         'template-edit'
       ]"
     >
-      <ng-container *ngIf="!isUserTemplate && isEditing">
-        <button type="button" (click)="reset(key)">
-          <i class="bi bi-arrow-repeat"></i>
-        </button>
-      </ng-container>
+      <ng-container *ngIf="isEditing">
+        <ng-container *ngIf="!isUserTemplate">
+          <button type="button" (click)="reset(key)">
+            <i class="bi bi-arrow-repeat"></i>
+          </button>
+        </ng-container>
 
-      <ng-container *ngIf="isUserTemplate">
-        <button type="button" (click)="remove(key)">
-          <i class="bi bi-trash"></i>
+        <ng-container *ngIf="isUserTemplate">
+          <button type="button" (click)="remove(key)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </ng-container>
+
+        <button type="button" (click)="save(key, isUserTemplate === true)">
+          <i class="bi bi-check2 text-lg"></i>
+        </button>
+
+        <button type="button" (click)="setEditStatus(false)">
+          <i class="bi bi-x-lg"></i>
         </button>
       </ng-container>
 
       <ng-container *ngIf="!isEditing">
-        <button type="button" (click)="edit()">
+        <button type="button" (click)="setEditStatus(true)">
           <i class="bi bi-pencil-square"></i>
-        </button>
-      </ng-container>
-
-      <ng-container *ngIf="isEditing">
-        <button type="button" (click)="save(key, isUserTemplate === true)">
-          <i class="bi bi-check2 text-lg"></i>
         </button>
       </ng-container>
     </div>

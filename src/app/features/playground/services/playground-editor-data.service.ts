@@ -3,6 +3,7 @@ import { FormControlConfig } from 'ng-dynamic-json-form';
 import { combineLatest, map } from 'rxjs';
 import { Content } from 'vanilla-jsoneditor';
 import { LanguageDataService } from '../../language/services/language-data.service';
+import { getJsonEditorContent } from '../utilities/get-json-editor-content';
 import { PlaygroundTemplateDataService } from './playground-template-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,35 +11,25 @@ export class PlaygroundEditorDataService {
   private _langService = inject(LanguageDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
 
-  modifiedData: FormControlConfig[] = [];
-  editorData$ = combineLatest([
+  configModifiedData: FormControlConfig[] = [];
+  configEditorData$ = combineLatest([
     this._langService.language$,
     this._templateDataService.currentTemplateKey$,
-  ]).pipe(map(() => this.editorData));
+  ]).pipe(map(() => this._configEditorData));
 
   saveModifiedData(data: Content) {
     const _data = (this.getContent(data) as any)['json'];
     if (!_data) return;
 
-    this.modifiedData = _data;
+    this.configModifiedData = _data;
   }
 
   /**To get the consistent result of jsoneditor */
   getContent(input: Content | undefined): Content {
-    let jsonContent = null;
-
-    if (!input) return { json: jsonContent };
-    if ('json' in input) jsonContent = input['json'];
-    if ('text' in input) {
-      try {
-        jsonContent = JSON.parse(input['text'] || 'null');
-      } catch {}
-    }
-
-    return { json: jsonContent };
+    return getJsonEditorContent(input);
   }
 
-  get editorData(): Content {
+  private get _configEditorData(): Content {
     const key = this._templateDataService.currentTemplateKey$.value;
     const configs =
       this._templateDataService.getUserTemplate(key) ||

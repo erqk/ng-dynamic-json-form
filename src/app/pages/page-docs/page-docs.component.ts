@@ -75,6 +75,7 @@ export class PageDocsComponent {
   onReady(): void {
     this._docLoaderService.wrapTable();
     this._sideNavigationPaneService.buildNavigationLinks();
+    this._docLoaderService.setCodeViewerTag();
   }
 
   toggleMobileMenu(value?: boolean): void {

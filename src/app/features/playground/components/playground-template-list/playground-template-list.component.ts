@@ -7,7 +7,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, debounceTime, map } from 'rxjs';
+import { combineLatest, debounceTime, map, switchMap } from 'rxjs';
 import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
 import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
@@ -42,43 +42,49 @@ export class PlaygroundTemplateListComponent {
   );
 
   currentTemplateKey$ = this._templateDataService.currentTemplateKey$;
+  currentTemplate$ = combineLatest([this.list$, this.currentTemplateKey$]).pipe(
+    debounceTime(0),
+    map(([list, key]) => list.find((x) => x.key === key))
+  );
   i18nContent$ = this._langService.i18nContent$;
 
   select(key: string): void {
     if (key === this.currentTemplateKey$.value) return;
     this.currentTemplateKey$.next(key);
-    this._setEditStatus(false);
-  }
-
-  edit(): void {
-    this._setEditStatus(true);
+    this.setEditStatus(false);
   }
 
   save(key: string, isUserTemplate: boolean): void {
-    const editorData = this._editorDataService.modifiedData;
+    if (!key) return;
+
+    const editorData = this._editorDataService.configModifiedData;
 
     isUserTemplate
       ? this._templateDataService.setUserTemplate(key, editorData)
       : this._templateDataService.setExampleTemplate(key, editorData);
 
     this.currentTemplateKey$.next(key);
-    this._setEditStatus(false);
+    this.setEditStatus(false);
   }
 
   reset(key: string): void {
+    if (!key) return;
+
     this._templateDataService.setExampleTemplate(
       key,
       this._templateDataService.fallbackExample
     );
 
-    this._editorDataService.modifiedData =
+    this._editorDataService.configModifiedData =
       this._templateDataService.fallbackExample;
     this._templateDataService.currentTemplateKey$.next(key);
   }
 
   remove(key: string): void {
+    if (!key) return;
+
     this._templateDataService.setUserTemplate(key, null);
-    this._setEditStatus(false);
+    this.setEditStatus(false);
     this._selectLastTemplate();
   }
 
@@ -94,7 +100,7 @@ export class PlaygroundTemplateListComponent {
     this.nameControl.setValue('');
     this.currentTemplateKey$.next(key);
     this.toggleTemplateNameInput(false);
-    this._setEditStatus(true);
+    this.setEditStatus(true);
   }
 
   cancelNewTemplate(): void {
@@ -105,7 +111,7 @@ export class PlaygroundTemplateListComponent {
     this.showTemplateNameInput = value;
   }
 
-  private _setEditStatus(value: boolean): void {
+  setEditStatus(value: boolean): void {
     this.isEditing = value;
     this.onEdit.emit(this.isEditing);
   }
@@ -113,7 +119,7 @@ export class PlaygroundTemplateListComponent {
   private _selectLastTemplate(): void {
     const templateKeys = this._templateDataService.allTemplateKeys;
 
-    requestAnimationFrame(() => {
+    window.setTimeout(() => {
       this.currentTemplateKey$.next(templateKeys[templateKeys.length - 1]);
     });
   }

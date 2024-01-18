@@ -17,22 +17,6 @@ export class LanguageDataService {
   language$ = new BehaviorSubject<LanguageType>(this.defaultLanguage);
   i18nContent$ = new BehaviorSubject<any>({});
 
-  get languageFromUrl(): string | undefined {
-    const url = this._location.path();
-    const langFromUrl = url
-      .match(/_.+\.md$/)?.[0]
-      .substring(1)
-      .replace('.md', '');
-
-    return langFromUrl;
-  }
-
-  get currentLanguage(): LanguageType {
-    return (
-      this.languageFromUrl ?? window.localStorage.getItem('language') ?? 'en'
-    );
-  }
-
   loadLanguageData$(lang?: LanguageType): Observable<any> {
     const _lang = lang ?? this.currentLanguage;
     const timestamp = new Date().getTime();
@@ -52,5 +36,35 @@ export class LanguageDataService {
         window.localStorage.setItem('language', _lang);
       })
     );
+  }
+
+  get languageFromUrl(): string | undefined {
+    const url = this._location.path();
+    const langFromUrl = url
+      .match(/_.+\.md$/)?.[0]
+      .substring(1)
+      .replace('.md', '');
+
+    return langFromUrl;
+  }
+
+  get currentLanguage(): LanguageType {
+    return this.languageFromUrl ?? this._userLanguage;
+  }
+
+  private get _userLanguage(): LanguageType {
+    const browserLanguage = window.navigator.language;
+    const savedLanguage = window.localStorage.getItem('language');
+    const lang = savedLanguage ?? browserLanguage;
+
+    if (lang.includes('en')) {
+      return 'en';
+    }
+
+    if (lang.includes('zh')) {
+      return 'zh-TW';
+    }
+
+    return 'en';
   }
 }

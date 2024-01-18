@@ -28,10 +28,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ng-dynamic-json-form/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "karmaConfig": "projects/ng-dynamic-json-form/karma.conf.js"
           }
         }
@@ -57,16 +54,13 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/favicon.png"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/favicon.png"],
             "styles": [
-              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/vanilla-jsoneditor/themes/jse-theme-dark.css",
-              "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "primeng/resources/primeng.min.css",
+              "primeng/resources/themes/lara-light-blue/theme.css",
+              "vanilla-jsoneditor/themes/jse-theme-dark.css",
+              "@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "bootstrap-icons/font/bootstrap-icons.min.css",
               "dist/ng-dynamic-json-form/lib/styles/styles.scss",
               "src/styles/prism-vsc-dark-plus.css",
               "src/styles/styles.scss"
@@ -128,10 +122,7 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"

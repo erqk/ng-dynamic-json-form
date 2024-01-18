@@ -5,17 +5,27 @@ markdown {
 
   h1,
   h2,
-  h3,
+  h3 {
+    color: var(--primary-600);
+    margin-top: 2rem;
+  }
+
   h4,
   h5,
   h6 {
-    color: var(--primary-600);
-    margin-top: 2rem;
+    margin-top: 0.65rem;
   }
 
   h1,
   *:not(h1) + h2 {
     margin-top: 3.5rem;
+  }
+
+  h2 + h3,
+  h3 + h4,
+  h4 + h5,
+  h5 + h6 {
+    margin-top: 0;
   }
 
   a {
@@ -25,30 +35,18 @@ markdown {
     z-index: 0;
 
     &:hover {
-      text-decoration: none;
-
-      &::after {
-        width: 100%;
-        opacity: 1;
-        transition: 0.25s;
-      }
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 1px;
-      width: 50%;
-      background-color: var(--primary-500);
-      opacity: 0;
+      text-decoration: underline;
     }
   }
 
   hr {
     margin: 2.5rem 0;
+  }
+
+  ol {
+    list-style: decimal;
+    margin-block-start: 0.5rem;
+    padding-inline-start: 1.5rem;
   }
 
   ul {
@@ -117,6 +115,7 @@ markdown {
       color: rgba(128, 128, 128, 1);
       font-weight: normal;
       text-transform: uppercase;
+      text-align: start;
     }
 
     td {
@@ -125,7 +124,7 @@ markdown {
     }
 
     tr:nth-child(even) {
-      background-color: rgba(128, 128, 128, 0.035);
+      background-color: rgba(128, 128, 128, 0.065);
     }
   }
 
@@ -143,13 +142,25 @@ markdown {
     grid-template-columns: repeat(var(--column-count), 1fr);
     gap: 1rem;
   }
-}
 
-.form-info {
-  markdown {
+  .code-wrapper {
+    position: relative;
+    z-index: 0;
+
     pre {
-      box-shadow: none;
-      border-radius: 0;
+      padding-right: 5rem;
+    }
+
+    .code-tag {
+      position: absolute;
+      top: 0.5rem;
+      right: 0;
+      color: rgb(128, 128, 128);
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.2rem;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+      z-index: 1;
     }
   }
 }

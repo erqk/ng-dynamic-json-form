@@ -24,12 +24,9 @@
   }
 
   .template-edit {
-    opacity: 0;
-    pointer-events: none;
+    backdrop-filter: blur(4px);
 
     button {
-      background-color: rgba(var(--bg-color-rgb), 0.65);
-      backdrop-filter: blur(4px);
       border-radius: 0.5rem;
       color: rgb(var(--text-color-rgb));
       padding: 0.5rem;

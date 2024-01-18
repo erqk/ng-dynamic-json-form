@@ -21,9 +21,10 @@
   --primary-800: #261b66;
   --primary-900: #130d33;
 
-  --body-bg-color: white;
   --bg-color-rgb: 255, 255, 255;
+  --body-bg-color-rgb: 255, 255, 255;
   --text-color-rgb: 80, 80, 100;
+  --body-bg-color: rgb(var(--body-bg-color-rgb));
 
   --border-color-25: rgba(128, 128, 128, 0.25);
   --border-color-50: rgba(128, 128, 128, 0.5);
@@ -47,12 +48,8 @@ html {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  color: rgb(var(--text-color-rgb));
-  background-color: var(--body-bg-color);
-  margin: 0;
+  @apply flex flex-col min-h-screen;
+  @apply text-[rgb(var(--text-color-rgb))] bg-[var(--body-bg-color)];
 }
 
 .bi,
@@ -61,7 +58,6 @@ body {
   display: block;
   width: 1.25em;
   height: 1.25em;
-
 }
 
 @media (prefers-color-scheme: dark) {
