@@ -81,13 +81,11 @@ export class FormValidationService {
   }
 
   getValidators(input: ValidatorConfig[]): ValidatorFn[] {
-    if (!this.customValidators) return [];
-
     return input.map((item) => {
       const { name, value } = item;
       let validator: ValidatorFn = Validators.nullValidator;
 
-      switch (item.name) {
+      switch (name) {
         case ValidatorAndConditionEnum.required:
           validator = Validators.required;
           break;

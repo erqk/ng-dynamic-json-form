@@ -1,10 +1,34 @@
-# 3.4.1
+# Change log
+
+## 4.0.2
+
+### Fix
+
+- Validation errors not showing, if `customValidators` is not set.
+
+## 4.0.0
+
+### Features
+
+- Add schema validation for `configs` before building the form.
+- Add support for dynamic options data
+- Add support for custom input templates, custom error message, custom loading
+- Add provider support
+- Use `OnPush` strategy to improve performance
+- More dynamic and flexible property binding via `extra`.
+
+### Fix
+
+- Conditions not getting the correct result.
+- Conditions inside FormArray will only work for last one if multiple FormArray exists.
+
+## 3.4.1
 
 ### Fix
 
 - Conditions extracted is not correct
 
-# 3.4.0
+## 3.4.0
 
 ### Feature
 
@@ -16,7 +40,7 @@
 
 - #50 UI native: slider tooltip position misaligned
 
-# 3.3.0
+## 3.3.0
 
 ### Feature
 
@@ -28,7 +52,7 @@
 - Duplicated input components #44
 - Element content overflow issue when there is pre tag inside #45
 
-# 3.2.0
+## 3.2.0
 
 ### Feature
 
@@ -42,7 +66,7 @@
 
 - `NgDynamicJsonFormCustomComponent` is now carry validation errors.
 
-# 3.1.5
+## 3.1.5
 
 ### Fix
 
@@ -50,7 +74,7 @@
 
   For the input that using `mask` directive, the `validation` is set to false, there shouldn't be any mask errors output.
 
-# 3.1.4
+## 3.1.4
 
 ### Fix
 
@@ -58,7 +82,7 @@
 
   The use of positive lookbehind regular expression is not well supported. Use the other way to achieve same result.
 
-# 3.1.0
+## 3.1.0
 
 ### Feature
 
@@ -68,7 +92,7 @@
 - Able to change option's label position.
 - Native textarea now support auto resize.
 
-# 3.0.0
+## 3.0.0
 
 ### Fix
 
@@ -78,14 +102,14 @@
 
 - Update type `UiComponents`, enable it to carry more information
 
-# 2.0.1
+## 2.0.1
 
 ### Fix
 
 - Add the missing description field in form group and form array
 - Hide error message if it's Angular Material
 
-# 2.0.0
+## 2.0.0
 
 ### Feature
 
@@ -100,6 +124,6 @@
 - Rename input field `customUIComponentList` to `uiComponents`
 - Add `UiComponents` type
 
-# 1.0.0
+## 1.0.0
 
 - First release
