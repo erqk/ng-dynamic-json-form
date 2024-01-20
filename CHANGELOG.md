@@ -1,5 +1,15 @@
 # Change log
 
+## 4.0.4
+
+### Fix
+
+- FormTitleComponent does not unsubscribe the event.
+
+### Feature
+
+- Improve CustomControlComponent resuability by allowing null service provider.
+
 ## 4.0.2
 
 ### Fix

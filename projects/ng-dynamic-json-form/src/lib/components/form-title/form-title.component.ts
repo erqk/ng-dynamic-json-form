@@ -62,6 +62,11 @@ export class FormTitleComponent {
     this._listenTransition();
   }
 
+  ngOnDestroy(): void {
+    this._onDestroy$.next();
+    this._onDestroy$.complete();
+  }
+
   private _injectComponent(): void {
     if (!this.componentAnchor || !this.customComponent) {
       return;

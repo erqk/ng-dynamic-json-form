@@ -1,4 +1,4 @@
-## 4.0.0
+## 4.0.4
 
 - [English](./v4/index_en.md)
 - [繁中](./v4/index_zh-TW.md)
