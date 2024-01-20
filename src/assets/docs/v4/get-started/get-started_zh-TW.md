@@ -47,15 +47,15 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 
 ## @Input
 
-| Property         | 說明                                          |
-| :--------------- | :-------------------------------------------- |
-| configs          | 請參閱 [FormControlConfig].                   |
-| customValidators | 請參閱 [自訂驗證器].                          |
-| customComponents | 請參閱 [自訂元件].                            |
-| uiComponents     | 請參閱 [自訂 UI 元件].                        |
-| layoutComponents | 請參閱 [使用自訂元件和模板].                  |
-| layoutTemplates  | 請參閱 [使用自訂元件和模板].                  |
-| inputTemplates   | 請參閱 [自訂元件 - 使用 &lt;ng-template&gt;]. |
+| Property         | 說明                                                      |
+| :--------------- | :-------------------------------------------------------- |
+| configs          | JSON 字串或 JavaScript 物件。 請參閱 [FormControlConfig]. |
+| customValidators | 請參閱 [自訂驗證器].                                      |
+| customComponents | 請參閱 [自訂元件].                                        |
+| uiComponents     | 請參閱 [自訂 UI 元件].                                    |
+| layoutComponents | 請參閱 [使用自訂元件和模板].                              |
+| layoutTemplates  | 請參閱 [使用自訂元件和模板].                              |
+| inputTemplates   | 請參閱 [自訂元件 - 使用 &lt;ng-template&gt;].             |
 
 > 如果 `configs` 是 **JSON 字串**, 需要多包一層:
 >
@@ -64,6 +64,8 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 >  "configs": [...]
 > }
 > ```
+
+> JSON Schema: https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/projects/ng-dynamic-json-form/src/lib/config-schema.json
 
 ## @Ouput
 
