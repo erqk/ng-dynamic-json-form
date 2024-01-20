@@ -16,19 +16,16 @@ import { ControlValueService, FormValidationService } from '../../services';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  private readonly _internal_controlValueService = inject(ControlValueService);
+  private readonly _internal_controlValueService = inject(ControlValueService, {
+    optional: true,
+  });
+
   private readonly _internal_formValidationService = inject(
-    FormValidationService
+    FormValidationService,
+    { optional: true }
   );
 
   private _internal_onTouched = () => {};
-
-  private readonly _internal_getInputData = (input: unknown) =>
-    this._internal_controlValueService.mapInputData(input, this.data);
-
-  private readonly _internal_getOutputData = (input: unknown) =>
-    this._internal_controlValueService.mapOutputData(input, this.data);
-
   private readonly _internal_init$ = new Subject<void>();
 
   /**Can be override by instance of `AbstractControl`
@@ -47,7 +44,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   writeValue(obj: any): void {
-    this._internal_control.patchValue(this._internal_getInputData(obj));
+    this._internal_control.patchValue(this._internal_mapData('input', obj));
     this._internal_control.markAsDirty();
     this._internal_control.markAsTouched();
   }
@@ -56,7 +53,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     this._internal_control?.valueChanges
       .pipe(
         startWith(this._internal_control.value),
-        map((x) => this._internal_getOutputData(x))
+        map((x) => this._internal_mapData('output', x))
       )
       .subscribe(fn);
   }
@@ -75,18 +72,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     return this._internal_control?.errors ?? null;
   }
 
-  /**@internal */
-  private get _internal_control(): AbstractControl {
-    if (!this.control || !(this.control instanceof AbstractControl)) {
-      throw {
-        message: `The component extends CustomControlComponent but control is not defined`,
-        component: this,
-      };
-    }
-
-    return this.control;
-  }
-
   /**
    * @internal
    * Init event after component creation. Called by FormControlComponent.
@@ -98,7 +83,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   /**@internal */
   private _internal_listenErrors(control?: AbstractControl): void {
-    if (!control) return;
+    if (!control || !this._internal_formValidationService) return;
 
     this._internal_formValidationService
       .getErrorMessages$(control, this.data?.validators)
@@ -107,5 +92,25 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
         takeUntil(this._internal_init$)
       )
       .subscribe();
+  }
+
+  /**@internal */
+  private _internal_mapData(type: 'input' | 'output', data: unknown) {
+    const service = this._internal_controlValueService;
+    if (!service) return data;
+
+    return service.mapData(type, data, this.data);
+  }
+
+  /**@internal */
+  private get _internal_control(): AbstractControl {
+    if (!this.control || !(this.control instanceof AbstractControl)) {
+      throw {
+        message: `The component extends CustomControlComponent but control is not defined`,
+        component: this,
+      };
+    }
+
+    return this.control;
   }
 }

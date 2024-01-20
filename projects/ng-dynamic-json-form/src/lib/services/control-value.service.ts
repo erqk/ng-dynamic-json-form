@@ -8,27 +8,21 @@ export class ControlValueService {
   private _localeId = inject(LOCALE_ID);
   private _config = inject(NG_DYNAMIC_JSON_FORM_CONFIG, { optional: true });
 
-  mapInputData(input: unknown, config?: FormControlConfig): unknown {
-    if (!config) return input;
+  mapData(
+    type: 'input' | 'output',
+    data: unknown,
+    config: FormControlConfig | undefined
+  ): unknown {
+    if (!config) return data;
 
     switch (config.type) {
       case 'date':
-        return this._getInputDate(input);
+        return type === 'input'
+          ? this._getInputDate(data)
+          : this._getOutputDate(data);
 
       default:
-        return input;
-    }
-  }
-
-  mapOutputData(input: unknown, config?: FormControlConfig): unknown {
-    if (!config) return input;
-
-    switch (config.type) {
-      case 'date':
-        return this._getOutputDate(input);
-
-      default:
-        return input;
+        return data;
     }
   }
 
