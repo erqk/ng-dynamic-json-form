@@ -38,7 +38,7 @@ Lastly, add the styles into your `angular.json`:
 }
 ```
 
-[Form Control Config]: ../../v4/form-control-config/form-control-config_en.md
+[FormControlConfig]: ../../v4/form-control-config/form-control-config_en.md
 [Custom Validators]: ../../v4/validators/validators_en.md#custom-validators
 [Custom Components]: ../../v4/custom-components/custom-components_en.md
 [Custom UI Components]: ../../v4/custom-components/custom-components_en.md#custom-ui-components
@@ -47,23 +47,25 @@ Lastly, add the styles into your `angular.json`:
 
 ## @Input
 
-| Property         | Description                                          |
-| :--------------- | :--------------------------------------------------- |
-| configs          | See [Form Control Config].                           |
-| customValidators | See [Custom Validators].                             |
-| customComponents | See [Custom Components].                             |
-| uiComponents     | See [Custom UI Components].                          |
-| layoutComponents | See [Layout components and templates].               |
-| layoutTemplates  | See [Layout components and templates].               |
-| inputTemplates   | See [Custom Components - using &lt;ng-template&gt;]. |
+| Property         | Description                                                |
+| :--------------- | :--------------------------------------------------------- |
+| configs          | JSON string or JavaScript object. See [FormControlConfig]. |
+| customValidators | See [Custom Validators].                                   |
+| customComponents | See [Custom Components].                                   |
+| uiComponents     | See [Custom UI Components].                                |
+| layoutComponents | See [Layout components and templates].                     |
+| layoutTemplates  | See [Layout components and templates].                     |
+| inputTemplates   | See [Custom Components - using &lt;ng-template&gt;].       |
 
-> If you pass `configs` in **JSON string**, you need to put it in an object:
+> If `configs` is **JSON string**, it needs to be wrapped:
 >
 > ```json
 > {
 >  "configs": [...]
 > }
 > ```
+
+> JSON Schema: https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/projects/ng-dynamic-json-form/src/lib/config-schema.json
 
 ## @Ouput
 
