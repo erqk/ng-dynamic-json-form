@@ -7,8 +7,9 @@
     "VALIDATORS": "Supports Angular built in validators and custom validators.",
     "UI_LIBRARY": "Support third party UI libraries."
   },
+  "GET_STARTED": "Get started",
   "INTRODUCTION": {
-    "BRIEF": "Generate Angular reactive form with JSON data. Support conditional rendering and validators toggle, and third party UI libraries."
+    "BRIEF": "Generate Angular reactive form with JSON."
   },
   "MENU": {
     "DOCS": "Docs",

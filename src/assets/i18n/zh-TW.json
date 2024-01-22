@@ -7,8 +7,9 @@
     "VALIDATORS": "支援 Angular 內建驗證器和自訂驗證器。",
     "UI_LIBRARY": "支援第三方 UI 套件。"
   },
+  "GET_STARTED": "開始使用",
   "INTRODUCTION": {
-    "BRIEF": "從 JSON 資料動態生成 Angular 表單。可設定條件切換顯示狀態和驗證器，並支援第三方 UI 套件。"
+    "BRIEF": "使用 JSON 生成 Angular 表單。"
   },
   "MENU": {
     "DOCS": "文件",

@@ -12,8 +12,12 @@
     <h1>NgDynamicJsonForm</h1>
     <p>{{ i18nContent$.value.INTRODUCTION.BRIEF }}</p>
 
-    <button type="button" class="btn-start" [routerLink]="'/getting-started'">
-      {{ i18nContent$.value.MENU.GETTING_STARTED }}
+    <button
+      type="button"
+      class="py-3 px-8 mt-12 bg-[var(--primary-500)] text-white rounded-full"
+      [routerLink]="'/docs'"
+    >
+      {{ i18nContent$.value.GET_STARTED }}
     </button>
   </div>
 
