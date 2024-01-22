@@ -119,6 +119,10 @@ export class PagePlaygroundComponent {
     })
   );
 
+  ngOnInit(): void {
+    window.scrollTo({ top: 0 });
+  }
+
   onTemplateEdit(value: boolean): void {
     this.showEditor = value;
   }

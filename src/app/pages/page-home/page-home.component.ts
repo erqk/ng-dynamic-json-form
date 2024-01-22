@@ -41,6 +41,10 @@ export class PageHomeComponent {
   i18nContent$ = this._languageDataService.i18nContent$;
   headerHeight$ = this._layoutService.headerHeight$;
 
+  ngOnInit(): void {
+    window.scrollTo({ top: 0 });
+  }
+
   setVisibleLayer(index: number): void {
     this.visibleLayer = index;
   }
