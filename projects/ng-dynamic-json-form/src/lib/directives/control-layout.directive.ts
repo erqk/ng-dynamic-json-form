@@ -10,7 +10,7 @@ export class ControlLayoutDirective {
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
-    type?: 'child' | 'host' | 'label' | 'description';
+    type?: 'host' | 'label' | 'content' | 'description';
     layout?: FormControlConfig['layout'];
     isNested?: boolean;
     readonly?: boolean;
