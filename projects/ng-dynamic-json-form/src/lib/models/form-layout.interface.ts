@@ -3,8 +3,8 @@ export interface FormLayout {
   hostStyles?: string;
   labelClass?: string;
   labelStyles?: string;
-  childClass?: string;
-  childStyles?: string;
+  contentClass?: string;
+  contentStyles?: string;
   descriptionClass?: string;
   descriptionStyles?: string;
 
@@ -17,8 +17,6 @@ export interface FormLayout {
   /**Set to true to take control of how to display label */
   hideLabel?: boolean;
 
-  /**Enable expand/collapse of children in the FormGroup/FormArray
-   * The default state will be determined by value provided
-   */
-  childCollapsible?: 'collapse' | 'expand';
+  /**Enable expand/collapse of content. The default state will be determined by value provided */
+  contentCollapsible?: 'collapse' | 'expand';
 }
