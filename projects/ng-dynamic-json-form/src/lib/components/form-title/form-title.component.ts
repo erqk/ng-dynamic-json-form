@@ -85,7 +85,10 @@ export class FormTitleComponent {
 
     const transitionEnd$ = fromEvent(this.collapsibleEl, 'transitionend').pipe(
       filter(() => this.expand),
-      tap(() => this._renderer2.removeStyle(this.collapsibleEl, 'height'))
+      tap(() => {
+        this._renderer2.removeStyle(this.collapsibleEl, 'height');
+        this._renderer2.removeStyle(this.collapsibleEl, 'overflow');
+      })
     );
 
     transitionEnd$.pipe(takeUntil(this._onDestroy$)).subscribe();
@@ -108,6 +111,7 @@ export class FormTitleComponent {
   }
 
   private _setCollapseStyle(): void {
+    this._renderer2.setStyle(this.collapsibleEl, 'overflow', 'hidden');
     this._renderer2.setStyle(this.collapsibleEl, 'height', '0px');
   }
 
