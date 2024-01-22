@@ -52,7 +52,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
   {
     formControlName: 'toggles',
     layout: {
-      childStyles: 'display: flex; gap: 2.5rem;',
+      contentStyles: 'display: flex; gap: 2.5rem;',
     },
     children: [
       {
@@ -89,7 +89,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
   {
     formControlName: 'address',
     layout: {
-      childStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
+      contentStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
     },
     children: [
       {
@@ -159,7 +159,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
       min: 'Date(2024/01/01)',
       minDate: 'Date(2024/01/01)',
       showTime: true,
-      showIcon: true
+      showIcon: true,
     },
   },
   {
