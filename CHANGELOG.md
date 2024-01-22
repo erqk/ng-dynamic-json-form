@@ -1,5 +1,23 @@
 # Change log
 
+## 5.0.1
+
+### Fix
+
+- `contentClass` and `contentStyles` not correctly injected into FormGroup.
+
+## 5.0.0
+
+### Feature
+
+- Support class and inline styles for content of each FormControl, FormGroup and FormArray.
+
+### Changes
+
+- FormLayout: Rename `childClass` to `contentClass`.
+- FormLayout: Rename `childStyles` to `contentStyles`.
+- FormLayout: Rename `childCollapsible` to `contentCollapsible`.
+
 ## 4.0.5
 
 ### Feature
