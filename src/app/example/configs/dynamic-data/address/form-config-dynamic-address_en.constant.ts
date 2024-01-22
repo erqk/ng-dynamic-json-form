@@ -5,7 +5,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
     label: 'Address (dynamic)',
     formControlName: 'address',
     layout: {
-      childStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
+      contentStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
     },
     children: [
       {
