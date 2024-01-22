@@ -108,12 +108,6 @@
     flex-direction: column;
   }
 
-  .input-label {
-    display: block;
-    font-weight: var(--font-weight-label);
-    font-size: var(--font-size-label);
-  }
-
   .input-container {
     margin-top: 0.25em;
   }
@@ -126,6 +120,12 @@
   // ==================== FormControl ======================
   .form-control-container {
     min-width: 0;
+
+    .form-title {
+      margin-bottom: 0;
+      font-weight: var(--font-weight-label);
+      font-size: var(--font-size-label);
+    }
 
     // Wrapper for checkboxes, radio buttons
     .group-buttons {
