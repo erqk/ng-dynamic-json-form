@@ -1,5 +1,15 @@
 # Change log
 
+## 4.0.5
+
+### Feature
+
+- `layout.childCollapsible` supports FormControl.
+
+### Fix
+
+- FormTitleComponent: `overflow:hidden` should be remove once the `collapsibleEl` is fully expanded.
+
 ## 4.0.4
 
 ### Fix
@@ -18,7 +28,7 @@
 
 ## 4.0.0
 
-### Features
+### Feature
 
 - Add schema validation for `configs` before building the form.
 - Add support for dynamic options data
