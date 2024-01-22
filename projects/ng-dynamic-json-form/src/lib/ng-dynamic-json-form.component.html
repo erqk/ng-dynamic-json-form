@@ -117,8 +117,8 @@
                 parentForm: parentForm.controls[config.formControlName],
                 isNested: true && !(config?.layout?.hideLabel === true || !config?.label),
                 hostLayout: {
-                  hostClass: config?.layout?.childClass,
-                  hostStyles: config?.layout?.childStyles,
+                  hostClass: config?.layout?.contentClass,
+                  hostStyles: config?.layout?.contentStyles,
                 }
               }"
               ></ng-container>
