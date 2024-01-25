@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   AbstractControl,
-  FormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators,
@@ -9,7 +8,7 @@ import {
   isFormControl,
   isFormGroup,
 } from '@angular/forms';
-import { EMPTY, Observable, debounceTime, map, startWith, tap } from 'rxjs';
+import { EMPTY, Observable, map, startWith } from 'rxjs';
 import { ValidatorConfig } from '../models';
 import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 import { clearEmpties } from '../utilities/clear-empties';
@@ -30,17 +29,6 @@ function emailValidator(control: AbstractControl): ValidationErrors | null {
 export class FormValidationService {
   customValidators?: { [key: string]: ValidatorFn };
 
-  formErrorEvent$(form: FormGroup): Observable<any> {
-    return form.statusChanges.pipe(
-      startWith(form.status),
-      debounceTime(0),
-      tap(() => {
-        const errors = this._getFormErrors(form);
-        form.setErrors(errors, { emitEvent: false });
-      })
-    );
-  }
-
   getErrorMessages$(
     control: AbstractControl | null | undefined,
     validators?: ValidatorConfig[]
@@ -55,29 +43,6 @@ export class FormValidationService {
         this._getErrorMessages(control.errors, control.value, validators)
       )
     );
-  }
-
-  /**Get the error messages of the control */
-  private _getErrorMessages(
-    controlErrors: ValidationErrors | null,
-    controlValue: any,
-    validatorConfigs: ValidatorConfig[]
-  ): string[] {
-    if (!controlErrors) return [];
-
-    return Object.keys(controlErrors).reduce((acc, key) => {
-      const config = validatorConfigs.find((x) => x.name.toLowerCase() === key);
-      const error = controlErrors[key];
-      const errorStringified =
-        typeof error === 'string' ? error : JSON.stringify(error);
-      const customMessage = config?.message?.replace(
-        /{{value}}/g,
-        controlValue || ''
-      );
-
-      acc.push(customMessage || errorStringified);
-      return acc;
-    }, [] as string[]);
   }
 
   getValidators(input: ValidatorConfig[]): ValidatorFn[] {
@@ -136,7 +101,7 @@ export class FormValidationService {
    *  }
    * }
    */
-  private _getFormErrors(
+  getFormErrors(
     control: AbstractControl,
     prevResult?: ValidationErrors | null
   ): ValidationErrors | null {
@@ -150,14 +115,14 @@ export class FormValidationService {
 
     if (isFormGroup(control)) {
       errorsGet = Object.keys(control.controls).reduce((acc, key) => {
-        const err = this._getFormErrors(control.controls[key], result);
+        const err = this.getFormErrors(control.controls[key], result);
         return err ? { ...acc, [key]: err } : acc;
       }, {});
     }
 
     if (isFormArray(control)) {
       const childrenErrors = control.controls
-        .map((x) => this._getFormErrors(x, result))
+        .map((x) => this.getFormErrors(x, result))
         .filter((x) => !!x);
 
       errorsGet = {
@@ -170,5 +135,28 @@ export class FormValidationService {
 
     const noErrors = !result || !Object.keys(result).length;
     return noErrors ? null : result;
+  }
+
+  /**Get the error messages of the control */
+  private _getErrorMessages(
+    controlErrors: ValidationErrors | null,
+    controlValue: any,
+    validatorConfigs: ValidatorConfig[]
+  ): string[] {
+    if (!controlErrors) return [];
+
+    return Object.keys(controlErrors).reduce((acc, key) => {
+      const config = validatorConfigs.find((x) => x.name.toLowerCase() === key);
+      const error = controlErrors[key];
+      const errorStringified =
+        typeof error === 'string' ? error : JSON.stringify(error);
+      const customMessage = config?.message?.replace(
+        /{{value}}/g,
+        controlValue || ''
+      );
+
+      acc.push(customMessage || errorStringified);
+      return acc;
+    }, [] as string[]);
   }
 }

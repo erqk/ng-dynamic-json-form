@@ -108,6 +108,7 @@ export class NgDynamicJsonFormComponent
 
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
+  private _formErrors: ValidationErrors | null = null;
 
   config: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
@@ -123,7 +124,7 @@ export class NgDynamicJsonFormComponent
    *
    * @example
    * JSON config:
-   * {  
+   * {
    *    ...
    *    "validators": [
    *      {
@@ -148,7 +149,7 @@ export class NgDynamicJsonFormComponent
    *
    * @example
    * JSON config:
-   * {  
+   * {
    *    ...
    *    "customComponent": "compA"
    * }
@@ -221,7 +222,12 @@ export class NgDynamicJsonFormComponent
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this.form?.errors ?? null;
+    const errors = !this.form
+      ? null
+      : this._formValidationService.getFormErrors(this.form);
+
+    this.form?.setErrors(errors);
+    return errors;
   }
 
   registerOnValidatorChange?(fn: () => void): void {
@@ -310,18 +316,18 @@ export class NgDynamicJsonFormComponent
   private _setupListeners(): void {
     if (!this.form) return;
 
-    const errors$ = this._formValidationService.formErrorEvent$(this.form);
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
       this.config
     );
+
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
       debounceTime(0),
       tap((x) => this._onChange(x))
     );
 
-    merge(valueChanges$, conditions$, errors$)
+    merge(valueChanges$, conditions$)
       .pipe(
         tap(() => this._cd.detectChanges()),
         takeUntil(merge(this._reset$, this._onDestroy$))
