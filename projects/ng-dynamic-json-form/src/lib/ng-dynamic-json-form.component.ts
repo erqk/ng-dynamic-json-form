@@ -196,8 +196,12 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    const { hideErrorMessage } = simpleChanges;
-    if (hideErrorMessage) return;
+    if (
+      Object.keys(simpleChanges).length === 1 &&
+      Object.keys(simpleChanges)[0] === 'hideErrorMessage'
+    ) {
+      return;
+    }
 
     this.uiComponentsGet = {
       ...UI_BASIC_COMPONENTS,
