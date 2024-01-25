@@ -7,13 +7,6 @@
   &:active {
     color: var(--primary-500);
     font-weight: bold;
-
-    &.active {
-      .template-edit {
-        opacity: 1;
-        pointer-events: auto;
-      }
-    }
   }
 
   &.active {
@@ -21,10 +14,16 @@
     font-weight: bold;
     padding: 1rem 0.5rem;
     color: var(--primary-500);
+
+    .template-edit {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
   .template-edit {
     backdrop-filter: blur(4px);
+    opacity: 0;
 
     button {
       border-radius: 0.5rem;
