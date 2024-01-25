@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.2
+
+### Fix
+
+- Validation errors is always null when bind using ControlValueAccessor.
+
 ## 5.0.1
 
 ### Fix
