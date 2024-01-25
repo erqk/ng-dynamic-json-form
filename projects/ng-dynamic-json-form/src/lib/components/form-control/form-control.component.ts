@@ -6,6 +6,7 @@ import {
   ElementRef,
   HostBinding,
   Input,
+  SimpleChanges,
   TemplateRef,
   Type,
   ViewChild,
@@ -89,6 +90,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() layoutComponents?: LayoutComponents;
   @Input() layoutTemplates?: LayoutTemplates;
   @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
+  @Input() hideErrorMessage?: boolean;
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
@@ -122,6 +124,16 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     return this._controlComponentRef?.validate(control) ?? null;
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    const { hideErrorMessage } = simpleChanges;
+
+    if (hideErrorMessage && this._controlComponentRef) {
+      this._controlComponentRef['_internal_hideErrors$'].next(
+        this.hideErrorMessage ?? false
+      );
+    }
   }
 
   ngOnInit(): void {
