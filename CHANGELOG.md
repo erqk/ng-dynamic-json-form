@@ -1,5 +1,24 @@
 # Change log
 
+## 5.0.5
+
+### Fix
+
+- `hideErrorMessage` toggle logic.
+- Control element flex alignment in row.
+
+## 5.0.4
+
+### Fix
+
+- Form is not build when `hideErrorMessage` is set to true.
+
+## 5.0.3
+
+### Feature
+
+- Add `hideErrorMessage` input to control the show/hide of all error messages.
+
 ## 5.0.2
 
 ### Fix

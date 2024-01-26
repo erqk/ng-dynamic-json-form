@@ -41,6 +41,7 @@
     display: grid;
     column-gap: var(--column-gap);
     row-gap: var(--row-gap);
+    align-items: flex-end;
   }
 
   .form-title {

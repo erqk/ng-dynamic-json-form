@@ -10,6 +10,7 @@ import {
   Output,
   PLATFORM_ID,
   Renderer2,
+  SimpleChanges,
   TemplateRef,
   forwardRef,
   inject,
@@ -26,7 +27,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import Ajv from 'ajv';
-import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, merge, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -108,7 +109,6 @@ export class NgDynamicJsonFormComponent
 
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
-  private _formErrors: ValidationErrors | null = null;
 
   config: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
@@ -179,6 +179,9 @@ export class NgDynamicJsonFormComponent
    */
   @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
 
+  /**Control the show/hide of all the error messages */
+  @Input() hideErrorMessage?: boolean;
+
   @Output() formGet = new EventEmitter();
 
   @HostListener('focusout', ['$event'])
@@ -188,8 +191,15 @@ export class NgDynamicJsonFormComponent
     });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
+      return;
+    }
+
+    if (
+      Object.keys(simpleChanges).length === 1 &&
+      Object.keys(simpleChanges)[0] === 'hideErrorMessage'
+    ) {
       return;
     }
 
@@ -322,7 +332,6 @@ export class NgDynamicJsonFormComponent
     );
 
     const valueChanges$ = this.form.valueChanges.pipe(
-      startWith(this.form.value),
       debounceTime(0),
       tap((x) => this._onChange(x))
     );

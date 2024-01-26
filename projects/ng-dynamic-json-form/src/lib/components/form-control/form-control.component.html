@@ -84,7 +84,7 @@
       <div
         class="errors-container"
         [ngClass]="{
-          hidden: !control?.errors || data.layout?.hideErrorMessage === true
+          hidden: !showErrors
         }"
       >
         <!-- Custom error message component -->
@@ -93,9 +93,9 @@
           *ngIf="layoutTemplates?.errorMessage"
           [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
           [ngTemplateOutletContext]="{
-        control,
-        messages: errorMessages
-      }"
+            control,
+            messages: errorMessages
+          }"
         ></ng-container>
 
         <!-- Default error message component -->

@@ -1,11 +1,16 @@
-import { Component, HostListener, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
 import { ControlValueService, FormValidationService } from '../../services';
@@ -16,6 +21,7 @@ import { ControlValueService, FormValidationService } from '../../services';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
+  private readonly _internal_cd = inject(ChangeDetectorRef);
   private readonly _internal_controlValueService = inject(ControlValueService, {
     optional: true,
   });
@@ -26,6 +32,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   );
 
   private _internal_onTouched = () => {};
+  private _internal_hideErrors$ = new BehaviorSubject<boolean>(false);
   private readonly _internal_init$ = new Subject<void>();
 
   /**Can be override by instance of `AbstractControl`
@@ -45,8 +52,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   writeValue(obj: any): void {
     this._internal_control.patchValue(this._internal_mapData('input', obj));
-    this._internal_control.markAsDirty();
-    this._internal_control.markAsTouched();
   }
 
   registerOnChange(fn: any): void {
@@ -69,7 +74,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._internal_control?.errors ?? null;
+    return this._internal_control?.errors;
   }
 
   /**
@@ -85,12 +90,29 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _internal_listenErrors(control?: AbstractControl): void {
     if (!control || !this._internal_formValidationService) return;
 
-    this._internal_formValidationService
+    const errorMessage$ = this._internal_formValidationService
       .getErrorMessages$(control, this.data?.validators)
-      .pipe(
-        tap((x) => (this.errorMessages = x)),
-        takeUntil(this._internal_init$)
-      )
+      .pipe(tap((x) => (this.errorMessages = x)));
+
+    const setErrors$ = merge(
+      this._internal_hideErrors$,
+      control.valueChanges
+    ).pipe(
+      tap(() => {
+        // Set errors only when parent control has errors but internal control doesn't.
+        const setErrors = !this._internal_control.errors && !!control.errors;
+        const errors =
+          !this._internal_hideErrors$.value && setErrors
+            ? control.errors
+            : null;
+
+        this._internal_control.setErrors(errors, { emitEvent: false });
+        this._internal_cd.detectChanges();
+      })
+    );
+
+    merge(errorMessage$, setErrors$)
+      .pipe(takeUntil(this._internal_init$))
       .subscribe();
   }
 

@@ -53,8 +53,7 @@ export class HeaderComponent {
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
-    this.showBackground =
-      window.scrollY > this._layoutService.headerHeight$.value * 0.5;
+    this.showBackground = window.scrollY > 0;
   }
 
   ngAfterViewInit(): void {
