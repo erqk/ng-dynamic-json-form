@@ -83,7 +83,9 @@ export class FormTitleComponent {
   private _listenTransition(): void {
     if (!this.collapsibleEl) return;
 
-    const transitionEnd$ = fromEvent(this.collapsibleEl, 'transitionend').pipe(
+    const transitionEnd$ = fromEvent(this.collapsibleEl, 'transitionend', {
+      passive: true,
+    }).pipe(
       filter(() => this.expand),
       tap(() => {
         this._renderer2.removeStyle(this.collapsibleEl, 'height');
