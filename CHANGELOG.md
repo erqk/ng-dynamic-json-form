@@ -1,5 +1,12 @@
 # Change log
 
+## 5.0.5
+
+### Fix
+
+- `hideErrorMessage` toggle logic.
+- Control element flex alignment in row.
+
 ## 5.0.4
 
 ### Fix
