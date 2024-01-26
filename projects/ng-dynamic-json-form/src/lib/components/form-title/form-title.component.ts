@@ -27,6 +27,7 @@ import {
 export class FormTitleComponent {
   private readonly _renderer2 = inject(Renderer2);
   private readonly _onDestroy$ = new Subject<void>();
+  private _viewInitialized = false;
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
@@ -49,9 +50,11 @@ export class FormTitleComponent {
   };
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
+    if (!this._viewInitialized) return;
+
     const { state } = simpleChanges;
 
-    if (state) {
+    if (state && this._collapsible) {
       switch (this.state) {
         case 'collapse':
           this.toggle(false);
@@ -80,6 +83,7 @@ export class FormTitleComponent {
 
     this._initCollapsibleEl();
     this._listenTransition();
+    this._viewInitialized = true;
   }
 
   ngOnDestroy(): void {
