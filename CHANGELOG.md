@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.6
+
+### Feature
+
+- Add property `collapsibleState` to toggle all collapsible together.
+
 ## 5.0.5
 
 ### Fix

@@ -57,6 +57,7 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 | layoutTemplates  | 請參閱 [使用自訂元件和模板]。                              |
 | inputTemplates   | 請參閱 [自訂元件 - 使用 &lt;ng-template&gt;]。             |
 | hideErrorMessage | 顯示/隱藏所有錯誤訊息。                                    |
+| collapsibleState | `collapse` \| `expand`。設定所有的展開/收合狀態。          |
 
 > 如果 `configs` 是 **JSON 字串**, 需要多包一層:
 >
