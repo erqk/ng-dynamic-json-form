@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.9
+
+### Fix
+
+- Form title initial expand state.
+
 ## 5.0.6
 
 ### Feature
