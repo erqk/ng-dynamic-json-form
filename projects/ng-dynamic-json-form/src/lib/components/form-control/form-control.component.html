@@ -84,14 +84,7 @@
       <div
         class="errors-container"
         [ngClass]="{
-          hidden:
-            hideErrorMessage ||
-            (!control?.touched &&
-              (control?.value === '' ||
-                control?.value === null ||
-                control?.value === undefined)) ||
-            !control?.errors ||
-            data.layout?.hideErrorMessage === true
+          hidden: !showErrors
         }"
       >
         <!-- Custom error message component -->

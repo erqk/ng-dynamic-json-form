@@ -133,6 +133,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       this._controlComponentRef['_internal_hideErrors$'].next(
         this.hideErrorMessage ?? false
       );
+
+      if (!this.hideErrorMessage) {
+        this.control?.markAllAsTouched();
+      }
     }
   }
 
@@ -148,6 +152,17 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._injectInputComponent();
     this._injectErrorMessageComponent();
     this._cd.detectChanges();
+  }
+
+  get showErrors(): boolean {
+    const controlTouched = this.control?.touched ?? false;
+    const hasErrors = !!this.control?.errors;
+
+    if (this.hideErrorMessage) {
+      return false;
+    }
+
+    return controlTouched && hasErrors;
   }
 
   private _setReadonlyStyle(): void {
