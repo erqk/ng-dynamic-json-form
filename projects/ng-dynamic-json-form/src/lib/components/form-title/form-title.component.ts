@@ -66,7 +66,8 @@ export class FormTitleComponent {
 
   ngOnInit(): void {
     this.collapsible = this._collapsible;
-    this.expand = this.layout?.contentCollapsible === 'expand';
+    this.expand =
+      this.state === 'expand' && this.layout?.contentCollapsible === 'expand';
   }
 
   ngAfterViewInit(): void {
