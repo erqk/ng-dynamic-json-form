@@ -6,6 +6,7 @@ import {
   ElementRef,
   HostBinding,
   Input,
+  SimpleChanges,
   TemplateRef,
   Type,
   ViewChild,
@@ -89,6 +90,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   @Input() layoutComponents?: LayoutComponents;
   @Input() layoutTemplates?: LayoutTemplates;
   @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
+  @Input() hideErrorMessage?: boolean;
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
@@ -124,6 +126,20 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this._controlComponentRef?.validate(control) ?? null;
   }
 
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    const { hideErrorMessage } = simpleChanges;
+
+    if (hideErrorMessage && this._controlComponentRef) {
+      this._controlComponentRef['_internal_hideErrors$'].next(
+        this.hideErrorMessage ?? false
+      );
+
+      if (!this.hideErrorMessage) {
+        this.control?.markAllAsTouched();
+      }
+    }
+  }
+
   ngOnInit(): void {
     this._setReadonlyStyle();
     this._getErrorMessages();
@@ -136,6 +152,17 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._injectInputComponent();
     this._injectErrorMessageComponent();
     this._cd.detectChanges();
+  }
+
+  get showErrors(): boolean {
+    const controlTouched = this.control?.touched ?? false;
+    const hasErrors = !!this.control?.errors;
+
+    if (this.hideErrorMessage) {
+      return false;
+    }
+
+    return controlTouched && hasErrors;
   }
 
   private _setReadonlyStyle(): void {

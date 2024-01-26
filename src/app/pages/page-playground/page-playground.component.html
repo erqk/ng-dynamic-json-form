@@ -75,9 +75,13 @@
             [size]="asSplitSizes[0]"
           >
             <!-- UI library select -->
-            <div class="w-1/2 m-4 ml-auto">
+            <div class="flex gap-8 mx-4 ml-auto">
               <ng-container
                 *ngTemplateOutlet="formUiSelectTemplate"
+              ></ng-container>
+
+              <ng-container
+                *ngTemplateOutlet="errorMessageToggle"
               ></ng-container>
             </div>
 
@@ -173,7 +177,14 @@
         'overflow-auto'
       ]"
     >
-      <div class="p-4 bg-[rgb(50,50,50,0.75)] text-white">
+      <!-- UI select -->
+      <div
+        [ngClass]="[
+          'p-4',
+          'border-b border-[var(--border-color-25)]',
+          'bg-[rgba(var(--text-color-rgb),0.075)]'
+        ]"
+      >
         <ng-container
           *ngTemplateOutlet="
             formUiSelectTemplate;
@@ -182,6 +193,10 @@
             }
           "
         ></ng-container>
+
+        <div class="mt-5">
+          <ng-container *ngTemplateOutlet="errorMessageToggle"></ng-container>
+        </div>
       </div>
 
       <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
@@ -214,11 +229,24 @@
   </div>
 </ng-template>
 
+<ng-template #errorMessageToggle>
+  <div class="ng-dynamic-json-form ui-basic">
+    <div class="form-control-container">
+      <label class="option-button switch-button justify-between">
+        <input type="checkbox" [formControl]="hideErrorMessageControl" />
+        <span>hideErrorMessage</span>
+        <span class="marker"></span>
+      </label>
+    </div>
+  </div>
+</ng-template>
+
 <ng-template #dynamicFormTemplate>
   <ng-dynamic-json-form
     class="flex flex-col p-5 text-sm lg:text-base"
     [configs]="(configs$ | async) ?? []"
     [uiComponents]="customUiComponents[currentUi]"
+    [hideErrorMessage]="hideErrorMessageControl.value ?? false"
     [formControl]="formControl"
     (formGet)="onFormGet($event)"
   ></ng-dynamic-json-form>

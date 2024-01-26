@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -93,6 +94,8 @@ export class PagePlaygroundComponent {
   currentUi =
     this._playgroundSettingsService.formUi ||
     Object.keys(this.customUiComponents)[0];
+
+  hideErrorMessageControl = new FormControl(false);
 
   headerHeight$ = this._layoutService.headerHeight$;
   windowSize$ = this._layoutService.windowSize$;
