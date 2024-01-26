@@ -52,6 +52,7 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
+import { FormLayout } from './models/form-layout.interface';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -182,6 +183,9 @@ export class NgDynamicJsonFormComponent
   /**Control the show/hide of all the error messages */
   @Input() hideErrorMessage?: boolean;
 
+  /**Toggle all the collapsible state */
+  @Input() collapsibleState?: FormLayout['contentCollapsible'];
+
   @Output() formGet = new EventEmitter();
 
   @HostListener('focusout', ['$event'])
@@ -196,20 +200,17 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    if (
-      Object.keys(simpleChanges).length === 1 &&
-      Object.keys(simpleChanges)[0] === 'hideErrorMessage'
-    ) {
-      return;
+    const { configs, customValidators, uiComponents } = simpleChanges;
+
+    if (configs || customValidators || uiComponents) {
+      this.uiComponentsGet = {
+        ...UI_BASIC_COMPONENTS,
+        ...this.uiComponents,
+      };
+
+      this._setHostUiClass();
+      this._buildForm();
     }
-
-    this.uiComponentsGet = {
-      ...UI_BASIC_COMPONENTS,
-      ...this.uiComponents,
-    };
-
-    this._setHostUiClass();
-    this._buildForm();
   }
 
   ngOnInit(): void {

@@ -55,18 +55,33 @@
               readonly: config?.readonly
             }"
           >
-            <form-control
-              [data]="config"
-              [control]="parentForm.controls[config.formControlName]"
-              [form]="form"
-              [formControlName]="config.formControlName"
-              [customComponent]="customComponents?.[config?.customComponent]"
-              [uiComponents]="uiComponentsGet"
-              [layoutComponents]="layoutComponents"
-              [layoutTemplates]="layoutTemplates"
-              [inputTemplates]="inputTemplates"
-              [hideErrorMessage]="hideErrorMessage"
-            ></form-control>
+            <ng-container
+              *ngIf="config.label && config?.layout?.hideLabel !== true"
+            >
+              <form-title
+                [label]="config.label"
+                [layout]="config.layout"
+                [collapsibleEl]="formControlContent"
+                [customTemplate]="layoutTemplates?.formTitle"
+                [customComponent]="layoutComponents?.formTitle"
+                [state]="collapsibleState"
+              ></form-title>
+            </ng-container>
+
+            <div #formControlContent>
+              <form-control
+                [data]="config"
+                [control]="parentForm.controls[config.formControlName]"
+                [form]="form"
+                [formControlName]="config.formControlName"
+                [customComponent]="customComponents?.[config?.customComponent]"
+                [uiComponents]="uiComponentsGet"
+                [layoutComponents]="layoutComponents"
+                [layoutTemplates]="layoutTemplates"
+                [inputTemplates]="inputTemplates"
+                [hideErrorMessage]="hideErrorMessage"
+              ></form-control>
+            </div>
           </div>
         </ng-container>
 
@@ -94,7 +109,8 @@
                 [layout]="config?.layout"
                 [customComponent]="layoutComponents?.formTitle"
                 [customTemplate]="layoutTemplates?.formTitle"
-                [collapsibleEl]="formGroupChildren"
+                [collapsibleEl]="formGroupContent"
+                [state]="collapsibleState"
               ></form-title>
             </ng-container>
 
@@ -108,7 +124,7 @@
               }"
             ></ng-container>
 
-            <div #formGroupChildren>
+            <div #formGroupContent>
               <ng-container
                 [ngTemplateOutlet]="formGroupTemplate"
                 [ngTemplateOutletContext]="{
@@ -189,11 +205,12 @@
         [layout]="layout"
         [customComponent]="layoutComponents?.formTitle"
         [customTemplate]="layoutTemplates?.formTitle"
-        [collapsibleEl]="formArrayChildren"
+        [collapsibleEl]="formArrayContent"
+        [state]="collapsibleState"
       ></form-title>
     </ng-container>
 
-    <div #formArrayChildren>
+    <div #formArrayContent>
       <ng-container
         *ngIf="description"
         [ngTemplateOutlet]="descriptionTemplate"

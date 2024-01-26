@@ -38,17 +38,11 @@ import { FormValidationService, OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { FormTitleComponent } from '../form-title/form-title.component';
 
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [
-    CommonModule,
-    ErrorMessageComponent,
-    ControlLayoutDirective,
-    FormTitleComponent,
-  ],
+  imports: [CommonModule, ErrorMessageComponent, ControlLayoutDirective],
   templateUrl: './form-control.component.html',
   providers: [
     {

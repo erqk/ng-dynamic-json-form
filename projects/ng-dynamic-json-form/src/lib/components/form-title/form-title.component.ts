@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   Renderer2,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -10,6 +11,7 @@ import {
 import { Subject, filter, fromEvent, takeUntil, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
+import { FormLayout } from '../../models/form-layout.interface';
 import {
   LayoutComponents,
   LayoutTemplates,
@@ -29,6 +31,7 @@ export class FormTitleComponent {
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
   @Input() collapsibleEl?: HTMLElement;
+  @Input() state?: FormLayout['contentCollapsible'];
   @Input() customComponent?: LayoutComponents['formTitle'];
   @Input() customTemplate?: LayoutTemplates['formTitle'];
 
@@ -38,12 +41,28 @@ export class FormTitleComponent {
   collapsible = false;
   expand = false;
 
-  toggle = () => {
+  toggle = (value?: boolean) => {
     if (!this._collapsible) return;
 
-    this.expand = !this.expand;
+    this.expand = value ?? !this.expand;
     this._setElementHeight();
   };
+
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    const { state } = simpleChanges;
+
+    if (state) {
+      switch (this.state) {
+        case 'collapse':
+          this.toggle(false);
+          break;
+
+        case 'expand':
+          this.toggle(true);
+          break;
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.collapsible = this._collapsible;
