@@ -56,10 +56,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   registerOnChange(fn: any): void {
     this._internal_control?.valueChanges
-      .pipe(
-        startWith(this._internal_control.value),
-        map((x) => this._internal_mapData('output', x))
-      )
+      .pipe(map((x) => this._internal_mapData('output', x)))
       .subscribe(fn);
   }
 
