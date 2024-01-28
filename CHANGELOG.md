@@ -1,5 +1,17 @@
 # Change log
 
+## 5.0.10
+
+### Fix
+
+- Control prestine and dirty state.
+- Memory leaks caused by Ajv class instantiated multiple times.
+- Style default ui input border color on errors.
+
+### Feature
+
+- Form title custom template add `expand` and `collapsible` variable.
+
 ## 5.0.9
 
 ### Fix
