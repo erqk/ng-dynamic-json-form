@@ -67,7 +67,7 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 
 > JSON Schema: https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/projects/ng-dynamic-json-form/src/lib/config-schema.json
 
-## @Ouput
+## @Output
 
 | 事件    | 說明                                                                   |
 | :------ | :--------------------------------------------------------------------- |

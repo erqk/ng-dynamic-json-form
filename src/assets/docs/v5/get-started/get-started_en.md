@@ -69,7 +69,7 @@ Lastly, add the styles into your `angular.json`:
 
 > JSON Schema: https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/main/projects/ng-dynamic-json-form/src/lib/config-schema.json
 
-## @Ouput
+## @Output
 
 | Event   | Description                                                                      |
 | :------ | :------------------------------------------------------------------------------- |
