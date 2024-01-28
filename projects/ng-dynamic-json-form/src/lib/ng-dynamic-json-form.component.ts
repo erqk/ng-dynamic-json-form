@@ -37,6 +37,7 @@ import * as schema from './config-schema.json';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
+import { FormLayout } from './models/form-layout.interface';
 import {
   LayoutComponents,
   LayoutTemplates,
@@ -52,7 +53,6 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
-import { FormLayout } from './models/form-layout.interface';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -96,8 +96,8 @@ export class NgDynamicJsonFormComponent
   private readonly _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
-  private readonly _platformId = inject(PLATFORM_ID);
   private readonly _cd = inject(ChangeDetectorRef);
+  private readonly _platformId = inject(PLATFORM_ID);
   private readonly _el = inject(ElementRef);
   private readonly _renderer2 = inject(Renderer2);
   private readonly _formGeneratorService = inject(FormGeneratorService);
@@ -108,6 +108,7 @@ export class NgDynamicJsonFormComponent
   private readonly _reset$ = new Subject<void>();
   private readonly _onDestroy$ = new Subject<void>();
 
+  private _ajv = new Ajv({ allErrors: true });
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
@@ -282,12 +283,11 @@ export class NgDynamicJsonFormComponent
     if (!this.configs) return null;
 
     const data = Array.isArray(this.configs)
-      ? { config: this.configs }
+      ? { configs: this.configs }
       : this.configs;
 
     try {
-      const ajv = new Ajv({ allErrors: true });
-      const validate = ajv.compile(schema);
+      const validate = this._ajv.compile(schema);
       const parsed = JSON.parse(JSON.stringify(data));
       const valid = validate(parsed);
 
@@ -298,7 +298,7 @@ export class NgDynamicJsonFormComponent
         return null;
       }
 
-      return (parsed as any)['config'] ?? null;
+      return (parsed as any)['configs'] ?? null;
     } catch (err: any) {
       // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
       this.configValidateErrors = [
