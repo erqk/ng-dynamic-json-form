@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
+  DestroyRef,
   ElementRef,
   HostBinding,
   Input,
@@ -24,7 +25,6 @@ import {
   Validator,
 } from '@angular/forms';
 import { EMPTY, Subject, finalize, takeUntil, tap } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
@@ -34,21 +34,20 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import { FormValidationService, OptionsDataService } from '../../services';
+import {
+  ControlValueService,
+  FormValidationService,
+  OptionsDataService,
+} from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { FormTitleComponent } from '../form-title/form-title.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [
-    CommonModule,
-    ErrorMessageComponent,
-    ControlLayoutDirective,
-    FormTitleComponent,
-  ],
+  imports: [CommonModule, ErrorMessageComponent, ControlLayoutDirective],
   templateUrl: './form-control.component.html',
   providers: [
     {
@@ -64,11 +63,13 @@ import { FormTitleComponent } from '../form-title/form-title.component';
   ],
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
-  private readonly _cd = inject(ChangeDetectorRef);
-  private readonly _el = inject(ElementRef);
-  private readonly _configMappingService = inject(ConfigMappingService);
-  private readonly _optionsDataService = inject(OptionsDataService);
-  private readonly _formValidationService = inject(FormValidationService);
+  private _cd = inject(ChangeDetectorRef);
+  private _el = inject(ElementRef);
+  private _destroyRef = inject(DestroyRef);
+  private _configMappingService = inject(ConfigMappingService);
+  private _optionsDataService = inject(OptionsDataService);
+  private _formValidationService = inject(FormValidationService);
+  private _controlValueService = inject(ControlValueService);
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
@@ -79,8 +80,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
 
-  private readonly _onDestroy$ = new Subject<void>();
-  private readonly _pendingValue$ = new BehaviorSubject<any>('');
+  private _pendingValue: any = null;
 
   @Input() form?: UntypedFormGroup;
   @Input() control?: AbstractControl;
@@ -105,9 +105,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   useCustomLoading = false;
 
   writeValue(obj: any): void {
-    this._pendingValue$.next(obj);
+    const value = this._controlValueService.mapData('output', obj, this.data);
+    this._pendingValue = value;
     this._patchingValue = true;
-    this._controlComponentRef?.writeValue(obj);
+    this._controlComponentRef?.writeValue(value);
   }
 
   registerOnChange(fn: (_: any) => void): void {
@@ -136,6 +137,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
       if (!this.hideErrorMessage) {
         this.control?.markAllAsTouched();
+        this._controlComponentRef.control?.markAllAsTouched();
+        this._controlComponentRef.control?.markAsDirty();
       }
     }
   }
@@ -156,13 +159,14 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   get showErrors(): boolean {
     const controlTouched = this.control?.touched ?? false;
+    const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
     if (this.hideErrorMessage) {
       return false;
     }
 
-    return controlTouched && hasErrors;
+    return (controlDirty || controlTouched) && hasErrors;
   }
 
   private _setReadonlyStyle(): void {
@@ -206,11 +210,20 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     );
 
     componentRef.instance['_internal_init'](this.control);
-    componentRef.instance.writeValue(this._pendingValue$.value);
+    componentRef.instance.writeValue(this._pendingValue);
 
     if (!this.data?.readonly) {
+      const emptyValue =
+        this._pendingValue === '' ||
+        this._pendingValue === null ||
+        this._pendingValue === undefined;
+
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
+
+      if (!emptyValue) {
+        this._onChange(this._pendingValue);
+      }
     }
   }
 
@@ -294,7 +307,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       .getErrorMessages$(this.control, this.data?.validators)
       .pipe(
         tap((x) => (this.errorMessages = x)),
-        takeUntil(this._onDestroy$)
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }

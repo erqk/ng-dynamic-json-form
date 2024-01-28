@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   Input,
   Renderer2,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -10,10 +12,12 @@ import {
 import { Subject, filter, fromEvent, takeUntil, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
+import { FormLayout } from '../../models/form-layout.interface';
 import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-title',
@@ -23,12 +27,14 @@ import {
   styleUrls: ['./form-title.component.scss'],
 })
 export class FormTitleComponent {
-  private readonly _renderer2 = inject(Renderer2);
-  private readonly _onDestroy$ = new Subject<void>();
+  private _renderer2 = inject(Renderer2);
+  private _destroyRef = inject(DestroyRef);
+  private _viewInitialized = false;
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
   @Input() collapsibleEl?: HTMLElement;
+  @Input() state?: FormLayout['contentCollapsible'];
   @Input() customComponent?: LayoutComponents['formTitle'];
   @Input() customTemplate?: LayoutTemplates['formTitle'];
 
@@ -38,16 +44,38 @@ export class FormTitleComponent {
   collapsible = false;
   expand = false;
 
-  toggle = () => {
+  toggle = (value?: boolean) => {
     if (!this._collapsible) return;
 
-    this.expand = !this.expand;
+    this.expand = value ?? !this.expand;
     this._setElementHeight();
   };
 
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    if (!this._viewInitialized) return;
+
+    const { state } = simpleChanges;
+
+    if (state && this._collapsible) {
+      switch (this.state) {
+        case 'collapse':
+          this.toggle(false);
+          break;
+
+        case 'expand':
+          this.toggle(true);
+          break;
+      }
+    }
+  }
+
   ngOnInit(): void {
     this.collapsible = this._collapsible;
-    this.expand = this.layout?.contentCollapsible === 'expand';
+
+    this.expand =
+      this.state === undefined
+        ? this.layout?.contentCollapsible === 'expand'
+        : this.state === 'expand';
   }
 
   ngAfterViewInit(): void {
@@ -60,11 +88,7 @@ export class FormTitleComponent {
 
     this._initCollapsibleEl();
     this._listenTransition();
-  }
-
-  ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this._viewInitialized = true;
   }
 
   private _injectComponent(): void {
@@ -93,7 +117,7 @@ export class FormTitleComponent {
       })
     );
 
-    transitionEnd$.pipe(takeUntil(this._onDestroy$)).subscribe();
+    transitionEnd$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe();
   }
 
   private _setElementHeight(): void {

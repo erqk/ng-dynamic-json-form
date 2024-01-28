@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostListener,
@@ -37,6 +38,7 @@ import * as schema from './config-schema.json';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
+import { FormLayout } from './models/form-layout.interface';
 import {
   LayoutComponents,
   LayoutTemplates,
@@ -52,6 +54,7 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -92,21 +95,22 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
 export class NgDynamicJsonFormComponent
   implements ControlValueAccessor, Validator
 {
-  private readonly _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+  private _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
-  private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _cd = inject(ChangeDetectorRef);
-  private readonly _el = inject(ElementRef);
-  private readonly _renderer2 = inject(Renderer2);
-  private readonly _formGeneratorService = inject(FormGeneratorService);
-  private readonly _formConditionsService = inject(FormConditionsService);
-  private readonly _formValidationService = inject(FormValidationService);
-  private readonly _formPatcherService = inject(FormPatcherService);
-  private readonly _optionsDataService = inject(OptionsDataService);
-  private readonly _reset$ = new Subject<void>();
-  private readonly _onDestroy$ = new Subject<void>();
+  private _cd = inject(ChangeDetectorRef);
+  private _platformId = inject(PLATFORM_ID);
+  private _el = inject(ElementRef);
+  private _renderer2 = inject(Renderer2);
+  private _destroyRef = inject(DestroyRef);
+  private _formGeneratorService = inject(FormGeneratorService);
+  private _formConditionsService = inject(FormConditionsService);
+  private _formValidationService = inject(FormValidationService);
+  private _formPatcherService = inject(FormPatcherService);
+  private _optionsDataService = inject(OptionsDataService);
+  private _reset$ = new Subject<void>();
 
+  private _ajv = new Ajv({ allErrors: true });
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
@@ -182,6 +186,9 @@ export class NgDynamicJsonFormComponent
   /**Control the show/hide of all the error messages */
   @Input() hideErrorMessage?: boolean;
 
+  /**Toggle all the collapsible state */
+  @Input() collapsibleState?: FormLayout['contentCollapsible'];
+
   @Output() formGet = new EventEmitter();
 
   @HostListener('focusout', ['$event'])
@@ -196,20 +203,17 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    if (
-      Object.keys(simpleChanges).length === 1 &&
-      Object.keys(simpleChanges)[0] === 'hideErrorMessage'
-    ) {
-      return;
+    const { configs, customValidators, uiComponents } = simpleChanges;
+
+    if (configs || customValidators || uiComponents) {
+      this.uiComponentsGet = {
+        ...UI_BASIC_COMPONENTS,
+        ...this.uiComponents,
+      };
+
+      this._setHostUiClass();
+      this._buildForm();
     }
-
-    this.uiComponentsGet = {
-      ...UI_BASIC_COMPONENTS,
-      ...this.uiComponents,
-    };
-
-    this._setHostUiClass();
-    this._buildForm();
   }
 
   ngOnInit(): void {
@@ -222,8 +226,6 @@ export class NgDynamicJsonFormComponent
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
     this._reset$.next();
     this._reset$.complete();
     this._formGeneratorService.reset$.next();
@@ -281,12 +283,11 @@ export class NgDynamicJsonFormComponent
     if (!this.configs) return null;
 
     const data = Array.isArray(this.configs)
-      ? { config: this.configs }
+      ? { configs: this.configs }
       : this.configs;
 
     try {
-      const ajv = new Ajv({ allErrors: true });
-      const validate = ajv.compile(schema);
+      const validate = this._ajv.compile(schema);
       const parsed = JSON.parse(JSON.stringify(data));
       const valid = validate(parsed);
 
@@ -297,7 +298,7 @@ export class NgDynamicJsonFormComponent
         return null;
       }
 
-      return (parsed as any)['config'] ?? null;
+      return (parsed as any)['configs'] ?? null;
     } catch (err: any) {
       // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
       this.configValidateErrors = [
@@ -339,7 +340,8 @@ export class NgDynamicJsonFormComponent
     merge(valueChanges$, conditions$)
       .pipe(
         tap(() => this._cd.detectChanges()),
-        takeUntil(merge(this._reset$, this._onDestroy$))
+        takeUntil(this._reset$),
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }

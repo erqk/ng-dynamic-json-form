@@ -1,115 +1,99 @@
 <ng-container *ngIf="data">
-  <ng-container *ngIf="data.label && data.layout?.hideLabel !== true">
-    <form-title
-      [label]="data.label"
-      [layout]="data.layout"
-      [collapsibleEl]="collapsible"
-      [customTemplate]="layoutTemplates?.formTitle"
-      [customComponent]="layoutComponents?.formTitle"
-    ></form-title>
-  </ng-container>
-
-  <div #collapsible>
-    <div
-      [controlLayout]="{
-        type: 'content',
+  <div
+    [controlLayout]="{
+      type: 'content',
+      layout: data.layout
+    }"
+  >
+    <!-- Description (before) -->
+    <ng-container
+      *ngIf="data?.description && data?.layout?.descriptionPosition !== 'after'"
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{
+        description: data.description,
         layout: data.layout
       }"
-    >
-      <!-- Description (before) -->
-      <ng-container
-        *ngIf="
-          data?.description && data?.layout?.descriptionPosition !== 'after'
-        "
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{
-          description: data.description,
-          layout: data.layout
-        }"
-      ></ng-container>
+    ></ng-container>
 
-      <div
-        class="input-container"
-        [ngClass]="{
-          disabled: !useCustomLoading && loading,
-          hidden: useCustomLoading && loading
-        }"
-      >
-        <!-- Input template -->
-        <ng-container
-          *ngIf="inputTemplates?.[data?.customComponent ?? '']"
-          [ngTemplateOutlet]="inputTemplates![data.customComponent!]"
-          [ngTemplateOutletContext]="{
+    <div
+      class="input-container"
+      [ngClass]="{
+        disabled: !useCustomLoading && loading,
+        hidden: useCustomLoading && loading
+      }"
+    >
+      <!-- Input template -->
+      <ng-container
+        *ngIf="inputTemplates?.[data?.customComponent ?? '']"
+        [ngTemplateOutlet]="inputTemplates![data.customComponent!]"
+        [ngTemplateOutletContext]="{
         control,
         data,
         errorMessages
       }"
-        ></ng-container>
-
-        <!-- Input component -->
-        <ng-container
-          *ngIf="!inputTemplates?.[data?.customComponent ?? '']"
-          #inputComponentAnchor
-        ></ng-container>
-      </div>
-
-      <div class="loading-container" [ngClass]="{ hidden: !loading }">
-        <!-- Loading component -->
-        <ng-container *ngIf="layoutComponents?.loading">
-          <ng-container
-            *ngComponentOutlet="layoutComponents!.loading!"
-          ></ng-container>
-        </ng-container>
-
-        <!-- Loading template -->
-        <ng-container
-          *ngIf="layoutTemplates?.loading"
-          [ngTemplateOutlet]="layoutTemplates!.loading!"
-        >
-        </ng-container>
-      </div>
-
-      <!-- Description (after) -->
-      <ng-container
-        *ngIf="
-          data?.description && data?.layout?.descriptionPosition === 'after'
-        "
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{
-          description: data.description,
-          layout: data.layout
-        }"
       ></ng-container>
 
-      <div
-        class="errors-container"
-        [ngClass]="{
-          hidden: !showErrors
-        }"
-      >
-        <!-- Custom error message component -->
-        <ng-container #errorComponentAnchor></ng-container>
+      <!-- Input component -->
+      <ng-container
+        *ngIf="!inputTemplates?.[data?.customComponent ?? '']"
+        #inputComponentAnchor
+      ></ng-container>
+    </div>
+
+    <div class="loading-container" [ngClass]="{ hidden: !loading }">
+      <!-- Loading component -->
+      <ng-container *ngIf="layoutComponents?.loading">
         <ng-container
-          *ngIf="layoutTemplates?.errorMessage"
-          [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
-          [ngTemplateOutletContext]="{
+          *ngComponentOutlet="layoutComponents!.loading!"
+        ></ng-container>
+      </ng-container>
+
+      <!-- Loading template -->
+      <ng-container
+        *ngIf="layoutTemplates?.loading"
+        [ngTemplateOutlet]="layoutTemplates!.loading!"
+      >
+      </ng-container>
+    </div>
+
+    <!-- Description (after) -->
+    <ng-container
+      *ngIf="data?.description && data?.layout?.descriptionPosition === 'after'"
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{
+        description: data.description,
+        layout: data.layout
+      }"
+    ></ng-container>
+
+    <div
+      class="errors-container"
+      [ngClass]="{
+        hidden: !showErrors
+      }"
+    >
+      <!-- Custom error message component -->
+      <ng-container #errorComponentAnchor></ng-container>
+      <ng-container
+        *ngIf="layoutTemplates?.errorMessage"
+        [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
+        [ngTemplateOutletContext]="{
             control,
             messages: errorMessages
           }"
-        ></ng-container>
+      ></ng-container>
 
-        <!-- Default error message component -->
-        <ng-container
-          *ngIf="
-            !layoutComponents?.errorMessage && !layoutTemplates?.errorMessage
-          "
-        >
-          <error-message
-            [control]="control"
-            [validators]="data.validators"
-          ></error-message>
-        </ng-container>
-      </div>
+      <!-- Default error message component -->
+      <ng-container
+        *ngIf="
+          !layoutComponents?.errorMessage && !layoutTemplates?.errorMessage
+        "
+      >
+        <error-message
+          [control]="control"
+          [validators]="data.validators"
+        ></error-message>
+      </ng-container>
     </div>
   </div>
 </ng-container>

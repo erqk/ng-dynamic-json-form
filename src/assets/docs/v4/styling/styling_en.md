@@ -114,7 +114,7 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     errorMessage: errorTemplate
   }"
 >
@@ -184,7 +184,7 @@ Pass the component to the `loading` inside `layoutComponents`.
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     loading: loadingTemplate
   }"
 >

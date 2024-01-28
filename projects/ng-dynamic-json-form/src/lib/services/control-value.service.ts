@@ -51,7 +51,7 @@ export class ControlValueService {
   }
 
   private _getInputDate(input: any): Date {
-    if (!input || !(input instanceof Date)) return input;
+    if (!input || input instanceof Date) return input;
 
     try {
       return new Date(input);
