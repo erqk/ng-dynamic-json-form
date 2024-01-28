@@ -46,6 +46,38 @@ export interface FormLayout {
 }
 ```
 
+### Properties
+
+| Property              | Description                             |
+| :-------------------- | :-------------------------------------- |
+| hostClass             | See [Class & styles](#class--styles).   |
+| hostStyles            | See [Class & styles](#class--styles).   |
+| labelClass            | See [Class & styles](#class--styles).   |
+| labelStyles           | See [Class & styles](#class--styles).   |
+| contentClass          | See [Class & styles](#class--styles).   |
+| contentStyles         | See [Class & styles](#class--styles).   |
+| descriptionClass      | See [Class & styles](#class--styles).   |
+| descriptionStyles     | See [Class & styles](#class--styles).   |
+| descriptionPosition   | Position relative to input element.     |
+| hideValidationMessage | Hide the error message of this control. |
+| hideLabel             | Hide the label of this control.         |
+| contentCollapsible    | See [Collapsible](#collapsible).        |
+
+## Class & styles
+
+Control the styling of the specific section of each control. The sections are `host`, `label`, `content` and `description`. Each section can be styled using class and inline style.
+
+<br>
+
+<div class="docs-control-layout">
+  <div class="label">label</div>
+  <div class="content">
+    <div class="description">description</div>
+    <input type="text">
+    <div class="errors">Error messages</div>
+  </div>
+</div>
+
 ## Layout components and templates
 
 `layoutComponents` and `layoutTemplates` provide the following properties for default UI replacement.
@@ -90,7 +122,27 @@ providers: [
 
 The template for all the error messages in the form.
 
-> To customize specific control, set `hideValidationMessage` to `true` and use `customComponent`. Then you can get the error messages in the component and control how to display them. See [Custom Components](../../v5/custom-components/custom-components_en.md).
+<table>
+  <thead>
+    <tr>
+      <th style="width: 50%">Default</th>
+      <th style="width: 50%">Custom</th>
+    <tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top">
+        <custom-error-message></custom-error-message>
+      </td>
+      <td style="vertical-align: top">
+        <custom-error-message custom-error="true"></custom-error-message>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+> To customize specific control, set `layout.hideValidationMessage` to `true` and use `customComponent`. Then you can get the error messages in the component and control how to display them. See [Custom Components](../../v5/custom-components/custom-components_en.md).
 
 ### Using component
 
@@ -114,7 +166,7 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     errorMessage: errorTemplate
   }"
 >
@@ -130,33 +182,11 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 
 The UI to be used when the data is loading.
 
-<style>
-.loader {
-  width: 1.25em;
-  height: 1.25em;
-  border: 3px solid var(--primary-500);
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
-
 <table>
   <thead>
     <tr>
       <th style="width: 50%">Default</th>
-      <th style="width: 50%">Custom UI</th>
+      <th style="width: 50%">Custom</th>
     </tr>
   </thead>
   <tbody>
@@ -169,7 +199,7 @@ The UI to be used when the data is loading.
         </select>
       </td>
       <td>
-        <span class="loader mx-4 my-2"></span>     
+        <custom-loading></custom-loading>
       </td>
     </tr>
   </tbody>
@@ -184,7 +214,7 @@ Pass the component to the `loading` inside `layoutComponents`.
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     loading: loadingTemplate
   }"
 >
@@ -268,10 +298,12 @@ It will add a toggle functionality to the label/title of the control to expand/c
 
 The properties that can use to build custom form title.
 
-| Property | Description                           |
-| :------- | :------------------------------------ |
-| label    | The label of this control.            |
-| toggle   | The method to toggle collapse/expand. |
+| Property    | Description                            |
+| :---------- | :------------------------------------- |
+| label       | The label of this control.             |
+| toggle      | The method to toggle collapse/expand.  |
+| collapsible | `contentCollapsible` is set.           |
+| expand      | The boolean state of this collapsible. |
 
 ### Using component
 
@@ -297,7 +329,7 @@ export class CustomFormTitleComponent extends FormTitleComponent {}
     formTitle: titleTemplate
   }"
 >
-  <ng-template #titleTemplate let-label="label" let-toggle="toggle">
+  <ng-template #titleTemplate let-label="label" let-toggle="toggle" let-expand="expand">
     <button type="button" class="custom-form-title" (click)="toggle()">
       <span>{{ label }}</span>
       ...
