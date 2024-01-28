@@ -18,7 +18,7 @@ export class DocumentVersionService {
       .get('assets/docs/index.md', { responseType: 'text' })
       .pipe(
         map((x) => {
-          const versions = x.match(/(\d\.){1,}(\d)/g) || ([] as string[]);
+          const versions = x.match(/(\d\.){1,}(\d*)/g) || ([] as string[]);
           return versions;
         }),
         tap((x) => {
