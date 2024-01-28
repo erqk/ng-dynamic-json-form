@@ -1,4 +1,4 @@
-<ng-container *ngIf="!configs"> Please pass in JSON string </ng-container>
+<ng-container *ngIf="!configs || !configs.length"> No config found </ng-container>
 
 <ng-container *ngIf="!!configValidateErrors?.length">
   <div class="config-validation-error">
