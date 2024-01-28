@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
+  DestroyRef,
   ElementRef,
   HostBinding,
   Input,
@@ -41,6 +42,7 @@ import {
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-control',
@@ -63,6 +65,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
   private _el = inject(ElementRef);
+  private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
   private _formValidationService = inject(FormValidationService);
@@ -77,7 +80,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
 
-  private _onDestroy$ = new Subject<void>();
   private _pendingValue: any = null;
 
   @Input() form?: UntypedFormGroup;
@@ -305,7 +307,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       .getErrorMessages$(this.control, this.data?.validators)
       .pipe(
         tap((x) => (this.errorMessages = x)),
-        takeUntil(this._onDestroy$)
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }

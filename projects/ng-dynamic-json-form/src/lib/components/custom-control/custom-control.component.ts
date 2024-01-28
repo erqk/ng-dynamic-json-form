@@ -11,7 +11,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { BehaviorSubject, Subject, merge } from 'rxjs';
-import { map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
 import { ControlValueService, FormValidationService } from '../../services';
 

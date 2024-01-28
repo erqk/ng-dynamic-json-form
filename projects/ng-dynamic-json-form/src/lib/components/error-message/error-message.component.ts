@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  HostBinding,
-  Input,
-  inject,
-} from '@angular/core';
+import { Component, HostBinding, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { ValidatorConfig } from '../../models';
@@ -20,7 +14,6 @@ import { FormValidationService } from '../../services/form-validation.service';
   imports: [CommonModule],
 })
 export class ErrorMessageComponent {
-  private readonly _cd = inject(ChangeDetectorRef);
   private readonly _internal_formValidationService = inject(
     FormValidationService
   );
@@ -40,7 +33,6 @@ export class ErrorMessageComponent {
       .pipe(
         tap((x) => {
           this.errorMessages = x;
-          this._cd.detectChanges();
         }),
         takeUntil(this._internal_reset$)
       )

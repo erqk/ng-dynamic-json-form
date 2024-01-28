@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   Input,
   Renderer2,
   SimpleChanges,
@@ -16,6 +17,7 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-title',
@@ -25,8 +27,8 @@ import {
   styleUrls: ['./form-title.component.scss'],
 })
 export class FormTitleComponent {
-  private readonly _renderer2 = inject(Renderer2);
-  private readonly _onDestroy$ = new Subject<void>();
+  private _renderer2 = inject(Renderer2);
+  private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
 
   @Input() label?: string;
@@ -89,11 +91,6 @@ export class FormTitleComponent {
     this._viewInitialized = true;
   }
 
-  ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
-  }
-
   private _injectComponent(): void {
     if (!this.componentAnchor || !this.customComponent) {
       return;
@@ -120,7 +117,7 @@ export class FormTitleComponent {
       })
     );
 
-    transitionEnd$.pipe(takeUntil(this._onDestroy$)).subscribe();
+    transitionEnd$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe();
   }
 
   private _setElementHeight(): void {
