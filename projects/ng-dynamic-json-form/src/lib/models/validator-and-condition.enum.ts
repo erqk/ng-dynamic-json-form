@@ -9,5 +9,4 @@ export enum ValidatorAndConditionEnum {
   maxLength = 'maxLength',
   email = 'email',
   pattern = 'pattern',
-  custom = 'custom',
 }

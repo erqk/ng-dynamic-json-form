@@ -46,6 +46,38 @@ export interface FormLayout {
 }
 ```
 
+### Properties
+
+| Property              | 描述                                      |
+| :-------------------- | :---------------------------------------- |
+| hostClass             | 請參閱 [Class & styles](#class--styles)。 |
+| hostStyles            | 請參閱 [Class & styles](#class--styles)。 |
+| labelClass            | 請參閱 [Class & styles](#class--styles)。 |
+| labelStyles           | 請參閱 [Class & styles](#class--styles)。 |
+| contentClass          | 請參閱 [Class & styles](#class--styles)。 |
+| contentStyles         | 請參閱 [Class & styles](#class--styles)。 |
+| descriptionClass      | 請參閱 [Class & styles](#class--styles)。 |
+| descriptionStyles     | 請參閱 [Class & styles](#class--styles)。 |
+| descriptionPosition   | 相對於輸入元件的位置。                    |
+| hideValidationMessage | 隱藏此控制器的錯誤訊息。                  |
+| hideLabel             | 隱藏此控制器的標題。                      |
+| contentCollapsible    | 請參閱 [內容展開/收合](#內容展開收合).    |
+
+## Class & styles
+
+使用 class 或 inline style，對控制器的各個區塊調設定 CSS 樣式。可設定的區塊有 `host`、`label`、`content` 和 `description`。
+
+<br>
+
+<div class="docs-control-layout">
+  <div class="label">label</div>
+  <div class="content">
+    <div class="description">description</div>
+    <input type="text">
+    <div class="errors">Error messages</div>
+  </div>
+</div>
+
 ## 使用自訂元件和模板
 
 `layoutComponents`, `layoutTemplates` 提供以下 property，可使用自訂的元件或模板來替代預設的 UI。
@@ -90,7 +122,27 @@ providers: [
 
 表單內所有錯誤訊息的模板。
 
-> 要調整特定控制器的錯誤訊息，設定 `hideValidationMessage` 為 `true`，並使用 `customComponent`。這樣一來就可以在元件內自行加入判定控制錯誤訊息的顯示。請參閱 [自訂元件](../../v5/custom-components/custom-components_zh-TW.md).
+<table>
+  <thead>
+    <tr>
+      <th style="width: 50%">預設</th>
+      <th style="width: 50%">自訂</th>
+    <tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top">
+        <custom-error-message></custom-error-message>
+      </td>
+      <td style="vertical-align: top">
+        <custom-error-message custom-error="true"></custom-error-message>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+> 要調整特定控制器的錯誤訊息，設定 `layout.hideValidationMessage` 為 `true`，並使用 `customComponent`。這樣一來就可以在元件內自行加入判定控制錯誤訊息的顯示。請參閱 [自訂元件](../../v5/custom-components/custom-components_zh-TW.md).
 
 ### 使用元件
 
@@ -114,7 +166,7 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     errorMessage: errorTemplate
   }"
 >
@@ -130,33 +182,11 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 
 當動態資料載入的時會顯示的 UI。
 
-<style>
-.loader {
-  width: 1.25em;
-  height: 1.25em;
-  border: 3px solid var(--primary-500);
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
-
 <table>
   <thead>
     <tr>
       <th style="width: 50%">預設</th>
-      <th style="width: 50%">自訂 UI</th>
+      <th style="width: 50%">自訂</th>
     </tr>
   </thead>
   <tbody>
@@ -169,7 +199,7 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
         </select>
       </td>
       <td>
-        <span class="loader mx-4 my-2"></span>     
+        <custom-loading></custom-loading> 
       </td>
     </tr>
   </tbody>
@@ -184,7 +214,7 @@ export class CustomErrorMessageComponent extends ErrorMessageComponent {}
 ```html
 <ng-dynamic-json-form
   [configs]="..."
-  [layoutTemplate]="{
+  [layoutTemplates]="{
     loading: loadingTemplate
   }"
 >
@@ -245,7 +275,7 @@ export class CustomHeaderComponent extends FormArrayItemHeaderComponent {}
 </ng-dynamic-json-form>
 ```
 
-## 表單展開/收合
+## 內容展開/收合
 
 針對控制器的標題，加入展開/收合內容的功能。`label` 不可為空。
 
@@ -268,10 +298,12 @@ export class CustomHeaderComponent extends FormArrayItemHeaderComponent {}
 
 可用於建立自訂標題的 property 列表。
 
-| Property | 說明                   |
-| :------- | :--------------------- |
-| label    | 控制器的標題.          |
-| toggle   | 觸發展開、收合的方法。 |
+| Property    | 說明                          |
+| :---------- | :---------------------------- |
+| label       | 控制器的標題.                 |
+| toggle      | 觸發展開、收合的方法。        |
+| collapsible | `contentCollapsible` 不為空。 |
+| expand      | 當前展開/收合布林狀態。       |
 
 ### 使用元件
 

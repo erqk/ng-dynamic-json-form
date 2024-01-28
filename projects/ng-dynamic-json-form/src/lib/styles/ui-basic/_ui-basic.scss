@@ -28,6 +28,10 @@
       border-color: var(--color-primary);
       box-shadow: 0 0 0 0.2em var(--color-primary-lighter);
     }
+
+    &.ng-invalid:not(.ng-pristine) {
+      border-color: var(--color-error);
+    }
   }
 
   .option-button {

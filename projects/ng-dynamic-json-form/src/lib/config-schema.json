@@ -4,7 +4,7 @@
   "description": "Form control config for the NgDynamicJSONForm",
   "type": "object",
   "properties": {
-    "config": {
+    "configs": {
       "type": "array",
       "items": {
         "type": "object",
@@ -16,7 +16,7 @@
             "$ref": "#/definitions/conditionConfig"
           },
           "children": {
-            "$ref": "#/properties/config"
+            "$ref": "#/properties/configs"
           },
           "customComponent": {
             "type": "string"
@@ -110,7 +110,7 @@
         "templateLabel": {
           "type": "string"
         },
-        "template": { "$ref": "#/properties/config" },
+        "template": { "$ref": "#/properties/configs" },
         "length": {
           "type": "number"
         },

@@ -57,6 +57,7 @@ Lastly, add the styles into your `angular.json`:
 | layoutTemplates  | See [Layout components and templates].                     |
 | inputTemplates   | See [Custom Components - using &lt;ng-template&gt;].       |
 | hideErrorMessage | Control the show/hide of all the error messages.           |
+| collapsibleState | `collapse` \| `expand`. Set state for all collapsible.     |
 
 > If `configs` is **JSON string**, it needs to be wrapped:
 >
