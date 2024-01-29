@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.11
+
+### Fix
+
+- `writeValue()` data mapping.
+
 ## 5.0.10
 
 ### Fix
