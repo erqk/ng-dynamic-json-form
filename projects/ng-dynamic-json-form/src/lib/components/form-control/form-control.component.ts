@@ -15,6 +15,7 @@ import {
   forwardRef,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -24,7 +25,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, Subject, finalize, takeUntil, tap } from 'rxjs';
+import { EMPTY, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
@@ -34,15 +35,10 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import {
-  ControlValueService,
-  FormValidationService,
-  OptionsDataService,
-} from '../../services';
+import { FormValidationService, OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-control',
@@ -69,7 +65,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
   private _formValidationService = inject(FormValidationService);
-  private _controlValueService = inject(ControlValueService);
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
@@ -105,7 +100,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   useCustomLoading = false;
 
   writeValue(obj: any): void {
-    const value = this._controlValueService.mapData('output', obj, this.data);
+    const value = obj;
     this._pendingValue = value;
     this._patchingValue = true;
     this._controlComponentRef?.writeValue(value);
@@ -267,8 +262,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
           tap((x) => {
             this._setOptionsData(x);
 
-            // For patchValue() or setValue() of this control to work properly
-            // Otherwise the value will get overwritten
+            // Auto choose the first option if the option list contains only one option.
+            // Skip this if `_patchingValue` is true, or the value will get overwritten.
             if (!this._patchingValue) {
               const clearData = !x.length || x.length > 1;
               const autoValue = clearData ? '' : x[0].value;
