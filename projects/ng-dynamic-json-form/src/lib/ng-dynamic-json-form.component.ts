@@ -234,10 +234,13 @@ export class NgDynamicJsonFormComponent
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    // This function will always called on next event loop, so we get the errors immediately
+    // when this function is called.
     const errors = !this.form
       ? null
       : this._formValidationService.getFormErrors(this.form);
 
+    // Set the form errors, so that the form emitted in `formGet` will get correct errors.
     this.form?.setErrors(errors);
     return errors;
   }
