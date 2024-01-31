@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.12
+
+### Fix
+
+- CustomControlComponent `setErrors()` logic.
+
 ## 5.0.11
 
 ### Fix
