@@ -1,5 +1,11 @@
 # Change log
 
+## 5.0.13
+
+### Chore
+
+- Prevent re-validation and re-compile of ajv schema to increase performance.
+
 ## 5.0.12
 
 ### Fix
