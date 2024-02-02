@@ -1,5 +1,11 @@
 # Change log
 
+## 5.1.2
+
+### Feat
+
+- Pass `layout` property into FormTitle custom template
+
 ## 5.1.1
 
 ### Fix
