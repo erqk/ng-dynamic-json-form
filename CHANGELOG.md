@@ -1,5 +1,11 @@
 # Change log
 
+## 5.1.0
+
+### Feature
+
+- Add `extra` property to form title.
+
 ## 5.0.13
 
 ### Chore
