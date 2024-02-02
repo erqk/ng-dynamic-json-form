@@ -11,13 +11,13 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!!config?.length && !!form">
+<ng-container *ngIf="!!configGet?.length && !!form">
   <ng-container
     *ngTemplateOutlet="
       formGroupTemplate;
       context: {
         parentForm: form,
-        controlConfigs: config
+        controlConfigs: configGet
       }
     "
     [formGroup]="form"
