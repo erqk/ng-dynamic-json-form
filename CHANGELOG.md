@@ -1,8 +1,14 @@
 # Change log
 
+## 5.1.3
+
+### Fix
+
+- .grid-container align-items should not be `flex-end`. This will break the alignment when error messages occured.
+
 ## 5.1.2
 
-### Feat
+### Feature
 
 - Pass `layout` property into FormTitle custom template
 
