@@ -27,7 +27,7 @@ import {
   Validator,
   ValidatorFn,
 } from '@angular/forms';
-import Ajv from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
 import { Subject, debounceTime, merge, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
@@ -110,11 +110,10 @@ export class NgDynamicJsonFormComponent
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
 
-  private _ajv = new Ajv({ allErrors: true });
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
-  config: FormControlConfig[] = [];
+  configGet: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
 
   form?: UntypedFormGroup;
@@ -234,10 +233,13 @@ export class NgDynamicJsonFormComponent
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    // This function will always called on next event loop, so we get the errors immediately
+    // when this function is called.
     const errors = !this.form
       ? null
       : this._formValidationService.getFormErrors(this.form);
 
+    // Set the form errors, so that the form emitted in `formGet` will get correct errors.
     this.form?.setErrors(errors);
     return errors;
   }
@@ -286,8 +288,20 @@ export class NgDynamicJsonFormComponent
       ? { configs: this.configs }
       : this.configs;
 
+    const win = window as any;
+    const ajv: Ajv = win.ajv || new Ajv({ allErrors: true });
+    const validate: ValidateFunction<unknown> =
+      win.ngDynamiJsonFormValidateFn || ajv.compile(schema);
+
+    if (!win.ajv) {
+      win.ajv = ajv;
+    }
+
+    if (!win.ngDynamiJsonFormValidateFn) {
+      win.ngDynamiJsonFormValidateFn = validate;
+    }
+
     try {
-      const validate = this._ajv.compile(schema);
       const parsed = JSON.parse(JSON.stringify(data));
       const valid = validate(parsed);
 
@@ -309,16 +323,16 @@ export class NgDynamicJsonFormComponent
   }
 
   private _buildForm(): void {
-    this.config = this._validateAndGetConfig() ?? [];
-    if (!this.config || !this.config.length) return;
+    this.configGet = this._validateAndGetConfig() ?? [];
+    if (!this.configGet || !this.configGet.length) return;
 
     this.configValidateErrors = [];
     this._clearListeners();
 
     this._formValidationService.customValidators = this.customValidators;
-    this._formPatcherService.config = this.config;
+    this._formPatcherService.config = this.configGet;
 
-    this.form = this._formGeneratorService.generateFormGroup(this.config);
+    this.form = this._formGeneratorService.generateFormGroup(this.configGet);
     this.formGet.emit(this.form);
 
     this._setupListeners();
@@ -329,7 +343,7 @@ export class NgDynamicJsonFormComponent
 
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
-      this.config
+      this.configGet
     );
 
     const valueChanges$ = this.form.valueChanges.pipe(

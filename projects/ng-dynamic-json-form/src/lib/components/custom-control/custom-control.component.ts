@@ -93,17 +93,15 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
     const setErrors$ = merge(
       this._internal_hideErrors$,
-      control.valueChanges
+      control.statusChanges
     ).pipe(
       tap(() => {
-        // Set errors only when parent control has errors but internal control doesn't.
-        const setErrors = !this._internal_control.errors && !!control.errors;
-        const errors =
-          !this._internal_hideErrors$.value && setErrors
-            ? control.errors
-            : null;
+        const setErrors = !this._internal_control.errors || !!control.errors;
+        const hideErrors = this._internal_hideErrors$.value;
+        const errors = this._internal_control.errors ?? control.errors;
+        const finalErrors = !hideErrors && setErrors ? errors : null;
 
-        this._internal_control.setErrors(errors, { emitEvent: false });
+        this._internal_control.setErrors(finalErrors, { emitEvent: false });
         this._internal_cd.detectChanges();
       })
     );

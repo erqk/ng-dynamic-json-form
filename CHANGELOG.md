@@ -1,5 +1,23 @@
 # Change log
 
+## 5.1.0
+
+### Feature
+
+- Add `extra` property to form title.
+
+## 5.0.13
+
+### Chore
+
+- Prevent re-validation and re-compile of ajv schema to increase performance.
+
+## 5.0.12
+
+### Fix
+
+- CustomControlComponent `setErrors()` logic.
+
 ## 5.0.11
 
 ### Fix
