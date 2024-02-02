@@ -9,7 +9,8 @@ import {
   ViewContainerRef,
   inject,
 } from '@angular/core';
-import { Subject, filter, fromEvent, takeUntil, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter, fromEvent, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
@@ -17,7 +18,6 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-title',
