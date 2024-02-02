@@ -1,5 +1,11 @@
 # Change log
 
+## 5.1.1
+
+### Fix
+
+- `extra` property not pass into FormTitleComponent.
+
 ## 5.1.0
 
 ### Feature
