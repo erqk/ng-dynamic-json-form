@@ -1,5 +1,11 @@
 # Change log
 
+## 5.1.4
+
+### Feature
+
+- Allow usage of custom FormTitleComponent even if `contentCollapsible` is not set.
+
 ## 5.1.3
 
 ### Fix
