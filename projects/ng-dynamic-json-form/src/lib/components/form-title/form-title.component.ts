@@ -80,15 +80,16 @@ export class FormTitleComponent {
   }
 
   ngAfterViewInit(): void {
-    if (!this.collapsibleEl || !this.collapsible) return;
-
     if (this.customComponent) {
       this._injectComponent();
       return;
     }
 
-    this._initCollapsibleEl();
-    this._listenTransition();
+    if (this.collapsible && this.collapsibleEl) {
+      this._initCollapsibleEl();
+      this._listenTransition();
+    }
+    
     this._viewInitialized = true;
   }
 
@@ -100,6 +101,7 @@ export class FormTitleComponent {
     const componentRef = this.componentAnchor.createComponent(
       this.customComponent
     );
+
     componentRef.instance.label = this.label;
     componentRef.instance.layout = this.layout;
     componentRef.instance.extra = this.extra;
