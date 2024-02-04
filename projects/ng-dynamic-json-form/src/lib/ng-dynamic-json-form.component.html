@@ -1,4 +1,6 @@
-<ng-container *ngIf="!configs || !configs.length">
+<ng-container
+  *ngIf="!configs || (!$any(configs.length) && !$any(configs).configs)"
+>
   No config found
 </ng-container>
 
