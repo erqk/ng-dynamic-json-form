@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   Input,
@@ -27,6 +28,7 @@ import {
   styleUrls: ['./form-title.component.scss'],
 })
 export class FormTitleComponent {
+  private _cd = inject(ChangeDetectorRef);
   private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
@@ -82,6 +84,7 @@ export class FormTitleComponent {
   ngAfterViewInit(): void {
     if (this.customComponent) {
       this._injectComponent();
+      this._cd.detectChanges();
       return;
     }
 
@@ -89,7 +92,7 @@ export class FormTitleComponent {
       this._initCollapsibleEl();
       this._listenTransition();
     }
-    
+
     this._viewInitialized = true;
   }
 
