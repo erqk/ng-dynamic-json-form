@@ -54,7 +54,9 @@ Apply conditional rendering and conditional validators to the input. For example
         <code>></code>,
         <code><</code>,
         <code>>=</code>,
-        <code><=</code>
+        <code><=</code>,
+        <code>includes</code>,
+        <code>notIncludes</code>
       </td>
       <td>Operator to evaluate control's value with target value.</td>
     </tr>
@@ -86,112 +88,20 @@ Apply conditional rendering and conditional validators to the input. For example
 
 ### Toggle visibility
 
-```javascript
-if (toggles.checkbox === false) {
-  /** Hide this control */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "hidden": {
-      "&&": [
-        ["toggles.checkbox", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.VISIBILITY"></example-container>
 
 ### Toggle disabled
 
-```javascript
-if (toggles.checkbox === false) {
-  /** Disable this control */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "disabled": {
-      "&&": [
-        ["toggles.checkbox", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.DISABLED"></example-container>
 
 ### Toggle validators
 
 To toggle validator, make sure the target validator is provided in `validators` array.
 
-```javascript
-if (toggles.checkbox === true || age > 20) {
-  /** Add Validators.required to this control */
-}
+<br>
 
-if (toggles.switch === false) {
-  /** Add firstUppercase validator to this control */
-}
-```
-
-```json
-{
-  ...
-  "validators": [
-    {
-      "name": "required"
-    },
-    {
-      "name": "custom",
-      "value": "firstUppercase"
-    }
-  ],
-  "conditions": {
-    "required": {
-      "||": [
-        ["toggles.checkbox", "===", true],
-        ["age", ">", 20]
-      ]
-    },
-    "firstUppercase": {
-      "&&": [
-        ["toggles.switch", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.VALIDATORS"></example-container>
 
 ### Multi conditions
 
-```javascript
-if (age > 20 && name === "Andrew" && (toggles.checkbox === false || toggles.switch === false)) {
-  /** Add Validators.required to this input */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "required": {
-      "&&": [
-        ["age", ">", 20],
-        ["name", "===", "Andrew"],
-        {
-          "||": [
-            ["toggles.checkbox", "===", false],
-            ["toggles.switch", "===", false]
-          ]
-        }
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.COMPLEX"></example-container>

@@ -1,8 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Renderer2, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
-import { EMPTY, Subject, catchError, delay, share, switchMap, tap } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  catchError,
+  delay,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocumentIndexComponent } from 'src/app/features/document/components/document-index/document-index.component';
@@ -33,13 +45,15 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
 export class PageDocsComponent {
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
+  private _renderer2 = inject(Renderer2);
   private _docVersionService = inject(DocumentVersionService);
   private _docLoaderService = inject(DocumentLoaderService);
   private _layoutService = inject(LayoutService);
   private _markdownService = inject(MarkdownService);
   private _sideNavigationPaneService = inject(SideNavigationPaneService);
   private _langService = inject(LanguageDataService);
-  private readonly _onDestroy$ = new Subject<void>();
+
+  private _useRouterScroll = false;
 
   showMobileMenu = false;
 
@@ -47,18 +61,24 @@ export class PageDocsComponent {
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
   content$ = this._route.url.pipe(
-    switchMap((urls) => {
-      const filePath = urls
+    map((x) => {
+      const filePath = x
         .slice(1)
         .map(({ path }) => path)
         .join('/');
 
-      return this._docLoaderService.loadDoc$(filePath);
+      return filePath;
+    }),
+    tap(() => this._setSmoothScroll(true)),
+    distinctUntilChanged(),
+    tap(() => this._setSmoothScroll(false)),
+    switchMap((x) => {
+      return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDoc$(x);
     }),
     tap(() => {
+      this.toggleMobileMenu(false);
       this._setLinkRenderer();
       this._scrollToContent();
-      this.toggleMobileMenu(false);
     }),
     catchError(() => {
       this._reloadDocOnError();
@@ -67,19 +87,45 @@ export class PageDocsComponent {
   );
 
   ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
     this._docLoaderService.clearCache();
   }
 
-  onReady(): void {
+  onDocReady(): void {
     this._docLoaderService.wrapTable();
     this._sideNavigationPaneService.buildNavigationLinks();
     this._docLoaderService.setCodeViewerTag();
+    this._docLoaderService.docLoading$.next(false);
   }
 
   toggleMobileMenu(value?: boolean): void {
     this.showMobileMenu = value ?? !this.showMobileMenu;
+  }
+
+  private _scrollToContent(): void {
+    if (this._useRouterScroll) return;
+
+    const id = this._route.snapshot.fragment?.split('?')[0];
+
+    if (!id) {
+      window.scrollTo({ top: 0 });
+      return;
+    }
+
+    this._useRouterScroll = true;
+
+    requestAnimationFrame(() => {
+      const target = document.querySelector(`#${id}`);
+      if (!target) return;
+      scrollToTitle(target, 'auto');
+    });
+  }
+
+  private _setSmoothScroll(value: boolean): void {
+    this._renderer2.setStyle(
+      document.querySelector('html'),
+      'scroll-behavior',
+      value ? 'smooth' : null
+    );
   }
 
   private _setLinkRenderer(): void {
@@ -91,33 +137,23 @@ export class PageDocsComponent {
       });
   }
 
-  private _scrollToContent(): void {
-    const id = this._route.snapshot.fragment?.split('?')[0];
-
-    if (!id) {
-      window.scrollTo({ top: 0 });
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      const target = document.querySelector(`#${id}`);
-      if (!target) return;
-      scrollToTitle(target, 'smooth');
-    });
+  private _loadFallbackDoc$(): Observable<any> {
+    return this._docLoaderService.firstContentPath$().pipe(
+      switchMap((x) =>
+        this._router.navigateByUrl(`/${x}`, { replaceUrl: true })
+      ),
+      switchMap(() => this._langService.loadLanguageData$())
+    );
   }
 
   private _reloadDocOnError(): void {
-    let targetRoute = '';
-    this._docLoaderService
-      .firstContentPath$()
+    const exitPage$ = from(
+      this._router.navigateByUrl('/', { skipLocationChange: true })
+    );
+
+    exitPage$
       .pipe(
-        switchMap((x) => {
-          targetRoute = x;
-          return this._router.navigateByUrl('/', { skipLocationChange: true });
-        }),
-        switchMap(() =>
-          this._router.navigateByUrl(`/${targetRoute}`, { replaceUrl: true })
-        ),
+        switchMap(() => this._loadFallbackDoc$()),
         switchMap(() => this._langService.loadLanguageData$())
       )
       .subscribe();

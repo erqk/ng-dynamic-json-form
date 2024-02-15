@@ -3,7 +3,6 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 import { Content } from 'vanilla-jsoneditor';
-import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
 
 @Component({
@@ -57,15 +56,14 @@ export class PlaygroundFormInfoComponent {
     this.selectedTab = i;
   }
 
-  onEditing(e: Content): void {
-    this._editorValue = getJsonEditorContent(e);
+  onEditing(e: any): void {
+    this._editorValue = e;
   }
 
   patchControl(): void {
     const value = this._editorValue;
     if (!value) return;
 
-    const _value = (value as any)['json'];
-    this.control?.patchValue(_value);
+    this.control?.patchValue(value);
   }
 }

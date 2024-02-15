@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { MarkdownModule } from 'ngx-markdown';
-import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
-import { RouterModule } from '@angular/router';
-import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
+import { MarkdownModule } from 'ngx-markdown';
 import { map, switchMap } from 'rxjs/operators';
 import { LayoutService } from 'src/app/core/services/layout.service';
+import { ExampleContainerComponent } from 'src/app/features/example-container/example-container.component';
+import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
+import { LanguageDataService } from '../../features/language/services/language-data.service';
+import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
   selector: 'app-page-home',
@@ -15,9 +18,12 @@ import { LayoutService } from 'src/app/core/services/layout.service';
   imports: [
     CommonModule,
     RouterModule,
+    ReactiveFormsModule,
     MarkdownModule,
     UiContentWrapperComponent,
     UiLoadingIndicatorComponent,
+    ExampleContainerComponent,
+    NgDynamicJsonFormComponent,
   ],
   templateUrl: './page-home.component.html',
   styleUrls: ['./page-home.component.scss'],
@@ -26,8 +32,6 @@ export class PageHomeComponent {
   private _http = inject(HttpClient);
   private _languageDataService = inject(LanguageDataService);
   private _layoutService = inject(LayoutService);
-  isLoading = false;
-  visibleLayer = 0;
 
   features$ = this._languageDataService.language$.pipe(
     switchMap((language) =>
@@ -40,12 +44,4 @@ export class PageHomeComponent {
 
   i18nContent$ = this._languageDataService.i18nContent$;
   headerHeight$ = this._layoutService.headerHeight$;
-
-  ngOnInit(): void {
-    window.scrollTo({ top: 0 });
-  }
-
-  setVisibleLayer(index: number): void {
-    this.visibleLayer = index;
-  }
 }

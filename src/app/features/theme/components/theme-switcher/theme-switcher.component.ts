@@ -17,9 +17,7 @@ export class ThemeSwitcherComponent {
   private readonly _onDestroy$ = new Subject<void>();
 
   themes = this._themeService.themes;
-  currentTheme =
-    this.themes.find((x) => x.key === this._themeService.savedTheme) ||
-    this.themes[0];
+  currentTheme = this._themeService.currentTheme;
 
   ngOnInit(): void {
     this.switchTheme(this.currentTheme.key as 'light' | 'dark');
@@ -46,5 +44,7 @@ export class ThemeSwitcherComponent {
     this._renderer2.setAttribute(html, 'class', nextTheme.key);
     this._themeService.theme$.next(nextTheme.key);
     this._themeService.savedTheme = nextTheme.key;
+    this._themeService.setPrimengTheme();
+    this._themeService.setMaterialTheme();
   }
 }

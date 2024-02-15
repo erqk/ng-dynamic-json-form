@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, Injector, Type, inject } from '@angular/core';
+import { NgElementConfig, createCustomElement } from '@angular/elements';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -6,12 +7,15 @@ import {
   RouteConfigLoadStart,
   Router,
 } from '@angular/router';
-import { fromEvent } from 'rxjs';
+import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime, delay, tap } from 'rxjs/operators';
 import { LayoutService } from './core/services/layout.service';
+import { DocsCustomErrorMessageComponent } from './docs-example/components/docs-custom-error-message/docs-custom-error-message.component';
+import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { DocumentLoaderService } from './features/document/services/document-loader.service';
 import { DocumentVersionService } from './features/document/services/document-version.service';
 import { LanguageDataService } from './features/language/services/language-data.service';
+import { ExampleContainerComponent } from './features/example-container/example-container.component';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +23,7 @@ import { LanguageDataService } from './features/language/services/language-data.
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  private _injector = inject(Injector);
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
   private _docLoaderService = inject(DocumentLoaderService);
@@ -32,28 +37,11 @@ export class AppComponent {
   docLoading$ = this._docLoaderService.docLoading$.pipe(delay(0));
 
   ngOnInit(): void {
-    // No need to use `takeUntil()` because this is the root of the app
-    // And this is one time action, no repeated subscription
-    const routeChange$ = this._router.events.pipe(
-      tap((x) => {
-        if (x instanceof RouteConfigLoadStart) {
-          this.routeLoading = true;
-        }
-
-        if (x instanceof RouteConfigLoadEnd) {
-          this.routeLoading = false;
-        }
-
-        if (x instanceof NavigationEnd) {
-          this._langService.language$.next(this._langService.currentLanguage);
-        }
-      })
-    );
-
+    const routeChange$ = this._routeChangeEvent$();
     const docVersions$ = this._docVersionService.loadVersions$();
 
-    routeChange$.subscribe();
-    docVersions$.subscribe();
+    merge(routeChange$, docVersions$).subscribe();
+    this._registerCustomElements();
   }
 
   ngAfterViewInit(): void {
@@ -68,5 +56,39 @@ export class AppComponent {
         })
       )
       .subscribe();
+  }
+
+  private _routeChangeEvent$(): Observable<any> {
+    // No need to take care of unsubscription because this is the root of the app.
+    // And this is one time action, no repeated subscription
+    return this._router.events.pipe(
+      tap((x) => {
+        if (x instanceof RouteConfigLoadStart) {
+          this.routeLoading = true;
+        }
+
+        if (x instanceof RouteConfigLoadEnd) {
+          this.routeLoading = false;
+        }
+
+        if (x instanceof NavigationEnd) {
+          this._langService.language$.next(this._langService.currentLanguage);
+        }
+      })
+    );
+  }
+
+  private _registerCustomElements(): void {
+    const options: NgElementConfig = {
+      injector: this._injector,
+    };
+
+    const create = (selector: string, component: Type<any>) => {
+      customElements.define(selector, createCustomElement(component, options));
+    };
+
+    create('custom-error-message', DocsCustomErrorMessageComponent);
+    create('custom-loading', CustomLoadingComponent);
+    create('example-container', ExampleContainerComponent);
   }
 }
