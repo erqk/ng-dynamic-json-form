@@ -11,6 +11,7 @@ import {
 import { Subject, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
 import { ThemeService } from 'src/app/features/theme/services/theme.service';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
+import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
 
 @Component({
   selector: 'app-playground-editor',
@@ -22,14 +23,13 @@ import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 export class PlaygroundEditorComponent {
   private _el = inject(ElementRef);
   private _themeService = inject(ThemeService);
-  private readonly _onDestroy$ = new Subject<void>();
+  private _onDestroy$ = new Subject<void>();
 
   @Input() data: Content | null = null;
   @Input() mainMenuBar = true;
   @Input() navigationBar = true;
   @Input() statusBar = true;
-  @Output() onEditing = new EventEmitter<Content>();
-  @Output() onConfirm = new EventEmitter<any>();
+  @Output() onEditing = new EventEmitter<any>();
 
   jsonEditor: JSONEditor | null = null;
 
@@ -70,7 +70,8 @@ export class PlaygroundEditorComponent {
           navigationBar: this.navigationBar,
           statusBar: this.statusBar,
           onChange: (content, previousContent, status) => {
-            this.onEditing.emit(content);
+            const _content = getJsonEditorContent(content) as any;
+            this.onEditing.emit(_content['json']);
           },
         },
       });

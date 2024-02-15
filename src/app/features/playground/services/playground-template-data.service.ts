@@ -69,8 +69,13 @@ export class PlaygroundTemplateDataService {
     return savedData[key]?.[lang] || null;
   }
 
-  setExampleTemplate(key: string, data: FormControlConfig[]) {
-    if (!data.length) return;
+  setExampleTemplate(
+    key: string,
+    data: FormControlConfig[] | { configs?: FormControlConfig[] }
+  ) {
+    const noData =
+      !data || (Array.isArray(data) ? !data.length : !data.configs?.length);
+    if (noData) return;
 
     const lang = this._langService.language$.value;
     const savedData = this._exampleSaved;
@@ -99,7 +104,10 @@ export class PlaygroundTemplateDataService {
     return savedData[key] || null;
   }
 
-  setUserTemplate(key: string, data: FormControlConfig[] | null) {
+  setUserTemplate(
+    key: string,
+    data: FormControlConfig[] | { configs?: FormControlConfig[] } | null
+  ) {
     const savedData = this._userTemplateSaved;
     const clearData = savedData && data === null;
     const newData = !savedData

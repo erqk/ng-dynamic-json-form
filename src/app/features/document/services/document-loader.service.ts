@@ -35,6 +35,10 @@ export class DocumentLoaderService {
       return of(cacheFound);
     }
 
+    if (path.startsWith('docs/')) {
+      path = path.replace('docs/', '');
+    }
+
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
@@ -67,8 +71,11 @@ export class DocumentLoaderService {
     }.md`;
 
     return this._http.get(indexPath, { responseType: 'text' }).pipe(
-      map((x) => x.match(/(\.+\/){1,}.+\.md/)?.[0]),
-      map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
+      map((x) => {
+        const firstPathFound = x.match(/(\.+\/){1,}.+\.md/)?.[0];
+        const result = firstPathFound?.replace(/(\.*\/){1,}/, 'docs/') ?? '';
+        return result;
+      }),
       catchError(() => this.firstContentPath$(true))
     );
   }

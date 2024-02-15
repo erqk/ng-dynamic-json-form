@@ -6,7 +6,9 @@ export type FormControlConditionOperator =
   | '>='
   | '>'
   | '<='
-  | '<';
+  | '<'
+  | 'includes'
+  | 'notIncludes';
 
 export type FormControlIfCondition = [
   string,

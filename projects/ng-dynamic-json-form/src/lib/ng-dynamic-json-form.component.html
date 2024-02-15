@@ -1,4 +1,8 @@
-<ng-container *ngIf="!configs || !configs.length"> No config found </ng-container>
+<ng-container
+  *ngIf="!configs || (!$any(configs.length) && !$any(configs).configs)"
+>
+  No config found
+</ng-container>
 
 <ng-container *ngIf="!!configValidateErrors?.length">
   <div class="config-validation-error">
@@ -61,6 +65,7 @@
               <form-title
                 [label]="config.label"
                 [layout]="config.layout"
+                [extra]="config.extra"
                 [collapsibleEl]="formControlContent"
                 [customTemplate]="layoutTemplates?.formTitle"
                 [customComponent]="layoutComponents?.formTitle"
@@ -107,6 +112,7 @@
               <form-title
                 [label]="config?.label"
                 [layout]="config?.layout"
+                [extra]="config?.extra"
                 [customComponent]="layoutComponents?.formTitle"
                 [customTemplate]="layoutTemplates?.formTitle"
                 [collapsibleEl]="formGroupContent"
@@ -170,6 +176,7 @@
                 label: config?.layout?.hideLabel === true ? '' : config.label,
                 layout: config.layout,
                 description: config.description,
+                extra: config?.extra,
                 parentForm: parentForm,
                 validators: config.validators,
                 formArray: parentForm.controls[config.formControlName],
@@ -189,6 +196,7 @@
   #formArrayTemplate
   let-label="label"
   let-layout="layout"
+  let-extra="extra"
   let-description="description"
   let-parentForm="parentForm"
   let-validators="validators"
@@ -203,6 +211,7 @@
       <form-title
         [label]="label"
         [layout]="layout"
+        [extra]="extra"
         [customComponent]="layoutComponents?.formTitle"
         [customTemplate]="layoutTemplates?.formTitle"
         [collapsibleEl]="formArrayContent"

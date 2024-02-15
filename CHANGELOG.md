@@ -1,5 +1,43 @@
 # Change log
 
+## 5.1.6
+
+### Feature
+
+- Add 'includes', 'notIncludes' to condition type.
+
+### Fix
+
+- The logic to show warning message if no config provided.
+
+### Chore
+
+- Reduce uneccessary trigger of change detection.
+
+## 5.1.4
+
+### Feature
+
+- Allow usage of custom FormTitleComponent even if `contentCollapsible` is not set.
+
+## 5.1.3
+
+### Fix
+
+- .grid-container align-items should not be `flex-end`. This will break the alignment when error messages occured.
+
+## 5.1.2
+
+### Feature
+
+- Pass `layout` property into FormTitle custom template
+
+## 5.1.1
+
+### Fix
+
+- `extra` property not pass into FormTitleComponent.
+
 ## 5.1.0
 
 ### Feature

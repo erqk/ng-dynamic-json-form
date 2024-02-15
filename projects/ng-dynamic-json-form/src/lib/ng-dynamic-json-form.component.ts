@@ -16,6 +16,7 @@ import {
   forwardRef,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -54,7 +55,6 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -233,8 +233,8 @@ export class NgDynamicJsonFormComponent
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    // This function will always called on next event loop, so we get the errors immediately
-    // when this function is called.
+    // This function will always called on next event loop,
+    // so we get the errors immediately when this function is called.
     const errors = !this.form
       ? null
       : this._formValidationService.getFormErrors(this.form);
@@ -323,11 +323,11 @@ export class NgDynamicJsonFormComponent
   }
 
   private _buildForm(): void {
-    this.configGet = this._validateAndGetConfig() ?? [];
-    if (!this.configGet || !this.configGet.length) return;
-
-    this.configValidateErrors = [];
     this._clearListeners();
+    this.configValidateErrors = [];
+    this.configGet = this._validateAndGetConfig() ?? [];
+
+    if (!this.configGet || !this.configGet.length) return;
 
     this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.configGet;
@@ -341,6 +341,8 @@ export class NgDynamicJsonFormComponent
   private _setupListeners(): void {
     if (!this.form) return;
 
+    let markForCheck = false;
+
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
       this.configGet
@@ -348,15 +350,18 @@ export class NgDynamicJsonFormComponent
 
     const valueChanges$ = this.form.valueChanges.pipe(
       debounceTime(0),
-      tap((x) => this._onChange(x))
+      tap((x) => {
+        this._onChange(x);
+
+        if (!markForCheck) {
+          this._cd.detectChanges();
+          markForCheck = true;
+        }
+      })
     );
 
     merge(valueChanges$, conditions$)
-      .pipe(
-        tap(() => this._cd.detectChanges()),
-        takeUntil(this._reset$),
-        takeUntilDestroyed(this._destroyRef)
-      )
+      .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
 

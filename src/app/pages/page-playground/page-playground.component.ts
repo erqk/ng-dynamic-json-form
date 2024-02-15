@@ -20,6 +20,7 @@ import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { Observable, combineLatest, debounceTime, map } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
+import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
 import { CustomInputGroupComponent } from 'src/app/example/components/custom-input-group/custom-input-group.component';
 import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
@@ -63,6 +64,7 @@ import { Content } from 'vanilla-jsoneditor';
       layoutComponents: {
         loading: CustomLoadingComponent,
         errorMessage: CustomErrorMessageComponent,
+        // formTitle: CustomFormTitleComponent
       },
     }),
   ],
@@ -122,10 +124,6 @@ export class PagePlaygroundComponent {
     })
   );
 
-  ngOnInit(): void {
-    window.scrollTo({ top: 0 });
-  }
-
   onTemplateEdit(value: boolean): void {
     this.showEditor = value;
   }
@@ -153,6 +151,7 @@ export class PagePlaygroundComponent {
   }
 
   onConfigEditing(e: Content): void {
+    console.log(e);
     this._editorDataService.saveModifiedData(e);
   }
 }

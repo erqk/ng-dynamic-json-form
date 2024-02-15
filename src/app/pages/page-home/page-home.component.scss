@@ -1,7 +1,7 @@
 .page {
-  --grid-line-color: rgba(var(--text-color-rgb), 0.15);
+  --grid-line-color: rgba(var(--text-color-rgb), 0.1);
   --grid-line-weight: 1px;
-  --grid-size: 2.5rem;
+  --grid-size: 5rem;
 
   flex: 1;
   display: flex;
@@ -56,13 +56,14 @@
 
 .illustration {
   position: relative;
-  height: 25vw;
-  width: 20vw;
+  height: 32rem;
+  width: 24rem;
   margin: auto;
   transform: rotate(15deg) translate3d(0, 0, 0);
   z-index: 0;
 
   > * {
+    --index: 0;
     position: absolute;
     top: var(--top-spacing);
     display: flex;
@@ -71,16 +72,29 @@
     height: 16%;
     width: 100%;
     border: solid 2px var(--primary-500);
-    border-radius: 2vw;
+    border-radius: 1.25rem;
     background: linear-gradient(
       310deg,
       rgba(255, 67, 111, 0.15),
       rgba(95, 67, 255, 0.22)
     );
     backdrop-filter: blur(4px);
+    filter: blur(calc(10px - var(--index) * 1.5px));
     box-shadow: 6px 3px 8px rgba(0, 0, 0, 0.35);
     transform: skew(320deg, 8deg) translate3d(0, 0, 0);
+    animation: floatingAnimation 3500ms infinite alternate;
+    animation-delay: calc(var(--index) * 250ms);
     z-index: 0;
+  }
+
+  @keyframes floatingAnimation {
+    from {
+      transform: skew(320deg, 8deg) translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: skew(320deg, 8deg) translate3d(-3rem, -3rem, 0);
+    }
   }
 }
 
@@ -88,7 +102,7 @@
   li {
     list-style-type: "✔️";
     padding-inline-start: 0.5rem;
-    margin-bottom: 1rem;
+    margin-block: 0.75rem;
   }
 }
 
@@ -104,11 +118,14 @@
   }
 
   .illustration {
-    width: 200px;
-    height: 260px;
+    width: 65vw;
+    height: 80vw;
+    max-width: 280px;
+    max-height: 360px;
 
     > * {
-      border-radius: 2rem;
+      border-radius: 1rem;
+      animation: none;
     }
   }
 }

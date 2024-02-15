@@ -18,8 +18,13 @@ export class DocumentVersionService {
       .get('assets/docs/index.md', { responseType: 'text' })
       .pipe(
         map((x) => {
-          const versions = x.match(/(\d\.){1,}(\d*)/g) || ([] as string[]);
-          return versions;
+          const versions =
+            x.match(/(##)\s(\d\.){1,}(\d*)\s*(\(deprecated\))*/g) ||
+            ([] as string[]);
+
+          return versions
+            .filter((x) => x.indexOf('deprecated') < 0)
+            .map((x) => x.split('##')[1].trim());
         }),
         tap((x) => {
           this.versions$.next(

@@ -50,6 +50,7 @@ export class PlaygroundTemplateListComponent {
 
   select(key: string): void {
     if (key === this.currentTemplateKey$.value) return;
+    this._editorDataService.configModifiedData = [];
     this.currentTemplateKey$.next(key);
     this.setEditStatus(false);
   }
@@ -58,6 +59,9 @@ export class PlaygroundTemplateListComponent {
     if (!key) return;
 
     const editorData = this._editorDataService.configModifiedData;
+    const noData = Array.isArray(editorData)
+      ? !editorData.length
+      : !editorData.configs?.length;
 
     isUserTemplate
       ? this._templateDataService.setUserTemplate(key, editorData)
@@ -70,13 +74,9 @@ export class PlaygroundTemplateListComponent {
   reset(key: string): void {
     if (!key) return;
 
-    this._templateDataService.setExampleTemplate(
-      key,
-      this._templateDataService.fallbackExample
-    );
-
-    this._editorDataService.configModifiedData =
-      this._templateDataService.fallbackExample;
+    const defaultData = this._templateDataService.fallbackExample;
+    this._templateDataService.setExampleTemplate(key, defaultData);
+    this._editorDataService.configModifiedData = defaultData;
     this._templateDataService.currentTemplateKey$.next(key);
   }
 
