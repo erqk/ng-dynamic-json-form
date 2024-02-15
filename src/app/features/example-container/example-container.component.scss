@@ -1,0 +1,7 @@
+.toolbar {
+  button {
+    @apply px-3 py-2;
+    @apply border border-[var(--border-color-25)];
+    @apply backdrop-blur-sm rounded-lg;
+  }
+}

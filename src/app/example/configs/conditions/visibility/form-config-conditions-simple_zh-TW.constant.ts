@@ -8,29 +8,31 @@ const CARDS = FORM_CONFIG_BASIC_ZHTW.find(
 export const FORM_CONFIG_CONDITIONS_VISIBILITY_ZHTW: FormControlConfig[] = [
   {
     label: '條件 - 切換顯示狀態',
-    formControlName: 'group',
-    children: [
-      {
-        formControlName: 'hasCreditCards',
-        value: true,
-        type: 'switch',
-        options: {
-          labelPosition: 'before',
-          data: [
-            {
-              label: '是否持有信用卡?',
-            },
-          ],
+    formControlName: 'hasCreditCards',
+    value: true,
+    type: 'switch',
+    layout: {
+      labelStyles: 'font-size: 1.2rem; font-weight:bold;',
+    },
+    options: {
+      labelPosition: 'before',
+      data: [
+        {
+          label: '是否持有信用卡?',
         },
+      ],
+    },
+  },
+  {
+    ...CARDS,
+    layout: {
+      ...CARDS.layout,
+      labelStyles: 'font-size: 1rem',
+    },
+    conditions: {
+      hidden: {
+        '&&': [['hasCreditCards', '===', false]],
       },
-      {
-        ...CARDS,
-        conditions: {
-          hidden: {
-            '&&': [['group.hasCreditCards', '===', false]],
-          },
-        },
-      },
-    ],
+    },
   },
 ];

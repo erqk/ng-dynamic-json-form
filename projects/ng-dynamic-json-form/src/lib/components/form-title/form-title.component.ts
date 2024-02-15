@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   Input,
@@ -9,7 +10,8 @@ import {
   ViewContainerRef,
   inject,
 } from '@angular/core';
-import { Subject, filter, fromEvent, takeUntil, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter, fromEvent, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
@@ -17,7 +19,6 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'form-title',
@@ -27,6 +28,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./form-title.component.scss'],
 })
 export class FormTitleComponent {
+  private _cd = inject(ChangeDetectorRef);
   private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
@@ -80,15 +82,17 @@ export class FormTitleComponent {
   }
 
   ngAfterViewInit(): void {
-    if (!this.collapsibleEl || !this.collapsible) return;
-
     if (this.customComponent) {
       this._injectComponent();
+      this._cd.detectChanges();
       return;
     }
 
-    this._initCollapsibleEl();
-    this._listenTransition();
+    if (this.collapsible && this.collapsibleEl) {
+      this._initCollapsibleEl();
+      this._listenTransition();
+    }
+
     this._viewInitialized = true;
   }
 
@@ -100,6 +104,7 @@ export class FormTitleComponent {
     const componentRef = this.componentAnchor.createComponent(
       this.customComponent
     );
+
     componentRef.instance.label = this.label;
     componentRef.instance.layout = this.layout;
     componentRef.instance.extra = this.extra;

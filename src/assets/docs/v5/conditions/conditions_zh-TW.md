@@ -54,7 +54,9 @@
         <code>></code>,
         <code><</code>,
         <code>>=</code>,
-        <code><=</code>
+        <code><=</code>,
+        <code>includes</code>,
+        <code>notIncludes</code>
       </td>
       <td>用來處理控制器的值和目標值的運算子。</td>
     </tr>
@@ -86,112 +88,20 @@
 
 ### 切換顯示狀態
 
-```javascript
-if (toggles.checkbox === false) {
-  /** 隱藏此控制器 */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "hidden": {
-      "&&": [
-        ["toggles.checkbox", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.VISIBILITY"></example-container>
 
 ### 切換禁用狀態
 
-```javascript
-if (toggles.checkbox === false) {
-  /** 禁用此控制器 */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "disabled": {
-      "&&": [
-        ["toggles.checkbox", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.DISABLED"></example-container>
 
 ### 切換驗證器
 
 使用條件切換驗證器之前，請確認 `validators` 陣列內已設定需要切換的驗證器。
 
-```javascript
-if (toggles.checkbox === true || age > 20) {
-  /** 加入 Validators.required 驗證器 */
-}
+<br>
 
-if (toggles.switch === false) {
-  /** 加入 firstUppercase 驗證器 */
-}
-```
-
-```json
-{
-  ...
-  "validators": [
-    {
-      "name": "required"
-    },
-    {
-      "name": "custom",
-      "value": "firstUppercase"
-    }
-  ],
-  "conditions": {
-    "required": {
-      "||": [
-        ["toggles.checkbox", "===", true],
-        ["age", ">", 20]
-      ]
-    },
-    "firstUppercase": {
-      "&&": [
-        ["toggles.switch", "===", false]
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.VALIDATORS"></example-container>
 
 ### 多重條件
 
-```javascript
-if (age > 20 && name === "王小明" && (toggles.checkbox === false || toggles.switch === false)) {
-  /** 加入 Validators.required 驗證器 */
-}
-```
-
-```json
-{
-  ...
-  "conditions": {
-    "required": {
-      "&&": [
-        ["age", ">", 20],
-        ["name", "===", "王小明"],
-        {
-          "||": [
-            ["toggles.checkbox", "===", false],
-            ["toggles.switch", "===", false]
-          ]
-        }
-      ]
-    }
-  }
-}
-```
+<example-container config-path="CONDITIONS.COMPLEX"></example-container>

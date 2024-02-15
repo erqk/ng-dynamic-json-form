@@ -1,4 +1,5 @@
 @use "./tailwind";
+@use "primeng/resources/primeng.min.css";
 @use "./dark-theme" as dark;
 @use "./form-elements";
 @use "./docs-styling";
@@ -11,7 +12,7 @@
 
 :root {
   --primary-50: #f7f6ff;
-  --primary-100: #efecff;
+  --primary-100: #efecff;  
   --primary-200: #cfc7ff;
   --primary-300: #afa1ff;
   --primary-400: #8f7bff;

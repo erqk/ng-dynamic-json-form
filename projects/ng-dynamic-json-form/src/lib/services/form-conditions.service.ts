@@ -25,7 +25,10 @@ import { getValueInObject } from '../utilities/get-value-in-object';
 @Injectable()
 export class FormConditionsService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
-  private readonly _renderer2 = inject(RendererFactory2).createRenderer(null, null);
+  private readonly _renderer2 = inject(RendererFactory2).createRenderer(
+    null,
+    null
+  );
   private readonly _formValidationService = inject(FormValidationService);
   private _controlStatusUpdating = false;
 
@@ -306,28 +309,34 @@ export class FormConditionsService {
   }
 
   private _booleanResult(
-    left: any,
-    right: any,
+    current: any,
+    target: any,
     operator: FormControlConditionOperator
   ): boolean {
     switch (operator) {
       case '===':
-        return left === right;
+        return current === target;
 
       case '!==':
-        return left !== right;
+        return current !== target;
 
       case '>=':
-        return left >= right;
+        return current >= target;
 
       case '>':
-        return left > right;
+        return current > target;
 
       case '<=':
-        return left <= right;
+        return current <= target;
 
       case '<':
-        return left < right;
+        return current < target;
+
+      case 'includes':
+        return current.includes(target);
+
+      case 'notIncludes':
+        return !current.includes(target);
     }
   }
 

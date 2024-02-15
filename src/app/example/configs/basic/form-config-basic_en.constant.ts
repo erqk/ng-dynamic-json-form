@@ -87,9 +87,11 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     ],
   },
   {
+    label: 'Address',
     formControlName: 'address',
     layout: {
       contentStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
+      contentCollapsible: 'collapse',
     },
     children: [
       {
@@ -124,31 +126,52 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
   {
     label: 'Cards',
     formControlName: 'cards',
-    type: 'checkbox',
-    value: [0],
-    validators: [
+    layout: {
+      contentStyles: 'row-gap: 0px'
+    },
+    children: [
       {
-        name: 'required',
-        message: 'Please choose at least one.',
+        formControlName: 'cardTypes',
+        type: 'checkbox',
+        value: [0],
+        validators: [
+          {
+            name: 'required',
+            message: 'Please choose at least one.',
+          },
+        ],
+        options: {
+          layout: 'column',
+          data: [
+            {
+              label: 'Visa',
+              value: 0,
+            },
+            {
+              label: 'Master',
+              value: 1,
+            },
+            {
+              label: 'JCB',
+              value: 2,
+            },
+            {
+              label: 'Other',
+              value: 3,
+            },
+          ],
+        },
+      },
+      {
+        formControlName: 'cardOther',
+        placeholder: 'Other card type',
+        conditions: {
+          hidden: {
+            '&&': [['cards.cardTypes', 'notIncludes', 3]],
+          },
+        },
       },
     ],
-    options: {
-      layout: 'column',
-      data: [
-        {
-          label: 'Visa',
-          value: 0,
-        },
-        {
-          label: 'Master',
-          value: 1,
-        },
-        {
-          label: 'JCB',
-          value: 2,
-        },
-      ],
-    },
   },
   {
     label: 'Date',

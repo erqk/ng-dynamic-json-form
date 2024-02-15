@@ -17,8 +17,8 @@ export const FORM_CONFIG_CONDITIONS_COMPLEX_EN: FormControlConfig[] = [
     validators: [
       {
         name: 'required',
-        message: 'Conditions met, this input is required!'
-      }
+        message: 'Conditions met, this input is required!',
+      },
     ],
     conditions: {
       required: {
@@ -36,8 +36,11 @@ export const FORM_CONFIG_CONDITIONS_COMPLEX_EN: FormControlConfig[] = [
     },
   },
   {
-    label: 'Group',
     formControlName: 'group',
+    layout: {
+      hostStyles:
+        'border: solid 1px var(--border-color-50); border-radius: 0.5rem; padding: 1rem;',
+    },
     children: [NAME, AGE, TOGGLES],
   },
 ];
