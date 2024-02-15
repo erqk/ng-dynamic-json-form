@@ -57,7 +57,7 @@ export class ThemeService {
   setPrimengTheme(): void {
     this._setTheme(
       'primeng-theme',
-      `/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
+      `/ng-dynamic-json-form/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
     );
   }
 
@@ -65,7 +65,10 @@ export class ThemeService {
     const filename =
       this.currentTheme.key === 'dark' ? 'pink-bluegrey' : 'deeppurple-amber';
 
-    this._setTheme('material-theme', `/assets/material-theme/${filename}.css`);
+    this._setTheme(
+      'material-theme',
+      `/ng-dynamic-json-form/assets/material-theme/${filename}.css`
+    );
   }
 
   private _setTheme(stylesheetId: string, stylesheetPath: string): void {
