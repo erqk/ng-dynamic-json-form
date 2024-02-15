@@ -1,5 +1,19 @@
 # Change log
 
+## 5.1.6
+
+### Feature
+
+- Add 'includes', 'notIncludes' to condition type.
+
+### Fix
+
+- The logic to show warning message if no config provided.
+
+### Chore
+
+- Reduce uneccessary trigger of change detection.
+
 ## 5.1.4
 
 ### Feature
