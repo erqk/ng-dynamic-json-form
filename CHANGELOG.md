@@ -1,5 +1,21 @@
 # Change log
 
+## 5.1.8
+
+### Chore
+
+- Revert provideNgDynamicJsonForm() provider set to multi. The behavior is not match with the expectation and cause other problems.
+
+## 5.1.7
+
+### Fix
+
+- Target element to apply contentStyles and contentClass.
+
+### Chore
+
+- Set provideNgDynamicJsonForm() provider to multi.
+
 ## 5.1.6
 
 ### Feature

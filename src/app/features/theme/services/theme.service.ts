@@ -57,7 +57,7 @@ export class ThemeService {
   setPrimengTheme(): void {
     this._setTheme(
       'primeng-theme',
-      `/ng-dynamic-json-form/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
+      `${window.location.origin}/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
     );
   }
 
@@ -67,7 +67,7 @@ export class ThemeService {
 
     this._setTheme(
       'material-theme',
-      `/ng-dynamic-json-form/assets/material-theme/${filename}.css`
+      `${window.location.origin}/assets/material-theme/${filename}.css`
     );
   }
 
