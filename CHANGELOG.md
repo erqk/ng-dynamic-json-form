@@ -1,5 +1,15 @@
 # Change log
 
+## 5.1.7
+
+### Fix
+
+- Target element to apply contentStyles and contentClass.
+
+### Chore
+
+- Set provideNgDynamicJsonForm() provider to multi.
+
 ## 5.1.6
 
 ### Feature
