@@ -35,6 +35,7 @@ export function provideNgDynamicJsonForm(config?: FormConfig): Provider[] {
     {
       provide: NG_DYNAMIC_JSON_FORM_CONFIG,
       useValue: config,
+      multi: true
     },
   ];
 }
