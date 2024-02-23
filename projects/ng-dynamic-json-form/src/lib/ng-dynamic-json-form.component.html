@@ -73,7 +73,13 @@
               ></form-title>
             </ng-container>
 
-            <div #formControlContent>
+            <div
+              #formControlContent
+              [controlLayout]="{
+                type: 'content',
+                layout: config.layout
+              }"
+            >
               <form-control
                 [data]="config"
                 [control]="parentForm.controls[config.formControlName]"
