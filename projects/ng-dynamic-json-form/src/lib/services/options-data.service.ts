@@ -2,23 +2,22 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import {
-  BehaviorSubject,
   EMPTY,
   Observable,
   Subject,
-  concatAll,
+  catchError,
   concatMap,
   debounceTime,
   distinctUntilChanged,
-  finalize,
   from,
   map,
+  of,
   onErrorResumeNextWith,
   startWith,
   switchMap,
   takeUntil,
   tap,
-  toArray,
+  toArray
 } from 'rxjs';
 import {
   FormControlOptions,
@@ -33,7 +32,7 @@ import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
 export class OptionsDataService {
   private readonly _http = inject(HttpClient);
   private readonly _cancelAll$ = new Subject<void>();
-  private _requests: { src: string; data: BehaviorSubject<any> }[] = [];
+  private _requests: { src: string; data: Subject<any> }[] = [];
 
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
     const { sourceList } = config;
@@ -43,7 +42,14 @@ export class OptionsDataService {
       concatMap((x) => this._fetchData$(x)),
       toArray(),
       map((x) => x.flat()),
-      this._limitDataAmount,
+      tap((x) => {
+        if (x.length > 500) {
+          console.warn(
+            'Data amount too big, auto limit to 500 items.\n' +
+              'Please consider using typeahead or other implementation to filter the data'
+          );
+        }
+      }),
       takeUntil(this._cancelAll$)
     );
   }
@@ -58,11 +64,9 @@ export class OptionsDataService {
         map((x) => {
           if (!filterMatchPath) return x;
 
-          const result = rawData.filter(
+          return rawData.filter(
             (item) => getValueInObject(item.value, filterMatchPath) === x
           );
-
-          return result;
         })
       );
 
@@ -121,35 +125,27 @@ export class OptionsDataService {
       slice,
     } = config;
 
-    const sliceData = (
-      source: Observable<OptionItem[]>
-    ): Observable<OptionItem[]> => {
-      return source.pipe(
-        map((x) => x.slice(slice?.[0] ?? 0, slice?.[1] ?? x.length))
-      );
-    };
-
     const _valueKeys = [...new Set(valueKeys)].filter((x) => x.length > 0);
     const result$ = this._httpRequest$(config, controlValue).pipe(
       onErrorResumeNextWith(),
-      concatMap((x: any) => {
-        const result = !path ? x : getValueInObject(x, path);
-        return !result || !Array.isArray(result) ? [] : result;
-      }),
-      map((x) => ({
-        label: getValueInObject(x, labelKey),
-        value: x,
-      })),
-      toArray(),
-      sliceData,
-      concatAll(),
-      map((x) => ({
-        ...x,
-        value: !_valueKeys.length
-          ? x.value
-          : trimObjectByKeys(x.value, _valueKeys),
-      })),
-      toArray()
+      map((x: any) => {
+        if (!x) return [];
+
+        const targetData = !path ? x : getValueInObject(x, path);
+        if (!targetData || !Array.isArray(targetData)) return [];
+
+        const slicedData = targetData.slice(
+          slice?.[0] ?? 0,
+          slice?.[1] ?? targetData.length
+        );
+
+        const result: OptionItem[] = slicedData.map((item) => ({
+          label: getValueInObject(item, labelKey),
+          value: !_valueKeys.length ? item : trimObjectByKeys(item, _valueKeys),
+        }));
+
+        return result;
+      })
     );
 
     return result$;
@@ -224,64 +220,64 @@ export class OptionsDataService {
       request$ = this._http.get(newSrc);
     }
 
-    if (method === 'POST' && params) {
-      request$ = this._http.post(newSrc, params);
+    if (method === 'POST') {
+      request$ = this._http.post(newSrc, params ?? {});
     }
 
-    return this._requestData$(newSrc, request$);
+    return this._newRequest$(newSrc, request$);
   }
 
-  // TODO: Rename this function
   // TODO: Check data validity, reset the data if the request is canceled
-  // TODO: The triggers not working correctly
-  // TODO: Still have to use OptionItem[] ?
-  private _requestData$(
+  private _newRequest$(
     src: string,
-    newRequest$: Observable<Object>
+    req$: Observable<Object>
   ): Observable<Object | null> {
-    const _newRequest$ = newRequest$.pipe(
-      tap((x) => {
-        const _cache = this._requests.find((x) => x.src === src);
-        _cache?.data.next(x);
-      }),
-      finalize(() => {
-        const _cache = this._requests.find((x) => x.src === src);
-        _cache?.data.complete();
-        _cache?.data.unsubscribe();
-      })
-    );
+    // This cannot be a constant because the cache is available once the first request is made.
+    // Then, we update the cache after the response is get.
+    const getCache = () => this._requests.find((x) => x.src === src);
 
-    const requested = this._requests.find((x) => x.src === src);
+    const onComplete = (obj?: Object) => {
+      const cache = getCache();
+      if (!cache) return;
 
-    if (!requested) {
-      this._requests.push({
-        src,
-        data: new BehaviorSubject<any>(null),
-      });
+      cache.data.next(obj ?? null);
+      cache.data.complete();
+      cache.data.unsubscribe();
+      _req$.next(obj ?? null);
+      _req$.complete();
+      _req$.unsubscribe();
+    };
 
-      return _newRequest$;
+    const _req$ = new Subject<Object | null>();
+    const cache = getCache();
+
+    if (cache && !cache.data.closed) {
+      return cache.data;
     }
 
-    if (!requested.data.closed) {
-      return requested.data;
+    if (cache && cache.data.closed) {
+      cache.data = new Subject<any>();
     }
 
-    requested.data = new BehaviorSubject<any>(null);
-    return _newRequest$;
-  }
+    this._requests.push({
+      src,
+      data: new Subject<any>(),
+    });
 
-  private _limitDataAmount(source: Observable<any>): Observable<any> {
-    return source.pipe(
-      map((x) => {
-        if (x.length > 500) {
-          console.warn(
-            'Data amount too big, auto limit to 500 items.\n' +
-              'Please consider using typeahead or other implementation to filter the data'
-          );
-        }
+    req$
+      .pipe(
+        tap((x) => onComplete(x)),
+        catchError(() => {
+          onComplete();
+          return of(null);
+        })
+      )
+      .subscribe();
 
-        return x.slice(0, 500);
-      })
-    );
+    // We don't return the http request directly, instead return a Subject. This is because
+    // if we're using Angular proxy.conf.json, there will be "Connection: keep-alive" in the
+    // request headers, and "Connection: close" in the response headers.
+    // That will prevent all the complete events in rxjs operator to work. (Ex: finalize(), toArray(), ...)
+    return _req$;
   }
 }
