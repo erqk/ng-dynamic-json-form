@@ -47,13 +47,13 @@
     display: block;
     font-size: var(--font-size-title);
     font-weight: var(--font-weight-title);
-    margin-bottom: 0.5em;
+    margin-bottom: 0.25em;
     word-break: break-all;
   }
 
   .form-description {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5em;
     color: var(--color-description);
     font-size: var(--font-size-description);
     white-space: pre-wrap;
@@ -108,10 +108,6 @@
     flex-direction: column;
   }
 
-  .input-container {
-    margin-top: 0.25em;
-  }
-
   .collapsible-container {
     transition: 0.2s ease;
   }
@@ -121,7 +117,6 @@
     min-width: 0;
 
     .form-title {
-      margin-bottom: 0;
       font-weight: var(--font-weight-label);
       font-size: var(--font-size-label);
     }
