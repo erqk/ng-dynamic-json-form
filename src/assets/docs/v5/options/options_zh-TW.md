@@ -8,10 +8,11 @@
 export interface FormControlOptions {
   data?: OptionItem[];
   sourceList?: OptionSource[];
-  sourceAppendPosition?: "after" | "before";
+  sourceAppendPosition?: 'after' | 'before';
   trigger?: OptionTrigger;
-  layout?: "row" | "column";
-  labelPosition?: "before" | "after";
+  autoSelectFirst?: boolean;
+  layout?: 'row' | 'column';
+  labelPosition?: 'before' | 'after';
   containerClass?: string;
   containerStyles?: string;
 }
