@@ -4,7 +4,6 @@ import {
   Component,
   ComponentRef,
   DestroyRef,
-  ElementRef,
   HostBinding,
   Input,
   SimpleChanges,
@@ -60,7 +59,6 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
-  private _el = inject(ElementRef);
   private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
@@ -139,7 +137,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   ngOnInit(): void {
-    this._setReadonlyStyle();
     this._getErrorMessages();
     this._fetchOptions();
     this.useCustomLoading =
@@ -162,15 +159,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
 
     return (controlDirty || controlTouched) && hasErrors;
-  }
-
-  private _setReadonlyStyle(): void {
-    const host = this._el.nativeElement as HTMLElement;
-    const readonly = this.data?.readonly === true;
-
-    readonly
-      ? host.classList.add('readonly')
-      : host.classList.remove('readonly');
   }
 
   private _injectComponent<T>(
@@ -254,14 +242,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     };
 
     const event$ = !trigger
-      ? service.getOptions$(this.data.options).pipe(
-          tap((x) => this._setOptionsData(x)),
-          finalize(() => (this.loading = false))
-        )
+      ? service.getOptions$(this.data.options)
       : optionsOnTriggers$().pipe(
           tap((x) => {
-            this._setOptionsData(x);
-
             // Auto choose the first option if the option list contains only one option.
             // Skip this if `_patchingValue` is true, or the value will get overwritten.
             if (!this._patchingValue) {
@@ -271,12 +254,23 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
             }
 
             this._patchingValue = false;
-          }),
-          finalize(() => (this.loading = false))
+          })
         );
 
     this.loading = true;
-    event$.subscribe();
+
+    event$
+      .pipe(
+        tap((x) => {
+          if (this.data?.options?.autoSelectFirst) {
+            this.control?.setValue(x?.[0]?.value ?? null);
+          }
+
+          this._setOptionsData(x);
+        }),
+        finalize(() => (this.loading = false))
+      )
+      .subscribe();
   }
 
   private _setOptionsData(options: OptionItem[]): void {

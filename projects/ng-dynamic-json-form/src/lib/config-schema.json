@@ -89,7 +89,10 @@
                 "type": "string",
                 "enum": ["row", "column"]
               },
-              "labelPosition": { "$ref": "#/definitions/labelPositionConfig" }
+              "labelPosition": { "$ref": "#/definitions/labelPositionConfig" },
+              "autoSelectFirst": {
+                "type": "boolean"
+              }
             }
           },
           "placeholder": {
