@@ -23,6 +23,7 @@ export interface FormControlOptions {
 | sourceList           | Config for dynamic data. See [OptionSource](#optionsource).                       |
 | sourceAppendPosition | Order of the dynamic data if static data provided. See [OptionItem](#optionitem). |
 | trigger              | See [OptionTrigger](#optiontrigger).                                              |
+| autoSelectFirst      | Automatically select the first item.                                              |
 | layout               | Flex direction. Can be overwrite by `containerClass`, `containerStyles`.          |
 | labelPosition        | The label position of the input.                                                  |
 | containerClass       | `class` of the container of the options.                                          |
@@ -198,7 +199,7 @@ The following example shows how to build a multi select checkbox of products.
 > If length of `valueKeys` is equal to 1, then the value will not be an object.
 >
 > ```javascript
-> { 
+> {
 >   ...
 >   "valueKeys": ["id"]
 > }
