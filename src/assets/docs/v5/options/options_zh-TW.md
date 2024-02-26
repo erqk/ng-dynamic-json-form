@@ -22,7 +22,8 @@ export interface FormControlOptions {
 | data                 | 靜態和動態資料的列表。請參閱 [OptionItem](#optionitem)。         |
 | sourceList           | 動態資料設定。請參閱 [OptionSource](#optionsource)。             |
 | sourceAppendPosition | 動態資料相對於靜態資料的位置。請參閱 [OptionItem](#optionitem)。 |
-| trigger              | 請參閱 [OptionTrigger](#optiontrigger).                          |
+| trigger              | 請參閱 [OptionTrigger](#optiontrigger)。                         |
+| autoSelectFirst      | 自動選擇第一個選項。                                             |
 | layout               | Flex 佈局方向。 可用 `containerClass`，`containerStyles` 覆寫。  |
 | labelPosition        | 選項文字顯示的位置。                                             |
 | containerClass       | 選項容器的 `class`。                                             |
@@ -198,7 +199,7 @@ export interface OptionSource {
 > 如果 `valueKeys` 只有一個值, 那輸出的值就不是物件。
 >
 > ```javascript
-> { 
+> {
 >   ...
 >   "valueKeys": ["id"]
 > }
