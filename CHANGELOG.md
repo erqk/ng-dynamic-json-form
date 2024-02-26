@@ -1,5 +1,16 @@
 # Change log
 
+## 5.1.9
+
+### Fix
+
+- Options source http request won't complete when when there's connection keep-alive in request headers.
+  - Workaround: replace http request with Subject to trigger the complete event.
+
+### Chore
+
+- Form input margin adjustment.
+
 ## 5.1.8
 
 ### Chore
