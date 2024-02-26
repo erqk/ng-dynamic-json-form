@@ -17,7 +17,7 @@ import {
   switchMap,
   takeUntil,
   tap,
-  toArray
+  toArray,
 } from 'rxjs';
 import {
   FormControlOptions,
@@ -186,45 +186,53 @@ export class OptionsDataService {
   ): Observable<Object | null> {
     const { method, params, src } = config;
     let request$: Observable<Object> = EMPTY;
-    let newSrc = src;
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
     }
 
-    if (method === 'GET') {
-      const urlParams = src.match(/:([^/:\s]+)/g) || ([] as string[]);
-      const newParams = !params
-        ? null
-        : Object.keys(params).reduce((acc, key) => {
-            const valuePath = `${params[key]}`.trim();
-            acc[key] = getValueInObject(controlValue, valuePath);
-            return acc;
-          }, {} as any);
+    const newSrc = (): string => {
+      if (!params) {
+        return src;
+      }
 
-      const useUrlWithParamsReplaced = newParams && urlParams.length > 0;
+      const _params = Object.keys(params).reduce((acc, key) => {
+        const valuePath = `${params[key]}`.trim();
+        acc[key] = getValueInObject(controlValue, valuePath);
+        return acc;
+      }, {} as any);
+
+      // url variables (.../:x/:y/:z)
+      const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
+
       const useQueryString =
-        newParams && Object.keys(newParams).length > 0 && !urlParams.length;
+        Object.keys(_params).length > 0 && !urlVariables.length;
 
-      if (useUrlWithParamsReplaced) {
-        newSrc = Object.keys(newParams).reduce((acc, key) => {
-          acc = acc.replace(`:${key}`, `${newParams[key]}`);
+      if (urlVariables.length > 0) {
+        return Object.keys(_params).reduce((acc, key) => {
+          acc = acc.replace(`:${key}`, `${_params[key]}`);
           return acc;
         }, src);
       }
 
       if (useQueryString) {
-        newSrc = `${src}?${new URLSearchParams(newParams).toString()}`;
+        return `${src}?${new URLSearchParams(_params).toString()}`;
       }
 
-      request$ = this._http.get(newSrc);
+      return src;
+    };
+
+    switch (method) {
+      case 'GET':
+        request$ = this._http.get(newSrc());
+        break;
+
+      case 'POST':
+        request$ = this._http.post(newSrc(), params ?? {});
+        break;
     }
 
-    if (method === 'POST') {
-      request$ = this._http.post(newSrc, params ?? {});
-    }
-
-    return this._newRequest$(newSrc, request$);
+    return this._newRequest$(newSrc(), request$);
   }
 
   // TODO: Check data validity, reset the data if the request is canceled
