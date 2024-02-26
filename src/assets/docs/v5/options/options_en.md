@@ -10,6 +10,7 @@ export interface FormControlOptions {
   sourceList?: OptionSource[];
   sourceAppendPosition?: "after" | "before";
   trigger?: OptionTrigger;
+  autoSelectFirst?: boolean;
   layout?: "row" | "column";
   labelPosition?: "before" | "after";
   containerClass?: string;
