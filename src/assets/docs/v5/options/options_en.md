@@ -8,11 +8,11 @@ A list of data for selection. Basically it is use with `radio`, `checkbox`, and 
 export interface FormControlOptions {
   data?: OptionItem[];
   sourceList?: OptionSource[];
-  sourceAppendPosition?: 'after' | 'before';
+  sourceAppendPosition?: "after" | "before";
   trigger?: OptionTrigger;
   autoSelectFirst?: boolean;
-  layout?: 'row' | 'column';
-  labelPosition?: 'before' | 'after';
+  layout?: "row" | "column";
+  labelPosition?: "before" | "after";
   containerClass?: string;
   containerStyles?: string;
 }
