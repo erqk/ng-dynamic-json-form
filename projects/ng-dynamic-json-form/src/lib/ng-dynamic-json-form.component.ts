@@ -113,6 +113,8 @@ export class NgDynamicJsonFormComponent
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
+  private _useControlValueAccessor = false;
+
   configGet: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
 
@@ -235,13 +237,7 @@ export class NgDynamicJsonFormComponent
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     // This function will always called on next event loop,
     // so we get the errors immediately when this function is called.
-    const errors = !this.form
-      ? null
-      : this._formValidationService.getFormErrors(this.form);
-
-    // Set the form errors, so that the form emitted in `formGet` will get correct errors.
-    this.form?.setErrors(errors);
-    return errors;
+    return this._updateFormErrors();
   }
 
   registerOnValidatorChange?(fn: () => void): void {
@@ -253,6 +249,7 @@ export class NgDynamicJsonFormComponent
   }
 
   registerOnChange(fn: any): void {
+    this._useControlValueAccessor = true;
     this._onChange = fn;
   }
 
@@ -353,6 +350,10 @@ export class NgDynamicJsonFormComponent
       tap((x) => {
         this._onChange(x);
 
+        if (!this._useControlValueAccessor) {
+          this._updateFormErrors();
+        }
+
         if (!markForCheck) {
           this._cd.detectChanges();
           markForCheck = true;
@@ -369,5 +370,14 @@ export class NgDynamicJsonFormComponent
     this._reset$.next();
     this._formGeneratorService.reset$.next();
     this._optionsDataService.cancelAllRequest();
+  }
+
+  private _updateFormErrors(): ValidationErrors | null {
+    if (!this.form) return null;
+
+    const errors = this._formValidationService.getFormErrors(this.form);
+    this.form.setErrors(errors);
+
+    return errors;
   }
 }

@@ -1,5 +1,16 @@
 # Change log
 
+## 5.2.0
+
+### Fix
+
+- Form errors is not updating if no ControlValueAccessor is used.
+- ControlLayoutDirective needs to work even if no layout is provided.
+
+### Feature
+
+- Auto select first for option items.
+
 ## 5.1.9
 
 ### Fix
