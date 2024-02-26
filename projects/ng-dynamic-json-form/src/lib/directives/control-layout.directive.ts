@@ -24,7 +24,6 @@ export class ControlLayoutDirective {
     const classNames = layout?.[`${type ?? 'host'}Class`] ?? '';
     const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
 
-    if (!layout) return;
     if (classNames.length > 0) {
       classNames.split(/\s{1,}/).forEach((name) => {
         this._renderer2.addClass(hostEl, name);
