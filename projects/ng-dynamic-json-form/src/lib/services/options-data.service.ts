@@ -32,7 +32,7 @@ import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
 export class OptionsDataService {
   private readonly _http = inject(HttpClient);
   private readonly _cancelAll$ = new Subject<void>();
-  private _requests: { src: string; data: Subject<any> }[] = [];
+  private _requests: { src: string; data: Subject<any>; params?: any }[] = [];
 
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
     const { sourceList } = config;
@@ -185,94 +185,63 @@ export class OptionsDataService {
     controlValue?: any
   ): Observable<Object | null> {
     const { method, params, src } = config;
-    let request$: Observable<Object> = EMPTY;
+
+    const newSrc = this._getMappedSrc(config, controlValue);
+    const _req$ = new Subject<Object | null>();
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
     }
 
-    const newSrc = (): string => {
-      if (!params) {
-        return src;
-      }
-
-      const _params = Object.keys(params).reduce((acc, key) => {
-        const valuePath = `${params[key]}`.trim();
-        acc[key] = getValueInObject(controlValue, valuePath);
-        return acc;
-      }, {} as any);
-
-      // url variables (.../:x/:y/:z)
-      const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
-
-      const useQueryString =
-        Object.keys(_params).length > 0 && !urlVariables.length;
-
-      if (urlVariables.length > 0) {
-        return Object.keys(_params).reduce((acc, key) => {
-          acc = acc.replace(`:${key}`, `${_params[key]}`);
-          return acc;
-        }, src);
-      }
-
-      if (useQueryString) {
-        return `${src}?${new URLSearchParams(_params).toString()}`;
-      }
-
-      return src;
-    };
-
-    switch (method) {
-      case 'GET':
-        request$ = this._http.get(newSrc());
-        break;
-
-      case 'POST':
-        request$ = this._http.post(newSrc(), params ?? {});
-        break;
-    }
-
-    return this._newRequest$(newSrc(), request$);
-  }
-
-  // TODO: Check data validity, reset the data if the request is canceled
-  private _newRequest$(
-    src: string,
-    req$: Observable<Object>
-  ): Observable<Object | null> {
     // This cannot be a constant because the cache is available once the first request is made.
     // Then, we update the cache after the response is get.
-    const getCache = () => this._requests.find((x) => x.src === src);
+    const prevSameRequest = () =>
+      this._requests.find((x) => {
+        const sameParams =
+          !params || method === 'GET'
+            ? true
+            : JSON.stringify(params) === JSON.stringify(x.params);
+
+        return x.src === newSrc && sameParams;
+      });
 
     const onComplete = (obj?: Object) => {
-      const cache = getCache();
-      if (!cache) return;
+      const sameRequest = prevSameRequest();
+      if (!sameRequest) return;
 
-      cache.data.next(obj ?? null);
-      cache.data.complete();
-      cache.data.unsubscribe();
+      sameRequest.data.next(obj ?? null);
+      sameRequest.data.complete();
+      sameRequest.data.unsubscribe();
       _req$.next(obj ?? null);
       _req$.complete();
       _req$.unsubscribe();
     };
 
-    const _req$ = new Subject<Object | null>();
-    const cache = getCache();
+    const sameRequest = prevSameRequest();
 
-    if (cache && !cache.data.closed) {
-      return cache.data;
-    }
-
-    if (cache && cache.data.closed) {
-      cache.data = new Subject<any>();
+    if (sameRequest) {
+      if (!sameRequest.data.closed) return sameRequest.data;
+      sameRequest.data = new Subject<any>();
     }
 
     this._requests.push({
-      src,
+      src: newSrc,
       data: new Subject<any>(),
+      params: method === 'GET' ? null : params,
     });
 
-    req$
+    let source$: Observable<Object> = EMPTY;
+    switch (method) {
+      case 'GET':
+        source$ = this._http.get(newSrc);
+        break;
+
+      case 'POST':
+        source$ = this._http.post(newSrc, params ?? {});
+        break;
+    }
+
+    source$
       .pipe(
         tap((x) => onComplete(x)),
         catchError(() => {
@@ -282,10 +251,39 @@ export class OptionsDataService {
       )
       .subscribe();
 
-    // We don't return the http request directly, instead return a Subject. This is because
-    // if we're using Angular proxy.conf.json, there will be "Connection: keep-alive" in the
-    // request headers, and "Connection: close" in the response headers.
-    // That will prevent all the complete events in rxjs operator to work. (Ex: finalize(), toArray(), ...)
     return _req$;
+  }
+
+  private _getMappedSrc(config: OptionSource, controlValue: any): string {
+    const { params, src } = config;
+
+    if (!params) {
+      return src;
+    }
+
+    const _params = Object.keys(params).reduce((acc, key) => {
+      const valuePath = `${params[key]}`.trim();
+      acc[key] = getValueInObject(controlValue, valuePath);
+      return acc;
+    }, {} as any);
+
+    // url variables (.../:x/:y/:z)
+    const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
+
+    const useQueryString =
+      Object.keys(_params).length > 0 && !urlVariables.length;
+
+    if (urlVariables.length > 0) {
+      return Object.keys(_params).reduce((acc, key) => {
+        acc = acc.replace(`:${key}`, `${_params[key]}`);
+        return acc;
+      }, src);
+    }
+
+    if (useQueryString) {
+      return `${src}?${new URLSearchParams(_params).toString()}`;
+    }
+
+    return src;
   }
 }
