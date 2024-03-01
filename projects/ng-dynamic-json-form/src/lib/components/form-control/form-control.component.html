@@ -65,6 +65,10 @@
     [ngClass]="{
       hidden: !showErrors
     }"
+    [controlLayout]="{
+      type: 'error',
+      layout: data.layout
+    }"
   >
     <!-- Custom error message component -->
     <ng-container #errorComponentAnchor></ng-container>

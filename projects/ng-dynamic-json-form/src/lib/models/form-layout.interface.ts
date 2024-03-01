@@ -7,6 +7,8 @@ export interface FormLayout {
   contentStyles?: string;
   descriptionClass?: string;
   descriptionStyles?: string;
+  errorClass?: string;
+  errorStyles?: string;
 
   /**Put description before or after input */
   descriptionPosition?: 'before' | 'after';

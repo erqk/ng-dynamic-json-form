@@ -10,7 +10,7 @@ export class ControlLayoutDirective {
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
-    type?: 'host' | 'label' | 'content' | 'description';
+    type?: 'host' | 'label' | 'content' | 'description' | 'error';
     layout?: FormControlConfig['layout'];
     isNested?: boolean;
     readonly?: boolean;
@@ -34,7 +34,7 @@ export class ControlLayoutDirective {
       const styleProperties = styles.split(';').filter(Boolean);
 
       styleProperties.forEach((style) => {
-        const [name, value] = style.split(':');
+        const [name, value] = style.split(':').map((x) => x.trim());
         this._renderer2.setStyle(hostEl, name, value);
       });
     }
