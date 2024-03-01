@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.4
+
+### Fix
+
+- Use native setProperty() because style variable cannot be applied using Renderer2.
+
 ## 5.2.3
 
 ### Fix
