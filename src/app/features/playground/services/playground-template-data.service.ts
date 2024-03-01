@@ -32,13 +32,18 @@ export class PlaygroundTemplateDataService {
   ]).pipe(
     debounceTime(0),
     map(([lang]) =>
-      Object.keys(this._templateList).reduce((acc, key) => {
-        acc.push({
-          ...(this._templateList as any)[key][lang],
+      Object.keys(this._templateList).map((key) => {
+        const value = (this._templateList[key] as any)[
+          lang
+        ] as PlaygroundConfigItem;
+        const config = this.getExampleTemplate(key) ?? value.config;
+
+        return {
+          ...value,
+          config,
           key,
-        });
-        return acc;
-      }, [] as PlaygroundConfigItem[])
+        };
+      })
     )
   );
 

@@ -353,11 +353,36 @@
         "labelStyles": {
           "type": "string"
         },
-        "childClass": {
+        "contentClass": {
           "type": "string"
         },
-        "childStyles": {
+        "contentStyles": {
           "type": "string"
+        },
+        "descriptionClass": {
+          "type": "string"
+        },
+        "descriptionStyles": {
+          "type": "string"
+        },
+        "errorClass": {
+          "type": "string"
+        },
+        "errorStyles": {
+          "type": "string"
+        },
+        "descriptionPosition": {
+          "enum": ["after", "before"]
+        },
+        "hideErrorMessage": {
+          "type": "boolean"
+        },
+        "hideLabel": {
+          "type": "boolean"
+        },
+        "contentCollapsible": {
+          "enum": ["collapse", "expand"],
+          "description": "Enable expand/collapse of content. The default state will be determined by value provided"
         }
       }
     },
