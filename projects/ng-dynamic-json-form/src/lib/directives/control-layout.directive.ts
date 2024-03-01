@@ -35,7 +35,7 @@ export class ControlLayoutDirective {
 
       styleProperties.forEach((style) => {
         const [name, value] = style.split(':').map((x) => x.trim());
-        this._renderer2.setStyle(hostEl, name, value);
+        hostEl.style.setProperty(name, value)
       });
     }
 
