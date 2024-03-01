@@ -1,5 +1,15 @@
 # Change log
 
+## 5.2.3
+
+### Fix
+
+- Style not applied correctly.
+
+### Feature
+
+- Add support for styling of error messages.
+
 ## 5.2.2
 
 ### Fix
