@@ -5,6 +5,9 @@ import {
   UntypedFormArray,
   UntypedFormGroup,
   ValidatorFn,
+  isFormArray,
+  isFormControl,
+  isFormGroup,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { FormControlConfig } from '../models/form-control-config.interface';
@@ -66,6 +69,20 @@ export class FormGeneratorService {
     }
 
     return formGroup;
+  }
+
+  // TODO: Make generated form pristine
+  // The workaround below is not working currently
+  markFormPristine(control: AbstractControl): void {
+    control.markAsPristine();
+
+    if (isFormGroup(control)) {
+      Object.values(control.controls).forEach((c) => this.markFormPristine(c));
+    }
+
+    if (isFormArray(control)) {
+      control.controls.forEach((c) => this.markFormPristine(c));
+    }
   }
 
   private _generateFormArray(

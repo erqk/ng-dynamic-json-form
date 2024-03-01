@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.1
+
+### Chore
+
+- Code refactor
+
 ## 5.2.0
 
 ### Fix

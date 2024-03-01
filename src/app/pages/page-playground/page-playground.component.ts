@@ -151,7 +151,6 @@ export class PagePlaygroundComponent {
   }
 
   onConfigEditing(e: Content): void {
-    console.log(e);
     this._editorDataService.saveModifiedData(e);
   }
 }
