@@ -1,5 +1,12 @@
 # Change log
 
+## 5.2.2
+
+### Fix
+
+- Move content styles of form control to inner level
+- Avoid overwriting of existing styles
+
 ## 5.2.1
 
 ### Chore
