@@ -5,13 +5,12 @@ import {
   EMPTY,
   Observable,
   Subject,
-  catchError,
   concatMap,
   debounceTime,
   distinctUntilChanged,
+  finalize,
   from,
   map,
-  of,
   onErrorResumeNextWith,
   startWith,
   switchMap,
@@ -187,7 +186,6 @@ export class OptionsDataService {
     const { method, params, src } = config;
 
     const newSrc = this._getMappedSrc(config, controlValue);
-    const _req$ = new Subject<Object | null>();
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
@@ -205,20 +203,7 @@ export class OptionsDataService {
         return x.src === newSrc && sameParams;
       });
 
-    const onComplete = (obj?: Object) => {
-      const sameRequest = prevSameRequest();
-      if (!sameRequest) return;
-
-      sameRequest.data.next(obj ?? null);
-      sameRequest.data.complete();
-      sameRequest.data.unsubscribe();
-      _req$.next(obj ?? null);
-      _req$.complete();
-      _req$.unsubscribe();
-    };
-
     const sameRequest = prevSameRequest();
-
     if (sameRequest) {
       if (!sameRequest.data.closed) return sameRequest.data;
       sameRequest.data = new Subject<any>();
@@ -241,17 +226,17 @@ export class OptionsDataService {
         break;
     }
 
-    source$
-      .pipe(
-        tap((x) => onComplete(x)),
-        catchError(() => {
-          onComplete();
-          return of(null);
-        })
-      )
-      .subscribe();
-
-    return _req$;
+    return source$.pipe(
+      tap((x) => {
+        const sameRequest = prevSameRequest();
+        sameRequest?.data.next(x);
+      }),
+      finalize(() => {
+        const sameRequest = prevSameRequest();
+        sameRequest?.data.complete();
+        sameRequest?.data.unsubscribe();
+      })
+    );
   }
 
   private _getMappedSrc(config: OptionSource, controlValue: any): string {
