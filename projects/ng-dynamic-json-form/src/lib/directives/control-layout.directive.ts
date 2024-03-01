@@ -31,7 +31,12 @@ export class ControlLayoutDirective {
     }
 
     if (styles.length > 0) {
-      this._renderer2.setProperty(hostEl, 'style', styles);
+      const styleProperties = styles.split(';').filter(Boolean);
+
+      styleProperties.forEach((style) => {
+        const [name, value] = style.split(':');
+        this._renderer2.setStyle(hostEl, name, value);
+      });
     }
 
     isNested
