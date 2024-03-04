@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.5
+
+### Fix
+
+- All controls should be pristine after the form is built.
+
 ## 5.2.4
 
 ### Fix
