@@ -71,8 +71,6 @@ export class FormGeneratorService {
     return formGroup;
   }
 
-  // TODO: Make generated form pristine
-  // The workaround below is not working currently
   markFormPristine(control: AbstractControl): void {
     control.markAsPristine();
 

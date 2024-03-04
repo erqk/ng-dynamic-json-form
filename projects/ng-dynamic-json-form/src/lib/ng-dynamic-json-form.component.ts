@@ -29,7 +29,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import Ajv, { ValidateFunction } from 'ajv';
-import { Subject, debounceTime, merge, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, merge, take, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -332,7 +332,20 @@ export class NgDynamicJsonFormComponent
     this.form = this._formGeneratorService.generateFormGroup(this.configGet);
     this.formGet.emit(this.form);
 
+    this._markFormPristine();
     this._setupListeners();
+  }
+
+  private _markFormPristine(): void {
+    if (!this.form) return;
+
+    this.form.valueChanges
+      .pipe(
+        debounceTime(0),
+        take(1),
+        tap(() => this._formGeneratorService.markFormPristine(this.form!))
+      )
+      .subscribe();
   }
 
   private _setupListeners(): void {
