@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.6
+
+## Fix
+
+- Mark form control and form pristine after form is built.
+
 ## 5.2.5
 
 ### Fix

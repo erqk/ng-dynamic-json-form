@@ -1,4 +1,4 @@
-## 5.2.5
+## 5.2.6
 
 - [English](./v5/index_en.md)
 - [繁中](./v5/index_zh-TW.md)
