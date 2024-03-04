@@ -21,6 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
+  FormControl,
   FormControlDirective,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
@@ -32,14 +33,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import Ajv, { ValidateFunction } from 'ajv';
-import {
-  Subject,
-  debounceTime,
-  merge,
-  startWith,
-  takeUntil,
-  tap
-} from 'rxjs';
+import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -375,8 +369,11 @@ export class NgDynamicJsonFormComponent
         this._onChange(x);
 
         if (!this._enableFormDirtyState) {
-          const form = (this._ngControl as FormControlDirective).form;
-          form.markAsPristine();
+          const form = (this._ngControl as FormControlDirective)?.form as
+            | FormControl<any>
+            | undefined;
+            
+          form?.markAsPristine();
           this._formGeneratorService.markFormPristine(this.form!);
         }
 
