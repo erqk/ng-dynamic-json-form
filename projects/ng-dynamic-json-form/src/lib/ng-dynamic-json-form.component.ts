@@ -7,6 +7,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Injector,
   Input,
   Output,
   PLATFORM_ID,
@@ -20,8 +21,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
+  FormControlDirective,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  NgControl,
   ReactiveFormsModule,
   UntypedFormGroup,
   ValidationErrors,
@@ -29,7 +32,14 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import Ajv, { ValidateFunction } from 'ajv';
-import { Subject, debounceTime, merge, take, takeUntil, tap } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  merge,
+  startWith,
+  takeUntil,
+  tap
+} from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
@@ -102,6 +112,7 @@ export class NgDynamicJsonFormComponent
   private _platformId = inject(PLATFORM_ID);
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
+  private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formConditionsService = inject(FormConditionsService);
@@ -113,7 +124,8 @@ export class NgDynamicJsonFormComponent
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
-  private _useControlValueAccessor = false;
+  private _ngControl: NgControl | null = null;
+  private _enableFormDirtyState = false;
 
   configGet: FormControlConfig[] = [];
   configValidateErrors: string[] = [];
@@ -199,6 +211,11 @@ export class NgDynamicJsonFormComponent
     });
   }
 
+  @HostListener('focusin', ['$event'])
+  onFocusIn(): void {
+    this._enableFormDirtyState = true;
+  }
+
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
       return;
@@ -237,7 +254,8 @@ export class NgDynamicJsonFormComponent
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     // This function will always called on next event loop,
     // so we get the errors immediately when this function is called.
-    return this._updateFormErrors();
+    const errors = this._updateFormErrors();
+    return errors;
   }
 
   registerOnValidatorChange?(fn: () => void): void {
@@ -249,7 +267,6 @@ export class NgDynamicJsonFormComponent
   }
 
   registerOnChange(fn: any): void {
-    this._useControlValueAccessor = true;
     this._onChange = fn;
   }
 
@@ -328,24 +345,12 @@ export class NgDynamicJsonFormComponent
 
     this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.configGet;
+    this._enableFormDirtyState = false;
 
     this.form = this._formGeneratorService.generateFormGroup(this.configGet);
     this.formGet.emit(this.form);
 
-    this._markFormPristine();
     this._setupListeners();
-  }
-
-  private _markFormPristine(): void {
-    if (!this.form) return;
-
-    this.form.valueChanges
-      .pipe(
-        debounceTime(0),
-        take(1),
-        tap(() => this._formGeneratorService.markFormPristine(this.form!))
-      )
-      .subscribe();
   }
 
   private _setupListeners(): void {
@@ -353,17 +358,29 @@ export class NgDynamicJsonFormComponent
 
     let markForCheck = false;
 
+    this._ngControl = this._injector.get(NgControl, null, {
+      optional: true,
+      self: true,
+    });
+
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
       this.configGet
     );
 
     const valueChanges$ = this.form.valueChanges.pipe(
+      startWith(this.form.value),
       debounceTime(0),
       tap((x) => {
         this._onChange(x);
 
-        if (!this._useControlValueAccessor) {
+        if (!this._enableFormDirtyState) {
+          const form = (this._ngControl as FormControlDirective).form;
+          form.markAsPristine();
+          this._formGeneratorService.markFormPristine(this.form!);
+        }
+
+        if (!this._ngControl) {
           this._updateFormErrors();
         }
 
