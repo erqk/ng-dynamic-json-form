@@ -118,7 +118,7 @@ export class NgDynamicJsonFormComponent
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
 
-  private _ngControl: NgControl | null = null;
+  private _controlDirective: FormControlDirective | null = null;
   private _enableFormDirtyState = false;
 
   configGet: FormControlConfig[] = [];
@@ -207,6 +207,19 @@ export class NgDynamicJsonFormComponent
 
   @HostListener('focusin', ['$event'])
   onFocusIn(): void {
+    if (this._enableFormDirtyState) return;
+    this._enableFormDirtyState = true;
+  }
+
+  @HostListener('click', ['$event'])
+  onClick(): void {
+    if (this._enableFormDirtyState) return;
+    this._enableFormDirtyState = true;
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeydown(): void {
+    if (this._enableFormDirtyState) return;
     this._enableFormDirtyState = true;
   }
 
@@ -352,10 +365,10 @@ export class NgDynamicJsonFormComponent
 
     let markForCheck = false;
 
-    this._ngControl = this._injector.get(NgControl, null, {
+    this._controlDirective = this._injector.get(NgControl, null, {
       optional: true,
       self: true,
-    });
+    }) as FormControlDirective;
 
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
@@ -369,15 +382,12 @@ export class NgDynamicJsonFormComponent
         this._onChange(x);
 
         if (!this._enableFormDirtyState) {
-          const form = (this._ngControl as FormControlDirective)?.form as
-            | FormControl<any>
-            | undefined;
-            
+          const form = this._controlDirective?.form;
           form?.markAsPristine();
           this._formGeneratorService.markFormPristine(this.form!);
         }
 
-        if (!this._ngControl) {
+        if (!this._controlDirective) {
           this._updateFormErrors();
         }
 
