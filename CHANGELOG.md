@@ -1,5 +1,18 @@
 # Change log
 
+## 5.2.8
+
+## Fix
+
+- `markAsDirty()`, `markAsTouched()` not working for input templates.
+- Add `takeUntilDestroy()` to errors listener inside CustomControlComponent to prevent memory leak.
+
+## 5.2.7
+
+### Fix
+
+- Nullable check.
+
 ## 5.2.6
 
 ## Fix
