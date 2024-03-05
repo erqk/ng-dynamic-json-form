@@ -1,8 +1,14 @@
 # Change log
 
+## 5.2.9
+
+### Fix
+
+- OptionTrigger params failed on POST method.
+
 ## 5.2.8
 
-## Fix
+### Fix
 
 - `markAsDirty()`, `markAsTouched()` not working for input templates.
 - Add `takeUntilDestroy()` to errors listener inside CustomControlComponent to prevent memory leak.
