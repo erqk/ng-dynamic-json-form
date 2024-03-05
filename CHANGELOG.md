@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.10
+
+### Fix
+
+- `autoSelectFirst` not working on static data
+
 ## 5.2.9
 
 ### Fix
