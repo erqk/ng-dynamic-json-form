@@ -57,7 +57,7 @@ export class ThemeService {
   setPrimengTheme(): void {
     this._setTheme(
       'primeng-theme',
-      `${window.location.origin}/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
+      `${this._baseHref}/assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
     );
   }
 
@@ -67,7 +67,7 @@ export class ThemeService {
 
     this._setTheme(
       'material-theme',
-      `${window.location.origin}/assets/material-theme/${filename}.css`
+      `${this._baseHref}/assets/material-theme/${filename}.css`
     );
   }
 
@@ -87,5 +87,11 @@ export class ThemeService {
         document.head.childNodes[0]
       );
     }
+  }
+
+  private get _baseHref(): string {
+    return window.location.origin.indexOf('localhost') > -1
+      ? ''
+      : 'ng-dynamic-json-form';
   }
 }
