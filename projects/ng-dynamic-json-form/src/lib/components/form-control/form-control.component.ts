@@ -25,7 +25,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, finalize, tap } from 'rxjs';
+import { EMPTY, Observable, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
@@ -233,51 +233,63 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
 
     this._existingOptions = this.data.options.data || [];
-    const service = this._optionsDataService;
     const trigger = this.data.options.trigger;
 
-    const optionsOnTriggers$ = () => {
-      if (!trigger || !trigger.action || !this.form) return EMPTY;
-
-      switch (trigger.action) {
-        case 'FILTER':
-          return service.filterOptionsOnTrigger$(this.form, trigger);
-
-        case 'REQUEST':
-          return service.requestOptionsOnTrigger$(this.form, trigger);
-      }
-    };
-
     const event$ = !trigger
-      ? service.getOptions$(this.data.options)
-      : optionsOnTriggers$().pipe(
-          tap((x) => {
-            // Auto choose the first option if the option list contains only one option.
-            // Skip this if `_patchingValue` is true, or the value will get overwritten.
-            if (!this._patchingValue) {
-              const clearData = !x.length || x.length > 1;
-              const autoValue = clearData ? '' : x[0].value;
-              this._controlComponentRef?.writeValue(autoValue);
-            }
-
-            this._patchingValue = false;
-          })
-        );
+      ? this._optionsDataService.getOptions$(this.data.options)
+      : this._optionsOnTrigger$;
 
     this.loading = true;
 
     event$
       .pipe(
         tap((x) => {
-          if (this.data?.options?.autoSelectFirst) {
-            this.control?.setValue(x?.[0]?.value ?? null);
-          }
-
           this._setOptionsData(x);
+          this._selectFirstOptionItem();
         }),
-        finalize(() => (this.loading = false))
+        finalize(() => {
+          this._selectFirstOptionItem();
+          this.loading = false;
+        })
       )
       .subscribe();
+  }
+
+  private get _optionsOnTrigger$(): Observable<OptionItem[]> {
+    if (!this.data?.options) return EMPTY;
+
+    const trigger = this.data.options.trigger;
+    if (!trigger || !trigger.action || !this.form) return EMPTY;
+
+    const source$ = () => {
+      switch (trigger.action) {
+        case 'FILTER':
+          return this._optionsDataService.filterOptionsOnTrigger$(
+            this.form!,
+            trigger
+          );
+
+        case 'REQUEST':
+          return this._optionsDataService.requestOptionsOnTrigger$(
+            this.form!,
+            trigger
+          );
+      }
+    };
+
+    return source$().pipe(
+      tap((x) => {
+        // Auto choose the first option if the option list contains only one option.
+        // Skip this if `_patchingValue` is true, or the value will get overwritten.
+        if (!this._patchingValue) {
+          const clearData = !x.length || x.length > 1;
+          const autoValue = clearData ? '' : x[0].value;
+          this._controlComponentRef?.writeValue(autoValue);
+        }
+
+        this._patchingValue = false;
+      })
+    );
   }
 
   private _setOptionsData(options: OptionItem[]): void {
@@ -296,6 +308,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this.data.options.data = dataGet;
     this.loading = false;
     this._cd.detectChanges();
+  }
+
+  private _selectFirstOptionItem(): void {
+    const { autoSelectFirst, data } = this.data?.options ?? {};
+    if (!autoSelectFirst) return;
+
+    this.control?.setValue(data?.[0]?.value ?? null);
   }
 
   private _getErrorMessages(): void {
