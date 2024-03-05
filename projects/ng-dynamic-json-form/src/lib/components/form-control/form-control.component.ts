@@ -5,7 +5,6 @@ import {
   ComponentRef,
   DestroyRef,
   HostBinding,
-  Injector,
   Input,
   SimpleChanges,
   TemplateRef,
@@ -60,7 +59,6 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
-  private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
@@ -199,17 +197,10 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._controlComponentRef = componentRef.instance;
 
     if (!this.data?.readonly) {
-      const emptyValue =
-        this._pendingValue === '' ||
-        this._pendingValue === null ||
-        this._pendingValue === undefined;
-
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
-
-      if (!emptyValue) {
-        this._onChange(this._pendingValue);
-      }
+      
+      this._onChange(this._pendingValue);
     }
   }
 
