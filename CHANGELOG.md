@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.11
+
+### Chore
+
+- Write value into control even it's null or undefined.
+
 ## 5.2.10
 
 ### Fix
