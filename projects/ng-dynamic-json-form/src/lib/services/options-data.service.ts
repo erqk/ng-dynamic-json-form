@@ -172,7 +172,7 @@ export class OptionsDataService {
     return control.valueChanges.pipe(
       startWith(control.value),
       debounceTime(_debouceTime),
-      distinctUntilChanged(),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       map((x) =>
         !controlValuePath ? x : getValueInObject(x, controlValuePath)
       )
