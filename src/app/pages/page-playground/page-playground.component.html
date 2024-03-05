@@ -1,7 +1,7 @@
 <!-- desktop -->
-<ng-container *ngIf="windowSize$.value.x >= 1024">
+<ng-container *ngIf="windowSize$.value.x >= 768">
   <div
-    class="relative z-0 hidden lg:flex"
+    class="relative z-0 hidden md:flex"
     [ngStyle]="{
       '--header-height.px': headerHeight$.value,
       '--panel-width': '20rem'
@@ -115,10 +115,10 @@
 </ng-container>
 
 <!-- mobile -->
-<ng-container *ngIf="windowSize$.value.x < 1024">
+<ng-container *ngIf="windowSize$.value.x < 768">
   <div
     [ngClass]="[
-      'flex flex-col lg:hidden',
+      'flex flex-col md:hidden',
       'h-[calc(var(--window-height)-var(--header-height))] overflow-hidden'
     ]"
     [ngStyle]="{
@@ -243,7 +243,7 @@
 
 <ng-template #dynamicFormTemplate>
   <ng-dynamic-json-form
-    class="flex flex-col p-5 text-sm lg:text-base"
+    class="flex flex-col p-5 text-sm md:text-base"
     [configs]="(configs$ | async) ?? []"
     [uiComponents]="customUiComponents[currentUi]"
     [hideErrorMessage]="hideErrorMessageControl.value ?? false"

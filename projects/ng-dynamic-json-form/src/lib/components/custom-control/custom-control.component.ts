@@ -1,9 +1,11 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   HostListener,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -21,19 +23,19 @@ import { ControlValueService, FormValidationService } from '../../services';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  private readonly _internal_cd = inject(ChangeDetectorRef);
-  private readonly _internal_controlValueService = inject(ControlValueService, {
+  private _internal_cd = inject(ChangeDetectorRef);
+  private _internal_destroyRef = inject(DestroyRef);
+  private _internal_controlValueService = inject(ControlValueService, {
     optional: true,
   });
 
-  private readonly _internal_formValidationService = inject(
-    FormValidationService,
-    { optional: true }
-  );
+  private _internal_formValidationService = inject(FormValidationService, {
+    optional: true,
+  });
 
   private _internal_onTouched = () => {};
   private _internal_hideErrors$ = new BehaviorSubject<boolean>(false);
-  private readonly _internal_init$ = new Subject<void>();
+  private _internal_init$ = new Subject<void>();
 
   /**Can be override by instance of `AbstractControl`
    * @example
@@ -107,7 +109,10 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     );
 
     merge(errorMessage$, setErrors$)
-      .pipe(takeUntil(this._internal_init$))
+      .pipe(
+        takeUntil(this._internal_init$),
+        takeUntilDestroyed(this._internal_destroyRef)
+      )
       .subscribe();
   }
 

@@ -222,7 +222,7 @@ export class OptionsDataService {
         break;
 
       case 'POST':
-        source$ = this._http.post(newSrc, params ?? {});
+        source$ = this._http.post(src, this._newParams(config, controlValue));
         break;
     }
 
@@ -246,11 +246,7 @@ export class OptionsDataService {
       return src;
     }
 
-    const _params = Object.keys(params).reduce((acc, key) => {
-      const valuePath = `${params[key]}`.trim();
-      acc[key] = getValueInObject(controlValue, valuePath);
-      return acc;
-    }, {} as any);
+    const _params = this._newParams(config, controlValue);
 
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
@@ -270,5 +266,16 @@ export class OptionsDataService {
     }
 
     return src;
+  }
+
+  private _newParams(config: OptionSource, controlValue: any): any {
+    const params = config.params;
+    if (!params) return {};
+
+    return Object.keys(params).reduce((acc, key) => {
+      const valuePath = `${params[key]}`.trim();
+      acc[key] = getValueInObject(controlValue, valuePath);
+      return acc;
+    }, {} as any);
   }
 }

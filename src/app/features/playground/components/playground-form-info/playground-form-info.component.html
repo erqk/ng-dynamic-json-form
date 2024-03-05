@@ -6,13 +6,40 @@
         'overflow-hidden beauty-scrollbar affect-child'
       ]"
     >
-      <markdown
-        class="block h-full overflow-hidden"
+      <div
+        class="h-full flex flex-col"
         [ngClass]="{
           hidden: selectedTab !== 0
         }"
-        [data]="control.value | json | language : 'javascript'"
-      ></markdown>
+      >
+        <markdown
+          class="flex-1 block overflow-hidden"
+          [data]="control.value | json | language : 'javascript'"
+        ></markdown>
+
+        <div class="flex justify-evenly gap-4 mb-2">
+          <span
+            [ngClass]="{
+              'opacity-30': !control.dirty
+            }"
+            >dirty</span
+          >
+
+          <span
+            [ngClass]="{
+              'opacity-30': !control.pristine
+            }"
+            >pristine</span
+          >
+
+          <span
+            [ngClass]="{
+              'opacity-30': !control.touched
+            }"
+            >touched</span
+          >
+        </div>
+      </div>
 
       <markdown
         class="block h-full overflow-hidden"

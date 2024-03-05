@@ -1,5 +1,36 @@
 # Change log
 
+## 5.2.9
+
+### Fix
+
+- OptionTrigger params failed on POST method.
+
+## 5.2.8
+
+### Fix
+
+- `markAsDirty()`, `markAsTouched()` not working for input templates.
+- Add `takeUntilDestroy()` to errors listener inside CustomControlComponent to prevent memory leak.
+
+## 5.2.7
+
+### Fix
+
+- Nullable check.
+
+## 5.2.6
+
+## Fix
+
+- Mark form control and form pristine after form is built.
+
+## 5.2.5
+
+### Fix
+
+- All controls should be pristine after the form is built.
+
 ## 5.2.4
 
 ### Fix

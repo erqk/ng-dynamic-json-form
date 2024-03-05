@@ -1,6 +1,6 @@
 <!-- desktop -->
 <div
-  class="hidden lg:flex flex-col h-full p-2 px-6 pb-16 overflow-auto beauty-scrollbar"
+  class="hidden md:flex flex-col h-full p-2 px-6 pb-16 overflow-auto beauty-scrollbar"
 >
   <ng-container
     *ngFor="let item of list$ | async"
@@ -18,7 +18,7 @@
 </div>
 
 <!-- mobile -->
-<div class="block lg:hidden">
+<div class="block md:hidden">
   <div
     [ngClass]="[
       showTemplateNameInput ? 'hidden' : 'flex',
@@ -95,7 +95,7 @@
       type="text"
       [formControl]="nameControl"
       [ngClass]="[
-        'p-1 px-2 border border-[var(--border-color-50)] lg:border-transparent bg-transparent',
+        'p-1 px-2 border border-[var(--border-color-50)] md:border-transparent bg-transparent',
         'hover:border-[var(--border-color-50)] focus:border-[var(--border-color-50)]',
         'hover:bg-[rgb(var(--bg-color-rgb))] focus:bg-[rgb(var(--bg-color-rgb))]'
       ]"

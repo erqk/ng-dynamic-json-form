@@ -5,6 +5,7 @@ import {
   ComponentRef,
   DestroyRef,
   HostBinding,
+  Injector,
   Input,
   SimpleChanges,
   TemplateRef,
@@ -59,6 +60,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
+  private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
@@ -66,14 +68,14 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
+  private _pendingValue: any = null;
+  private _viewInitialized = false;
 
   /**To prevent data keep concating */
   private _existingOptions: OptionItem[] = [];
 
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
-
-  private _pendingValue: any = null;
 
   @Input() form?: UntypedFormGroup;
   @Input() control?: AbstractControl;
@@ -98,10 +100,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   useCustomLoading = false;
 
   writeValue(obj: any): void {
-    const value = obj;
-    this._pendingValue = value;
+    this._pendingValue = obj;
     this._patchingValue = true;
-    this._controlComponentRef?.writeValue(value);
+    this._controlComponentRef?.writeValue(obj);
   }
 
   registerOnChange(fn: (_: any) => void): void {
@@ -123,15 +124,16 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { hideErrorMessage } = simpleChanges;
 
-    if (hideErrorMessage && this._controlComponentRef) {
-      this._controlComponentRef['_internal_hideErrors$'].next(
+    if (hideErrorMessage && this._viewInitialized) {
+      this._controlComponentRef?.['_internal_hideErrors$'].next(
         this.hideErrorMessage ?? false
       );
 
       if (!this.hideErrorMessage) {
-        this.control?.markAllAsTouched();
-        this._controlComponentRef.control?.markAllAsTouched();
-        this._controlComponentRef.control?.markAsDirty();
+        this.control?.markAsTouched();
+        this.control?.markAsDirty();
+        this._controlComponentRef?.control?.markAsTouched();
+        this._controlComponentRef?.control?.markAsDirty();
       }
     }
   }
@@ -146,6 +148,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   ngAfterViewInit(): void {
     this._injectInputComponent();
     this._injectErrorMessageComponent();
+    this._viewInitialized = true;
     this._cd.detectChanges();
   }
 
@@ -186,14 +189,14 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
     if (!componentRef) return;
 
-    this._controlComponentRef = componentRef.instance;
-
     componentRef.instance.data = this._configMappingService.mapCorrectConfig(
       this.data
     );
 
     componentRef.instance['_internal_init'](this.control);
     componentRef.instance.writeValue(this._pendingValue);
+
+    this._controlComponentRef = componentRef.instance;
 
     if (!this.data?.readonly) {
       const emptyValue =
@@ -236,9 +239,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     const optionsOnTriggers$ = () => {
       if (!trigger || !trigger.action || !this.form) return EMPTY;
 
-      return trigger.action === 'FILTER'
-        ? service.filterOptionsOnTrigger$(this.form, trigger)
-        : service.requestOptionsOnTrigger$(this.form, trigger);
+      switch (trigger.action) {
+        case 'FILTER':
+          return service.filterOptionsOnTrigger$(this.form, trigger);
+
+        case 'REQUEST':
+          return service.requestOptionsOnTrigger$(this.form, trigger);
+      }
     };
 
     const event$ = !trigger
