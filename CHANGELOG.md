@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.14
+
+### Fix
+
+- Use default value for params if not provided during POST request.
+
 ## 5.2.13
 
 ### Fix
