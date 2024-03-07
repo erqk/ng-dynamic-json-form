@@ -194,7 +194,7 @@ export class OptionsDataService {
     const newSrc = this._getMappedSrc(config, controlValue);
     const newParams = useTrigger
       ? this._dynamicParams(config, controlValue)
-      : params;
+      : params || {};
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
