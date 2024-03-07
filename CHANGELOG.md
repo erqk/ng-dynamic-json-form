@@ -1,5 +1,12 @@
 # Change log
 
+## 5.2.12
+
+### Fix
+
+- Http request cache using new params value.
+- For request by trigger, check the validity of the value.
+
 ## 5.2.11
 
 ### Chore
