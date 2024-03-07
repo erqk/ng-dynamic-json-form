@@ -11,6 +11,7 @@ import {
   finalize,
   from,
   map,
+  of,
   onErrorResumeNextWith,
   startWith,
   switchMap,
@@ -92,7 +93,10 @@ export class OptionsDataService {
     config: OptionTrigger
   ): Observable<OptionItem[]> {
     return this._onTriggerControlChanges$(form, config).pipe(
-      switchMap((x) => this._fetchData$(config, x)),
+      switchMap((x) => {
+        const emptyValue = x === undefined || x === null || x === '';
+        return emptyValue ? of([]) : this._fetchData$(config, x);
+      }),
       takeUntil(this._cancelAll$)
     );
   }
@@ -186,6 +190,7 @@ export class OptionsDataService {
     const { method, params, src } = config;
 
     const newSrc = this._getMappedSrc(config, controlValue);
+    const newParams = this._newParams(config, controlValue);
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
@@ -198,7 +203,7 @@ export class OptionsDataService {
         const sameParams =
           !params || method === 'GET'
             ? true
-            : JSON.stringify(params) === JSON.stringify(x.params);
+            : JSON.stringify(newParams) === JSON.stringify(x.params);
 
         return x.src === newSrc && sameParams;
       });
@@ -212,7 +217,7 @@ export class OptionsDataService {
     this._requests.push({
       src: newSrc,
       data: new Subject<any>(),
-      params: method === 'GET' ? null : params,
+      params: method === 'GET' ? null : newParams,
     });
 
     let source$: Observable<Object> = EMPTY;
@@ -222,7 +227,7 @@ export class OptionsDataService {
         break;
 
       case 'POST':
-        source$ = this._http.post(src, this._newParams(config, controlValue));
+        source$ = this._http.post(src, newParams);
         break;
     }
 
