@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.13
+
+### Fix
+
+- Failed to fetch data for POST method and params is not dynamic.
+
 ## 5.2.12
 
 ### Fix

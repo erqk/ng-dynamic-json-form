@@ -39,7 +39,7 @@ export class OptionsDataService {
     if (!sourceList?.length) return EMPTY;
 
     return from(sourceList).pipe(
-      concatMap((x) => this._fetchData$(x)),
+      concatMap((x) => this._fetchData$(x, false)),
       toArray(),
       map((x) => x.flat()),
       tap((x) => {
@@ -82,7 +82,7 @@ export class OptionsDataService {
       }
     }
 
-    return this._fetchData$(config).pipe(
+    return this._fetchData$(config, true).pipe(
       switchMap((x) => valueChanges$(x)),
       takeUntil(this._cancelAll$)
     );
@@ -121,6 +121,7 @@ export class OptionsDataService {
 
   private _fetchData$(
     config: OptionSource,
+    useTrigger: boolean | undefined,
     controlValue?: any
   ): Observable<OptionItem[]> {
     const {
@@ -129,7 +130,7 @@ export class OptionsDataService {
     } = config;
 
     const _valueKeys = [...new Set(valueKeys)].filter((x) => x.length > 0);
-    const result$ = this._httpRequest$(config, controlValue).pipe(
+    const result$ = this._httpRequest$(config, useTrigger, controlValue).pipe(
       onErrorResumeNextWith(),
       map((x: any) => {
         if (!x) return [];
@@ -185,12 +186,15 @@ export class OptionsDataService {
 
   private _httpRequest$(
     config: OptionSource,
+    useTrigger: boolean | undefined,
     controlValue?: any
   ): Observable<Object | null> {
     const { method, params, src } = config;
 
     const newSrc = this._getMappedSrc(config, controlValue);
-    const newParams = this._newParams(config, controlValue);
+    const newParams = useTrigger
+      ? this._dynamicParams(config, controlValue)
+      : params;
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
@@ -251,7 +255,7 @@ export class OptionsDataService {
       return src;
     }
 
-    const _params = this._newParams(config, controlValue);
+    const _params = this._dynamicParams(config, controlValue);
 
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
@@ -273,7 +277,7 @@ export class OptionsDataService {
     return src;
   }
 
-  private _newParams(config: OptionSource, controlValue: any): any {
+  private _dynamicParams(config: OptionSource, controlValue: any): any {
     const params = config.params;
     if (!params) return {};
 
