@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.15
+
+### Fix
+
+- Query selector failed because the "." character is not escape well.
+
 ## 5.2.14
 
 ### Fix
