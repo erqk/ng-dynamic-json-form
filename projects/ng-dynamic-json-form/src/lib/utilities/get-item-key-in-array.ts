@@ -17,19 +17,31 @@ export function getItemKeyInArray(array: any[], path: string): string {
     return path;
   }
 
+  const removeQuotes = (str: string) =>
+    str.replaceAll('"', '').replaceAll("'", '');
+
   const [key, operator, value] = path
     .replace('[', '')
     .replace(']', '')
-    .trim()
     .split(',')
     .map((x) => x.trim()) as FormControlIfCondition;
 
-  const _key = key.replaceAll('"', '').replaceAll("'", '');
-  const _operator = operator.replaceAll('"', '').replaceAll("'", '');
+  const _key = removeQuotes(key);
+  const _operator = removeQuotes(operator);
+
+  // Because we have `path` that is a string, but we want number to be used.
+  // So we have to check whether the 'real' type of the value.
+  // If the value is wrapped with quotes, we don't parse it but remove the quotes.
+  const valueParsed = () => {
+    if (typeof value !== 'string') return value;
+
+    const isString = new RegExp(/^('|").*('|")$/).test(value);
+    return isString ? removeQuotes(value) : JSON.parse(value);
+  };
 
   const index = array.findIndex((item) => {
     const left = !_key ? item : getValueInObject(item, _key);
-    const right = JSON.parse(value);
+    const right = valueParsed();
 
     switch (_operator) {
       case '!==':
