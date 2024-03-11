@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.17
+
+### Fix
+
+- Object value parse incorrectly.
+
 ## 5.2.16
 
 ### Feature
