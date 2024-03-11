@@ -30,8 +30,8 @@ import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
 
 @Injectable()
 export class OptionsDataService {
-  private readonly _http = inject(HttpClient);
-  private readonly _cancelAll$ = new Subject<void>();
+  private _http = inject(HttpClient);
+  private _cancelAll$ = new Subject<void>();
   private _requests: { src: string; data: Subject<any>; params?: any }[] = [];
 
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
@@ -39,7 +39,12 @@ export class OptionsDataService {
     if (!sourceList?.length) return EMPTY;
 
     return from(sourceList).pipe(
-      concatMap((x) => this._fetchData$(x, false)),
+      concatMap((x) =>
+        this._fetchData$({
+          config: x,
+          useTrigger: false,
+        })
+      ),
       toArray(),
       map((x) => x.flat()),
       tap((x) => {
@@ -82,7 +87,7 @@ export class OptionsDataService {
       }
     }
 
-    return this._fetchData$(config, true).pipe(
+    return this._fetchData$({ config, useTrigger: true }).pipe(
       switchMap((x) => valueChanges$(x)),
       takeUntil(this._cancelAll$)
     );
@@ -95,7 +100,9 @@ export class OptionsDataService {
     return this._onTriggerControlChanges$(form, config).pipe(
       switchMap((x) => {
         const emptyValue = x === undefined || x === null || x === '';
-        return emptyValue ? of([]) : this._fetchData$(config, x);
+        return emptyValue
+          ? of([])
+          : this._fetchData$({ config, useTrigger: true, controlValue: x });
       }),
       takeUntil(this._cancelAll$)
     );
@@ -119,11 +126,15 @@ export class OptionsDataService {
     this._cancelAll$.complete();
   }
 
-  private _fetchData$(
-    config: OptionSource,
-    useTrigger: boolean | undefined,
-    controlValue?: any
-  ): Observable<OptionItem[]> {
+  private _fetchData$({
+    config,
+    useTrigger,
+    controlValue,
+  }: {
+    config: OptionSource;
+    useTrigger: boolean | undefined;
+    controlValue?: any;
+  }): Observable<OptionItem[]> {
     const {
       data: { path, labelKey, valueKeys = [] },
       slice,

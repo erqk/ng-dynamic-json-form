@@ -1,5 +1,15 @@
 # Change log
 
+## 5.2.16
+
+### Feature
+
+- Enable filter of array in object by key.
+
+### Fix
+
+- OptionsTrigger not working correctly when using dynamic params.
+
 ## 5.2.15
 
 ### Fix
