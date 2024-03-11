@@ -38,7 +38,10 @@ describe('getItemKeyInArray', () => {
   });
 
   it('get "C"', () => {
-    const index = getValueInObject(caseB, 'level_1_caseB.level_2_caseB.[,"===", "C"]');
+    const index = getValueInObject(
+      caseB,
+      'level_1_caseB.level_2_caseB.[,"===", "C"]'
+    );
     expect(index).toEqual('C');
   });
 });
