@@ -19,8 +19,8 @@ import {
   ValidatorConfig,
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
-import { FormValidationService } from './form-validation.service';
 import { getValueInObject } from '../utilities/get-value-in-object';
+import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormConditionsService {
@@ -104,22 +104,18 @@ export class FormConditionsService {
 
   /**Get the target element by using `id` on each `div` inside current NgDynamicJsonForm instance */
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
-    const promise$ = new Promise<HTMLElement | null>((resolve) => {
-      requestAnimationFrame(() => {
-        if (!this.hostEl) {
-          resolve(null);
-        }
-
+    return new Observable((subscriber) => {
+      window.requestAnimationFrame(() => {
         // Must escape the "." character so that querySelector will work correctly
-        const element = this.hostEl!.querySelector(
-          `div#${controlPath.replace('.', '\\.')}`
-        ) as HTMLElement | null;
+        const element = this.hostEl?.querySelector(
+          `div#${controlPath.replaceAll('.', '\\.')}`
+        );
 
-        !element ? resolve(null) : resolve(element);
+        subscriber.next(!element ? null : (element as HTMLElement));
+        subscriber.complete();
+        subscriber.unsubscribe();
       });
     });
-
-    return from(promise$);
   }
 
   private _toggleElementVisibility(

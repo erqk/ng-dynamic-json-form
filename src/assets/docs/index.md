@@ -1,4 +1,4 @@
-## 5.2.14
+## 5.2.15
 
 - [English](./v5/index_en.md)
 - [繁中](./v5/index_zh-TW.md)
