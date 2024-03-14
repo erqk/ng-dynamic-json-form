@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.18
+
+### Chore
+
+- Reduce error message subscription count.
+
 ## 5.2.17
 
 ### Fix

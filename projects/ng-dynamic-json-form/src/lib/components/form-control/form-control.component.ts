@@ -14,7 +14,6 @@ import {
   forwardRef,
   inject,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -137,7 +136,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   ngOnInit(): void {
-    this._getErrorMessages();
     this._fetchOptions();
     this.useCustomLoading =
       !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
@@ -148,6 +146,14 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._injectErrorMessageComponent();
     this._viewInitialized = true;
     this._cd.detectChanges();
+  }
+
+  onErrorMessagesGet(e: string[]): void {
+    this.errorMessages = e;
+
+    if (this._controlComponentRef) {
+      this._controlComponentRef.errorMessages = e;
+    }
   }
 
   get showErrors(): boolean {
@@ -199,7 +205,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     if (!this.data?.readonly) {
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
-      
+
       this._onChange(this._pendingValue);
     }
   }
@@ -306,16 +312,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     if (!autoSelectFirst) return;
 
     this.control?.setValue(data?.[0]?.value ?? null);
-  }
-
-  private _getErrorMessages(): void {
-    this._formValidationService
-      .getErrorMessages$(this.control, this.data?.validators)
-      .pipe(
-        tap((x) => (this.errorMessages = x)),
-        takeUntilDestroyed(this._destroyRef)
-      )
-      .subscribe();
   }
 
   private get _inputType(): string {
