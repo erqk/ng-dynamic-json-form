@@ -89,10 +89,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _internal_listenErrors(control?: AbstractControl): void {
     if (!control || !this._internal_formValidationService) return;
 
-    const errorMessage$ = this._internal_formValidationService
-      .getErrorMessages$(control, this.data?.validators)
-      .pipe(tap((x) => (this.errorMessages = x)));
-
     const setErrors$ = merge(
       this._internal_hideErrors$,
       control.statusChanges
@@ -108,7 +104,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
       })
     );
 
-    merge(errorMessage$, setErrors$)
+    setErrors$
       .pipe(
         takeUntil(this._internal_init$),
         takeUntilDestroyed(this._internal_destroyRef)

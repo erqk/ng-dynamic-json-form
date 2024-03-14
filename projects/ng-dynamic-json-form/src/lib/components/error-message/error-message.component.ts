@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  EventEmitter,
   HostBinding,
   Input,
+  Output,
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -26,6 +28,7 @@ export class ErrorMessageComponent {
 
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
+  @Output() errorMessagesGet = new EventEmitter<string[]>();
 
   @HostBinding('class.error-message') hostClass = true;
 
@@ -35,7 +38,10 @@ export class ErrorMessageComponent {
     this._internal_formValidationService
       .getErrorMessages$(this.control, this.validators)
       .pipe(
-        tap((x) => (this.errorMessages = x)),
+        tap((x) => {
+          this.errorMessages = x;
+          this.errorMessagesGet.emit(x);
+        }),
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();

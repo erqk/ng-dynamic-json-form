@@ -76,9 +76,9 @@
       *ngIf="layoutTemplates?.errorMessage"
       [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
       [ngTemplateOutletContext]="{
-            control,
-            messages: errorMessages
-          }"
+        control,
+        messages: errorMessages
+      }"
     ></ng-container>
 
     <!-- Default error message component -->
@@ -88,6 +88,7 @@
       <error-message
         [control]="control"
         [validators]="data.validators"
+        (errorMessagesGet)="onErrorMessagesGet($event)"
       ></error-message>
     </ng-container>
   </div>
