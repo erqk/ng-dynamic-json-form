@@ -1,5 +1,11 @@
 # Change log
 
+## 5.2.19
+
+### Fix
+
+- Replace all spaces in formControlName otherwise the condition will fail to execute.
+
 ## 5.2.18
 
 ### Chore
