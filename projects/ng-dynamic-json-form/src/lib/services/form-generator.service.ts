@@ -27,7 +27,6 @@ export class FormGeneratorService {
     const formGroup = new UntypedFormGroup({});
 
     for (const item of data) {
-      const formControlName = item.formControlName.replaceAll(/\s/g, '_');
       const isFormControl = !item.children && !item.formArray;
       const isFormGroup = !!item.children && !item.formArray;
       const isFormArray =
@@ -66,7 +65,8 @@ export class FormGeneratorService {
         throw 'failed to generate form control!';
       }
 
-      formGroup.addControl(formControlName, control);
+      item.formControlName = item.formControlName.replaceAll(/\s/g, '_');
+      formGroup.addControl(item.formControlName, control);
     }
 
     return formGroup;
