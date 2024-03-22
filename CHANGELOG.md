@@ -1,5 +1,11 @@
 # Change log
 
+## 5.3.0
+
+## Chore
+
+- Remove `outputDateFormat` from `NG_DYNAMIC_JSON_FORM_CONFIG`.
+
 ## 5.2.20
 
 ### Fix
