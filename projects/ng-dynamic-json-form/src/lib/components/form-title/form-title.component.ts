@@ -84,7 +84,7 @@ export class FormTitleComponent {
   ngAfterViewInit(): void {
     if (this.customComponent) {
       this._injectComponent();
-      this._cd.detectChanges();
+      this._cd.markForCheck();
       return;
     }
 

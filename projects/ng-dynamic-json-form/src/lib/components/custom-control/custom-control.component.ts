@@ -100,7 +100,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
         const finalErrors = !hideErrors && setErrors ? errors : null;
 
         this._internal_control.setErrors(finalErrors, { emitEvent: false });
-        this._internal_cd.detectChanges();
+        this._internal_cd.markForCheck();
       })
     );
 

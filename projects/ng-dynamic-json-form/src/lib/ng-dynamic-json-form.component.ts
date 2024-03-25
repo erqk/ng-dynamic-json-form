@@ -392,7 +392,7 @@ export class NgDynamicJsonFormComponent
         }
 
         if (!markForCheck) {
-          this._cd.detectChanges();
+          this._cd.markForCheck();
           markForCheck = true;
         }
       })

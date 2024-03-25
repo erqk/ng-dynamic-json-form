@@ -145,7 +145,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._injectInputComponent();
     this._injectErrorMessageComponent();
     this._viewInitialized = true;
-    this._cd.detectChanges();
+    this._cd.markForCheck();
   }
 
   onErrorMessagesGet(e: string[]): void {
@@ -304,7 +304,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
     this.data.options.data = dataGet;
     this.loading = false;
-    this._cd.detectChanges();
+    this._cd.markForCheck();
   }
 
   private _selectFirstOptionItem(): void {

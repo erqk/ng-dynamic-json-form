@@ -79,6 +79,6 @@ export class PropsBindingDirective {
       }
     });
 
-    this._cd.detectChanges();
+    this._cd.markForCheck();
   }
 }
