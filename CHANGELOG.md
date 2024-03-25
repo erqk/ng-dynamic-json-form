@@ -1,5 +1,11 @@
 # Change log
 
+## 5.3.1
+
+## Fix
+
+- Change detection not trigger correctly. Should use `markForCheck()` instead of `detectChanges()`.
+
 ## 5.3.0
 
 ## Chore
