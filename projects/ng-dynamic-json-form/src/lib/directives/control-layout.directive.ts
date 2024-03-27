@@ -13,14 +13,13 @@ export class ControlLayoutDirective {
     type?: 'host' | 'label' | 'content' | 'description' | 'error';
     layout?: FormControlConfig['layout'];
     isNested?: boolean;
-    readonly?: boolean;
   };
 
   ngOnChanges(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
     if (!hostEl || !this.controlLayout) return;
 
-    const { type, isNested, layout, readonly } = this.controlLayout;
+    const { type, isNested, layout } = this.controlLayout;
     const classNames = layout?.[`${type ?? 'host'}Class`] ?? '';
     const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
 
@@ -35,16 +34,12 @@ export class ControlLayoutDirective {
 
       styleProperties.forEach((style) => {
         const [name, value] = style.split(':').map((x) => x.trim());
-        hostEl.style.setProperty(name, value)
+        hostEl.style.setProperty(name, value);
       });
     }
 
     isNested
       ? this._renderer2.addClass(hostEl, 'is-nested')
       : this._renderer2.removeClass(hostEl, 'is-nested');
-
-    readonly
-      ? this._renderer2.addClass(hostEl, 'readonly')
-      : this._renderer2.removeClass(hostEl, 'readonly');
   }
 }
