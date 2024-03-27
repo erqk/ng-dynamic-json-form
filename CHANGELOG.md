@@ -1,5 +1,15 @@
 # Change log
 
+## 5.3.2
+
+## Feature
+
+- Auto add 'required' class to form title if has Validators.required.
+
+## Chore
+
+- Use [ngClass] to toggle 'readonly' class.
+
 ## 5.3.1
 
 ## Fix
