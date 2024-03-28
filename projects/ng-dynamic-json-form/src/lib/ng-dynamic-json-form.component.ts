@@ -395,6 +395,7 @@ export class NgDynamicJsonFormComponent
 
         if (!markForCheck) {
           this._cd.markForCheck();
+          this._cd.detectChanges();
           markForCheck = true;
         }
       })

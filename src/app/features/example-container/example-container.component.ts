@@ -72,6 +72,7 @@ export class ExampleContainerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this._getFormHeight();
     this._cd.markForCheck();
+    this._cd.detectChanges();
   }
 
   onEditorChange(e: any): void {

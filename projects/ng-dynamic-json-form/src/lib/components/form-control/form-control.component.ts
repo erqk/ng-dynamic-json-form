@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
-  DestroyRef,
   HostBinding,
   Input,
   SimpleChanges,
@@ -33,7 +32,7 @@ import {
   LayoutComponents,
   LayoutTemplates,
 } from '../../ng-dynamic-json-form.config';
-import { FormValidationService, OptionsDataService } from '../../services';
+import { OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
@@ -58,10 +57,8 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 })
 export class FormControlComponent implements ControlValueAccessor, Validator {
   private _cd = inject(ChangeDetectorRef);
-  private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _optionsDataService = inject(OptionsDataService);
-  private _formValidationService = inject(FormValidationService);
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
@@ -146,6 +143,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this._injectErrorMessageComponent();
     this._viewInitialized = true;
     this._cd.markForCheck();
+    this._cd.detectChanges();
   }
 
   onErrorMessagesGet(e: string[]): void {
@@ -305,6 +303,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     this.data.options.data = dataGet;
     this.loading = false;
     this._cd.markForCheck();
+    this._cd.detectChanges();
   }
 
   private _selectFirstOptionItem(): void {
