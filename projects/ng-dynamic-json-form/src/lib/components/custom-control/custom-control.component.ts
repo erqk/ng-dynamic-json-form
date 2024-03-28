@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
-  HostListener,
+  ElementRef,
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +12,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { BehaviorSubject, Subject, merge } from 'rxjs';
+import { BehaviorSubject, Subject, fromEvent, merge } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { FormControlConfig } from '../../models';
 import { ControlValueService, FormValidationService } from '../../services';
@@ -24,6 +24,7 @@ import { ControlValueService, FormValidationService } from '../../services';
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _internal_cd = inject(ChangeDetectorRef);
+  private _internal_el = inject(ElementRef);
   private _internal_destroyRef = inject(DestroyRef);
   private _internal_controlValueService = inject(ControlValueService, {
     optional: true,
@@ -33,11 +34,10 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     optional: true,
   });
 
-  private _internal_onTouched = () => {};
   private _internal_hideErrors$ = new BehaviorSubject<boolean>(false);
   private _internal_init$ = new Subject<void>();
 
-  /**Can be override by instance of `AbstractControl`
+  /**Must be override by using instance of `AbstractControl`
    * @example
    * public override control = new FormControl() 'or' new UntypedFormControl();
    * public override control = new FormGroup() 'or' new UntypedFormGroup();
@@ -47,10 +47,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public data?: FormControlConfig;
   public errorMessages: string[] = [];
 
-  @HostListener('focusout', ['$event'])
-  onFocusOut(): void {
-    this._internal_onTouched();
-  }
+  public onTouched = () => {};
 
   writeValue(obj: any): void {
     this._internal_control.patchValue(this._internal_mapData('input', obj));
@@ -63,7 +60,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnTouched(fn: any): void {
-    this._internal_onTouched = fn;
+    this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
@@ -83,6 +80,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   private _internal_init(control?: AbstractControl): void {
     this._internal_init$.next();
     this._internal_listenErrors(control);
+    this._internal_onTouchEvent();
   }
 
   /**@internal */
@@ -101,12 +99,37 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
         this._internal_control.setErrors(finalErrors, { emitEvent: false });
         this._internal_cd.markForCheck();
+        this._internal_cd.detectChanges();
       })
     );
 
     setErrors$
       .pipe(
         takeUntil(this._internal_init$),
+        takeUntilDestroyed(this._internal_destroyRef)
+      )
+      .subscribe();
+  }
+
+  /**@internal */
+  private _internal_onTouchEvent(): void {
+    if (this.data?.type === 'select') return;
+
+    const host = this._internal_el.nativeElement;
+    const done$ = new Subject<void>();
+    const focusOut$ = fromEvent(host, 'focusout', { passive: true });
+
+    const action = () => {
+      this.onTouched();
+      done$.next();
+      done$.complete();
+      done$.unsubscribe();
+    };
+
+    focusOut$
+      .pipe(
+        tap(() => action()),
+        takeUntil(done$),
         takeUntilDestroyed(this._internal_destroyRef)
       )
       .subscribe();
