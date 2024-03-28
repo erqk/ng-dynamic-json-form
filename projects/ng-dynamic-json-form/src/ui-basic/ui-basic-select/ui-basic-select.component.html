@@ -8,7 +8,11 @@
       'flex-direction': data.options?.layout
     }"
   >
-    <select [propsBinding]="[data.extra]" [formControl]="control">
+    <select
+      [propsBinding]="[data.extra]"
+      [formControl]="control"
+      (blur)="onTouched()"
+    >
       <ng-container *ngFor="let item of data.options?.data">
         <option [value]="item.value | json">
           {{ item.label }}

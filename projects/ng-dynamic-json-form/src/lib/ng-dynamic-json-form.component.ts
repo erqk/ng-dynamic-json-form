@@ -59,6 +59,7 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
+import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -74,6 +75,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     ControlLayoutDirective,
     FormArrayItemHeaderComponent,
     FormTitleComponent,
+    IsControlRequiredPipe,
   ],
   providers: [
     ConfigMappingService,
@@ -392,6 +394,7 @@ export class NgDynamicJsonFormComponent
         }
 
         if (!markForCheck) {
+          this._cd.markForCheck();
           this._cd.detectChanges();
           markForCheck = true;
         }

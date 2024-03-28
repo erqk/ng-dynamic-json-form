@@ -55,8 +55,10 @@
             }"
             [controlLayout]="{
               type: 'host',
-              layout: config?.layout,
-              readonly: config?.readonly
+              layout: config?.layout
+            }"
+            [ngClass]="{
+              readonly: config?.readonly,
             }"
           >
             <ng-container
@@ -70,6 +72,11 @@
                 [customTemplate]="layoutTemplates?.formTitle"
                 [customComponent]="layoutComponents?.formTitle"
                 [state]="collapsibleState"
+                [ngClass]="{
+                  required:
+                    parentForm.controls[config.formControlName]
+                    | isControlRequired
+                }"
               ></form-title>
             </ng-container>
 
@@ -107,7 +114,9 @@
               type: 'host',
               isNested: isNested === true,
               layout: config?.layout,
-              readonly: config?.readonly
+            }"
+            [ngClass]="{
+              readonly: config?.readonly,
             }"
           >
             <!-- Label -->
@@ -122,6 +131,11 @@
                 [customTemplate]="layoutTemplates?.formTitle"
                 [collapsibleEl]="formGroupContent"
                 [state]="collapsibleState"
+                [ngClass]="{
+                  required:
+                    parentForm.controls[config.formControlName]
+                    | isControlRequired
+                }"
               ></form-title>
             </ng-container>
 
@@ -172,6 +186,8 @@
               type: 'host',
               isNested: isNested === true,
               layout: config?.layout,
+            }"
+            [ngClass]="{
               readonly: config?.readonly
             }"
           >
@@ -221,6 +237,9 @@
         [customTemplate]="layoutTemplates?.formTitle"
         [collapsibleEl]="formArrayContent"
         [state]="collapsibleState"
+        [ngClass]="{
+          required: parentForm | isControlRequired
+        }"
       ></form-title>
     </ng-container>
 

@@ -3,5 +3,6 @@
     [propsBinding]="[data.extra]"
     [options]="data.options?.data"
     [formControl]="control"
+    (onHide)="onTouched()"
   ></p-dropdown>
 </ng-container>

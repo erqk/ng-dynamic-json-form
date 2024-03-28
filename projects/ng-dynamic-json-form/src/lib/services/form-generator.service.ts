@@ -65,6 +65,7 @@ export class FormGeneratorService {
         throw 'failed to generate form control!';
       }
 
+      item.formControlName = item.formControlName.replaceAll(/\s/g, '_');
       formGroup.addControl(item.formControlName, control);
     }
 

@@ -53,18 +53,13 @@ export class UiBasicDateComponent extends CustomControlComponent {
   }
 
   private get _dateTimeFormatted(): string {
-    const outputFormat = this._formConfig?.outputDateFormat;
     const controlValue = this.control.value;
     const date =
       this.data?.extra?.showTime === true
         ? new Date(`${controlValue.date}T${controlValue.time}`)
         : new Date(controlValue.time!);
 
-    const dateISO = date.toISOString();
-
-    return outputFormat
-      ? formatDate(dateISO, outputFormat, this._locale)
-      : dateISO;
+    return JSON.stringify(date);
   }
 
   private _setMinMaxDate(): void {
