@@ -1,5 +1,11 @@
 # Change log
 
+## 5.3.3
+
+## Fix
+
+- Refactor the logic to make control touched and set the touch state manually for select component.
+
 ## 5.3.2
 
 ## Feature
