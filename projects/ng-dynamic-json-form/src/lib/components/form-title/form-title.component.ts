@@ -85,7 +85,6 @@ export class FormTitleComponent {
     if (this.customComponent) {
       this._injectComponent();
       this._cd.markForCheck();
-      this._cd.detectChanges();
       return;
     }
 

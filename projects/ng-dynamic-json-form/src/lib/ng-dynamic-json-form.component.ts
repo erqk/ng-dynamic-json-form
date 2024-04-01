@@ -14,6 +14,7 @@ import {
   Renderer2,
   SimpleChanges,
   TemplateRef,
+  Type,
   forwardRef,
   inject,
 } from '@angular/core';
@@ -21,7 +22,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormControl,
   FormControlDirective,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
@@ -49,6 +49,7 @@ import {
   LayoutTemplates,
   NG_DYNAMIC_JSON_FORM_CONFIG,
 } from './ng-dynamic-json-form.config';
+import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
   ControlValueService,
   FormConditionsService,
@@ -59,7 +60,6 @@ import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
-import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -131,6 +131,9 @@ export class NgDynamicJsonFormComponent
 
   @Input() configs: FormControlConfig[] | string = [];
 
+  /**Form control components built with other libraries */
+  @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
+
   /**
    * @description
    * User defined custom valiators. The `value` is the `key` of target ValidatorFn.
@@ -176,21 +179,22 @@ export class NgDynamicJsonFormComponent
   @Input() customComponents?: CustomComponents =
     this._providerConfig?.customComponents;
 
-  /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
-
-  /**Custom components for loading and error message */
-  @Input() layoutComponents?: LayoutComponents =
-    this._providerConfig?.layoutComponents;
-
-  /**Custom templates for loading and error message */
-  @Input() layoutTemplates?: LayoutTemplates;
-
   /**
    * Custom templates for input, suitable for input using only `FormControl`.
    * To use `FormGroup` or `FormArray`, use `CustomControlComponent` instead.
    */
   @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
+
+  /**Custom components/templates for global layout UI */
+  @Input() layoutComponents?: LayoutComponents =
+    this._providerConfig?.layoutComponents;
+  @Input() layoutTemplates?: LayoutTemplates;
+
+  /**Custom components/templates for label of specific control,
+   * where key needs to match with the "customLabel" in the config
+   */
+  @Input() labelComponents?: { [key: string]: Type<FormTitleComponent> };
+  @Input() labelTemplates?: { [key: string]: TemplateRef<any> };
 
   /**Control the show/hide of all the error messages */
   @Input() hideErrorMessage?: boolean;

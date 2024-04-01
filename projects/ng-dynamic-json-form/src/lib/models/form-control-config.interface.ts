@@ -15,8 +15,11 @@ export interface FormControlConfig {
   /**Provide to make this control as a FormGroup, cannot use with `formArray` */
   children?: FormControlConfig[];
 
-  /**Key of the custom component to use on this control */
+  /**Key of the custom component/template to use on this control */
   customComponent?: string;
+
+  /**Key of the custom component/template of the label for this control */
+  customLabel?: string;
 
   description?: string;
 

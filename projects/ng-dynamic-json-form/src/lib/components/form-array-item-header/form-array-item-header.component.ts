@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostBinding,
@@ -26,8 +27,9 @@ import { FormGeneratorService } from '../../services';
   styleUrls: ['./form-array-item-header.component.scss'],
 })
 export class FormArrayItemHeaderComponent {
-  private readonly _el = inject(ElementRef);
-  private readonly _formGeneratorService = inject(FormGeneratorService);
+  private _cd = inject(ChangeDetectorRef);
+  private _el = inject(ElementRef);
+  private _formGeneratorService = inject(FormGeneratorService);
   private _disabled = false;
 
   @Input() index = 0;
@@ -101,11 +103,10 @@ export class FormArrayItemHeaderComponent {
 
     const formGroup = this._formGeneratorService.generateFormGroup(template);
 
-    // Prevent NG0100
-    window.setTimeout(() => {
-      if (!this.index && this.index !== 0) formArray!.push(formGroup);
-      else formArray!.insert(this.index + 1, formGroup);
-    });
+    if (!this.index && this.index !== 0) formArray!.push(formGroup);
+    else formArray!.insert(this.index + 1, formGroup);
+
+    this._cd.markForCheck();
   }
 
   private _removeItem(): void {
@@ -114,6 +115,8 @@ export class FormArrayItemHeaderComponent {
     }
 
     this.formArray.removeAt(this.index ?? this.formArray.length - 1);
+
+    this._cd.markForCheck();
   }
 
   private _generateTemplateForm(): void {
