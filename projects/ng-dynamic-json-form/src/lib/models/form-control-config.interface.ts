@@ -18,7 +18,7 @@ export interface FormControlConfig {
   /**Key of the custom component/template to use on this control */
   customComponent?: string;
 
-  /**Key of the custom component/template of the label for this control */
+  /**Key of the custom component/template of the label to use on this control */
   customLabel?: string;
 
   description?: string;

@@ -24,17 +24,20 @@ export interface FormControlConfig {
 ```
 
 [Conditions]: ../../v5/conditions/conditions_en.md
+[Custom components]: ../../v5/custom-components/custom-components_en.md
 [Extra]: ../../v5/extra/extra_en.md
 [Layout]: ../../v5/styling/styling_en.md#layout
 [Input mask]: ../../v5/input-mask/input-mask_en.md
 [Options]: ../../v5/options/options_en.md
+[Custom label]: ../../v5/styling/styling_en.md#custom-label
 
 | property        | description                                                                    |
 | :-------------- | :----------------------------------------------------------------------------- |
 | formControlName | Name for the form control. Must be unique inside each `FormControlConfig[]`.   |
 | conditions      | See [Conditions].                                                              |
 | children        | Provide to make this control as a FormGroup, cannot use with `formArray`.      |
-| customComponent | Key of the custom component to use on this control                             |
+| customComponent | See [Custom components].                                                       |
+| customLabel     | See [Custom label].                                                            |
 | description     | Additional text below label.                                                   |
 | extra           | See [Extra].                                                                   |
 | formArray       | Provide to make this control as a FormArray, cannot use with `children`.       |

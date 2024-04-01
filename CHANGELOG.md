@@ -1,30 +1,36 @@
 # Change log
 
+## 5.4.0
+
+### Feature
+
+- Add support for custom label.
+
 ## 5.3.3
 
-## Fix
+### Fix
 
 - Refactor the logic to make control touched and set the touch state manually for select component.
 
 ## 5.3.2
 
-## Feature
+### Feature
 
 - Auto add 'required' class to form title if has Validators.required.
 
-## Chore
+### Chore
 
 - Use [ngClass] to toggle 'readonly' class.
 
 ## 5.3.1
 
-## Fix
+### Fix
 
 - Change detection not trigger correctly. Should use `markForCheck()` instead of `detectChanges()`.
 
 ## 5.3.0
 
-## Chore
+### Chore
 
 - Remove `outputDateFormat` from `NG_DYNAMIC_JSON_FORM_CONFIG`.
 
