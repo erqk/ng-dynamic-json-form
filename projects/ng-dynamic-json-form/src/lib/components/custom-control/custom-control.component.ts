@@ -14,7 +14,7 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject, Subject, fromEvent, merge } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { FormControlConfig } from '../../models';
+import { FormControlConfig, OptionItem } from '../../models';
 import { ControlValueService, FormValidationService } from '../../services';
 
 @Component({
@@ -71,6 +71,14 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     return this._internal_control?.errors;
+  }
+
+  onOptionsGet(data: OptionItem[]): void {
+    if (!this.data || !this.data.options) {
+      return;
+    }
+
+    this.data.options.data = data;
   }
 
   /**

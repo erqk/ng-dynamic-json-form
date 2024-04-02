@@ -22,7 +22,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, Observable, finalize, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, finalize, of, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
@@ -238,12 +238,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
     event$
       .pipe(
-        tap((x) => {
-          this._setOptionsData(x);
-          this._selectFirstOptionItem();
+        tap((x) => this._setOptionsData(x)),
+        catchError(() => {
+          this._setOptionsData([]);
+          return of(null);
         }),
         finalize(() => {
-          this._selectFirstOptionItem();
           this.loading = false;
         })
       )
@@ -293,24 +293,21 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     }
 
     const existingOptions = this._existingOptions;
-    const { sourceAppendPosition } = this.data.options;
+    const { sourceAppendPosition, autoSelectFirst } = this.data.options;
 
     const appendBefore = sourceAppendPosition === 'before';
     const dataGet = appendBefore
       ? options.concat(existingOptions)
       : existingOptions.concat(options);
 
-    this.data.options.data = dataGet;
+    if (autoSelectFirst) {
+      this.control?.setValue(dataGet[0]?.value ?? null);
+    }
+
+    this._controlComponentRef?.onOptionsGet(dataGet);
     this.loading = false;
     this._cd.markForCheck();
     this._cd.detectChanges();
-  }
-
-  private _selectFirstOptionItem(): void {
-    const { autoSelectFirst, data } = this.data?.options ?? {};
-    if (!autoSelectFirst) return;
-
-    this.control?.setValue(data?.[0]?.value ?? null);
   }
 
   private get _inputType(): string {
