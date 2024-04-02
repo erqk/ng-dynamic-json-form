@@ -1,5 +1,11 @@
 # Change log
 
+## 5.5.1
+
+### Fix
+
+- `autoDisplayFirst` failed on static options data.
+
 ## 5.5.0
 
 ### Feature
