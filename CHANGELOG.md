@@ -1,5 +1,11 @@
 # Change log
 
+## 5.5.0
+
+### Feature
+
+- Add event after options data is fetched.
+
 ## 5.4.0
 
 ### Feature

@@ -20,6 +20,18 @@
 | data          | [FormControlConfig] | 此元件的設定。                             |
 | errorMessages | `string[]`          | 此控制器的錯誤訊息陣列。                   |
 
+### 方法
+
+#### onOptionsGet
+
+動態資料取得之後觸發的事件。
+
+```javascript
+onOptionsGet(data: OptionItem[]): void {
+  ...
+}
+```
+
 ### 例子
 
 ```javascript
@@ -205,7 +217,7 @@ import { HTMLEditorComponent } from "src/app/features/html-editor/html-editor.co
 
 myUiComponents: UiComponents = {
   ...UI_PRIMENG_COMPONENTS,
-  htmlEditor: HTMLEditorComponent
+  htmlEditor: HTMLEditorComponent,
 };
 ```
 

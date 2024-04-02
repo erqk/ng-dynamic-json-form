@@ -8,7 +8,7 @@
 
 Create a component that extends `CustomControlComponent`. It provides all the methods inside [ControlValueAccessor] and [Validator].
 
-> It's not required to provide `NG_VALUE_ACCESSOR` and `NG_VALIDATORS`, as all the implementation happens under the hood.
+> It's not neccessary to provide `NG_VALUE_ACCESSOR` and `NG_VALIDATORS`, as all the implementation happens under the hood.
 
 ### Properties
 
@@ -19,6 +19,18 @@ The properties that can be used to build custom component.
 | control       | `AbstractControl`   | The control of this component. Must override and instantiate it. |
 | data          | [FormControlConfig] | The config for this input.                                       |
 | errorMessages | `string[]`          | Array of error message of this control.                          |
+
+### Methods
+
+#### onOptionsGet
+
+The event that will fire after options data is fetched.
+
+```javascript
+onOptionsGet(data: OptionItem[]): void {
+  ...
+}
+```
 
 ### Example
 
