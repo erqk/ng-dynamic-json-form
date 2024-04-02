@@ -63,22 +63,13 @@
           >
             <ng-container
               *ngIf="config.label && config?.layout?.hideLabel !== true"
-            >
-              <form-title
-                [label]="config.label"
-                [layout]="config.layout"
-                [extra]="config.extra"
-                [collapsibleEl]="formControlContent"
-                [customTemplate]="layoutTemplates?.formTitle"
-                [customComponent]="layoutComponents?.formTitle"
-                [state]="collapsibleState"
-                [ngClass]="{
-                  required:
-                    parentForm.controls[config.formControlName]
-                    | isControlRequired
-                }"
-              ></form-title>
-            </ng-container>
+              [ngTemplateOutlet]="formTitleTemplate"
+              [ngTemplateOutletContext]="{
+                config,
+                collapsibleEl: formControlContent,
+                control: parentForm.controls[config.formControlName]
+              }"
+            ></ng-container>
 
             <div #formControlContent>
               <form-control
@@ -122,22 +113,13 @@
             <!-- Label -->
             <ng-container
               *ngIf="config.label && config?.layout?.hideLabel !== true"
-            >
-              <form-title
-                [label]="config?.label"
-                [layout]="config?.layout"
-                [extra]="config?.extra"
-                [customComponent]="layoutComponents?.formTitle"
-                [customTemplate]="layoutTemplates?.formTitle"
-                [collapsibleEl]="formGroupContent"
-                [state]="collapsibleState"
-                [ngClass]="{
-                  required:
-                    parentForm.controls[config.formControlName]
-                    | isControlRequired
-                }"
-              ></form-title>
-            </ng-container>
+              [ngTemplateOutlet]="formTitleTemplate"
+              [ngTemplateOutletContext]="{
+                config,
+                collapsibleEl: formGroupContent,
+                control: parentForm.controls[config.formControlName]
+              }"
+            ></ng-container>
 
             <!-- Description -->
             <ng-container
@@ -194,15 +176,9 @@
             <ng-container
               [ngTemplateOutlet]="formArrayTemplate"
               [ngTemplateOutletContext]="{
-                label: config?.layout?.hideLabel === true ? '' : config.label,
-                layout: config.layout,
-                description: config.description,
-                extra: config?.extra,
-                parentForm: parentForm,
-                validators: config.validators,
+                config,
+                parentForm,
                 formArray: parentForm.controls[config.formControlName],
-                formArrayName: config.formControlName,
-                formArrayConfig: config.formArray
               }"
             ></ng-container>
           </div>
@@ -215,24 +191,17 @@
 <!-- FormArray -->
 <ng-template
   #formArrayTemplate
-  let-label="label"
-  let-layout="layout"
-  let-extra="extra"
-  let-description="description"
+  let-config="config"
   let-parentForm="parentForm"
-  let-validators="validators"
   let-formArray="formArray"
-  let-formArrayName="formArrayName"
-  let-formArrayConfig="formArrayConfig"
-  let-isNested="isNested"
 >
   <ng-container [formGroup]="parentForm">
     <!-- Label -->
-    <ng-container *ngIf="label">
+    <ng-container *ngIf="config?.label">
       <form-title
-        [label]="label"
-        [layout]="layout"
-        [extra]="extra"
+        [label]="config.label"
+        [layout]="config?.layout"
+        [extra]="config?.extra"
         [customComponent]="layoutComponents?.formTitle"
         [customTemplate]="layoutTemplates?.formTitle"
         [collapsibleEl]="formArrayContent"
@@ -245,30 +214,32 @@
 
     <div #formArrayContent>
       <ng-container
-        *ngIf="description"
+        *ngIf="config?.description"
         [ngTemplateOutlet]="descriptionTemplate"
         [ngTemplateOutletContext]="{
-        description,
-        layout
-      }"
+          description: config.description,
+          layout: config?.layout
+        }"
       ></ng-container>
 
       <!-- Show add button when form array is empty -->
       <ng-container
-        *ngIf="formArrayConfig.editable === true && !formArray.controls.length"
+        *ngIf="
+          config?.formArray?.editable === true && !formArray.controls.length
+        "
       >
         <form-array-item-header
-          [config]="formArrayConfig"
+          [config]="config.formArray"
           [formArray]="formArray"
           [layoutComponents]="layoutComponents"
           [layoutTemplates]="layoutTemplates"
         ></form-array-item-header>
       </ng-container>
 
-      <ng-container formArrayName="{{ formArrayName }}">
+      <ng-container formArrayName="{{ config.formControlName }}">
         <error-message
           [control]="formArray"
-          [validators]="validators"
+          [validators]="config?.validators"
         ></error-message>
 
         <ng-container
@@ -277,7 +248,7 @@
           <div class="group">
             <!-- FormGroup header -->
             <form-array-item-header
-              [config]="formArrayConfig"
+              [config]="config.formArray"
               [formArray]="formArray"
               [index]="index"
               [layoutComponents]="layoutComponents"
@@ -289,10 +260,10 @@
               *ngTemplateOutlet="
                 formGroupTemplate;
                 context: {
-                  parentId: formArrayName,
+                  parentId: config.formControlName,
                   parentForm: formGroup,
                   isNested: true,
-                  controlConfigs: formArrayConfig.template
+                  controlConfigs: config.formArray.template
                 }
               "
             ></ng-container>
@@ -301,6 +272,27 @@
       </ng-container>
     </div>
   </ng-container>
+</ng-template>
+
+<!-- Form title template -->
+<ng-template
+  #formTitleTemplate
+  let-config="config"
+  let-collapsibleEl="collapsibleEl"
+  let-control="control"
+>
+  <form-title
+    [label]="config.label"
+    [layout]="config.layout"
+    [extra]="config.extra"
+    [collapsibleEl]="collapsibleEl"
+    [customTemplate]="labelTemplates?.[config?.customLabel ?? ''] ?? layoutTemplates?.formTitle"
+    [customComponent]="labelComponents?.[config?.customLabel ?? ''] ?? layoutComponents?.formTitle"
+    [state]="collapsibleState"
+    [ngClass]="{
+      required: control | isControlRequired
+    }"
+  ></form-title>
 </ng-template>
 
 <!-- Description template -->

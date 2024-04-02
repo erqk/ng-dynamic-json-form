@@ -275,7 +275,108 @@ export class CustomHeaderComponent extends FormArrayItemHeaderComponent {}
 </ng-dynamic-json-form>
 ```
 
-## Collapsible
+## Custom label
+
+Use custom label for each control. Specify the key using "customLabel" in `FormControlConfig`.
+
+### Properties
+
+The properties that can use to build custom label.
+
+| Property    | Description                                                            |
+| :---------- | :--------------------------------------------------------------------- |
+| label       | The label of this control.                                             |
+| toggle      | The method to toggle collapse/expand. See [collapsible](#collapsible). |
+| collapsible | Whether `contentCollapsible` is set. See [collapsible](#collapsible).  |
+| expand      | The boolean state of this collapsible.                                 |
+
+### Using component
+
+#### Global
+
+Create a component that extends `FormTitleComponent`, and pass it to `formTitle` inside `layoutComponents` by using provider or property binding.
+
+```javascript
+layoutComponents = {
+  formTitle: CustomTitleComponent,
+};
+```
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  [configs]="..."
+  [layoutComponents]="layoutComponents"
+></ng-dynamic-json-form>
+```
+
+#### Specific control
+
+Use `labelComponents`, where key is the value of `customLabel`.
+
+```javascript
+labelComponents = {
+  nameLabel: CustomTitleComponent,
+  ageLabel: ...,
+  ...
+};
+```
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  [configs]="..."
+  [labelComponents]="labelComponents"
+></ng-dynamic-json-form>
+```
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  [configs]="..."
+  [layoutComponents]="layoutComponents"
+></ng-dynamic-json-form>
+```
+
+### Using &lt;ng-template&gt;
+
+#### Global
+
+```html
+<ng-dynamic-json-form
+  [configs]="..."
+  [layoutTemplates]="{
+    formTitle: titleTemplate
+  }"
+>
+  <ng-template #titleTemplate let-label="label" let-toggle="toggle" let-expand="expand">
+    <button type="button" class="custom-form-title" (click)="toggle()">
+      <span>{{ label }}</span>
+      ...
+    </button>
+  </ng-template>
+</ng-dynamic-json-form>
+```
+
+#### Specific control
+
+```html
+<ng-dynamic-json-form
+  [configs]="..."
+  [labelTemplates]="{
+    nameLabel: nameLabelTemplate
+  }"
+>
+  <ng-template #nameLabelTemplate let-label="label" let-toggle="toggle" let-expand="expand">
+    <button type="button" class="custom-form-title" (click)="toggle()">
+      <span>{{ label }}</span>
+      ...
+    </button>
+  </ng-template>
+</ng-dynamic-json-form>
+```
+
+### Collapsible
 
 It will add a toggle functionality to the label/title of the control to expand/collapse it's content. The `label` must be provided together.
 
@@ -293,47 +394,3 @@ It will add a toggle functionality to the label/title of the control to expand/c
 | :------- | :----------------------------- |
 | collapse | Collapse the content at start. |
 | expand   | Expand the content at start.   |
-
-### Properties
-
-The properties that can use to build custom form title.
-
-| Property    | Description                            |
-| :---------- | :------------------------------------- |
-| label       | The label of this control.             |
-| toggle      | The method to toggle collapse/expand.  |
-| collapsible | `contentCollapsible` is set.           |
-| expand      | The boolean state of this collapsible. |
-
-### Using component
-
-Create a component that extends `FormTitleComponent`, and pass it to `formTitle` inside `layoutComponents` by using provider or property binding.
-
-```javascript
-export class CustomFormTitleComponent extends FormTitleComponent {}
-```
-
-```html
-<button type="button" (click)="toggle()">
-  <span>{{ label }}</span>
-  ...
-</button>
-```
-
-### Using &lt;ng-template&gt;
-
-```html
-<ng-dynamic-json-form
-  [configs]="..."
-  [layoutTemplates]="{
-    formTitle: titleTemplate
-  }"
->
-  <ng-template #titleTemplate let-label="label" let-toggle="toggle" let-expand="expand">
-    <button type="button" class="custom-form-title" (click)="toggle()">
-      <span>{{ label }}</span>
-      ...
-    </button>
-  </ng-template>
-</ng-dynamic-json-form>
-```
