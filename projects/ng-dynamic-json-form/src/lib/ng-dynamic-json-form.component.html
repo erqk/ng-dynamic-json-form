@@ -72,6 +72,19 @@
             ></ng-container>
 
             <div #formControlContent>
+              <!-- Description (before) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition !== 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
+
               <form-control
                 style="display: block"
                 [controlLayout]="{
@@ -89,6 +102,19 @@
                 [inputTemplates]="inputTemplates"
                 [hideErrorMessage]="hideErrorMessage"
               ></form-control>
+
+              <!-- Description (after) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition === 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
             </div>
           </div>
         </ng-container>
@@ -121,17 +147,20 @@
               }"
             ></ng-container>
 
-            <!-- Description -->
-            <ng-container
-              *ngIf="config.description"
-              [ngTemplateOutlet]="descriptionTemplate"
-              [ngTemplateOutletContext]="{
-                description: config.description,
-                layout: config.layout
-              }"
-            ></ng-container>
-
             <div #formGroupContent>
+              <!-- Description (before) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition !== 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
+
               <ng-container
                 [ngTemplateOutlet]="formGroupTemplate"
                 [ngTemplateOutletContext]="{
@@ -146,7 +175,29 @@
                 }
               }"
               ></ng-container>
+
+              <!-- Description (after) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition === 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
             </div>
+
+            <error-message
+              [control]="parentForm.controls[config.formControlName]"
+              [validators]="config.validators"
+              [layout]="config.layout"
+              [layoutComponents]="layoutComponents"
+              [layoutTemplates]="layoutTemplates"
+              [hideErrorMessage]="hideErrorMessage"
+            ></error-message>
           </div>
         </ng-container>
 
@@ -197,19 +248,15 @@
 >
   <ng-container [formGroup]="parentForm">
     <!-- Label -->
-    <ng-container *ngIf="config?.label">
-      <form-title
-        [label]="config.label"
-        [layout]="config?.layout"
-        [extra]="config?.extra"
-        [customComponent]="layoutComponents?.formTitle"
-        [customTemplate]="layoutTemplates?.formTitle"
-        [collapsibleEl]="formArrayContent"
-        [state]="collapsibleState"
-        [ngClass]="{
-          required: parentForm | isControlRequired
-        }"
-      ></form-title>
+    <ng-container
+      *ngIf="config?.label"
+      [ngTemplateOutlet]="formTitleTemplate"
+      [ngTemplateOutletContext]="{
+        config,
+        collapsibleEl: formArrayContent,
+        control: parentForm
+      }"
+    >
     </ng-container>
 
     <div #formArrayContent>
@@ -290,7 +337,10 @@
     [customComponent]="labelComponents?.[config?.customLabel ?? ''] ?? layoutComponents?.formTitle"
     [state]="collapsibleState"
     [ngClass]="{
-      required: control | isControlRequired
+      required:
+        config?.layout?.autoAddRequiredClass === false
+          ? null
+          : (control | isControlRequired)
     }"
   ></form-title>
 </ng-template>
