@@ -1,5 +1,19 @@
 # Change log
 
+## 5.6.0
+
+### Feature
+
+- Control whether to add `required` class automatically.
+
+### Chore
+
+- Use shared template for form title.
+
+### Fix
+
+- FormGroup's description should have the same behavior with FormControl.
+
 ## 5.5.2
 
 ### Chore
