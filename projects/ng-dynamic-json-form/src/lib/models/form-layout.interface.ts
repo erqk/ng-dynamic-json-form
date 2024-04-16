@@ -21,4 +21,9 @@ export interface FormLayout {
 
   /**Enable expand/collapse of content. The default state will be determined by value provided */
   contentCollapsible?: 'collapse' | 'expand';
+
+  /**Add `required` class automatically to control if there's validator named `required`.
+   * Default is true.
+   */
+  autoAddRequiredClass?: boolean;
 }

@@ -383,6 +383,10 @@
         "contentCollapsible": {
           "enum": ["collapse", "expand"],
           "description": "Enable expand/collapse of content. The default state will be determined by value provided"
+        },
+        "autoAddRequiredClass": {
+          "type": "boolean",
+          "description": "Add `required` class automatically to control if there's validator named `required`. Default is true."
         }
       }
     },
