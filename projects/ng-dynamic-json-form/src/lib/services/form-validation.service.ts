@@ -137,7 +137,15 @@ export class FormValidationService {
     return noErrors ? null : result;
   }
 
-  /**Get the error messages of the control */
+  /**Get the error messages of the control
+   *
+   * @description
+   * Try to get the custom error message specified in the config first,
+   * else use the error message in the `VadliationErrors`.
+   *
+   * To use custom message when using custom validator, match the key inside
+   * `ValidationErrors` with the `name` inside config.
+   */
   private _getErrorMessages(
     controlErrors: ValidationErrors | null,
     controlValue: any,
