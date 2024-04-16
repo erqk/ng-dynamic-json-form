@@ -22,7 +22,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, Observable, catchError, finalize, of, tap } from 'rxjs';
+import { EMPTY, Observable, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ControlLayoutDirective } from '../../directives';
@@ -140,7 +140,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
   ngAfterViewInit(): void {
     this._injectInputComponent();
-    this._injectErrorMessageComponent();
     this._viewInitialized = true;
     this._cd.markForCheck();
     this._cd.detectChanges();
@@ -206,20 +205,6 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
 
       this._onChange(this._pendingValue);
     }
-  }
-
-  private _injectErrorMessageComponent(): void {
-    if (!this.layoutComponents?.errorMessage) return;
-
-    const componentRef = this._injectComponent(
-      this.errorComponentAnchor,
-      this.layoutComponents.errorMessage
-    );
-
-    if (!componentRef) return;
-
-    componentRef.instance.control = this.control;
-    componentRef.instance.validators = this.data?.validators;
   }
 
   private _fetchOptions(): void {

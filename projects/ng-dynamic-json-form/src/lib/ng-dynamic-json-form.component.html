@@ -72,6 +72,19 @@
             ></ng-container>
 
             <div #formControlContent>
+              <!-- Description (before) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition !== 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
+
               <form-control
                 style="display: block"
                 [controlLayout]="{
@@ -89,6 +102,19 @@
                 [inputTemplates]="inputTemplates"
                 [hideErrorMessage]="hideErrorMessage"
               ></form-control>
+
+              <!-- Description (after) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition === 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
             </div>
           </div>
         </ng-container>
@@ -121,17 +147,20 @@
               }"
             ></ng-container>
 
-            <!-- Description -->
-            <ng-container
-              *ngIf="config.description"
-              [ngTemplateOutlet]="descriptionTemplate"
-              [ngTemplateOutletContext]="{
-                description: config.description,
-                layout: config.layout
-              }"
-            ></ng-container>
-
             <div #formGroupContent>
+              <!-- Description (before) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition !== 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
+
               <ng-container
                 [ngTemplateOutlet]="formGroupTemplate"
                 [ngTemplateOutletContext]="{
@@ -146,7 +175,29 @@
                 }
               }"
               ></ng-container>
+
+              <!-- Description (after) -->
+              <ng-container
+                *ngIf="
+                  config?.description &&
+                  config?.layout?.descriptionPosition === 'after'
+                "
+                [ngTemplateOutlet]="descriptionTemplate"
+                [ngTemplateOutletContext]="{
+                  description: config.description,
+                  layout: config.layout
+                }"
+              ></ng-container>
             </div>
+
+            <error-message
+              [control]="parentForm.controls[config.formControlName]"
+              [validators]="config.validators"
+              [layout]="config.layout"
+              [layoutComponents]="layoutComponents"
+              [layoutTemplates]="layoutTemplates"
+              [hideErrorMessage]="hideErrorMessage"
+            ></error-message>
           </div>
         </ng-container>
 

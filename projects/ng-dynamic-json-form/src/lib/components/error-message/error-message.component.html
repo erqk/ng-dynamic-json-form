@@ -1,0 +1,30 @@
+<div
+  class="errors-container"
+  [ngClass]="{
+    hidden: !showErrors || layout?.hideErrorMessage === true
+  }"
+  [controlLayout]="{
+    type: 'error',
+    layout: layout
+  }"
+>
+  <!-- Custom error message component -->
+  <ng-container #componentAnchor></ng-container>
+  <ng-container
+    *ngIf="layoutTemplates?.errorMessage"
+    [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
+    [ngTemplateOutletContext]="{
+    control,
+    messages: errorMessages
+  }"
+  ></ng-container>
+
+  <!-- Default error message component -->
+  <ng-container
+    *ngIf="!layoutComponents?.errorMessage && !layoutTemplates?.errorMessage"
+  >
+    <ng-container *ngFor="let error of errorMessages">
+      <div>{{ error }}</div>
+    </ng-container>
+  </ng-container>
+</div>
