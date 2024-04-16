@@ -223,12 +223,18 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   private _fetchOptions(): void {
-    if (!this.data || !this.data.options) {
+    if (!this.data || !this.data.options) return;
+    const { sourceList, trigger, autoSelectFirst, data } = this.data.options;
+
+    if (!sourceList?.length && !trigger) {
+      if (autoSelectFirst) {
+        this.control?.setValue(data?.[0]?.value ?? null);
+      }
+      
       return;
     }
 
     this._existingOptions = this.data.options.data || [];
-    const trigger = this.data.options.trigger;
 
     const event$ = !trigger
       ? this._optionsDataService.getOptions$(this.data.options)
@@ -239,13 +245,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     event$
       .pipe(
         tap((x) => this._setOptionsData(x)),
-        catchError(() => {
-          this._setOptionsData([]);
-          return of(null);
-        }),
-        finalize(() => {
-          this.loading = false;
-        })
+        finalize(() => (this.loading = false))
       )
       .subscribe();
   }

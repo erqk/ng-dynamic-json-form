@@ -1,5 +1,17 @@
 # Change log
 
+## 5.5.2
+
+### Chore
+
+- Remove `space-between` for label styling.
+
+## 5.5.1
+
+### Fix
+
+- `autoDisplayFirst` failed on static options data.
+
 ## 5.5.0
 
 ### Feature
