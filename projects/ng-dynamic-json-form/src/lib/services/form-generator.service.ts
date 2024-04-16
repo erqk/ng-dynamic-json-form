@@ -4,9 +4,7 @@ import {
   FormControl,
   UntypedFormArray,
   UntypedFormGroup,
-  ValidatorFn,
   isFormArray,
-  isFormControl,
   isFormGroup,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
@@ -55,8 +53,7 @@ export class FormGeneratorService {
 
         control = this._generateFormArray(
           item.formArray!.template,
-          arrayLength,
-          validators
+          arrayLength
         );
         control.patchValue(item.value ?? []);
       }
@@ -66,6 +63,7 @@ export class FormGeneratorService {
       }
 
       item.formControlName = item.formControlName.replaceAll(/\s/g, '_');
+      control.setValidators(validators);
       formGroup.addControl(item.formControlName, control);
     }
 
@@ -86,12 +84,9 @@ export class FormGeneratorService {
 
   private _generateFormArray(
     data: FormControlConfig[],
-    count: number,
-    validators: ValidatorFn[]
+    count: number
   ): UntypedFormArray {
-    const formArray = new UntypedFormArray([], {
-      validators,
-    });
+    const formArray = new UntypedFormArray([]);
 
     if (!count) {
       return formArray;
