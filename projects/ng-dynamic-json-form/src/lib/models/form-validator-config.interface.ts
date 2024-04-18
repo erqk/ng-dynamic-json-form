@@ -6,4 +6,7 @@ export interface ValidatorConfig {
 
   /**Use {{value}} placeholder to display current value */
   message?: string;
+
+  /**Flags for `pattern` validator. */
+  flags?: string;
 }

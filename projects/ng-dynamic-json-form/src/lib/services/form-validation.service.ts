@@ -48,45 +48,43 @@ export class FormValidationService {
   getValidators(input: ValidatorConfig[]): ValidatorFn[] {
     return input.map((item) => {
       const { name, value } = item;
-      let validator: ValidatorFn = Validators.nullValidator;
+      const _value = () => {
+        switch (name) {
+          case ValidatorAndConditionEnum.pattern:
+            return new RegExp(`${value}`, item.flags);
 
-      switch (name) {
-        case ValidatorAndConditionEnum.required:
-          validator = Validators.required;
-          break;
+          case ValidatorAndConditionEnum.min:
+          case ValidatorAndConditionEnum.max:
+          case ValidatorAndConditionEnum.minLength:
+          case ValidatorAndConditionEnum.maxLength:
+            try {
+              return typeof value !== 'number' ? parseFloat(value) : value;
+            } catch {
+              break;
+            }
 
-        case ValidatorAndConditionEnum.requiredTrue:
-          validator = Validators.requiredTrue;
-          break;
+          default:
+            return value;
+        }
+      };
 
-        case ValidatorAndConditionEnum.email:
-          validator = emailValidator;
-          break;
+      const builtInValidators: {
+        [key in ValidatorAndConditionEnum]?: ValidatorFn;
+      } = {
+        [ValidatorAndConditionEnum.required]: Validators.required,
+        [ValidatorAndConditionEnum.requiredTrue]: Validators.requiredTrue,
+        [ValidatorAndConditionEnum.email]: emailValidator,
+        [ValidatorAndConditionEnum.pattern]: Validators.pattern(_value()),
+        [ValidatorAndConditionEnum.min]: Validators.min(_value()),
+        [ValidatorAndConditionEnum.max]: Validators.max(_value()),
+        [ValidatorAndConditionEnum.minLength]: Validators.minLength(_value()),
+        [ValidatorAndConditionEnum.maxLength]: Validators.maxLength(_value()),
+      };
 
-        case ValidatorAndConditionEnum.pattern:
-          validator = Validators.pattern(value);
-          break;
-
-        case ValidatorAndConditionEnum.min:
-          validator = Validators.min(value);
-          break;
-
-        case ValidatorAndConditionEnum.max:
-          validator = Validators.max(value);
-          break;
-
-        case ValidatorAndConditionEnum.minLength:
-          validator = Validators.minLength(value);
-          break;
-
-        case ValidatorAndConditionEnum.maxLength:
-          validator = Validators.maxLength(value);
-          break;
-
-        default:
-          validator = this.customValidators?.[name] || Validators.nullValidator;
-          break;
-      }
+      const validator =
+        builtInValidators[name as ValidatorAndConditionEnum] ??
+        this.customValidators?.[name] ??
+        Validators.nullValidator;
 
       return validator;
     });
@@ -153,8 +151,34 @@ export class FormValidationService {
   ): string[] {
     if (!controlErrors) return [];
 
+    // The target key in the `ValidationErrors` which can be use to get the
+    // correct config inside validator configs which has the same `name`.
+    const valueKey: { [key in ValidatorAndConditionEnum]?: string } = {
+      pattern: 'requiredPattern',
+      min: 'min',
+      max: 'max',
+      minLength: 'requiredLength',
+      maxLength: 'requiredLength',
+    };
+
     return Object.keys(controlErrors).reduce((acc, key) => {
-      const config = validatorConfigs.find((x) => x.name.toLowerCase() === key);
+      const config = validatorConfigs.find((x) => {
+        const errorKey = x.name.toLowerCase();
+
+        if (x.value === undefined) {
+          return key === errorKey;
+        }
+
+        const targetKey = valueKey[x.name as ValidatorAndConditionEnum] ?? '';
+        const requiredValue = controlErrors[key][targetKey];
+        const requiredValueMatch =
+          x.name === 'pattern'
+            ? requiredValue.includes(x.value)
+            : requiredValue === x.value;
+
+        return requiredValueMatch && key === errorKey;
+      });
+
       const error = controlErrors[key];
       const errorStringified =
         typeof error === 'string' ? error : JSON.stringify(error);
