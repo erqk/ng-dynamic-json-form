@@ -72,7 +72,6 @@ export class ExampleContainerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this._getFormHeight();
     this._cd.markForCheck();
-    this._cd.detectChanges();
   }
 
   onEditorChange(e: any): void {
@@ -94,9 +93,10 @@ export class ExampleContainerComponent implements OnInit, AfterViewInit {
   reset(): void {
     this.configs = [];
 
-    requestAnimationFrame(() => {
+    window.setTimeout(() => {
       this._loadConfig();
       this._editorData = this.configs;
+      this._cd.markForCheck();
     });
   }
 
