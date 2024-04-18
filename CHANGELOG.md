@@ -1,5 +1,11 @@
 # Change log
 
+## 5.7.1
+
+### Fix
+
+- Validation message failed at start when value is empty.
+
 ## 5.7.0
 
 ### Feature
