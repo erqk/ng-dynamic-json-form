@@ -18,7 +18,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
       },
       {
         name: 'pattern',
-        value: '\\D+',
+        value: '^\\D+$',
         message: '不可輸入數字',
       },
     ],
