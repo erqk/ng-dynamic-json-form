@@ -1,5 +1,15 @@
 # Change log
 
+## 5.7.0
+
+### Feature
+
+- Add `flags` support for `pattern` validator.
+
+### Fix
+
+- Validation message is incorrect when there is more than one validators with the same name.
+
 ## 5.6.0
 
 ### Feature

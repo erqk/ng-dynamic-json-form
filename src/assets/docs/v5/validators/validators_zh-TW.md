@@ -4,28 +4,35 @@
 
 ```javascript
 export interface ValidatorConfig {
-  name: string;
+  name: FormControlConditionType;
   value?: any;
   message?: string;
+  flags?: string;
 }
 ```
 
-> 可使用 `{{value}}` 當 placeholder，來顯示當前控制器的值。
-
-## 內建驗證器
-
-| name         | value  |
-| :----------- | :----- |
-| required     | -      |
-| requiredTrue | -      |
-| min          | number |
-| max          | number |
-| minLength    | number |
-| maxLength    | number |
-| pattern      | string |
-| email        | -      |
+| Property | 說明                                                                    |
+| :------- | :---------------------------------------------------------------------- |
+| name     | 驗證器名稱。                                                            |
+| value    | 驗證器的值。                                                            |
+| message  | 驗證錯誤訊息。可使用 `{{value}}` 當 placeholder，來顯示當前控制器的值。 |
+| flags    | `pattern` 驗證器的 flags。                                              |
 
 > 除了 `email` 使用的是 `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/` 正則表達式，其餘的驗證器皆來自於 [Angular 內建的驗證器](https://angular.tw/api/forms/Validators)。
+
+## 驗證器列表
+
+| name                | value  |
+| :------------------ | :----- |
+| required            | -      |
+| requiredTrue        | -      |
+| min                 | number |
+| max                 | number |
+| minLength           | number |
+| maxLength           | number |
+| pattern             | string |
+| email               | -      |
+| ...自訂驗證器的 key | -      |
 
 ## 自訂驗證器
 

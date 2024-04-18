@@ -4,28 +4,35 @@
 
 ```javascript
 export interface ValidatorConfig {
-  name: string;
+  name: FormControlConditionType;
   value?: any;
   message?: string;
+  flags?: string;
 }
 ```
 
-> Use `{{value}}` as a placeholder to display the current control's value.
-
-## Built-in validators
-
-| name         | value  |
-| :----------- | :----- |
-| required     | -      |
-| requiredTrue | -      |
-| min          | number |
-| max          | number |
-| minLength    | number |
-| maxLength    | number |
-| pattern      | string |
-| email        | -      |
+| Property | Description                                                                        |
+| :------- | :--------------------------------------------------------------------------------- |
+| name     | Validator's name.                                                                  |
+| value    | Value of the validator.                                                            |
+| message  | Custom validation message. Use {{value}} placeholder to display the current value. |
+| flags    | Flags for `pattern` validator.                                                     |
 
 > The validators are come from [Angular's built-in validators](https://angular.io/api/forms/Validators), except `email` that's using this pattern: `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/`.
+
+## Validator list
+
+| Name                      | Value  |
+| :------------------------ | :----- |
+| required                  | -      |
+| requiredTrue              | -      |
+| min                       | number |
+| max                       | number |
+| minLength                 | number |
+| maxLength                 | number |
+| pattern                   | string |
+| email                     | -      |
+| ...custom validator's key | -      |
 
 ## Custom validators
 

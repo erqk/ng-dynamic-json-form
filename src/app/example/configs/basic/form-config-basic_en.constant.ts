@@ -18,8 +18,8 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
       },
       {
         name: 'pattern',
-        value: '\\D+',
-        message: 'Numbers is not allowed',
+        value: '^\\D+$',
+        message: 'Numbers are not allowed',
       },
     ],
   },
