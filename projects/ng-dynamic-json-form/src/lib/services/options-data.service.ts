@@ -97,7 +97,7 @@ export class OptionsDataService {
       switchMap((x) => {
         const emptyValue = x === undefined || x === null || x === '';
         const payload = this._getDynamicParams(config, x, form);
-        
+
         return emptyValue ? of([]) : this._fetchData$(config, payload);
       }),
       takeUntil(this._cancelAll$)
@@ -242,6 +242,10 @@ export class OptionsDataService {
   private _getMappedSrc(src: string, payload: any): string {
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
+
+    if (typeof payload !== 'object') {
+      return '';
+    }
 
     if (!urlVariables.length) {
       return `${src}?${new URLSearchParams(payload).toString()}`;
