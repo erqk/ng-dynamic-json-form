@@ -40,12 +40,7 @@ export class OptionsDataService {
     if (!sourceList?.length) return EMPTY;
 
     return from(sourceList).pipe(
-      concatMap((x) =>
-        this._fetchData$({
-          config: x,
-          useTrigger: false,
-        })
-      ),
+      concatMap((x) => this._fetchData$(x)),
       toArray(),
       map((x) => x.flat()),
       tap((x) => {
@@ -88,7 +83,7 @@ export class OptionsDataService {
       }
     }
 
-    return this._fetchData$({ config, useTrigger: true }).pipe(
+    return this._fetchData$(config).pipe(
       switchMap((x) => valueChanges$(x)),
       takeUntil(this._cancelAll$)
     );
@@ -101,9 +96,9 @@ export class OptionsDataService {
     return this._onTriggerControlChanges$(form, config).pipe(
       switchMap((x) => {
         const emptyValue = x === undefined || x === null || x === '';
-        return emptyValue
-          ? of([])
-          : this._fetchData$({ config, useTrigger: true, controlValue: x });
+        const payload = this._getDynamicParams(config, x, form);
+        
+        return emptyValue ? of([]) : this._fetchData$(config, payload);
       }),
       takeUntil(this._cancelAll$)
     );
@@ -127,22 +122,17 @@ export class OptionsDataService {
     this._cancelAll$.complete();
   }
 
-  private _fetchData$({
-    config,
-    useTrigger,
-    controlValue,
-  }: {
-    config: OptionSource;
-    useTrigger: boolean | undefined;
-    controlValue?: any;
-  }): Observable<OptionItem[]> {
+  private _fetchData$(
+    config: OptionSource,
+    payload?: any
+  ): Observable<OptionItem[]> {
     const {
       data: { path, labelKey, valueKeys = [] },
       slice,
     } = config;
 
     const _valueKeys = [...new Set(valueKeys)].filter((x) => x.length > 0);
-    const result$ = this._httpRequest$(config, useTrigger, controlValue).pipe(
+    const result$ = this._httpRequest$(config, payload).pipe(
       onErrorResumeNextWith(),
       map((x: any) => {
         if (!x) return [];
@@ -192,15 +182,12 @@ export class OptionsDataService {
 
   private _httpRequest$(
     config: OptionSource,
-    useTrigger: boolean | undefined,
-    controlValue?: any
+    payload?: any
   ): Observable<Object | null> {
     const { method, params, src } = config;
 
-    const newSrc = this._getMappedSrc(config, controlValue);
-    const newParams = useTrigger
-      ? this._getDynamicParams(config, controlValue)
-      : params || {};
+    const newSrc = this._getMappedSrc(src, payload);
+    const newParams = payload ?? params ?? {};
 
     if (!method) {
       console.warn(`Please specify HTTP method for ${src}`);
@@ -252,23 +239,16 @@ export class OptionsDataService {
     );
   }
 
-  private _getMappedSrc(config: OptionSource, controlValue: any): string {
-    const { params, src } = config;
-
-    if (!params) {
-      return src;
-    }
-
+  private _getMappedSrc(src: string, payload: any): string {
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
-    const _params = this._getDynamicParams(config, controlValue);
 
     if (!urlVariables.length) {
-      return `${src}?${new URLSearchParams(_params).toString()}`;
+      return `${src}?${new URLSearchParams(payload).toString()}`;
     }
 
-    return Object.keys(_params).reduce((acc, key) => {
-      acc = acc.replace(`:${key}`, `${_params[key]}`);
+    return Object.keys(payload).reduce((acc, key) => {
+      acc = acc.replace(`:${key}`, `${payload[key]}`);
       return acc;
     }, src);
   }
