@@ -41,6 +41,9 @@ export interface FormControlConfig {
   /**Provide to make this control as a FormArray, cannot use with `children` */
   formArray?: FormArrayConfig;
 
+  /**Don't render the UI of this control if set to true. */
+  hidden?: boolean;
+
   label?: string;
 
   layout?: FormLayout;
