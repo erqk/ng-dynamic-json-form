@@ -1,5 +1,12 @@
 # Change log
 
+## 5.8.0
+
+### Feature
+
+- Get value from other controls when using trigger in options.
+- Enable control totally hidden by not rendering in DOM.
+
 ## 5.7.1
 
 ### Fix

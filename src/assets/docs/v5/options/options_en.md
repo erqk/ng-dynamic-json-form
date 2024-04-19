@@ -76,6 +76,7 @@ export interface OptionSource {
   src: string;
   method: "GET" | "POST";
   params?: { [key: string]: any };
+  paramsFromControls?: { [key: string]: any };
   data: {
     labelKey: string,
     path?: string,
@@ -85,13 +86,14 @@ export interface OptionSource {
 }
 ```
 
-| Property | Description                            |
-| :------- | :------------------------------------- |
-| src      | API URL.                               |
-| method   | `GET`, `POST`                          |
-| params   | See [Request params](#request-params). |
-| data     | See [Map input data](#map-input-data). |
-| slice    | The range of data to pick.             |
+| Property           | Description                              |
+| :----------------- | :--------------------------------------- |
+| src                | API URL.                                 |
+| method             | `GET`, `POST`                            |
+| params             | See [Request params](#request-params).   |
+| paramsFromControls | Use value from other controls as params. |
+| data               | See [Map input data](#map-input-data).   |
+| slice              | The range of data to pick.               |
 
 ### Request params
 
