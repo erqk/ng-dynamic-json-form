@@ -45,125 +45,126 @@
   >
     <ng-container [formGroup]="parentForm">
       <ng-container *ngFor="let config of controlConfigs">
-        <!-- Form control -->
-        <ng-container *ngIf="!config.children && !config.formArray">
-          <div
-            class="form-control-container"
-            [hostId]="{
+        <ng-container *ngIf="!config?.hidden">
+          <!-- Form control -->
+          <ng-container *ngIf="!config.children && !config.formArray">
+            <div
+              class="form-control-container"
+              [hostId]="{
               parentId,
               controlName: config.formControlName,
             }"
-            [controlLayout]="{
-              type: 'host',
-              layout: config?.layout
-            }"
-            [ngClass]="{
+              [controlLayout]="{
+                type: 'host',
+                layout: config?.layout
+              }"
+              [ngClass]="{
               readonly: config?.readonly,
             }"
-          >
-            <ng-container
-              *ngIf="config.label && config?.layout?.hideLabel !== true"
-              [ngTemplateOutlet]="formTitleTemplate"
-              [ngTemplateOutletContext]="{
+            >
+              <ng-container
+                *ngIf="config.label && config?.layout?.hideLabel !== true"
+                [ngTemplateOutlet]="formTitleTemplate"
+                [ngTemplateOutletContext]="{
                 config,
                 collapsibleEl: formControlContent,
                 control: parentForm.controls[config.formControlName]
               }"
-            ></ng-container>
-
-            <div #formControlContent>
-              <!-- Description (before) -->
-              <ng-container
-                *ngIf="
-                  config?.description &&
-                  config?.layout?.descriptionPosition !== 'after'
-                "
-                [ngTemplateOutlet]="descriptionTemplate"
-                [ngTemplateOutletContext]="{
-                  description: config.description,
-                  layout: config.layout
-                }"
               ></ng-container>
 
-              <form-control
-                style="display: block"
-                [controlLayout]="{
-                  type: 'content',
-                  layout: config.layout
-                }"
-                [data]="config"
-                [control]="parentForm.controls[config.formControlName]"
-                [form]="form"
-                [formControlName]="config.formControlName"
-                [customComponent]="customComponents?.[config?.customComponent]"
-                [uiComponents]="uiComponentsGet"
-                [layoutComponents]="layoutComponents"
-                [layoutTemplates]="layoutTemplates"
-                [inputTemplates]="inputTemplates"
-                [hideErrorMessage]="hideErrorMessage"
-              ></form-control>
+              <div #formControlContent>
+                <!-- Description (before) -->
+                <ng-container
+                  *ngIf="
+                    config?.description &&
+                    config?.layout?.descriptionPosition !== 'after'
+                  "
+                  [ngTemplateOutlet]="descriptionTemplate"
+                  [ngTemplateOutletContext]="{
+                    description: config.description,
+                    layout: config.layout
+                  }"
+                ></ng-container>
 
-              <!-- Description (after) -->
-              <ng-container
-                *ngIf="
-                  config?.description &&
-                  config?.layout?.descriptionPosition === 'after'
-                "
-                [ngTemplateOutlet]="descriptionTemplate"
-                [ngTemplateOutletContext]="{
-                  description: config.description,
-                  layout: config.layout
-                }"
-              ></ng-container>
+                <form-control
+                  style="display: block"
+                  [controlLayout]="{
+                    type: 'content',
+                    layout: config.layout
+                  }"
+                  [data]="config"
+                  [control]="parentForm.controls[config.formControlName]"
+                  [form]="form"
+                  [formControlName]="config.formControlName"
+                  [customComponent]="customComponents?.[config?.customComponent]"
+                  [uiComponents]="uiComponentsGet"
+                  [layoutComponents]="layoutComponents"
+                  [layoutTemplates]="layoutTemplates"
+                  [inputTemplates]="inputTemplates"
+                  [hideErrorMessage]="hideErrorMessage"
+                ></form-control>
+
+                <!-- Description (after) -->
+                <ng-container
+                  *ngIf="
+                    config?.description &&
+                    config?.layout?.descriptionPosition === 'after'
+                  "
+                  [ngTemplateOutlet]="descriptionTemplate"
+                  [ngTemplateOutletContext]="{
+                    description: config.description,
+                    layout: config.layout
+                  }"
+                ></ng-container>
+              </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
 
-        <!-- Form group -->
-        <ng-container *ngIf="!!config.children && !config.formArray">
-          <div
-            class="form-group-container"
-            [hostId]="{
+          <!-- Form group -->
+          <ng-container *ngIf="!!config.children && !config.formArray">
+            <div
+              class="form-group-container"
+              [hostId]="{
               parentId,
               controlName: config.formControlName
             }"
-            [controlLayout]="{
+              [controlLayout]="{
               type: 'host',
               isNested: isNested === true,
               layout: config?.layout,
             }"
-            [ngClass]="{
+              [ngClass]="{
               readonly: config?.readonly,
             }"
-          >
-            <!-- Label -->
-            <ng-container
-              *ngIf="config.label && config?.layout?.hideLabel !== true"
-              [ngTemplateOutlet]="formTitleTemplate"
-              [ngTemplateOutletContext]="{
+            >
+              <!-- Label -->
+              <ng-container
+                *ngIf="config.label && config?.layout?.hideLabel !== true"
+                [ngTemplateOutlet]="formTitleTemplate"
+                [ngTemplateOutletContext]="{
                 config,
                 collapsibleEl: formGroupContent,
                 control: parentForm.controls[config.formControlName]
               }"
-            ></ng-container>
-
-            <div #formGroupContent>
-              <!-- Description (before) -->
-              <ng-container
-                *ngIf="
-                  config?.description &&
-                  config?.layout?.descriptionPosition !== 'after'
-                "
-                [ngTemplateOutlet]="descriptionTemplate"
-                [ngTemplateOutletContext]="{
-                  description: config.description,
-                  layout: config.layout
-                }"
               ></ng-container>
 
-              <ng-container
-                [ngTemplateOutlet]="formGroupTemplate"
-                [ngTemplateOutletContext]="{
+              <div #formGroupContent>
+                <!-- Description (before) -->
+                <ng-container
+                  *ngIf="
+                    config?.description &&
+                    config?.layout?.descriptionPosition !== 'after'
+                  "
+                  [ngTemplateOutlet]="descriptionTemplate"
+                  [ngTemplateOutletContext]="{
+                    description: config.description,
+                    layout: config.layout
+                  }"
+                ></ng-container>
+
+                <ng-container
+                  [ngTemplateOutlet]="formGroupTemplate"
+                  [ngTemplateOutletContext]="{
                 controlConfigs: config.children,
                 parentId:
                   (parentId ? parentId + '.' : '') + config.formControlName,
@@ -174,65 +175,66 @@
                   hostStyles: config?.layout?.contentStyles,
                 }
               }"
-              ></ng-container>
+                ></ng-container>
 
-              <!-- Description (after) -->
-              <ng-container
-                *ngIf="
-                  config?.description &&
-                  config?.layout?.descriptionPosition === 'after'
-                "
-                [ngTemplateOutlet]="descriptionTemplate"
-                [ngTemplateOutletContext]="{
-                  description: config.description,
-                  layout: config.layout
-                }"
-              ></ng-container>
+                <!-- Description (after) -->
+                <ng-container
+                  *ngIf="
+                    config?.description &&
+                    config?.layout?.descriptionPosition === 'after'
+                  "
+                  [ngTemplateOutlet]="descriptionTemplate"
+                  [ngTemplateOutletContext]="{
+                    description: config.description,
+                    layout: config.layout
+                  }"
+                ></ng-container>
+              </div>
+
+              <error-message
+                [control]="parentForm.controls[config.formControlName]"
+                [validators]="config.validators"
+                [layout]="config.layout"
+                [layoutComponents]="layoutComponents"
+                [layoutTemplates]="layoutTemplates"
+                [hideErrorMessage]="hideErrorMessage"
+              ></error-message>
             </div>
+          </ng-container>
 
-            <error-message
-              [control]="parentForm.controls[config.formControlName]"
-              [validators]="config.validators"
-              [layout]="config.layout"
-              [layoutComponents]="layoutComponents"
-              [layoutTemplates]="layoutTemplates"
-              [hideErrorMessage]="hideErrorMessage"
-            ></error-message>
-          </div>
-        </ng-container>
-
-        <!-- Form array -->
-        <ng-container
-          *ngIf="
-            !config.children &&
-            !!config.formArray &&
-            !!config.formArray.template.length
-          "
-        >
-          <div
-            class="form-array-container"
-            [hostId]="{
+          <!-- Form array -->
+          <ng-container
+            *ngIf="
+              !config.children &&
+              !!config.formArray &&
+              !!config.formArray.template.length
+            "
+          >
+            <div
+              class="form-array-container"
+              [hostId]="{
               parentId,
               controlName: config.formControlName
             }"
-            [controlLayout]="{
+              [controlLayout]="{
               type: 'host',
               isNested: isNested === true,
               layout: config?.layout,
             }"
-            [ngClass]="{
-              readonly: config?.readonly
-            }"
-          >
-            <ng-container
-              [ngTemplateOutlet]="formArrayTemplate"
-              [ngTemplateOutletContext]="{
+              [ngClass]="{
+                readonly: config?.readonly
+              }"
+            >
+              <ng-container
+                [ngTemplateOutlet]="formArrayTemplate"
+                [ngTemplateOutletContext]="{
                 config,
                 parentForm,
                 formArray: parentForm.controls[config.formControlName],
               }"
-            ></ng-container>
-          </div>
+              ></ng-container>
+            </div>
+          </ng-container>
         </ng-container>
       </ng-container>
     </ng-container>

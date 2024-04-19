@@ -172,7 +172,7 @@ export class FormValidationService {
         const targetKey = valueKey[x.name as ValidatorAndConditionEnum] ?? '';
         const requiredValue = controlErrors[key][targetKey];
         const requiredValueMatch =
-          x.name === 'pattern'
+          requiredValue && x.name === 'pattern'
             ? requiredValue.includes(x.value)
             : requiredValue === x.value;
 

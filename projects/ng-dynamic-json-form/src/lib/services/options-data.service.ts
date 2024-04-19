@@ -25,6 +25,7 @@ import {
   OptionSource,
   OptionTrigger,
 } from '../models/form-control-options.interface';
+import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
 
@@ -174,24 +175,18 @@ export class OptionsDataService {
     config: OptionTrigger
   ): Observable<any> {
     const { triggerValuePath, debounceTime: _debouceTime = 0 } = config;
-    if (!triggerValuePath) return EMPTY;
+    if (!triggerValuePath.trim()) return EMPTY;
 
-    const triggerPaths = triggerValuePath.split(',');
-    if (!triggerPaths.length) return EMPTY;
+    const paths = getControlAndValuePath(triggerValuePath);
+    const control = form.get(paths.controlPath);
 
-    const controlPath = triggerPaths[0].trim();
-    const controlValuePath = triggerPaths?.[1]?.trim() || '';
-
-    const control = form.get(controlPath);
     if (!control) return EMPTY;
 
     return control.valueChanges.pipe(
       startWith(control.value),
       debounceTime(_debouceTime),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-      map((x) =>
-        !controlValuePath ? x : getValueInObject(x, controlValuePath)
-      )
+      map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath)))
     );
   }
 
@@ -204,7 +199,7 @@ export class OptionsDataService {
 
     const newSrc = this._getMappedSrc(config, controlValue);
     const newParams = useTrigger
-      ? this._dynamicParams(config, controlValue)
+      ? this._getDynamicParams(config, controlValue)
       : params || {};
 
     if (!method) {
@@ -224,8 +219,12 @@ export class OptionsDataService {
       });
 
     const sameRequest = prevSameRequest();
+
+    if (sameRequest && !sameRequest.data.closed) {
+      return sameRequest.data;
+    }
+
     if (sameRequest) {
-      if (!sameRequest.data.closed) return sameRequest.data;
       sameRequest.data = new Subject<any>();
     }
 
@@ -235,21 +234,15 @@ export class OptionsDataService {
       params: method === 'GET' ? null : newParams,
     });
 
-    let source$: Observable<Object> = EMPTY;
-    switch (method) {
-      case 'GET':
-        source$ = this._http.get(newSrc);
-        break;
+    const sources = {
+      GET: this._http.get(newSrc),
+      POST: this._http.post(src, newParams),
+    };
 
-      case 'POST':
-        source$ = this._http.post(src, newParams);
-        break;
-    }
-
-    return source$.pipe(
+    return sources[method].pipe(
       tap((x) => {
         const sameRequest = prevSameRequest();
-        sameRequest?.data.next(x);
+        !sameRequest?.data.closed && sameRequest?.data.next(x);
       }),
       finalize(() => {
         const sameRequest = prevSameRequest();
@@ -266,36 +259,52 @@ export class OptionsDataService {
       return src;
     }
 
-    const _params = this._dynamicParams(config, controlValue);
-
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
+    const _params = this._getDynamicParams(config, controlValue);
 
-    const useQueryString =
-      Object.keys(_params).length > 0 && !urlVariables.length;
-
-    if (urlVariables.length > 0) {
-      return Object.keys(_params).reduce((acc, key) => {
-        acc = acc.replace(`:${key}`, `${_params[key]}`);
-        return acc;
-      }, src);
-    }
-
-    if (useQueryString) {
+    if (!urlVariables.length) {
       return `${src}?${new URLSearchParams(_params).toString()}`;
     }
 
-    return src;
+    return Object.keys(_params).reduce((acc, key) => {
+      acc = acc.replace(`:${key}`, `${_params[key]}`);
+      return acc;
+    }, src);
   }
 
-  private _dynamicParams(config: OptionSource, controlValue: any): any {
-    const params = config.params;
+  /**Get params from the `controlValue` */
+  private _getDynamicParams(
+    config: OptionSource,
+    controlValue: any,
+    form?: UntypedFormGroup
+  ): any {
+    const { params, paramsFromControls } = config;
     if (!params) return {};
 
-    return Object.keys(params).reduce((acc, key) => {
+    const paramsFromCurrentControl = Object.keys(params).reduce((acc, key) => {
       const valuePath = `${params[key]}`.trim();
       acc[key] = getValueInObject(controlValue, valuePath);
       return acc;
     }, {} as any);
+
+    const paramsFromOtherControls =
+      !paramsFromControls || !form
+        ? undefined
+        : Object.keys(paramsFromControls).reduce((acc, key) => {
+            const paths = getControlAndValuePath(key);
+            const control = form.get(paths.controlPath);
+
+            if (control && paths.valuePath !== undefined) {
+              acc[key] = getValueInObject(control?.value, paths.valuePath);
+            }
+
+            return acc;
+          }, {} as any);
+
+    return {
+      ...paramsFromCurrentControl,
+      ...paramsFromOtherControls,
+    };
   }
 }

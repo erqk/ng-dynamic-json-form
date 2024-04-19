@@ -11,7 +11,6 @@ import {
   tap,
 } from 'rxjs';
 import {
-  FormControlConditionOperator,
   FormControlConditionType,
   FormControlConfig,
   FormControlGroupCondition,
@@ -19,6 +18,8 @@ import {
   ValidatorConfig,
 } from '../models';
 import { ConditionExtracted } from '../models/condition-extracted.interface';
+import { getBooleanOperationResult } from '../utilities/get-boolean-operation-result';
+import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { FormValidationService } from './form-validation.service';
 
@@ -144,9 +145,10 @@ export class FormConditionsService {
   ): void {
     if (!Object.keys(boolResults).length) return;
 
+    // TODO: There is no longer using `custom` to indicate custom validator.
     const configFilterd = validatorConfig.filter(({ name, value }) => {
       const bool = name === 'custom' ? boolResults[value] : boolResults[name];
-      // Let `undefined` pass the filter because this validator it's not under control of conditions.
+      // Let `undefined` pass the filter because this validator is not under control of conditions.
       return bool === undefined ? true : bool;
     });
 
@@ -172,7 +174,7 @@ export class FormConditionsService {
         const controls = Object.values(conditions)
           .filter((x) => !!x)
           .flatMap((x) => this._getFlattenIfConditions(x!))
-          .map((x) => form.get(this._getControlPath(x[0])))
+          .map((x) => form.get(getControlAndValuePath(x[0]).controlPath))
           .filter((x) => !!x) as AbstractControl[];
 
         result.push(...controls);
@@ -249,7 +251,7 @@ export class FormConditionsService {
     return result;
   }
 
-  /**Evaluate the boolean result from the condition given. */
+  /**Evaluate the boolean result from the condition. */
   private _getConditionsResult(
     form: FormGroup,
     conditions: FormControlGroupCondition
@@ -274,17 +276,18 @@ export class FormConditionsService {
 
     const predicateFn = (value: FormControlIfCondition) => {
       const [controlPath, operator, controlValue] = value;
-      const valuePath = controlPath.split(',')?.[1]?.trim();
-      const control = form.get(this._getControlPath(controlPath));
+      const control = form.get(getControlAndValuePath(controlPath).controlPath);
 
       if (!control) return undefined;
+
+      const valuePath = getControlAndValuePath(controlPath).valuePath;
 
       // Get the value for the specific property if valuePath is provided
       const currentValue = !valuePath
         ? control.value
         : getValueInObject(control.value, valuePath);
 
-      return this._booleanResult(currentValue, controlValue, operator);
+      return getBooleanOperationResult(currentValue, controlValue, operator);
     };
 
     switch (groupOperator) {
@@ -302,43 +305,5 @@ export class FormConditionsService {
     }
 
     return result;
-  }
-
-  private _booleanResult(
-    current: any,
-    target: any,
-    operator: FormControlConditionOperator
-  ): boolean {
-    switch (operator) {
-      case '===':
-        return current === target;
-
-      case '!==':
-        return current !== target;
-
-      case '>=':
-        return current >= target;
-
-      case '>':
-        return current > target;
-
-      case '<=':
-        return current <= target;
-
-      case '<':
-        return current < target;
-
-      case 'includes':
-        return current.includes(target);
-
-      case 'notIncludes':
-        return !current.includes(target);
-    }
-  }
-
-  /**Get the proper control path from the config if the path contains ',' */
-  private _getControlPath(path: string): string {
-    const paths = path.split(',');
-    return paths[0].trim();
   }
 }

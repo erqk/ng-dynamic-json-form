@@ -21,23 +21,6 @@
           "customComponent": {
             "type": "string"
           },
-          "cssGrid": {
-            "type": "object",
-            "properties": {
-              "gridRow": {
-                "type": "string",
-                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row"
-              },
-              "gridColumn": {
-                "type": "string",
-                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column"
-              },
-              "gridTemplateColumns": {
-                "type": "string",
-                "description": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns"
-              }
-            }
-          },
           "description": {
             "type": "string"
           },
@@ -45,9 +28,9 @@
             "$ref": "#/definitions/extraConfig"
           },
           "formArray": { "$ref": "#/definitions/formArrayConfig" },
-          "hideValidationMessage": {
+          "hidden": {
             "type": "boolean",
-            "description": "Set to true to take control of validation message"
+            "description": "Don't render the UI of this control if set to true."
           },
           "label": {
             "type": "string"
@@ -286,6 +269,12 @@
         "method": {
           "enum": ["GET", "POST"]
         },
+        "params": {
+          "type": "object"
+        },
+        "paramsFromControls": {
+          "type": "object"
+        },
         "data": {
           "type": "object",
           "properties": {
@@ -301,6 +290,10 @@
             }
           },
           "required": ["labelKey"]
+        },
+        "slice": {
+          "type": "array",
+          "items": [{ "type": "number" }, { "type": "number" }]
         }
       },
       "required": ["src", "method", "data"]

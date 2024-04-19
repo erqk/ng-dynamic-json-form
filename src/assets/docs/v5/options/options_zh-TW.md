@@ -76,6 +76,7 @@ export interface OptionSource {
   src: string;
   method: "GET" | "POST";
   params?: { [key: string]: any };
+  paramsFromControls?: { [key: string]: any };
   data: {
     labelKey: string,
     path?: string,
@@ -85,13 +86,14 @@ export interface OptionSource {
 }
 ```
 
-| Property | 說明                           |
-| :------- | :----------------------------- |
-| src      | API URL。                      |
-| method   | `GET`, `POST`                  |
-| params   | 請參閱 [請求參數](#請求參數)。 |
-| data     | 請參閱 [資料轉換](#資料轉換)。 |
-| slice    | 取得特定範圍的資料。           |
+| Property           | 說明                             |
+| :----------------- | :------------------------------- |
+| src                | API URL。                        |
+| method             | `GET`, `POST`                    |
+| params             | 請參閱 [請求參數](#請求參數)。   |
+| paramsFromControls | 使用其他控制器的值作為請求參數。 |
+| data               | 請參閱 [資料轉換](#資料轉換)。   |
+| slice              | 取得特定範圍的資料。             |
 
 ### 請求參數
 
