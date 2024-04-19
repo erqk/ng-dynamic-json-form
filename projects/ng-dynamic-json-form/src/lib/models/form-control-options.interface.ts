@@ -6,7 +6,12 @@ export interface OptionItem {
 export interface OptionSource {
   src: string;
   method: 'GET' | 'POST';
+  
+  /**Parameters from the current control's value */
   params?: { [key: string]: any };
+
+  /**Parameters from the other controls' value */
+  paramsFromControls?: { [key: string]: any };
   data: {
     labelKey: string;
     path?: string;
