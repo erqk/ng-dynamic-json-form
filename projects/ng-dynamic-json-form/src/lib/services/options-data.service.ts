@@ -97,7 +97,7 @@ export class OptionsDataService {
       switchMap((x) => {
         const emptyValue = x === undefined || x === null || x === '';
         const payload = this._getDynamicParams(config, x, form);
-        
+
         return emptyValue ? of([]) : this._fetchData$(config, payload);
       }),
       takeUntil(this._cancelAll$)
@@ -243,6 +243,10 @@ export class OptionsDataService {
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
 
+    if (typeof payload !== 'object') {
+      return '';
+    }
+
     if (!urlVariables.length) {
       return `${src}?${new URLSearchParams(payload).toString()}`;
     }
@@ -272,11 +276,13 @@ export class OptionsDataService {
       !paramsFromControls || !form
         ? undefined
         : Object.keys(paramsFromControls).reduce((acc, key) => {
-            const paths = getControlAndValuePath(key);
+            const paths = getControlAndValuePath(paramsFromControls[key]);
             const control = form.get(paths.controlPath);
 
-            if (control && paths.valuePath !== undefined) {
-              acc[key] = getValueInObject(control?.value, paths.valuePath);
+            if (control) {
+              acc[key] = !paths.valuePath
+                ? control.value
+                : getValueInObject(control?.value, paths.valuePath);
             }
 
             return acc;

@@ -1,5 +1,23 @@
 # Change log
 
+## 5.8.3
+
+### Fix
+
+- Failed to get other controls' value for the payload of option data request.
+
+## 5.8.2
+
+### Fix
+
+- Options source payload null check.
+
+## 5.8.1
+
+### Fix
+
+- \_getDynamicParams() not receiving FormGroup.
+
 ## 5.8.0
 
 ### Feature
