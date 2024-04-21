@@ -35,6 +35,8 @@ export class OptionsDataService {
   private _cancelAll$ = new Subject<void>();
   private _requests: { src: string; data: Subject<any>; params?: any }[] = [];
 
+  rootForm?: UntypedFormGroup;
+
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
     const { sourceList } = config;
     if (!sourceList?.length) return EMPTY;
@@ -55,13 +57,10 @@ export class OptionsDataService {
     );
   }
 
-  filterOptionsOnTrigger$(
-    form: UntypedFormGroup,
-    config: OptionTrigger
-  ): Observable<OptionItem[]> {
+  filterOptionsOnTrigger$(config: OptionTrigger): Observable<OptionItem[]> {
     const { filterMatchPath } = config;
     const valueChanges$ = (rawData: OptionItem[]) =>
-      this._onTriggerControlChanges$(form, config).pipe(
+      this._onTriggerControlChanges$(config).pipe(
         map((x) => {
           if (!filterMatchPath) return x;
 
@@ -89,14 +88,11 @@ export class OptionsDataService {
     );
   }
 
-  requestOptionsOnTrigger$(
-    form: UntypedFormGroup,
-    config: OptionTrigger
-  ): Observable<OptionItem[]> {
-    return this._onTriggerControlChanges$(form, config).pipe(
+  requestOptionsOnTrigger$(config: OptionTrigger): Observable<OptionItem[]> {
+    return this._onTriggerControlChanges$(config).pipe(
       switchMap((x) => {
         const emptyValue = x === undefined || x === null || x === '';
-        const payload = this._getDynamicParams(config, x, form);
+        const payload = this._getDynamicParams(config, x);
 
         return emptyValue ? of([]) : this._fetchData$(config, payload);
       }),
@@ -160,15 +156,12 @@ export class OptionsDataService {
   /**The observable that listen to `valueChanges` of trigger control,
    * and return it's value
    */
-  private _onTriggerControlChanges$(
-    form: UntypedFormGroup,
-    config: OptionTrigger
-  ): Observable<any> {
+  private _onTriggerControlChanges$(config: OptionTrigger): Observable<any> {
     const { triggerValuePath, debounceTime: _debouceTime = 0 } = config;
     if (!triggerValuePath.trim()) return EMPTY;
 
     const paths = getControlAndValuePath(triggerValuePath);
-    const control = form.get(paths.controlPath);
+    const control = this.rootForm?.get(paths.controlPath);
 
     if (!control) return EMPTY;
 

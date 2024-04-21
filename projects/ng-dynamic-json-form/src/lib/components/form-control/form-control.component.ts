@@ -18,7 +18,6 @@ import {
   ControlValueAccessor,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
-  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -71,7 +70,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
 
-  @Input() form?: UntypedFormGroup;
+  // TODO: Use injector to get NgControl instance
   @Input() control?: AbstractControl;
   @Input() data?: FormControlConfig;
   @Input() uiComponents?: UiComponents;
@@ -215,7 +214,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       if (autoSelectFirst) {
         this.control?.setValue(data?.[0]?.value ?? null);
       }
-      
+
       return;
     }
 
@@ -239,21 +238,15 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     if (!this.data?.options) return EMPTY;
 
     const trigger = this.data.options.trigger;
-    if (!trigger || !trigger.action || !this.form) return EMPTY;
+    if (!trigger || !trigger.action) return EMPTY;
 
     const source$ = () => {
       switch (trigger.action) {
         case 'FILTER':
-          return this._optionsDataService.filterOptionsOnTrigger$(
-            this.form!,
-            trigger
-          );
+          return this._optionsDataService.filterOptionsOnTrigger$(trigger);
 
         case 'REQUEST':
-          return this._optionsDataService.requestOptionsOnTrigger$(
-            this.form!,
-            trigger
-          );
+          return this._optionsDataService.requestOptionsOnTrigger$(trigger);
       }
     };
 
