@@ -10,15 +10,13 @@
             controlName: item.formControlName,
           }"
         [ngClass]="{
+          'form-control-container':
+            (item | controlTypeByConfig) === 'FormControl',
             readonly: item.readonly,
           }"
         [controlLayout]="{
           type: 'host',
           layout: item.layout
-        }"
-        [ngClass]="{
-          'form-control-container':
-            (item | controlTypeByConfig) === 'FormControl'
         }"
       >
         <!-- FormControl -->
