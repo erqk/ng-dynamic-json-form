@@ -3,6 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  HostBinding,
+  HostListener,
   Input,
   Renderer2,
   SimpleChanges,
@@ -12,7 +14,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
-import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import {
@@ -23,7 +24,7 @@ import {
 @Component({
   selector: 'form-title',
   standalone: true,
-  imports: [CommonModule, ControlLayoutDirective],
+  imports: [CommonModule],
   templateUrl: './form-title.component.html',
   styleUrls: ['./form-title.component.scss'],
 })
@@ -43,6 +44,20 @@ export class FormTitleComponent {
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
+
+  @HostBinding('class') hostClass = 'form-title';
+  @HostBinding('style.display') get styleDisplay() {
+    if (!this.label) return null;
+    return this._collapsible ? 'flex' : 'inline-block';
+  }
+  @HostBinding('style.cursor') get styleCursor() {
+    return this._collapsible ? 'pointer' : 'normal';
+  }
+
+  @HostListener('click', ['$event'])
+  onClick(): void {
+    this.toggle();
+  }
 
   collapsible = false;
   expand = false;

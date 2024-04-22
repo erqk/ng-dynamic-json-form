@@ -34,7 +34,9 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     optional: true,
   });
 
-  private _internal_hideErrors$ = new BehaviorSubject<boolean>(false);
+  private _internal_hideErrors$ = new BehaviorSubject<boolean | undefined>(
+    false
+  );
   private _internal_init$ = new Subject<void>();
 
   /**Must be override by using instance of `AbstractControl`
@@ -100,12 +102,12 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
       control.statusChanges
     ).pipe(
       tap(() => {
-        const setErrors = !this._internal_control.errors || !!control.errors;
         const hideErrors = this._internal_hideErrors$.value;
         const errors = this._internal_control.errors ?? control.errors;
-        const finalErrors = !hideErrors && setErrors ? errors : null;
 
-        this._internal_control.setErrors(finalErrors, { emitEvent: false });
+        this._internal_control.setErrors(hideErrors ? null : errors, {
+          emitEvent: false,
+        });
         this._internal_cd.markForCheck();
         this._internal_cd.detectChanges();
       })

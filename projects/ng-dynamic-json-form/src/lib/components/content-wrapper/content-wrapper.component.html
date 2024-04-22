@@ -1,0 +1,69 @@
+<ng-container *ngIf="config && control">
+  <!-- Label -->
+  <form-title
+    [label]="config.label"
+    [layout]="config.layout"
+    [extra]="config.extra"
+    [collapsibleEl]="collapsibleEl"
+    [customTemplate]="labelTemplates?.[config.customLabel ?? ''] ?? layoutTemplates?.formTitle"
+    [customComponent]="labelComponents?.[config.customLabel ?? ''] ?? layoutComponents?.formTitle"
+    [state]="collapsibleState"
+    [controlLayout]="{
+      type: 'label',
+      layout: config.layout
+    }"
+    [ngClass]="{
+      required:
+        config.layout?.autoAddRequiredClass === false
+          ? null
+          : (control | isControlRequired)
+    }"
+  ></form-title>
+
+  <div #collapsibleEl>
+    <div
+      [controlLayout]="{
+        type: 'content',
+        layout: config.layout
+      }"
+    >
+      <!-- Description (before) -->
+      <ng-container
+        *ngIf="
+          config.description && config.layout?.descriptionPosition !== 'after'
+        "
+        [ngTemplateOutlet]="descriptionTemplate"
+        [ngTemplateOutletContext]="{ data: config }"
+      ></ng-container>
+
+      <ng-content></ng-content>
+
+      <!-- Description (after) -->
+      <ng-container
+        *ngIf="
+          config.description && config.layout?.descriptionPosition === 'after'
+        "
+        [ngTemplateOutlet]="descriptionTemplate"
+        [ngTemplateOutletContext]="{ data: config }"
+      ></ng-container>
+
+      <error-message
+        [control]="control"
+        [validators]="config.validators"
+        [layout]="config.layout"
+      ></error-message>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Description template -->
+<ng-template #descriptionTemplate let-data="data">
+  <span
+    class="form-description"
+    [controlLayout]="{
+      type: 'description',
+      layout: data.layout
+    }"
+    >{{ data.description }}</span
+  >
+</ng-template>

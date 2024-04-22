@@ -1,0 +1,27 @@
+<!-- Show add button when form array is empty -->
+<ng-container
+  *ngIf="config?.formArray?.editable === true && !formArray?.controls?.length"
+  [ngTemplateOutlet]="headerTemplate"
+></ng-container>
+
+<ng-container *ngFor="let formGroup of formArray?.controls; index as index">
+  <div class="group">
+    <!-- FormGroup header -->
+    <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+
+    <form-group
+      [parentId]="config?.formControlName"
+      [parentForm]="$any(formGroup)"
+      [configs]="config?.formArray?.template"
+    ></form-group>
+  </div>
+</ng-container>
+
+<ng-template #headerTemplate>
+  <form-array-item-header
+    [config]="config?.formArray"
+    [formArray]="formArray"
+    [layoutComponents]="layoutComponents"
+    [layoutTemplates]="layoutTemplates"
+  ></form-array-item-header>
+</ng-template>

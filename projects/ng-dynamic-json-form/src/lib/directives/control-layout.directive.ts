@@ -1,16 +1,23 @@
-import { Directive, ElementRef, Input, Renderer2, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnChanges,
+  Renderer2,
+  inject,
+} from '@angular/core';
 import { FormControlConfig } from '../models';
 
 @Directive({
   selector: '[controlLayout]',
   standalone: true,
 })
-export class ControlLayoutDirective {
+export class ControlLayoutDirective implements OnChanges {
   private _renderer2 = inject(Renderer2);
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
-    type?: 'host' | 'label' | 'content' | 'description' | 'error';
+    type?: 'host' | 'label' | 'content' | 'formGroup' | 'description' | 'error';
     layout?: FormControlConfig['layout'];
     isNested?: boolean;
   };

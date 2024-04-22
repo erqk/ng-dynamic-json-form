@@ -3,11 +3,9 @@ import {
   AfterViewInit,
   Component,
   DestroyRef,
-  EventEmitter,
   HostBinding,
   Input,
   OnInit,
-  Output,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -18,11 +16,8 @@ import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives';
 import { ValidatorConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-} from '../../ng-dynamic-json-form.config';
 import { FormValidationService } from '../../services/form-validation.service';
+import { GlobalVariableService } from '../../services/global-variable.service';
 
 @Component({
   selector: 'error-message',
@@ -33,30 +28,26 @@ import { FormValidationService } from '../../services/form-validation.service';
 export class ErrorMessageComponent implements OnInit, AfterViewInit {
   private _destroyRef = inject(DestroyRef);
   private _internal_formValidationService = inject(FormValidationService);
+  private _internal_globalVariableService = inject(GlobalVariableService);
 
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
   @Input() layout?: FormLayout;
-  @Input() layoutComponents?: LayoutComponents;
-  @Input() layoutTemplates?: LayoutTemplates;
-  @Input() hideErrorMessage?: boolean;
-  @Output() errorMessagesGet = new EventEmitter<string[]>();
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
-  private _componentAnchor!: ViewContainerRef;
+  componentAnchor!: ViewContainerRef;
 
-  @HostBinding('class.error-message') hostClass = true;
+  @HostBinding('class') hostClass = 'error-message';
 
   errorMessages: string[] = [];
+  layoutComponents = this._internal_globalVariableService.layoutComponents;
+  layoutTemplates = this._internal_globalVariableService.layoutTemplates;
 
   ngOnInit(): void {
     this._internal_formValidationService
       .getErrorMessages$(this.control, this.validators)
       .pipe(
-        tap((x) => {
-          this.errorMessages = x;
-          this.errorMessagesGet.emit(x);
-        }),
+        tap((x) => (this.errorMessages = x)),
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
@@ -71,7 +62,7 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
-    if (this.hideErrorMessage) {
+    if (this._internal_globalVariableService.hideErrorMessage$.value) {
       return false;
     }
 
@@ -79,12 +70,12 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
   }
 
   private _injectComponent(): void {
-    if (!this.layoutComponents?.errorMessage || !this._componentAnchor) {
+    if (!this.layoutComponents?.errorMessage || !this.componentAnchor) {
       return;
     }
 
-    this._componentAnchor.clear();
-    const componentRef = this._componentAnchor.createComponent(
+    this.componentAnchor.clear();
+    const componentRef = this.componentAnchor.createComponent(
       this.layoutComponents.errorMessage
     );
 

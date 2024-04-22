@@ -11,8 +11,7 @@
   <!-- Custom error message component -->
   <ng-container #componentAnchor></ng-container>
   <ng-container
-    *ngIf="layoutTemplates?.errorMessage"
-    [ngTemplateOutlet]="layoutTemplates!.errorMessage!"
+    [ngTemplateOutlet]="layoutTemplates?.errorMessage ?? null"
     [ngTemplateOutletContext]="{
     control,
     messages: errorMessages

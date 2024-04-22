@@ -5,6 +5,8 @@ export interface FormLayout {
   labelStyles?: string;
   contentClass?: string;
   contentStyles?: string;
+  formGroupStyles?: string;
+  formGroupClass?: string;
   descriptionClass?: string;
   descriptionStyles?: string;
   errorClass?: string;

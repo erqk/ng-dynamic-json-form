@@ -1,0 +1,61 @@
+<ng-container [formGroup]="parentForm">
+  <ng-container *ngFor="let item of configs">
+    <ng-container *ngIf="!item.hidden">
+      <div
+        [hostId]="{
+          parentId,
+          controlName: item.formControlName,
+        }"
+        [ngClass]="{
+          readonly: item.readonly,
+        }"
+      >
+        <content-wrapper
+          style="display: block"
+          [config]="item"
+          [control]="parentForm.controls[item.formControlName]"
+          [controlLayout]="{
+            type: 'host',
+            layout: item.layout
+          }"
+          [ngClass]="{
+            'form-control-container':
+              (item | controlTypeByConfig) === 'FormControl'
+          }"
+        >
+          <!-- FormControl -->
+          <ng-container *ngIf="(item | controlTypeByConfig) === 'FormControl'">
+            <form-control
+              [data]="item"
+              [formControlName]="item.formControlName"
+              [customComponent]="customComponents?.[item.customComponent ?? '']"
+            ></form-control>
+          </ng-container>
+
+          <!-- FormGroup -->
+          <ng-container *ngIf="(item | controlTypeByConfig) === 'FormGroup'">
+            <form-group
+              [parentId]="
+                (parentId ? parentId + '.' : '') + item.formControlName
+              "
+              [parentForm]="$any(parentForm.controls[item.formControlName])"
+              [configs]="item.children"
+              [controlLayout]="{
+                type: 'formGroup',
+                layout: item.layout
+              }"
+            ></form-group>
+          </ng-container>
+
+          <!-- FormArray -->
+          <ng-container *ngIf="(item | controlTypeByConfig) === 'FormArray'">
+            <form-array
+              [config]="item"
+              [formArray]="$any(parentForm.controls[item.formControlName])"
+            ></form-array>
+          </ng-container>
+        </content-wrapper>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>

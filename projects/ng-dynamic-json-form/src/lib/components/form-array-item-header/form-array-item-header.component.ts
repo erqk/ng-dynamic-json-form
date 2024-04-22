@@ -41,7 +41,7 @@ export class FormArrayItemHeaderComponent {
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
 
-  @HostBinding('class.form-array-item-header') hostClass = true;
+  @HostBinding('class') hostClass = 'form-array-item-header';
 
   templateForm?: UntypedFormGroup;
   buttonEvent = {

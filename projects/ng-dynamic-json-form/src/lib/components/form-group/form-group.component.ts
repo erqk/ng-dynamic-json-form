@@ -1,0 +1,42 @@
+import { CommonModule } from '@angular/common';
+import { Component, HostBinding, Input, inject } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { ControlLayoutDirective, HostIdDirective } from '../../directives';
+import { FormControlConfig } from '../../models';
+import { FormLayout } from '../../models/form-layout.interface';
+import { ControlTypeByConfigPipe } from '../../pipes/control-type-by-config.pipe';
+import { GlobalVariableService } from '../../services/global-variable.service';
+import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { FormArrayComponent } from '../form-array/form-array.component';
+import { FormControlComponent } from '../form-control/form-control.component';
+
+@Component({
+  selector: 'form-group',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ContentWrapperComponent,
+    HostIdDirective,
+    ControlLayoutDirective,
+    FormControlComponent,
+    FormArrayComponent,
+    ErrorMessageComponent,
+    ControlTypeByConfigPipe,
+  ],
+  templateUrl: './form-group.component.html',
+})
+export class FormGroupComponent {
+  private _globalVariableService = inject(GlobalVariableService);
+
+  @Input() configs?: FormControlConfig[];
+  @Input() parentId?: string;
+  @Input() parentForm = new UntypedFormGroup({});
+  @Input() hostLayout?: FormLayout;
+
+  @HostBinding('class') hostClass = 'grid-container form-group-container';
+
+  customComponents = this._globalVariableService.customComponents;
+  errorMessages: string[] = [];
+}

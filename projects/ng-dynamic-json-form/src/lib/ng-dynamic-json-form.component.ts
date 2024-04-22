@@ -35,7 +35,6 @@ import {
 import Ajv, { ValidateFunction } from 'ajv';
 import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
-import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
@@ -60,6 +59,7 @@ import {
 import { ConfigMappingService } from './services/config-mapping.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
+import { GlobalVariableService } from './services/global-variable.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 
 @Component({
@@ -71,7 +71,6 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     CommonModule,
     ReactiveFormsModule,
     FormControlComponent,
-    ErrorMessageComponent,
     HostIdDirective,
     ControlLayoutDirective,
     FormArrayItemHeaderComponent,
@@ -116,6 +115,7 @@ export class NgDynamicJsonFormComponent
   private _formConditionsService = inject(FormConditionsService);
   private _formValidationService = inject(FormValidationService);
   private _formPatcherService = inject(FormPatcherService);
+  private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
 
@@ -236,13 +236,21 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    const { configs, customValidators, uiComponents } = simpleChanges;
+    const { configs, customValidators, uiComponents, hideErrorMessage } =
+      simpleChanges;
+
+    if (hideErrorMessage) {
+      this._globalVariableService.hideErrorMessage$.next(this.hideErrorMessage);
+    }
 
     if (configs || customValidators || uiComponents) {
       this.uiComponentsGet = {
         ...UI_BASIC_COMPONENTS,
         ...this.uiComponents,
       };
+
+      this._globalVariableService.customValidators = this.customValidators;
+      this._globalVariableService.uiComponents = this.uiComponentsGet;
 
       this._setHostUiClass();
       this._buildForm();
@@ -253,6 +261,16 @@ export class NgDynamicJsonFormComponent
     if (isPlatformServer(this._platformId)) {
       return;
     }
+
+    this._globalVariableService.setup({
+      customComponents: this.customComponents,
+      customValidators: this.customValidators,
+      labelComponents: this.labelComponents,
+      labelTemplates: this.labelTemplates,
+      inputTemplates: this.inputTemplates,
+      layoutComponents: this.layoutComponents,
+      layoutTemplates: this.layoutTemplates,
+    });
 
     this._initHostClass();
     this._setHostUiClass();

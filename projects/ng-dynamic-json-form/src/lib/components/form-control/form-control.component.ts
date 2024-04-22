@@ -1,45 +1,44 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ComponentRef,
+  DestroyRef,
   HostBinding,
+  Injector,
   Input,
-  SimpleChanges,
-  TemplateRef,
+  OnInit,
   Type,
   ViewChild,
   ViewContainerRef,
   forwardRef,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  NgControl,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, Observable, finalize, tap } from 'rxjs';
+import { EMPTY, Observable, filter, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
-import { ControlLayoutDirective } from '../../directives';
 import { FormControlConfig, OptionItem } from '../../models';
-import { UiComponents } from '../../models/ui-components.type';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-} from '../../ng-dynamic-json-form.config';
-import { OptionsDataService } from '../../services';
+import { FormValidationService, OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
+import { GlobalVariableService } from '../../services/global-variable.service';
+import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [CommonModule, ErrorMessageComponent, ControlLayoutDirective],
+  imports: [CommonModule, ContentWrapperComponent],
   templateUrl: './form-control.component.html',
   providers: [
     {
@@ -53,16 +52,25 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
       multi: true,
     },
   ],
+  styles: [':host { display: block }'],
 })
-export class FormControlComponent implements ControlValueAccessor, Validator {
+export class FormControlComponent
+  implements OnInit, AfterViewInit, ControlValueAccessor, Validator
+{
   private _cd = inject(ChangeDetectorRef);
+  private _destroyRef = inject(DestroyRef);
+  private _injector = inject(Injector);
   private _configMappingService = inject(ConfigMappingService);
+  private _formValidationService = inject(FormValidationService);
+  private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
+
+  private _uiComponents = this._globalVariableService.uiComponents;
+  private _hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   private _controlComponentRef?: CustomControlComponent;
   private _patchingValue = false;
   private _pendingValue: any = null;
-  private _viewInitialized = false;
 
   /**To prevent data keep concating */
   private _existingOptions: OptionItem[] = [];
@@ -70,25 +78,20 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
 
-  // TODO: Use injector to get NgControl instance
-  @Input() control?: AbstractControl;
   @Input() data?: FormControlConfig;
-  @Input() uiComponents?: UiComponents;
   @Input() customComponent?: Type<CustomControlComponent>;
-  @Input() layoutComponents?: LayoutComponents;
-  @Input() layoutTemplates?: LayoutTemplates;
-  @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
-  @Input() hideErrorMessage?: boolean;
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
 
-  @ViewChild('errorComponentAnchor', { read: ViewContainerRef })
-  errorComponentAnchor!: ViewContainerRef;
+  @HostBinding('class') hostClass = 'form-control';
 
-  @HostBinding('class.form-control') hostClass = true;
+  layoutComponents = this._globalVariableService.layoutComponents;
+  layoutTemplates = this._globalVariableService.layoutTemplates;
+  inputTemplates = this._globalVariableService.inputTemplates;
 
   loading = false;
+  control?: AbstractControl;
   errorMessages: string[] = [];
   useCustomLoading = false;
 
@@ -114,33 +117,23 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this._controlComponentRef?.validate(control) ?? null;
   }
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    const { hideErrorMessage } = simpleChanges;
-
-    if (hideErrorMessage && this._viewInitialized) {
-      this._controlComponentRef?.['_internal_hideErrors$'].next(
-        this.hideErrorMessage ?? false
-      );
-
-      if (!this.hideErrorMessage) {
-        this.control?.markAsTouched();
-        this.control?.markAsDirty();
-        this._controlComponentRef?.control?.markAsTouched();
-        this._controlComponentRef?.control?.markAsDirty();
-      }
-    }
-  }
-
   ngOnInit(): void {
-    this._fetchOptions();
     this.useCustomLoading =
       !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
+
+    this._fetchOptions();
   }
 
   ngAfterViewInit(): void {
+    const ngControl = this._injector.get(NgControl, null, {
+      optional: true,
+      self: true,
+    });
+
+    this.control = ngControl?.control ?? undefined;
     this._injectInputComponent();
-    this._viewInitialized = true;
-    this._cd.markForCheck();
+    this._getErrorMessages();
+    this._hideErrorMessageEvent();
     this._cd.detectChanges();
   }
 
@@ -157,7 +150,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
-    if (this.hideErrorMessage) {
+    if (this._hideErrorMessage$) {
       return false;
     }
 
@@ -176,9 +169,13 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   }
 
   private _injectInputComponent(): void {
+    if (this.inputTemplates?.[this.data?.customComponent ?? '']) {
+      return;
+    }
+
     const inputComponent =
       this.customComponent ||
-      this.uiComponents?.[this._inputType] ||
+      this._uiComponents?.[this._inputType] ||
       UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
 
@@ -196,14 +193,19 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     componentRef.instance['_internal_init'](this.control);
     componentRef.instance.writeValue(this._pendingValue);
 
-    this._controlComponentRef = componentRef.instance;
-
     if (!this.data?.readonly) {
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
 
       this._onChange(this._pendingValue);
     }
+
+    this._controlComponentRef = componentRef.instance;
+
+    // Ugly fix for UI not reflected after props binding (Don't know the cause yet)
+    window.requestAnimationFrame(() => {
+      this._controlComponentRef?.control?.enable();
+    });
   }
 
   private _fetchOptions(): void {
@@ -230,6 +232,36 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       .pipe(
         tap((x) => this._setOptionsData(x)),
         finalize(() => (this.loading = false))
+      )
+      .subscribe();
+  }
+
+  private _getErrorMessages(): void {
+    this._formValidationService
+      .getErrorMessages$(this.control, this.data?.validators)
+      .pipe(
+        tap((x) => (this.errorMessages = x)),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe();
+  }
+
+  private _hideErrorMessageEvent(): void {
+    if (this._controlComponentRef) {
+      this._controlComponentRef!['_internal_hideErrors$'] =
+        this._hideErrorMessage$;
+    }
+
+    this._hideErrorMessage$
+      .pipe(
+        filter((x) => x === false),
+        tap(() => {
+          this.control?.markAsTouched();
+          this.control?.markAsDirty();
+          this._controlComponentRef?.control?.markAsTouched();
+          this._controlComponentRef?.control?.markAsDirty();
+        }),
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }
