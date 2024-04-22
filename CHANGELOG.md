@@ -1,6 +1,17 @@
 # Change log
 
+## 6.0.1
+
+### Fix
+
+- Class not added correctly.
+
 ## 6.0.0
+
+### Feature
+
+- Refactor HTML structure of form.
+- Add 'formGroupStyles' and 'formGroupClass'.
 
 ## 5.8.3
 
