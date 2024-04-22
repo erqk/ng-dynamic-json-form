@@ -109,7 +109,7 @@ export class FormConditionsService {
       window.requestAnimationFrame(() => {
         // Must escape the "." character so that querySelector will work correctly
         const element = this.hostEl?.querySelector(
-          `div#${controlPath.replaceAll('.', '\\.')}`
+          `#${controlPath.replaceAll('.', '\\.')}`
         );
 
         subscriber.next(!element ? null : (element as HTMLElement));
