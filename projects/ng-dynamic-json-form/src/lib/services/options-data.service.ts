@@ -237,7 +237,7 @@ export class OptionsDataService {
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
 
     if (typeof payload !== 'object') {
-      return '';
+      return src;
     }
 
     if (!urlVariables.length) {
