@@ -120,8 +120,6 @@ export class FormControlComponent
   ngOnInit(): void {
     this.useCustomLoading =
       !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
-
-    this._fetchOptions();
   }
 
   ngAfterViewInit(): void {
@@ -132,6 +130,7 @@ export class FormControlComponent
 
     this.control = ngControl?.control ?? undefined;
     this._injectInputComponent();
+    this._fetchOptions();
     this._getErrorMessages();
     this._hideErrorMessageEvent();
     this._cd.detectChanges();
