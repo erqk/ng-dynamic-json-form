@@ -1,5 +1,11 @@
 # Change log
 
+## 6.0.2
+
+### Fix
+
+- FormControl is not defined when setValue() is called.
+
 ## 6.0.1
 
 ### Fix
