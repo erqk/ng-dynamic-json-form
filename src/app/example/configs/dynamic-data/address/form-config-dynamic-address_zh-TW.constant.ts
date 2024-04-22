@@ -5,7 +5,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
     label: '地址 (動態)',
     formControlName: 'address',
     layout: {
-      contentStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
+      formGroupStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
     },
     children: [
       {

@@ -4,7 +4,6 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
   {
     label: '姓名',
     formControlName: 'name',
-    value: '王小明',
     type: 'text',
     validators: [
       {
@@ -27,7 +26,6 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     label: '年齡',
     description: '使用數字遮罩',
     formControlName: 'age',
-    value: '18',
     type: 'number',
     inputMask: {
       mask: '00',
@@ -52,7 +50,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
   {
     formControlName: 'toggles',
     layout: {
-      contentStyles: 'display: flex; gap: 2.5rem;',
+      formGroupStyles: 'display: flex; gap: 2.5rem;',
     },
     children: [
       {
@@ -90,7 +88,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     label: '地址',
     formControlName: 'address',
     layout: {
-      contentStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
+      formGroupStyles: 'display: grid; grid-template-columns: repeat(3,1fr);',
       contentCollapsible: 'collapse',
     },
     children: [
@@ -127,7 +125,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     label: '信用卡',
     formControlName: 'cards',
     layout: {
-      contentStyles: 'row-gap: 0px',
+      formGroupStyles: 'row-gap: 0px',
     },
     children: [
       {
