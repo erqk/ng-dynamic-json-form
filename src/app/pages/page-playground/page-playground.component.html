@@ -231,12 +231,20 @@
 
 <ng-template #errorMessageToggle>
   <div class="ng-dynamic-json-form ui-basic">
-    <div class="form-control-container">
+    <div class="form-control-container flex flex-wrap gap-3">
       <label class="option-button switch-button justify-between">
         <input type="checkbox" [formControl]="hideErrorMessageControl" />
         <span>hideErrorMessage</span>
         <span class="marker"></span>
       </label>
+      
+      <button
+        class="px-3 py-2 rounded-md"
+        style="background-color: var(--primary-100);"
+        (click)="hideErrorMessageControl.setValue(false)"
+      >
+        Show errors
+      </button>
     </div>
   </div>
 </ng-template>
@@ -246,7 +254,7 @@
     class="flex flex-col p-5 text-sm md:text-base"
     [configs]="(configs$ | async) ?? []"
     [uiComponents]="customUiComponents[currentUi]"
-    [hideErrorMessage]="hideErrorMessageControl.value ?? false"
+    [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
     [formControl]="formControl"
     (formGet)="onFormGet($event)"
   ></ng-dynamic-json-form>

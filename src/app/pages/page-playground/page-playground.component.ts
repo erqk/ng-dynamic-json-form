@@ -97,7 +97,7 @@ export class PagePlaygroundComponent {
     this._playgroundSettingsService.formUi ||
     Object.keys(this.customUiComponents)[0];
 
-  hideErrorMessageControl = new FormControl(false);
+  hideErrorMessageControl = new FormControl<boolean | undefined>(undefined);
 
   headerHeight$ = this._layoutService.headerHeight$;
   windowSize$ = this._layoutService.windowSize$;
