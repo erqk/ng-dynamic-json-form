@@ -1,5 +1,11 @@
 # Change log
 
+## 6.0.4
+
+## Fix
+
+- JSON schema tuple set minItems and maxItems.
+
 ## 6.0.3
 
 ## Fix

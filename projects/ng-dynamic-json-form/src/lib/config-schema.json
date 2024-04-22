@@ -293,7 +293,9 @@
         },
         "slice": {
           "type": "array",
-          "items": [{ "type": "number" }, { "type": "number" }]
+          "items": [{ "type": "number" }, { "type": "number" }],
+          "minItems": 2,
+          "maxItems": 2
         }
       },
       "required": ["src", "method", "data"]
