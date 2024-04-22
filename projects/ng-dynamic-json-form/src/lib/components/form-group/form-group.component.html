@@ -23,6 +23,7 @@
         <ng-container *ngIf="(item | controlTypeByConfig) === 'FormControl'">
           <form-control
             [data]="item"
+            [control]="parentForm.controls[item.formControlName]"
             [formControlName]="item.formControlName"
             [customComponent]="customComponents?.[item.customComponent ?? '']"
           ></form-control>

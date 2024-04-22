@@ -6,14 +6,13 @@ import {
   ComponentRef,
   DestroyRef,
   HostBinding,
-  Injector,
   Input,
   OnInit,
   Type,
   ViewChild,
   ViewContainerRef,
   forwardRef,
-  inject,
+  inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -21,9 +20,8 @@ import {
   ControlValueAccessor,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
-  NgControl,
   ValidationErrors,
-  Validator,
+  Validator
 } from '@angular/forms';
 import { EMPTY, Observable, filter, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
@@ -59,7 +57,6 @@ export class FormControlComponent
 {
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
-  private _injector = inject(Injector);
   private _configMappingService = inject(ConfigMappingService);
   private _formValidationService = inject(FormValidationService);
   private _globalVariableService = inject(GlobalVariableService);
@@ -79,6 +76,7 @@ export class FormControlComponent
   private _onTouched = () => {};
 
   @Input() data?: FormControlConfig;
+  @Input() control?: AbstractControl;
   @Input() customComponent?: Type<CustomControlComponent>;
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
@@ -91,7 +89,6 @@ export class FormControlComponent
   inputTemplates = this._globalVariableService.inputTemplates;
 
   loading = false;
-  control?: AbstractControl;
   errorMessages: string[] = [];
   useCustomLoading = false;
 
@@ -123,12 +120,6 @@ export class FormControlComponent
   }
 
   ngAfterViewInit(): void {
-    const ngControl = this._injector.get(NgControl, null, {
-      optional: true,
-      self: true,
-    });
-
-    this.control = ngControl?.control ?? undefined;
     this._injectInputComponent();
     this._fetchOptions();
     this._getErrorMessages();
