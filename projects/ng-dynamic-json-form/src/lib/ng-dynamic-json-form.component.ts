@@ -361,6 +361,7 @@ export class NgDynamicJsonFormComponent
     this._enableFormDirtyState = false;
 
     this.form = this._formGeneratorService.generateFormGroup(this.configGet);
+    this._optionsDataService.rootForm = this.form;
     this.formGet.emit(this.form);
 
     this._setupListeners();
