@@ -1,5 +1,11 @@
 # Change log
 
+## 6.0.6
+
+### Fix
+
+- Don't render FormTitleComponent if no label is provided.
+
 ## 6.0.5
 
 ### Fix
