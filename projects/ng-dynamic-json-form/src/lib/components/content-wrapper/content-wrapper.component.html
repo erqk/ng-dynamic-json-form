@@ -1,24 +1,26 @@
 <ng-container *ngIf="config && control">
   <!-- Label -->
-  <form-title
-    [label]="config.label"
-    [layout]="config.layout"
-    [extra]="config.extra"
-    [collapsibleEl]="collapsibleEl"
-    [customTemplate]="labelTemplates?.[config.customLabel ?? ''] ?? layoutTemplates?.formTitle"
-    [customComponent]="labelComponents?.[config.customLabel ?? ''] ?? layoutComponents?.formTitle"
-    [state]="collapsibleState"
-    [controlLayout]="{
-      type: 'label',
-      layout: config.layout
-    }"
-    [ngClass]="{
-      required:
-        config.layout?.autoAddRequiredClass === false
-          ? null
-          : (control | isControlRequired)
-    }"
-  ></form-title>
+  <ng-container *ngIf="config.label">
+    <form-title
+      [label]="config.label"
+      [layout]="config.layout"
+      [extra]="config.extra"
+      [collapsibleEl]="collapsibleEl"
+      [customTemplate]="labelTemplates?.[config.customLabel ?? ''] ?? layoutTemplates?.formTitle"
+      [customComponent]="labelComponents?.[config.customLabel ?? ''] ?? layoutComponents?.formTitle"
+      [state]="collapsibleState"
+      [controlLayout]="{
+        type: 'label',
+        layout: config.layout
+      }"
+      [ngClass]="{
+        required:
+          config.layout?.autoAddRequiredClass === false
+            ? null
+            : (control | isControlRequired)
+      }"
+    ></form-title>
+  </ng-container>
 
   <div #collapsibleEl>
     <div
