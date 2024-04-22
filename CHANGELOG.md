@@ -1,5 +1,11 @@
 # Change log
 
+## 6.0.3
+
+## Fix
+
+- Pass FormControl instance directly to remove uncessasary errors.
+
 ## 6.0.2
 
 ### Fix
