@@ -251,11 +251,7 @@ export class OptionsDataService {
   }
 
   /**Get params from the `controlValue` */
-  private _getDynamicParams(
-    config: OptionSource,
-    controlValue: any,
-    form?: UntypedFormGroup
-  ): any {
+  private _getDynamicParams(config: OptionSource, controlValue: any): any {
     const { params, paramsFromControls } = config;
     if (!params) return {};
 
@@ -266,11 +262,11 @@ export class OptionsDataService {
     }, {} as any);
 
     const paramsFromOtherControls =
-      !paramsFromControls || !form
+      !paramsFromControls || !this.rootForm
         ? undefined
         : Object.keys(paramsFromControls).reduce((acc, key) => {
             const paths = getControlAndValuePath(paramsFromControls[key]);
-            const control = form.get(paths.controlPath);
+            const control = this.rootForm!.get(paths.controlPath);
 
             if (control) {
               acc[key] = !paths.valuePath
