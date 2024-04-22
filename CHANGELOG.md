@@ -1,14 +1,20 @@
 # Change log
 
+## 6.0.5
+
+### Fix
+
+- `paramsFromOtherControls` is undefined because no FormGroup is provided.
+
 ## 6.0.4
 
-## Fix
+### Fix
 
 - JSON schema tuple set minItems and maxItems.
 
 ## 6.0.3
 
-## Fix
+### Fix
 
 - Pass FormControl instance directly to remove uncessasary errors.
 
