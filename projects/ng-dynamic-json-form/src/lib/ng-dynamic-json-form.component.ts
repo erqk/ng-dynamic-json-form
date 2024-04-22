@@ -38,7 +38,6 @@ import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
-import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormTitleComponent } from './components/form-title/form-title.component';
 import * as schema from './config-schema.json';
 import { ControlLayoutDirective, HostIdDirective } from './directives';
@@ -76,7 +75,6 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     ControlLayoutDirective,
     FormArrayItemHeaderComponent,
     FormTitleComponent,
-    FormGroupComponent,
     IsControlRequiredPipe,
   ],
   providers: [
