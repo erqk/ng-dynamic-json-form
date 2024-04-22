@@ -145,9 +145,8 @@ export class FormConditionsService {
   ): void {
     if (!Object.keys(boolResults).length) return;
 
-    // TODO: There is no longer using `custom` to indicate custom validator.
-    const configFilterd = validatorConfig.filter(({ name, value }) => {
-      const bool = name === 'custom' ? boolResults[value] : boolResults[name];
+    const configFilterd = validatorConfig.filter(({ name }) => {
+      const bool = boolResults[name];
       // Let `undefined` pass the filter because this validator is not under control of conditions.
       return bool === undefined ? true : bool;
     });
