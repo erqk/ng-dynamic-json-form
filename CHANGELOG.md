@@ -1,5 +1,11 @@
 # Change log
 
+## 6.0.7
+
+### Fix
+
+- Filter out empty or undefined string before adding class and styles.
+
 ## 6.0.6
 
 ### Fix
