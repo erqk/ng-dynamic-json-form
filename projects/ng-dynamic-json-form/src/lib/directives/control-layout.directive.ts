@@ -19,34 +19,36 @@ export class ControlLayoutDirective implements OnChanges {
   @Input() controlLayout?: {
     type?: 'host' | 'label' | 'content' | 'formGroup' | 'description' | 'error';
     layout?: FormControlConfig['layout'];
-    isNested?: boolean;
   };
 
   ngOnChanges(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
     if (!hostEl || !this.controlLayout) return;
 
-    const { type, isNested, layout } = this.controlLayout;
+    const { type, layout } = this.controlLayout;
     const classNames = layout?.[`${type ?? 'host'}Class`] ?? '';
     const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
 
     if (classNames.length > 0) {
-      classNames.split(/\s{1,}/).forEach((name) => {
-        this._renderer2.addClass(hostEl, name);
-      });
+      classNames
+        .split(/\s{1,}/)
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .forEach((name) => {
+          this._renderer2.addClass(hostEl, name);
+        });
     }
 
     if (styles.length > 0) {
-      const styleProperties = styles.split(';').filter(Boolean);
+      const styleProperties = styles
+        .split(';')
+        .map((x) => x.trim())
+        .filter(Boolean);
 
       styleProperties.forEach((style) => {
         const [name, value] = style.split(':').map((x) => x.trim());
         hostEl.style.setProperty(name, value);
       });
     }
-
-    isNested
-      ? this._renderer2.addClass(hostEl, 'is-nested')
-      : this._renderer2.removeClass(hostEl, 'is-nested');
   }
 }
