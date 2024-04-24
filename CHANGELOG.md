@@ -1,5 +1,18 @@
 # Change log
 
+## 7.0.0
+
+### Feat: Use "formControlName" for custom components/templates indexing (BREAKING CHANGE)
+
+- Remove "customLabel" in FormControlConfig
+- Remove "customComponents" in FormControlConfig
+- Remove "customComponents" in provideNgDynamicJsonForm()
+- Change "layoutComponents" to "globalLayoutComponents"
+- Change "layoutTemplates" to "globalLayoutTemplates"
+- Change "inputTemplates" to "customTemplates" in NgDynamicJsonFormComponent
+- Add "errorComponents" to NgDynamicJsonFormComponent
+- Add "errorTemplates" to NgDynamicJsonFormComponent
+
 ## 6.0.7
 
 ### Fix
