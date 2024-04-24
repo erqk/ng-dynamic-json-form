@@ -3,7 +3,7 @@ import { FormControlConfig } from 'ng-dynamic-json-form';
 export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
   {
     label: 'Post tags',
-    description: "Hint: Try select the option that first tag is 'love'",
+    description: "Hint: Try select the option that tag contains 'love'",
     formControlName: 'tagsControl',
     type: 'select',
     layout: {
@@ -33,7 +33,7 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
         src: 'https://dummyjson.com/posts/search',
         method: 'GET',
         params: {
-          q: 'tags.0',
+          q: 'tags.[,includes,"love"]',
         },
         data: {
           labelKey: 'title',

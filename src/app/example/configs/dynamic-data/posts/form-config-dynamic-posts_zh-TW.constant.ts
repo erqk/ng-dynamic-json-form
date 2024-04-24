@@ -3,7 +3,7 @@ import { FormControlConfig } from 'ng-dynamic-json-form';
 export const FORM_CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
   {
     label: '貼文標籤',
-    description: "提示: 選擇第一個標籤為 'love' 的選項",
+    description: "提示: 選擇標籤含有 'love' 的選項",
     formControlName: 'tagsControl',
     type: 'select',
     layout: {
@@ -33,7 +33,7 @@ export const FORM_CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
         src: 'https://dummyjson.com/posts/search',
         method: 'GET',
         params: {
-          q: 'tags.0',
+          q: 'tags.[,includes,"love"]',
         },
         data: {
           labelKey: 'title',

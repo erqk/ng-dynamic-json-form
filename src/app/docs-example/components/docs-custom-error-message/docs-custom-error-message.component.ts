@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   FormValidationService,
@@ -17,7 +22,7 @@ import { LanguageDataService } from 'src/app/features/language/services/language
     <div class="p-3">
       <ng-dynamic-json-form
         [configs]="[$any(configs)[language$.value]]"
-        [layoutComponents]="{
+        [globalLayoutComponents]="{
           errorMessage: customError ? errorComponent : undefined
         }"
         [formControl]="control"
