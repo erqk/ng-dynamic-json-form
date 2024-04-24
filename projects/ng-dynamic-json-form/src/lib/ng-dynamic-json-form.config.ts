@@ -1,28 +1,12 @@
-import { InjectionToken, Provider, TemplateRef, Type } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
-import { ErrorMessageComponent } from './components/error-message/error-message.component';
-import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
-import { FormTitleComponent } from './components/form-title/form-title.component';
-import { CustomComponents, UiComponents } from './models';
+import { InjectionToken, Provider } from '@angular/core';
+import { UiComponents } from './models';
+import { CustomValidators } from './models/custom-validators.type';
+import { GlobalLayoutComponents } from './models/global-layout-components.interface';
 
 interface FormConfig {
-  customValidators?: { [key: string]: ValidatorFn };
-  customComponents?: CustomComponents;
+  customValidators?: CustomValidators;
+  globalLayoutComponents?: GlobalLayoutComponents;
   uiComponents?: UiComponents;
-  layoutComponents?: LayoutComponents;
-}
-
-export interface LayoutComponents {
-  loading?: Type<any>;
-  errorMessage?: Type<ErrorMessageComponent>;
-  formArrayItemHeader?: Type<FormArrayItemHeaderComponent>;
-  formTitle?: Type<FormTitleComponent>;
-}
-export interface LayoutTemplates {
-  loading?: TemplateRef<any>;
-  errorMessage?: TemplateRef<any>;
-  formArrayItemHeader?: TemplateRef<any>;
-  formTitle?: TemplateRef<any>;
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(

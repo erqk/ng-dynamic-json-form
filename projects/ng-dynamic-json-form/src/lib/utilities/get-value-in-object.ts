@@ -89,9 +89,9 @@ function getItemIndex(array: any[], path: string): string {
   const _key = removeQuotes(key);
   const _operator = removeQuotes(operator) as FormControlConditionOperator;
 
-  // Because we have `path` that is a string, but we want number to be used.
-  // So we have to check whether the 'real' type of the value.
-  // If the value is wrapped with quotes, we don't parse it but remove the quotes.
+  // The `path` is already a string, so we have to parse what is the type of the `value`.
+  // If the `value` is wrapped with quotes then we take it as a string, after removing the quotes,
+  // else use JSON.parse() to get the value with correct type. (ex: number)
   const valueParsed = () => {
     if (typeof value !== 'string') return value;
 

@@ -13,8 +13,6 @@ import {
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
-  TemplateRef,
-  Type,
   forwardRef,
   inject,
 } from '@angular/core';
@@ -40,15 +38,17 @@ import { FormControlComponent } from './components/form-control/form-control.com
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormTitleComponent } from './components/form-title/form-title.component';
 import * as schema from './config-schema.json';
-import { ControlLayoutDirective, HostIdDirective } from './directives';
+import { ControlLayoutDirective } from './directives/control-layout.directive';
+import { HostIdDirective } from './directives/host-id.directive';
 import { FormControlConfig, UiComponents } from './models';
 import { CustomComponents } from './models/custom-components.type';
+import { CustomErrorComponents } from './models/custom-error-components.type';
+import { CustomLabelComponents } from './models/custom-label-components.type';
+import { CustomTemplates } from './models/custom-templates.type';
 import { FormLayout } from './models/form-layout.interface';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-  NG_DYNAMIC_JSON_FORM_CONFIG,
-} from './ng-dynamic-json-form.config';
+import { GlobalLayoutComponents } from './models/global-layout-components.interface';
+import { GlobalLayoutTemplates } from './models/global-layout-templates.interface';
+import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
   ControlValueService,
@@ -137,17 +137,15 @@ export class NgDynamicJsonFormComponent
   @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
 
   /**
-   * @description
-   * User defined custom valiators. The `value` is the `key` of target ValidatorFn.
+   * User defined custom valiators. Use `name` as the key to map target ValidatorFn.
    *
    * @example
-   * JSON config:
+   * JSON:
    * {
    *    ...
    *    "validators": [
    *      {
-   *        "name": "custom",
-   *        "value": "firstUppercase"
+   *        "name": "firstUppercase"
    *      }
    *    ]
    * }
@@ -162,14 +160,13 @@ export class NgDynamicJsonFormComponent
     this._providerConfig?.customValidators;
 
   /**
-   * @description
-   * User defined custom components. The `value` is the `key` of target component.
+   * User defined custom components. Use `formControlName` as the key to map target component.
    *
    * @example
-   * JSON config:
+   * JSON:
    * {
    *    ...
-   *    "customComponent": "compA"
+   *    "formControlName": "compA"
    * }
    *
    * components = {
@@ -178,25 +175,28 @@ export class NgDynamicJsonFormComponent
    *    ...
    * }
    */
-  @Input() customComponents?: CustomComponents =
-    this._providerConfig?.customComponents;
+  @Input() customComponents?: CustomComponents;
 
   /**
    * Custom templates for input, suitable for input using only `FormControl`.
    * To use `FormGroup` or `FormArray`, use `CustomControlComponent` instead.
    */
-  @Input() inputTemplates?: { [key: string]: TemplateRef<any> };
+  @Input() customTemplates?: CustomTemplates;
+
+  /**Custom components/templates for error message of specific control,
+   * where formControlName is the key */
+  @Input() errorComponents?: CustomErrorComponents;
+  @Input() errorTemplates?: CustomTemplates;
 
   /**Custom components/templates for global layout UI */
-  @Input() layoutComponents?: LayoutComponents =
-    this._providerConfig?.layoutComponents;
-  @Input() layoutTemplates?: LayoutTemplates;
+  @Input() globalLayoutComponents?: GlobalLayoutComponents =
+    this._providerConfig?.globalLayoutComponents;
+  @Input() globalLayoutTemplates?: GlobalLayoutTemplates;
 
   /**Custom components/templates for label of specific control,
-   * where key needs to match with the "customLabel" in the config
-   */
-  @Input() labelComponents?: { [key: string]: Type<FormTitleComponent> };
-  @Input() labelTemplates?: { [key: string]: TemplateRef<any> };
+   * where formControlName is the key */
+  @Input() labelComponents?: CustomLabelComponents;
+  @Input() labelTemplates?: CustomTemplates;
 
   /**Control the show/hide of all the error messages */
   @Input() hideErrorMessage?: boolean;
@@ -263,13 +263,15 @@ export class NgDynamicJsonFormComponent
     }
 
     this._globalVariableService.setup({
-      customComponents: this.customComponents,
       customValidators: this.customValidators,
+      customComponents: this.customComponents,
+      customTemplates: this.customTemplates,
+      errorComponents: this.errorComponents,
+      errorTemplates: this.errorTemplates,
+      globalLayoutComponents: this.globalLayoutComponents,
+      globalLayoutTemplates: this.globalLayoutTemplates,
       labelComponents: this.labelComponents,
       labelTemplates: this.labelTemplates,
-      inputTemplates: this.inputTemplates,
-      layoutComponents: this.layoutComponents,
-      layoutTemplates: this.layoutTemplates,
     });
 
     this._initHostClass();

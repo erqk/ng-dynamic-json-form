@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding, Input, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
-import { ControlLayoutDirective, HostIdDirective } from '../../directives';
+import { ControlLayoutDirective } from '../../directives/control-layout.directive';
+import { HostIdDirective } from '../../directives/host-id.directive';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import { ControlTypeByConfigPipe } from '../../pipes/control-type-by-config.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { FormArrayComponent } from '../form-array/form-array.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 
@@ -22,7 +22,6 @@ import { FormControlComponent } from '../form-control/form-control.component';
     ControlLayoutDirective,
     FormControlComponent,
     FormArrayComponent,
-    ErrorMessageComponent,
     ControlTypeByConfigPipe,
   ],
   templateUrl: './form-group.component.html',

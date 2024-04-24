@@ -12,7 +12,7 @@ import {
   ViewChild,
   ViewContainerRef,
   forwardRef,
-  inject
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -21,7 +21,7 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
-  Validator
+  Validator,
 } from '@angular/forms';
 import { EMPTY, Observable, filter, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
@@ -84,9 +84,9 @@ export class FormControlComponent
 
   @HostBinding('class') hostClass = 'form-control';
 
-  layoutComponents = this._globalVariableService.layoutComponents;
-  layoutTemplates = this._globalVariableService.layoutTemplates;
-  inputTemplates = this._globalVariableService.inputTemplates;
+  layoutComponents = this._globalVariableService.globalLayoutComponents;
+  layoutTemplates = this._globalVariableService.globalLayoutTemplates;
+  customTemplates = this._globalVariableService.customTemplates;
 
   loading = false;
   errorMessages: string[] = [];
@@ -159,7 +159,7 @@ export class FormControlComponent
   }
 
   private _injectInputComponent(): void {
-    if (this.inputTemplates?.[this.data?.customComponent ?? '']) {
+    if (this.customTemplates?.[this.data?.formControlName ?? '']) {
       return;
     }
 

@@ -6,8 +6,8 @@
       [layout]="config.layout"
       [extra]="config.extra"
       [collapsibleEl]="collapsibleEl"
-      [customTemplate]="labelTemplates?.[config.customLabel ?? ''] ?? layoutTemplates?.formTitle"
-      [customComponent]="labelComponents?.[config.customLabel ?? ''] ?? layoutComponents?.formTitle"
+      [customComponent]="labelComponents?.[config.formControlName] ?? globalLayoutComponents?.formTitle"
+      [customTemplate]="labelTemplates?.[config.formControlName] ?? globalLayoutTemplates?.formTitle"
       [state]="collapsibleState"
       [controlLayout]="{
         type: 'label',
@@ -53,6 +53,8 @@
         [control]="control"
         [validators]="config.validators"
         [layout]="config.layout"
+        [customComponent]="errorComponents?.[config.formControlName] ?? globalLayoutComponents?.errorMessage"
+        [customTemplate]="errorTemplates?.[config.formControlName] ?? globalLayoutTemplates?.errorMessage"
       ></error-message>
     </div>
   </div>

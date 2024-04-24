@@ -1,12 +1,6 @@
-import { Injectable, TemplateRef, Type } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FormTitleComponent } from '../../public-api';
-import { CustomComponents, UiComponents } from '../models';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-} from '../ng-dynamic-json-form.config';
+import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -14,40 +8,51 @@ import {
 export class GlobalVariableService {
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
 
-  customValidators?: { [key: string]: ValidatorFn };
+  customValidators?: NgDynamicJsonFormComponent['customValidators'];
 
-  uiComponents?: UiComponents;
-  customComponents?: CustomComponents;
-  labelComponents?: { [key: string]: Type<FormTitleComponent> };
-  layoutComponents?: LayoutComponents;
+  uiComponents?: NgDynamicJsonFormComponent['uiComponents'];
 
-  inputTemplates?: { [key: string]: TemplateRef<any> };
-  labelTemplates?: { [key: string]: TemplateRef<any> };
-  layoutTemplates?: LayoutTemplates;
+  customComponents?: NgDynamicJsonFormComponent['customComponents'];
+  customTemplates?: NgDynamicJsonFormComponent['customTemplates'];
+
+  errorComponents?: NgDynamicJsonFormComponent['errorComponents'];
+  errorTemplates?: NgDynamicJsonFormComponent['errorTemplates'];
+
+  labelComponents?: NgDynamicJsonFormComponent['labelComponents'];
+  labelTemplates?: NgDynamicJsonFormComponent['labelTemplates'];
+
+  globalLayoutComponents?: NgDynamicJsonFormComponent['globalLayoutComponents'];
+  globalLayoutTemplates?: NgDynamicJsonFormComponent['globalLayoutTemplates'];
 
   setup({
-    customComponents,
     customValidators,
+    customComponents,
+    customTemplates,
+    errorComponents,
+    errorTemplates,
+    globalLayoutComponents,
+    globalLayoutTemplates,
     labelComponents,
-    layoutComponents,
-    inputTemplates,
     labelTemplates,
-    layoutTemplates,
   }: {
-    customComponents: CustomComponents | undefined;
-    customValidators: { [key: string]: ValidatorFn } | undefined;
-    labelComponents: { [key: string]: Type<FormTitleComponent> } | undefined;
-    layoutComponents: LayoutComponents | undefined;
-    inputTemplates: { [key: string]: TemplateRef<any> } | undefined;
-    labelTemplates: { [key: string]: TemplateRef<any> } | undefined;
-    layoutTemplates: LayoutTemplates | undefined;
+    customValidators: NgDynamicJsonFormComponent['customValidators'];
+    customComponents: NgDynamicJsonFormComponent['customComponents'];
+    customTemplates: NgDynamicJsonFormComponent['customTemplates'];
+    errorComponents: NgDynamicJsonFormComponent['errorComponents'];
+    errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
+    globalLayoutComponents: NgDynamicJsonFormComponent['globalLayoutComponents'];
+    globalLayoutTemplates: NgDynamicJsonFormComponent['globalLayoutTemplates'];
+    labelComponents: NgDynamicJsonFormComponent['labelComponents'];
+    labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
   }): void {
-    this.customComponents = customComponents;
     this.customValidators = customValidators;
+    this.customComponents = customComponents;
+    this.customTemplates = customTemplates;
+    this.errorComponents = errorComponents;
+    this.errorTemplates = errorTemplates;
+    this.globalLayoutComponents = globalLayoutComponents;
+    this.globalLayoutTemplates = globalLayoutTemplates;
     this.labelComponents = labelComponents;
-    this.layoutComponents = layoutComponents;
-    this.inputTemplates = inputTemplates;
     this.labelTemplates = labelTemplates;
-    this.layoutTemplates = layoutTemplates;
   }
 }

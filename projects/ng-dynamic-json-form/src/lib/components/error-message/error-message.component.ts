@@ -13,9 +13,11 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
-import { ControlLayoutDirective } from '../../directives';
+import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
+import { GlobalLayoutComponents } from '../../models/global-layout-components.interface';
+import { GlobalLayoutTemplates } from '../../models/global-layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
 import { GlobalVariableService } from '../../services/global-variable.service';
 
@@ -33,6 +35,8 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
   @Input() control?: AbstractControl | null = null;
   @Input() validators?: ValidatorConfig[];
   @Input() layout?: FormLayout;
+  @Input() customComponent?: GlobalLayoutComponents['errorMessage'];
+  @Input() customTemplate?: GlobalLayoutTemplates['errorMessage'];
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;
@@ -40,8 +44,6 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
   @HostBinding('class') hostClass = 'error-message';
 
   errorMessages: string[] = [];
-  layoutComponents = this._internal_globalVariableService.layoutComponents;
-  layoutTemplates = this._internal_globalVariableService.layoutTemplates;
 
   ngOnInit(): void {
     this._internal_formValidationService
@@ -70,13 +72,13 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
   }
 
   private _injectComponent(): void {
-    if (!this.layoutComponents?.errorMessage || !this.componentAnchor) {
+    if (!this.customComponent || !this.componentAnchor) {
       return;
     }
 
     this.componentAnchor.clear();
     const componentRef = this.componentAnchor.createComponent(
-      this.layoutComponents.errorMessage
+      this.customComponent
     );
 
     componentRef.instance.control = this.control;

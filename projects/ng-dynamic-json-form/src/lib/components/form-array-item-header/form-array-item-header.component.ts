@@ -13,10 +13,8 @@ import {
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { tap } from 'rxjs';
 import { FormArrayConfig } from '../../models';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-} from '../../ng-dynamic-json-form.config';
+import { GlobalLayoutComponents } from '../../models/global-layout-components.interface';
+import { GlobalLayoutTemplates } from '../../models/global-layout-templates.interface';
 import { FormGeneratorService } from '../../services';
 
 @Component({
@@ -35,8 +33,8 @@ export class FormArrayItemHeaderComponent {
   @Input() index = 0;
   @Input() config?: FormArrayConfig;
   @Input() formArray?: UntypedFormArray;
-  @Input() layoutComponents?: LayoutComponents;
-  @Input() layoutTemplates?: LayoutTemplates;
+  @Input() layoutComponents?: GlobalLayoutComponents;
+  @Input() layoutTemplates?: GlobalLayoutTemplates;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;

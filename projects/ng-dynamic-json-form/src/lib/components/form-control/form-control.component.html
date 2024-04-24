@@ -8,7 +8,7 @@
   >
     <!-- Input template -->
     <ng-container
-      [ngTemplateOutlet]="inputTemplates?.[data.customComponent ?? ''] ?? null"
+      [ngTemplateOutlet]="customTemplates?.[data.formControlName] ?? null"
       [ngTemplateOutletContext]="{
         control,
         data,

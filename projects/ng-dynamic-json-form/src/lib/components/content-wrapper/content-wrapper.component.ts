@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { ControlLayoutDirective } from '../../directives';
+import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import { IsControlRequiredPipe } from '../../pipes/is-control-required.pipe';
@@ -30,8 +30,10 @@ export class ContentWrapperComponent {
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
   @Input() controlLayoutDisabled = false;
 
+  errorComponents = this._globalVariableService.errorComponents;
+  errorTemplates = this._globalVariableService.errorTemplates;
   labelComponents = this._globalVariableService.labelComponents;
   labelTemplates = this._globalVariableService.labelTemplates;
-  layoutComponents = this._globalVariableService.layoutComponents;
-  layoutTemplates = this._globalVariableService.layoutTemplates;
+  globalLayoutComponents = this._globalVariableService.globalLayoutComponents;
+  globalLayoutTemplates = this._globalVariableService.globalLayoutTemplates;
 }

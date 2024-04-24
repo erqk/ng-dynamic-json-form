@@ -16,10 +16,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
-import {
-  LayoutComponents,
-  LayoutTemplates,
-} from '../../ng-dynamic-json-form.config';
+import { GlobalLayoutComponents } from '../../models/global-layout-components.interface';
+import { GlobalLayoutTemplates } from '../../models/global-layout-templates.interface';
 
 @Component({
   selector: 'form-title',
@@ -39,8 +37,8 @@ export class FormTitleComponent {
   @Input() extra?: FormControlConfig['extra'];
   @Input() collapsibleEl?: HTMLElement;
   @Input() state?: FormLayout['contentCollapsible'];
-  @Input() customComponent?: LayoutComponents['formTitle'];
-  @Input() customTemplate?: LayoutTemplates['formTitle'];
+  @Input() customComponent?: GlobalLayoutComponents['formTitle'];
+  @Input() customTemplate?: GlobalLayoutTemplates['formTitle'];
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
