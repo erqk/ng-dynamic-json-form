@@ -118,6 +118,7 @@
   .config-validation-error {
     color: var(--color-error);
     white-space: pre-wrap;
+    word-break: break-all;
   }
 
   .error-message {

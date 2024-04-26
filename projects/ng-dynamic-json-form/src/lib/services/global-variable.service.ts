@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Injectable()
 export class GlobalVariableService {
@@ -21,6 +22,8 @@ export class GlobalVariableService {
 
   globalLayoutComponents?: NgDynamicJsonFormComponent['globalLayoutComponents'];
   globalLayoutTemplates?: NgDynamicJsonFormComponent['globalLayoutTemplates'];
+
+  rootForm?: UntypedFormGroup;
 
   setup({
     customValidators,

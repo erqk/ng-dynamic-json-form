@@ -6,7 +6,6 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
-  HostListener,
   Injector,
   Input,
   Output,
@@ -30,14 +29,21 @@ import {
   Validator,
   ValidatorFn,
 } from '@angular/forms';
-import Ajv, { ValidateFunction } from 'ajv';
-import { Subject, debounceTime, merge, startWith, takeUntil, tap } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  fromEvent,
+  merge,
+  startWith,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../ui-basic/ui-basic-components.constant';
 import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormTitleComponent } from './components/form-title/form-title.component';
-import * as schema from './config-schema.json';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
 import { FormControlConfig, UiComponents } from './models';
@@ -57,6 +63,7 @@ import {
   OptionsDataService,
 } from './services';
 import { ConfigMappingService } from './services/config-mapping.service';
+import { ConfigValidationService } from './services/config-validation.service';
 import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { GlobalVariableService } from './services/global-variable.service';
@@ -79,6 +86,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     IsControlRequiredPipe,
   ],
   providers: [
+    ConfigValidationService,
     ConfigMappingService,
     ControlValueService,
     FormGeneratorService,
@@ -112,6 +120,7 @@ export class NgDynamicJsonFormComponent
   private _renderer2 = inject(Renderer2);
   private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
+  private _configValidationService = inject(ConfigValidationService);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formConditionsService = inject(FormConditionsService);
   private _formValidationService = inject(FormValidationService);
@@ -124,10 +133,16 @@ export class NgDynamicJsonFormComponent
   private _onChange = (x: any) => {};
 
   private _controlDirective: FormControlDirective | null = null;
-  private _enableFormDirtyState = false;
+
+  /**Whether to allow the form to mark as dirty
+   * @description
+   * If false, then it willl automatically set to pristine
+   * after each value changes.
+   */
+  private _allowFormDirty = false;
 
   configGet: FormControlConfig[] = [];
-  configValidateErrors: string[] = [];
+  configValidationErrors: string[] = [];
 
   form?: UntypedFormGroup;
   uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
@@ -207,29 +222,6 @@ export class NgDynamicJsonFormComponent
 
   @Output() formGet = new EventEmitter();
 
-  @HostListener('focusout', ['$event'])
-  onFocusOut(): void {
-    this._onTouched();
-  }
-
-  @HostListener('focusin', ['$event'])
-  onFocusIn(): void {
-    if (this._enableFormDirtyState) return;
-    this._enableFormDirtyState = true;
-  }
-
-  @HostListener('click', ['$event'])
-  onClick(): void {
-    if (this._enableFormDirtyState) return;
-    this._enableFormDirtyState = true;
-  }
-
-  @HostListener('keydown', ['$event'])
-  onKeydown(): void {
-    if (this._enableFormDirtyState) return;
-    this._enableFormDirtyState = true;
-  }
-
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
       return;
@@ -273,6 +265,7 @@ export class NgDynamicJsonFormComponent
       labelTemplates: this.labelTemplates,
     });
 
+    this._getControlDirective();
     this._initHostClass();
     this._setHostUiClass();
   }
@@ -328,74 +321,41 @@ export class NgDynamicJsonFormComponent
       : this._renderer2.removeClass(hostEl, 'ui-basic');
   }
 
-  private _validateAndGetConfig(): FormControlConfig[] | null {
-    if (!this.configs) return null;
-
-    const data = Array.isArray(this.configs)
-      ? { configs: this.configs }
-      : this.configs;
-
-    const win = window as any;
-    const ajv: Ajv = win.ajv || new Ajv({ allErrors: true });
-    const validate: ValidateFunction<unknown> =
-      win.ngDynamiJsonFormValidateFn || ajv.compile(schema);
-
-    if (!win.ajv) {
-      win.ajv = ajv;
-    }
-
-    if (!win.ngDynamiJsonFormValidateFn) {
-      win.ngDynamiJsonFormValidateFn = validate;
-    }
-
-    try {
-      const parsed = JSON.parse(JSON.stringify(data));
-      const valid = validate(parsed);
-
-      if (!valid) {
-        this.configValidateErrors = [
-          ...(validate.errors ?? []).map((x) => JSON.stringify(x)),
-        ];
-        return null;
-      }
-
-      return (parsed as any)['configs'] ?? null;
-    } catch (err: any) {
-      // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
-      this.configValidateErrors = [
-        JSON.stringify(err, Object.getOwnPropertyNames(err)),
-      ];
-      return null;
-    }
-  }
-
   private _buildForm(): void {
     this._clearListeners();
-    this.configValidateErrors = [];
-    this.configGet = this._validateAndGetConfig() ?? [];
+    this.configValidationErrors = [];
 
-    if (!this.configGet || !this.configGet.length) return;
+    const validationResult = this._configValidationService.validateAndGetConfig(
+      this.configs
+    );
+    if (!validationResult.configs) {
+      this.configValidationErrors = validationResult.configValidationErrors;
+      return;
+    }
 
+    this.configGet = validationResult.configs ?? [];
     this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.configGet;
-    this._enableFormDirtyState = false;
+    this._allowFormDirty = false;
 
     this.form = this._formGeneratorService.generateFormGroup(this.configGet);
-    this._optionsDataService.rootForm = this.form;
     this.formGet.emit(this.form);
 
     this._setupListeners();
   }
 
-  private _setupListeners(): void {
-    if (!this.form) return;
-
-    let markForCheck = false;
-
+  private _getControlDirective(): void {
     this._controlDirective = this._injector.get(NgControl, null, {
       optional: true,
       self: true,
     }) as FormControlDirective;
+  }
+
+  private _setupListeners(): void {
+    if (!this.form) return;
+
+    const host = this._el.nativeElement;
+    const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
     const conditions$ = this._formConditionsService.formConditionsEvent$(
       this.form,
@@ -405,29 +365,24 @@ export class NgDynamicJsonFormComponent
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
       debounceTime(0),
-      tap((x) => {
-        this._onChange(x);
-
-        if (!this._enableFormDirtyState) {
-          // The FormControl of ControlValueAccessor
-          const formControl = this._controlDirective?.form;
-          !formControl?.pristine && formControl?.markAsPristine();
-        }
-
-        // No ControlValueAccessor is used, update the form errors manually
-        if (!this._controlDirective) {
-          this.form?.setErrors(this._formErrors);
-        }
-
-        if (!markForCheck) {
-          this._cd.markForCheck();
-          this._cd.detectChanges();
-          markForCheck = true;
-        }
-      })
+      tap(() => this._onFormValueChanges())
     );
 
-    merge(valueChanges$, conditions$)
+    const onTouched$ = event$('focusout').pipe(
+      take(1),
+      tap(() => this._onTouched())
+    );
+
+    const allowDirtyState$ = merge(
+      event$('focusin'),
+      event$('click'),
+      event$('keydown')
+    ).pipe(
+      take(1),
+      tap(() => (this._allowFormDirty = true))
+    );
+
+    merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
       .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
@@ -436,6 +391,29 @@ export class NgDynamicJsonFormComponent
     this._reset$.next();
     this._formGeneratorService.reset$.next();
     this._optionsDataService.cancelAllRequest();
+  }
+
+  private _onFormValueChanges(): void {
+    let markForCheck = false;
+
+    this._onChange(this.form?.value);
+
+    if (!this._allowFormDirty) {
+      // The FormControl of ControlValueAccessor
+      const formControl = this._controlDirective?.form;
+      !formControl?.pristine && formControl?.markAsPristine();
+    }
+
+    // No ControlValueAccessor is used, update the form errors manually
+    if (!this._controlDirective) {
+      this.form?.setErrors(this._formErrors);
+    }
+
+    if (!markForCheck) {
+      this._cd.markForCheck();
+      this._cd.detectChanges();
+      markForCheck = true;
+    }
   }
 
   private get _formErrors(): ValidationErrors | null {

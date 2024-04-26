@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import {
   EMPTY,
   Observable,
@@ -28,14 +27,14 @@ import {
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { trimObjectByKeys } from '../utilities/trim-object-by-keys';
+import { GlobalVariableService } from './global-variable.service';
 
 @Injectable()
 export class OptionsDataService {
   private _http = inject(HttpClient);
+  private _globalVariableService = inject(GlobalVariableService);
   private _cancelAll$ = new Subject<void>();
   private _requests: { src: string; data: Subject<any>; params?: any }[] = [];
-
-  rootForm?: UntypedFormGroup;
 
   getOptions$(config: FormControlOptions): Observable<OptionItem[]> {
     const { sourceList } = config;
@@ -160,8 +159,9 @@ export class OptionsDataService {
     const { triggerValuePath, debounceTime: _debouceTime = 0 } = config;
     if (!triggerValuePath.trim()) return EMPTY;
 
+    const form = this._globalVariableService.rootForm;
     const paths = getControlAndValuePath(triggerValuePath);
-    const control = this.rootForm?.get(paths.controlPath);
+    const control = form?.get(paths.controlPath);
 
     if (!control) return EMPTY;
 
@@ -255,6 +255,7 @@ export class OptionsDataService {
     const { params, paramsFromControls } = config;
     if (!params) return {};
 
+    const form = this._globalVariableService.rootForm;
     const paramsFromCurrentControl = Object.keys(params).reduce((acc, key) => {
       const valuePath = `${params[key]}`.trim();
       acc[key] = getValueInObject(controlValue, valuePath);
@@ -262,11 +263,11 @@ export class OptionsDataService {
     }, {} as any);
 
     const paramsFromOtherControls =
-      !paramsFromControls || !this.rootForm
+      !paramsFromControls || !form
         ? undefined
         : Object.keys(paramsFromControls).reduce((acc, key) => {
             const paths = getControlAndValuePath(paramsFromControls[key]);
-            const control = this.rootForm!.get(paths.controlPath);
+            const control = form.get(paths.controlPath);
 
             if (control) {
               acc[key] = !paths.valuePath

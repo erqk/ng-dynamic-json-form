@@ -1,16 +1,14 @@
 <ng-container
   *ngIf="!configs || (!$any(configs.length) && !$any(configs).configs)"
 >
-  No config found
+  No configs found
 </ng-container>
 
-<ng-container *ngIf="!!configValidateErrors?.length">
+<ng-container *ngIf="!!configValidationErrors?.length">
   <div class="config-validation-error">
-    <p>Config validation failed. Please check.</p>
-    <ng-container *ngFor="let error of configValidateErrors">
-      <p>
-        {{ error }}
-      </p>
+    <p>Incorrect configs. Please check.</p>
+    <ng-container *ngFor="let error of configValidationErrors">
+      <p>{{ error }}</p>
     </ng-container>
   </div>
 </ng-container>
