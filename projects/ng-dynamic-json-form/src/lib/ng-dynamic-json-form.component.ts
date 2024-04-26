@@ -411,8 +411,10 @@ export class NgDynamicJsonFormComponent
         this._onChange(x);
 
         if (!this._enableFormDirtyState) {
-          const form = this._controlDirective?.form;
-          form?.markAsPristine();
+          // The FormControl of ControlValueAccessor
+          const formControl = this._controlDirective?.form;
+
+          formControl?.markAsPristine();
           this._formGeneratorService.markFormPristine(this.form!);
         }
 
