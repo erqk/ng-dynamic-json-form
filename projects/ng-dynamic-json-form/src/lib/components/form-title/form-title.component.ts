@@ -31,6 +31,7 @@ export class FormTitleComponent {
   private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
+  private _collapsibleElCssText = '';
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
@@ -102,6 +103,7 @@ export class FormTitleComponent {
     }
 
     if (this.collapsible && this.collapsibleEl) {
+      this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
       this._initCollapsibleEl();
       this._listenTransition();
     }
@@ -157,6 +159,13 @@ export class FormTitleComponent {
   }
 
   private _setCollapseStyle(): void {
+    const stylesToRemove = ['border', 'padding', 'margin'];
+
+    stylesToRemove.forEach((style) => {
+      if (!this._collapsibleElCssText.includes(style)) return;
+      this._renderer2.removeStyle(this.collapsibleEl, style);
+    });
+
     this._renderer2.setStyle(this.collapsibleEl, 'overflow', 'hidden');
     this._renderer2.setStyle(this.collapsibleEl, 'height', '0px');
   }
@@ -166,6 +175,11 @@ export class FormTitleComponent {
       ? 0
       : this.collapsibleEl.scrollHeight + 1;
 
+    this._renderer2.setProperty(
+      this.collapsibleEl,
+      'style',
+      this._collapsibleElCssText || null
+    );
     this._renderer2.setStyle(this.collapsibleEl, 'height', `${height}px`);
   }
 

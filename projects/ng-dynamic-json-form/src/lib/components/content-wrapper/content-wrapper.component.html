@@ -22,41 +22,40 @@
     ></form-title>
   </ng-container>
 
-  <div #collapsibleEl>
-    <div
-      [controlLayout]="{
-        type: 'content',
-        layout: config.layout
-      }"
-    >
-      <!-- Description (before) -->
-      <ng-container
-        *ngIf="
-          config.description && config.layout?.descriptionPosition !== 'after'
-        "
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{ data: config }"
-      ></ng-container>
+  <div
+    #collapsibleEl
+    [controlLayout]="{
+      type: 'content',
+      layout: config.layout
+    }"
+  >
+    <!-- Description (before) -->
+    <ng-container
+      *ngIf="
+        config.description && config.layout?.descriptionPosition !== 'after'
+      "
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{ data: config }"
+    ></ng-container>
 
-      <ng-content></ng-content>
+    <ng-content></ng-content>
 
-      <!-- Description (after) -->
-      <ng-container
-        *ngIf="
-          config.description && config.layout?.descriptionPosition === 'after'
-        "
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{ data: config }"
-      ></ng-container>
+    <!-- Description (after) -->
+    <ng-container
+      *ngIf="
+        config.description && config.layout?.descriptionPosition === 'after'
+      "
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{ data: config }"
+    ></ng-container>
 
-      <error-message
-        [control]="control"
-        [validators]="config.validators"
-        [layout]="config.layout"
-        [customComponent]="errorComponents?.[config.formControlName] ?? globalLayoutComponents?.errorMessage"
-        [customTemplate]="errorTemplates?.[config.formControlName] ?? globalLayoutTemplates?.errorMessage"
-      ></error-message>
-    </div>
+    <error-message
+      [control]="control"
+      [validators]="config.validators"
+      [layout]="config.layout"
+      [customComponent]="errorComponents?.[config.formControlName] ?? globalLayoutComponents?.errorMessage"
+      [customTemplate]="errorTemplates?.[config.formControlName] ?? globalLayoutTemplates?.errorMessage"
+    ></error-message>
   </div>
 </ng-container>
 
