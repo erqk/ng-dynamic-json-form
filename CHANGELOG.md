@@ -1,5 +1,11 @@
 # Change log
 
+## 7.0.2
+
+### Chore
+
+- Add class for label container.
+
 ## 7.0.1
 
 ### Fix
