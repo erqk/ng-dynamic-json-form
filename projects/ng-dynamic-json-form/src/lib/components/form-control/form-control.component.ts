@@ -27,7 +27,7 @@ import { EMPTY, Observable, filter, finalize, tap } from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { FormControlConfig, OptionItem } from '../../models';
-import { FormValidationService, OptionsDataService } from '../../services';
+import { OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { GlobalVariableService } from '../../services/global-variable.service';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
@@ -58,7 +58,6 @@ export class FormControlComponent
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
-  private _formValidationService = inject(FormValidationService);
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
 
@@ -89,7 +88,6 @@ export class FormControlComponent
   customTemplates = this._globalVariableService.customTemplates;
 
   loading = false;
-  errorMessages: string[] = [];
   useCustomLoading = false;
 
   writeValue(obj: any): void {
@@ -122,17 +120,8 @@ export class FormControlComponent
   ngAfterViewInit(): void {
     this._injectInputComponent();
     this._fetchOptions();
-    this._getErrorMessages();
     this._hideErrorMessageEvent();
     this._cd.detectChanges();
-  }
-
-  onErrorMessagesGet(e: string[]): void {
-    this.errorMessages = e;
-
-    if (this._controlComponentRef) {
-      this._controlComponentRef.errorMessages = e;
-    }
   }
 
   get showErrors(): boolean {
@@ -192,9 +181,9 @@ export class FormControlComponent
 
     this._controlComponentRef = componentRef.instance;
 
-    // Ugly fix for UI not reflected after props binding (Don't know the cause yet)
+    // Fix for UI not reflected after props binding (Don't know the cause yet)
     window.requestAnimationFrame(() => {
-      this._controlComponentRef?.control?.enable();
+      this._controlComponentRef?.control?.updateValueAndValidity();
     });
   }
 
@@ -222,16 +211,6 @@ export class FormControlComponent
       .pipe(
         tap((x) => this._setOptionsData(x)),
         finalize(() => (this.loading = false))
-      )
-      .subscribe();
-  }
-
-  private _getErrorMessages(): void {
-    this._formValidationService
-      .getErrorMessages$(this.control, this.data?.validators)
-      .pipe(
-        tap((x) => (this.errorMessages = x)),
-        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }
