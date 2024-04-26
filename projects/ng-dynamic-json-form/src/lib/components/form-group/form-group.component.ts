@@ -33,6 +33,7 @@ export class FormGroupComponent {
   @Input() parentId?: string;
   @Input() parentForm = new UntypedFormGroup({});
   @Input() hostLayout?: FormLayout;
+  @Input() collapsibleState?: FormLayout['contentCollapsible'];
 
   @HostBinding('class') hostClass = 'grid-container form-group-container';
 

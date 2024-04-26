@@ -16,5 +16,9 @@
 </ng-container>
 
 <ng-container *ngIf="!!configGet?.length && !!form">
-  <form-group [parentForm]="form" [configs]="configGet"></form-group>
+  <form-group
+    [parentForm]="form"
+    [configs]="configGet"
+    [collapsibleState]="collapsibleState"
+  ></form-group>
 </ng-container>

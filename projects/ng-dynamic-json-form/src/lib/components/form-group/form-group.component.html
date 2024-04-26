@@ -5,6 +5,7 @@
         style="display: block"
         [config]="item"
         [control]="parentForm.controls[item.formControlName]"
+        [collapsibleState]="collapsibleState"
         [hostId]="{
             parentId,
             controlName: item.formControlName,
@@ -35,6 +36,7 @@
             [parentId]="(parentId ? parentId + '.' : '') + item.formControlName"
             [parentForm]="$any(parentForm.controls[item.formControlName])"
             [configs]="item.children"
+            [collapsibleState]="collapsibleState"
             [controlLayout]="{
               type: 'formGroup',
               layout: item.layout
