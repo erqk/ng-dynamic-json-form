@@ -6,6 +6,7 @@ import {
   ComponentRef,
   DestroyRef,
   HostBinding,
+  HostListener,
   Input,
   OnInit,
   Type,
@@ -23,7 +24,14 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { EMPTY, Observable, filter, finalize, tap } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  combineLatest,
+  finalize,
+  startWith,
+  tap,
+} from 'rxjs';
 import { UI_BASIC_COMPONENTS } from '../../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { FormControlConfig, OptionItem } from '../../models';
@@ -83,6 +91,17 @@ export class FormControlComponent
 
   @HostBinding('class') hostClass = 'form-control';
 
+  @HostListener('focusout', ['$event'])
+  onFocusOut(): void {
+    if (this.data?.type === 'select') {
+      // For select component, trigger when it's blurred.
+      // It's implemented on the corresponding component.
+      return;
+    }
+
+    this._onTouched();
+  }
+
   layoutComponents = this._globalVariableService.globalLayoutComponents;
   layoutTemplates = this._globalVariableService.globalLayoutTemplates;
   customTemplates = this._globalVariableService.customTemplates;
@@ -120,7 +139,7 @@ export class FormControlComponent
   ngAfterViewInit(): void {
     this._injectInputComponent();
     this._fetchOptions();
-    this._hideErrorMessageEvent();
+    this._errorMessageEvent();
     this._cd.detectChanges();
   }
 
@@ -169,22 +188,14 @@ export class FormControlComponent
       this.data
     );
 
-    componentRef.instance['_internal_init'](this.control);
     componentRef.instance.writeValue(this._pendingValue);
 
     if (!this.data?.readonly) {
       componentRef.instance.registerOnChange(this._onChange);
       componentRef.instance.registerOnTouched(this._onTouched);
-
-      this._onChange(this._pendingValue);
     }
 
     this._controlComponentRef = componentRef.instance;
-
-    // Fix for UI not reflected after props binding (Don't know the cause yet)
-    window.requestAnimationFrame(() => {
-      this._controlComponentRef?.control?.updateValueAndValidity();
-    });
   }
 
   private _fetchOptions(): void {
@@ -215,20 +226,28 @@ export class FormControlComponent
       .subscribe();
   }
 
-  private _hideErrorMessageEvent(): void {
-    if (this._controlComponentRef) {
-      this._controlComponentRef!['_internal_hideErrors$'] =
-        this._hideErrorMessage$;
-    }
+  private _errorMessageEvent(): void {
+    if (!this._controlComponentRef || !this.control) return;
 
-    this._hideErrorMessage$
+    combineLatest([
+      this._hideErrorMessage$,
+      this.control.valueChanges.pipe(startWith(this.control.value)),
+    ])
       .pipe(
-        filter((x) => x === false),
-        tap(() => {
-          this.control?.markAsTouched();
-          this.control?.markAsDirty();
-          this._controlComponentRef?.control?.markAsTouched();
-          this._controlComponentRef?.control?.markAsDirty();
+        tap(([hideErrors, _]) => {
+          const childControl = this._controlComponentRef!['_internal_control'];
+          const errors = childControl.errors ?? this.control!.errors;
+
+          childControl.setErrors(hideErrors ? null : errors, {
+            emitEvent: false,
+          });
+
+          if (hideErrors === false) {
+            this.control!.markAsTouched();
+            this.control!.markAsDirty();
+            childControl.markAsTouched();
+            childControl.markAsDirty();
+          }
         }),
         takeUntilDestroyed(this._destroyRef)
       )

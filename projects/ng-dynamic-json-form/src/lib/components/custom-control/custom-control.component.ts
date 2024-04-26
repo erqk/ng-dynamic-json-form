@@ -1,21 +1,13 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  ElementRef,
-  inject,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { BehaviorSubject, Subject, fromEvent, merge } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { FormControlConfig, OptionItem } from '../../models';
-import { ControlValueService, FormValidationService } from '../../services';
+import { ControlValueService } from '../../services';
 
 @Component({
   selector: 'custom-control',
@@ -23,21 +15,9 @@ import { ControlValueService, FormValidationService } from '../../services';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  private _internal_cd = inject(ChangeDetectorRef);
-  private _internal_el = inject(ElementRef);
-  private _internal_destroyRef = inject(DestroyRef);
   private _internal_controlValueService = inject(ControlValueService, {
     optional: true,
   });
-
-  private _internal_formValidationService = inject(FormValidationService, {
-    optional: true,
-  });
-
-  private _internal_hideErrors$ = new BehaviorSubject<boolean | undefined>(
-    false
-  );
-  private _internal_init$ = new Subject<void>();
 
   /**Must be override by using instance of `AbstractControl`
    * @example
@@ -47,7 +27,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
    */
   public control?: AbstractControl;
   public data?: FormControlConfig;
-  public errorMessages: string[] = [];
 
   public onTouched = () => {};
 
@@ -56,7 +35,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnChange(fn: any): void {
-    this._internal_control?.valueChanges
+    this._internal_control.valueChanges
       .pipe(map((x) => this._internal_mapData('output', x)))
       .subscribe(fn);
   }
@@ -67,8 +46,8 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   setDisabledState(isDisabled: boolean): void {
     isDisabled
-      ? this._internal_control?.disable()
-      : this._internal_control?.enable();
+      ? this._internal_control.disable()
+      : this._internal_control.enable();
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
@@ -81,68 +60,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     }
 
     this.data.options.data = data;
-  }
-
-  /**
-   * @internal
-   * Init event after component creation. Called by FormControlComponent.
-   */
-  private _internal_init(control?: AbstractControl): void {
-    this._internal_init$.next();
-    this._internal_listenErrors(control);
-    this._internal_onTouchEvent();
-  }
-
-  /**@internal */
-  private _internal_listenErrors(control?: AbstractControl): void {
-    if (!control || !this._internal_formValidationService) return;
-
-    const setErrors$ = merge(
-      this._internal_hideErrors$,
-      control.statusChanges
-    ).pipe(
-      tap(() => {
-        const hideErrors = this._internal_hideErrors$.value;
-        const errors = this._internal_control.errors ?? control.errors;
-
-        this._internal_control.setErrors(hideErrors ? null : errors, {
-          emitEvent: false,
-        });
-        this._internal_cd.markForCheck();
-        this._internal_cd.detectChanges();
-      })
-    );
-
-    setErrors$
-      .pipe(
-        takeUntil(this._internal_init$),
-        takeUntilDestroyed(this._internal_destroyRef)
-      )
-      .subscribe();
-  }
-
-  /**@internal */
-  private _internal_onTouchEvent(): void {
-    if (this.data?.type === 'select') return;
-
-    const host = this._internal_el.nativeElement;
-    const done$ = new Subject<void>();
-    const focusOut$ = fromEvent(host, 'focusout', { passive: true });
-
-    const action = () => {
-      this.onTouched();
-      done$.next();
-      done$.complete();
-      done$.unsubscribe();
-    };
-
-    focusOut$
-      .pipe(
-        tap(() => action()),
-        takeUntil(done$),
-        takeUntilDestroyed(this._internal_destroyRef)
-      )
-      .subscribe();
   }
 
   /**@internal */

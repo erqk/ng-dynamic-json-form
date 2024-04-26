@@ -51,10 +51,17 @@
 
     <error-message
       [control]="control"
+      [touched]="control.touched"
       [validators]="config.validators"
-      [layout]="config.layout"
       [customComponent]="errorComponents?.[config.formControlName] ?? globalLayoutComponents?.errorMessage"
       [customTemplate]="errorTemplates?.[config.formControlName] ?? globalLayoutTemplates?.errorMessage"
+      [controlLayout]="{
+        type: 'error',
+        layout: config.layout
+      }"
+      [ngClass]="{
+        hidden: !showErrors
+      }"
     ></error-message>
   </div>
 </ng-container>

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class GlobalVariableService {
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
 

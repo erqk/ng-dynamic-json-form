@@ -87,6 +87,7 @@ import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.servic
     FormPatcherService,
     NgxMaskConfigInitService,
     OptionsDataService,
+    GlobalVariableService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => NgDynamicJsonFormComponent),
@@ -208,9 +209,7 @@ export class NgDynamicJsonFormComponent
 
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {
-    requestAnimationFrame(() => {
-      this._onTouched();
-    });
+    this._onTouched();
   }
 
   @HostListener('focusin', ['$event'])
@@ -289,8 +288,7 @@ export class NgDynamicJsonFormComponent
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     // This function will always called on next event loop,
     // so we get the errors immediately when this function is called.
-    const errors = this._updateFormErrors();
-    return errors;
+    return this._formErrors;
   }
 
   registerOnValidatorChange?(fn: () => void): void {
@@ -413,13 +411,12 @@ export class NgDynamicJsonFormComponent
         if (!this._enableFormDirtyState) {
           // The FormControl of ControlValueAccessor
           const formControl = this._controlDirective?.form;
-
-          formControl?.markAsPristine();
-          this._formGeneratorService.markFormPristine(this.form!);
+          !formControl?.pristine && formControl?.markAsPristine();
         }
 
+        // No ControlValueAccessor is used, update the form errors manually
         if (!this._controlDirective) {
-          this._updateFormErrors();
+          this.form?.setErrors(this._formErrors);
         }
 
         if (!markForCheck) {
@@ -441,12 +438,10 @@ export class NgDynamicJsonFormComponent
     this._optionsDataService.cancelAllRequest();
   }
 
-  private _updateFormErrors(): ValidationErrors | null {
+  private get _formErrors(): ValidationErrors | null {
     if (!this.form) return null;
 
     const errors = this._formValidationService.getFormErrors(this.form);
-    this.form.setErrors(errors);
-
     return errors;
   }
 }

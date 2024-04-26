@@ -38,5 +38,4 @@ export class FormGroupComponent {
   @HostBinding('class') hostClass = 'grid-container form-group-container';
 
   customComponents = this._globalVariableService.customComponents;
-  errorMessages: string[] = [];
 }

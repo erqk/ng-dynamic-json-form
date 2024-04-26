@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   HostBinding,
   Input,
-  OnInit,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -15,11 +17,9 @@ import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
-import { FormLayout } from '../../models/form-layout.interface';
 import { GlobalLayoutComponents } from '../../models/global-layout-components.interface';
 import { GlobalLayoutTemplates } from '../../models/global-layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
-import { GlobalVariableService } from '../../services/global-variable.service';
 
 @Component({
   selector: 'error-message',
@@ -27,14 +27,14 @@ import { GlobalVariableService } from '../../services/global-variable.service';
   imports: [CommonModule, ControlLayoutDirective],
   templateUrl: './error-message.component.html',
 })
-export class ErrorMessageComponent implements OnInit, AfterViewInit {
-  private _destroyRef = inject(DestroyRef);
+export class ErrorMessageComponent implements OnChanges, AfterViewInit {
+  private _internal_cd = inject(ChangeDetectorRef);
+  private _internal_destroyRef = inject(DestroyRef);
   private _internal_formValidationService = inject(FormValidationService);
-  private _internal_globalVariableService = inject(GlobalVariableService);
 
   @Input() control?: AbstractControl | null = null;
+  @Input() touched = false;
   @Input() validators?: ValidatorConfig[];
-  @Input() layout?: FormLayout;
   @Input() customComponent?: GlobalLayoutComponents['errorMessage'];
   @Input() customTemplate?: GlobalLayoutTemplates['errorMessage'];
 
@@ -45,33 +45,19 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
 
   errorMessages: string[] = [];
 
-  ngOnInit(): void {
-    this._internal_formValidationService
-      .getErrorMessages$(this.control, this.validators)
-      .pipe(
-        tap((x) => (this.errorMessages = x)),
-        takeUntilDestroyed(this._destroyRef)
-      )
-      .subscribe();
+  ngOnChanges(changes: SimpleChanges): void {
+    const { touched } = changes;
+
+    if (touched && touched.currentValue) {
+    }
   }
 
   ngAfterViewInit(): void {
-    this._injectComponent();
+    this._internal_injectComponent();
+    this._internal_getErrorMessages();
   }
 
-  get showErrors(): boolean {
-    const controlTouched = this.control?.touched ?? false;
-    const controlDirty = this.control?.dirty ?? false;
-    const hasErrors = !!this.control?.errors;
-
-    if (this._internal_globalVariableService.hideErrorMessage$.value) {
-      return false;
-    }
-
-    return (controlDirty || controlTouched) && hasErrors;
-  }
-
-  private _injectComponent(): void {
+  private _internal_injectComponent(): void {
     if (!this.customComponent || !this.componentAnchor) {
       return;
     }
@@ -83,5 +69,18 @@ export class ErrorMessageComponent implements OnInit, AfterViewInit {
 
     componentRef.instance.control = this.control;
     componentRef.instance.validators = this.validators;
+  }
+
+  private _internal_getErrorMessages(): void {
+    this._internal_formValidationService
+      .getErrorMessages$(this.control, this.validators)
+      .pipe(
+        tap((x) => {
+          this.errorMessages = x;
+          this._internal_cd.markForCheck();
+        }),
+        takeUntilDestroyed(this._internal_destroyRef)
+      )
+      .subscribe();
   }
 }

@@ -36,4 +36,23 @@ export class ContentWrapperComponent {
   labelTemplates = this._globalVariableService.labelTemplates;
   globalLayoutComponents = this._globalVariableService.globalLayoutComponents;
   globalLayoutTemplates = this._globalVariableService.globalLayoutTemplates;
+
+  get showErrors(): boolean {
+    const controlTouched = this.control?.touched ?? false;
+    const controlDirty = this.control?.dirty ?? false;
+    const hasErrors = !!this.control?.errors;
+
+    // Primary condition
+    if (this.config?.layout?.hideErrorMessage === true) {
+      return false;
+    }
+
+    // Secondary condition
+    if (this._globalVariableService.hideErrorMessage$.value) {
+      return false;
+    }
+
+    // Last resort
+    return (controlDirty || controlTouched) && hasErrors;
+  }
 }
