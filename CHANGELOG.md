@@ -1,5 +1,22 @@
 # Change log
 
+## 7.0.1
+
+### Fix
+
+- `collapsibleState` not pass in correctly
+- Form controls dirty state
+  - Refactor showErrors logic
+  - Reduce nesting level of error message component
+
+### Feature
+
+- Merge collapsible container with content container.
+
+### Chore
+
+- Remove `errorMessages` data for custom template. (There is custom error template to use)
+
 ## 7.0.0
 
 ### Feat: Use "formControlName" for custom components/templates indexing (BREAKING CHANGE)
