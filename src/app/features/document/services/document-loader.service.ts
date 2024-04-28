@@ -1,5 +1,11 @@
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, RendererFactory2, inject } from '@angular/core';
+import {
+  Injectable,
+  PLATFORM_ID,
+  RendererFactory2,
+  inject,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -10,6 +16,7 @@ import {
   of,
   tap,
 } from 'rxjs';
+import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
 
@@ -20,6 +27,10 @@ export class DocumentLoaderService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _platformId = inject(PLATFORM_ID);
+  private _hostOrigin = isPlatformServer(this._platformId)
+    ? inject(HOST_ORIGIN, { optional: true })
+    : window.location.origin;
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
   private _docCache: { path: string; data: string }[] = [];
@@ -27,31 +38,33 @@ export class DocumentLoaderService {
   docLoading$ = new BehaviorSubject<boolean>(false);
 
   loadDoc$(path: string): Observable<string> {
-    const cacheFound = this._docCache.find(
-      (x) => x.path === path && x.data
-    )?.data;
-
-    if (cacheFound) {
-      return of(cacheFound);
-    }
-
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
 
+    const cacheData = this._docCache.find(
+      (x) => x.path === path && x.data
+    )?.data;
+
+    if (cacheData) return of(cacheData);
+
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
-    const timestamp = new Date().getTime();
     const _path = path.endsWith('.md') ? path : `${path}/${filename}`;
 
     this.docLoading$.next(true);
     return this._http
-      .get(`assets/docs/${_path}?q=${timestamp}`, {
+      .get(`${this._hostOrigin}/assets/docs/${_path}`, {
         responseType: 'text',
       })
       .pipe(
-        tap((x) => this._docCache.push({ path, data: x })),
+        tap((x) => {
+          if (isPlatformBrowser(this._platformId)) {
+            if (this._docCache.some((x) => x.path === path)) return;
+            this._docCache.push({ path, data: x });
+          }
+        }),
         finalize(() => this.docLoading$.next(false)),
         catchError((err) => {
           throw err;
@@ -66,7 +79,7 @@ export class DocumentLoaderService {
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
     const version = this._documentVersionService.latestVersion;
-    const indexPath = `assets/docs/${version}/index_${
+    const indexPath = `${this._hostOrigin}/assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
 
@@ -81,6 +94,8 @@ export class DocumentLoaderService {
   }
 
   wrapTable(): void {
+    if (typeof window === 'undefined') return;
+
     const tables = Array.from(
       document.querySelectorAll('table')
     ) as HTMLTableElement[];
@@ -145,8 +160,9 @@ export class DocumentLoaderService {
 
   /**Add tag to indicate the type of file of the current */
   setCodeViewerTag(): void {
-    const viewers = document.querySelectorAll('pre[class^="language-"]');
+    if (typeof window === 'undefined') return;
 
+    const viewers = document.querySelectorAll('pre[class^="language-"]');
     const createTagEl = (parentEl: HTMLElement, text: string) => {
       const el = document.createElement('span');
       el.classList.add('code-tag');

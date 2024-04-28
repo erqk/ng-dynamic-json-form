@@ -3,9 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TransferHttpCacheModule } from '@nguniversal/common';
 import { MarkdownModule } from 'ngx-markdown';
+import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DocumentVersionService } from './features/document/services/document-version.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
@@ -17,6 +20,7 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    TransferHttpCacheModule,
     MarkdownModule.forRoot({
       loader: HttpClient,
       sanitize: SecurityContext.NONE,
@@ -27,10 +31,18 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
   providers: [
     {
       provide: APP_INITIALIZER,
-      deps: [LanguageDataService],
+      deps: [LanguageDataService, DocumentVersionService],
       multi: true,
-      useFactory: (languageDataService: LanguageDataService) => () =>
-        languageDataService.loadLanguageData$(),
+      useFactory:
+        (
+          languageDataService: LanguageDataService,
+          docVersionService: DocumentVersionService
+        ) =>
+        () => {
+          return languageDataService
+            .loadLanguageData$()
+            .pipe(switchMap(() => docVersionService.loadVersions$()));
+        },
     },
   ],
   bootstrap: [AppComponent],

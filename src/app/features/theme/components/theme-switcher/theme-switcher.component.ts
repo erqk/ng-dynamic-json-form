@@ -32,6 +32,8 @@ export class ThemeSwitcherComponent {
   }
 
   switchTheme(theme?: 'light' | 'dark'): void {
+    if (typeof window === 'undefined') return;
+
     const html = document.querySelector('html');
     const nextTheme = this.themes.find((x) => {
       if (theme) return x.key === theme;

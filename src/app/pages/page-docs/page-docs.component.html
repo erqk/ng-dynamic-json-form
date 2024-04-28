@@ -24,7 +24,10 @@
           class="block mb-5"
         ></app-document-version-selector>
 
-        <app-document-index [containerClass]="['gap-y-2']"></app-document-index>
+        <app-document-index
+          [containerClass]="['gap-y-2']"
+          (click)="setSmoothScroll(false)"
+        ></app-document-index>
       </div>
 
       <markdown
@@ -42,7 +45,9 @@
           'h-[calc(100vh-var(--header-height))]'
         ]"
       >
-        <app-side-navigation-pane></app-side-navigation-pane>
+        <app-side-navigation-pane
+          (click)="setSmoothScroll(true)"
+        ></app-side-navigation-pane>
       </div>
     </div>
   </ui-content-wrapper>

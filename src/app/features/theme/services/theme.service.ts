@@ -29,10 +29,12 @@ export class ThemeService {
   theme$ = new BehaviorSubject<string>('auto');
 
   get savedTheme(): string {
+    if (typeof window === 'undefined') return '';
     return window.localStorage.getItem('theme') || '';
   }
 
   set savedTheme(value: string) {
+    if (typeof window === 'undefined') return;
     window.localStorage.setItem('theme', value);
   }
 
@@ -41,6 +43,10 @@ export class ThemeService {
   }
 
   prefersDark$(): Observable<boolean> {
+    if (typeof window === 'undefined') {
+      return of(false);
+    }
+
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const colorSchemeChange$ = fromEvent(prefersDark, 'change', {
       passive: true,
@@ -84,11 +90,5 @@ export class ThemeService {
         document.head.childNodes[0]
       );
     }
-  }
-
-  private get _baseHref(): string {
-    return window.location.origin.indexOf('localhost') > -1
-      ? ''
-      : 'ng-dynamic-json-form';
   }
 }

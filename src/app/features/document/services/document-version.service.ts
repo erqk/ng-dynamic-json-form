@@ -1,41 +1,46 @@
-import { Location } from '@angular/common';
+import { Location, isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentVersionService {
   private _http = inject(HttpClient);
+  private _platformId = inject(PLATFORM_ID);
+  private _hostOrigin = isPlatformServer(this._platformId)
+    ? inject(HOST_ORIGIN, { optional: true })
+    : window.location.origin;
   private _location = inject(Location);
   private _currentVersion$ = new BehaviorSubject<string>('');
 
   versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
 
   loadVersions$(): Observable<string[]> {
-    return this._http
-      .get('assets/docs/index.md', { responseType: 'text' })
-      .pipe(
-        map((x) => {
-          const versions =
-            x.match(/(##)\s(\d\.){1,}(\d*)\s*(\(deprecated\))*/g) ||
-            ([] as string[]);
+    const path = `${this._hostOrigin}/assets/docs/index.md`;
 
-          return versions
-            .filter((x) => x.indexOf('deprecated') < 0)
-            .map((x) => x.split('##')[1].trim());
-        }),
-        tap((x) => {
-          this.versions$.next(
-            x.map((x) => ({
-              label: `v${x}`,
-              value: `v${x.slice(0, 1)}`,
-            }))
-          );
-          this._currentVersion$.next(this.versionFromUrl || this.latestVersion);
-        })
-      );
+    return this._http.get(path, { responseType: 'text' }).pipe(
+      map((x) => {
+        const versions =
+          x.match(/(##)\s(\d\.){1,}(\d*)\s*(\(deprecated\))*/g) ||
+          ([] as string[]);
+
+        return versions
+          .filter((x) => x.indexOf('deprecated') < 0)
+          .map((x) => x.split('##')[1].trim());
+      }),
+      tap((x) => {
+        this.versions$.next(
+          x.map((x) => ({
+            label: `v${x}`,
+            value: `v${x.slice(0, 1)}`,
+          }))
+        );
+        this._currentVersion$.next(this.versionFromUrl || this.latestVersion);
+      })
+    );
   }
 
   firstContentPath$(path: string): Observable<string> {

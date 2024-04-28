@@ -1,11 +1,12 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 import { MarkdownModule } from 'ngx-markdown';
 import { map, switchMap } from 'rxjs/operators';
+import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ExampleContainerComponent } from 'src/app/features/example-container/example-container.component';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
@@ -30,12 +31,16 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
 })
 export class PageHomeComponent {
   private _http = inject(HttpClient);
+  private _platformId = inject(PLATFORM_ID);
+  private _hostOrigin = isPlatformServer(this._platformId)
+    ? inject(HOST_ORIGIN, { optional: true })
+    : window.location.origin;
   private _languageDataService = inject(LanguageDataService);
   private _layoutService = inject(LayoutService);
 
   features$ = this._languageDataService.language$.pipe(
     switchMap((language) =>
-      this._http.get(`assets/i18n/${language}.json`, {
+      this._http.get(`${this._hostOrigin}/assets/i18n/${language}.json`, {
         responseType: 'text',
       })
     ),

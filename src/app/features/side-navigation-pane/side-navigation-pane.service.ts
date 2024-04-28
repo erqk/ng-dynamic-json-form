@@ -12,6 +12,8 @@ export class SideNavigationPaneService {
   navigationLinks$ = new Subject<SideNaviagionPaneLink[]>();
 
   buildNavigationLinks(): void {
+    if (typeof window === 'undefined') return;
+
     const titles = Array.from(document.querySelectorAll('markdown > *')).filter(
       (x) => x.tagName === 'H2' || x.tagName === 'H3'
     );

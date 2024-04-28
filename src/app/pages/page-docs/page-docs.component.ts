@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import {
   EMPTY,
   Observable,
   catchError,
   delay,
-  distinctUntilChanged,
-  filter,
   from,
   map,
   switchMap,
@@ -69,9 +66,6 @@ export class PageDocsComponent {
 
       return filePath;
     }),
-    tap(() => this._setSmoothScroll(true)),
-    distinctUntilChanged(),
-    tap(() => this._setSmoothScroll(false)),
     switchMap((x) => {
       return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDoc$(x);
     }),
@@ -101,7 +95,16 @@ export class PageDocsComponent {
     this.showMobileMenu = value ?? !this.showMobileMenu;
   }
 
+  setSmoothScroll(value: boolean): void {
+    this._renderer2.setStyle(
+      document.querySelector('html'),
+      'scroll-behavior',
+      value ? 'smooth' : null
+    );
+  }
+
   private _scrollToContent(): void {
+    if (typeof window === 'undefined') return;
     if (this._useRouterScroll) return;
 
     const id = this._route.snapshot.fragment?.split('?')[0];
@@ -118,14 +121,6 @@ export class PageDocsComponent {
       if (!target) return;
       scrollToTitle(target, 'auto');
     });
-  }
-
-  private _setSmoothScroll(value: boolean): void {
-    this._renderer2.setStyle(
-      document.querySelector('html'),
-      'scroll-behavior',
-      value ? 'smooth' : null
-    );
   }
 
   private _setLinkRenderer(): void {
