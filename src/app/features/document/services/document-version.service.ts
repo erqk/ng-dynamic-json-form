@@ -1,25 +1,20 @@
-import { Location, isPlatformServer } from '@angular/common';
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
-import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentVersionService {
   private _http = inject(HttpClient);
-  private _platformId = inject(PLATFORM_ID);
-  private _hostOrigin = isPlatformServer(this._platformId)
-    ? inject(HOST_ORIGIN, { optional: true })
-    : window.location.origin;
   private _location = inject(Location);
   private _currentVersion$ = new BehaviorSubject<string>('');
 
   versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
 
   loadVersions$(): Observable<string[]> {
-    const path = `${this._hostOrigin}/assets/docs/index.md`;
+    const path = `assets/docs/index.md`;
 
     return this._http.get(path, { responseType: 'text' }).pipe(
       map((x) => {

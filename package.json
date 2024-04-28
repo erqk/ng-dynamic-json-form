@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4201",
     "watch:lib": "ng build ng-dynamic-json-form --watch",
     "build:lib": "ng build ng-dynamic-json-form",
     "build:docs": "ng build --base-href /ng-dynamic-json-form/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev:ssr": "ng run docs:serve-ssr --port 4201",
-    "serve:ssr": "node dist/docs/server/main.js --port",
+    "serve:ssr": "node dist/docs/server/main.js",
     "build:ssr": "ng build && ng run docs:server",
     "prerender": "ng run docs:prerender"
   },

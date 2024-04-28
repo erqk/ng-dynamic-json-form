@@ -2,12 +2,17 @@ import { APP_INITIALIZER, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
 import { DocumentVersionService } from './features/document/services/document-version.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
@@ -18,7 +23,6 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     AppRoutingModule,
     TransferHttpCacheModule,
     MarkdownModule.forRoot({
@@ -44,6 +48,7 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
             .pipe(switchMap(() => docVersionService.loadVersions$()));
         },
     },
+    provideHttpClient(withInterceptors([absolutePathInterceptor])),
   ],
   bootstrap: [AppComponent],
 })

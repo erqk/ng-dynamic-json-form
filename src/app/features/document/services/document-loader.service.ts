@@ -1,11 +1,5 @@
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import {
-  Injectable,
-  PLATFORM_ID,
-  RendererFactory2,
-  inject,
-} from '@angular/core';
+import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -16,7 +10,6 @@ import {
   of,
   tap,
 } from 'rxjs';
-import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 import { LanguageDataService } from '../../language/services/language-data.service';
 import { DocumentVersionService } from './document-version.service';
 
@@ -27,10 +20,6 @@ export class DocumentLoaderService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
   private _router = inject(Router);
-  private _platformId = inject(PLATFORM_ID);
-  private _hostOrigin = isPlatformServer(this._platformId)
-    ? inject(HOST_ORIGIN, { optional: true })
-    : window.location.origin;
   private _documentVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
   private _docCache: { path: string; data: string }[] = [];
@@ -55,15 +44,11 @@ export class DocumentLoaderService {
 
     this.docLoading$.next(true);
     return this._http
-      .get(`${this._hostOrigin}/assets/docs/${_path}`, {
-        responseType: 'text',
-      })
+      .get(`assets/docs/${_path}`, { responseType: 'text' })
       .pipe(
         tap((x) => {
-          if (isPlatformBrowser(this._platformId)) {
-            if (this._docCache.some((x) => x.path === path)) return;
-            this._docCache.push({ path, data: x });
-          }
+          if (this._docCache.some((x) => x.path === path)) return;
+          this._docCache.push({ path, data: x });
         }),
         finalize(() => this.docLoading$.next(false)),
         catchError((err) => {
@@ -79,7 +64,7 @@ export class DocumentLoaderService {
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
     const version = this._documentVersionService.latestVersion;
-    const indexPath = `${this._hostOrigin}/assets/docs/${version}/index_${
+    const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
 

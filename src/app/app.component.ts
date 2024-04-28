@@ -12,6 +12,7 @@ import { LayoutService } from './core/services/layout.service';
 import { DocsCustomErrorMessageComponent } from './docs-example/components/docs-custom-error-message/docs-custom-error-message.component';
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { DocumentLoaderService } from './features/document/services/document-loader.service';
+import { DocumentVersionService } from './features/document/services/document-version.service';
 import { ExampleContainerComponent } from './features/example-container/example-container.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
 
@@ -24,6 +25,7 @@ export class AppComponent {
   private _injector = inject(Injector, { optional: true });
   private _router = inject(Router);
   private _docLoaderService = inject(DocumentLoaderService);
+  private _docVersionService = inject(DocumentVersionService);
   private _langService = inject(LanguageDataService);
   private _layoutService = inject(LayoutService);
 
@@ -34,8 +36,9 @@ export class AppComponent {
 
   ngOnInit(): void {
     const routeChange$ = this._routeChangeEvent$();
+    const docVersions$ = this._docVersionService.loadVersions$();
 
-    merge(routeChange$).subscribe();
+    merge(routeChange$, docVersions$).subscribe();
     this._registerCustomElements();
   }
 

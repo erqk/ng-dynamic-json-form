@@ -31,16 +31,12 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
 })
 export class PageHomeComponent {
   private _http = inject(HttpClient);
-  private _platformId = inject(PLATFORM_ID);
-  private _hostOrigin = isPlatformServer(this._platformId)
-    ? inject(HOST_ORIGIN, { optional: true })
-    : window.location.origin;
   private _languageDataService = inject(LanguageDataService);
   private _layoutService = inject(LayoutService);
 
   features$ = this._languageDataService.language$.pipe(
     switchMap((language) =>
-      this._http.get(`${this._hostOrigin}/assets/i18n/${language}.json`, {
+      this._http.get(`assets/i18n/${language}.json`, {
         responseType: 'text',
       })
     ),
