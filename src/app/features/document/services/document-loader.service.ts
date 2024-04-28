@@ -20,7 +20,7 @@ export class DocumentLoaderService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
   private _router = inject(Router);
-  private _documentVersionService = inject(DocumentVersionService);
+  private _docVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
   private _docCache: { path: string; data: string }[] = [];
 
@@ -37,14 +37,17 @@ export class DocumentLoaderService {
 
     if (cacheData) return of(cacheData);
 
+    const version =
+      this._docVersionService.currentVersion ||
+      this._docVersionService.latestVersion;
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
-    const _path = path.endsWith('.md') ? path : `${path}/${filename}`;
+    const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
 
     this.docLoading$.next(true);
     return this._http
-      .get(`assets/docs/${_path}`, { responseType: 'text' })
+      .get(`assets/docs/${version}/${filePath}`, { responseType: 'text' })
       .pipe(
         tap((x) => {
           if (this._docCache.some((x) => x.path === path)) return;
@@ -63,7 +66,7 @@ export class DocumentLoaderService {
 
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
-    const version = this._documentVersionService.latestVersion;
+    const version = this._docVersionService.currentVersion;
     const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
@@ -71,7 +74,10 @@ export class DocumentLoaderService {
     return this._http.get(indexPath, { responseType: 'text' }).pipe(
       map((x) => {
         const firstPathFound = x.match(/(\.+\/){1,}.+\.md/)?.[0];
-        const result = firstPathFound?.replace(/(\.*\/){1,}/, 'docs/') ?? '';
+        const relativePath = firstPathFound?.match(/(\.*\/){1,}/)?.[0] || '';
+        const stringToReplace = relativePath + version + '/';
+        const result = firstPathFound?.replace(stringToReplace, 'docs/') ?? '';
+
         return result;
       }),
       catchError(() => this.firstContentPath$(true))
@@ -134,7 +140,7 @@ export class DocumentLoaderService {
     if (!this._router.url.includes('.md')) return;
 
     const currentRoute = this._router.url;
-    const { versionFromUrl, currentVersion } = this._documentVersionService;
+    const { versionFromUrl, currentVersion } = this._docVersionService;
     const { language$, languageFromUrl } = this._languageDataService;
     const newRoute = currentRoute
       .replace(versionFromUrl ?? currentVersion, currentVersion)

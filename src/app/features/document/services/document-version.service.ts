@@ -72,11 +72,16 @@ export class DocumentVersionService {
       .reverse()[1];
   }
 
+  /**
+   * Try to get the version from URL, when it is in the form of:
+   * https://.../v../docs/get-started/...
+   * which the version should beside "docs" and starts with "v"
+   */
   get versionFromUrl(): string | undefined {
     const urls = this._location.path().split('#')[0].split('?')[0].split('/');
-    const docIndex = urls.findIndex((x) => x === 'docs');
-    const version = docIndex > -1 ? urls[docIndex + 1] : undefined;
+    const docStringIndex = urls.findIndex((x) => x === 'docs');
+    const version = urls[docStringIndex - 1];
 
-    return version;
+    return version.startsWith('v') ? version : undefined;
   }
 }
