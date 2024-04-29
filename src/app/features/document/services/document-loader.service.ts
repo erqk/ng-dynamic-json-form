@@ -47,8 +47,23 @@ export class DocumentLoaderService {
 
     this.docLoading$.next(true);
     return this._http
-      .get(`assets/docs/${version}/${filePath}`, { responseType: 'text' })
+      .get(`assets/docs/${version}/${filePath}`, {
+        responseType: 'text',
+        observe: 'response',
+      })
       .pipe(
+        map((x) => {
+          const contentType = x.headers.get('Content-Type') ?? '';
+          const docNotFound = contentType.indexOf('text/markdown') < 0;
+
+          if (docNotFound) {
+            // To let the wildcard route redirection works correctly,
+            // otherwise content after redirection will load into the doc.
+            throw 'Content not found';
+          }
+
+          return x.body ?? '';
+        }),
         tap((x) => {
           if (this._docCache.some((x) => x.path === path)) return;
           this._docCache.push({ path, data: x });
@@ -112,11 +127,13 @@ export class DocumentLoaderService {
       const useRouter = !!prefix && href?.startsWith(prefix);
       const routeClean = this._router.url.split('?')[0].split('#')[0];
 
+      // Anchor
       if (href?.startsWith('#')) {
         return `<a title="${title || text}" [routerLink]
           href="${routeClean}${href}">${text}</a>`;
       }
 
+      // External link
       if (!useRouter) {
         return `<a target="_blank" rel="noreferrer noopener"
           title="${title || text}" href="${href}">${text}</a>`;

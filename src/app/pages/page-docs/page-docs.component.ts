@@ -58,14 +58,7 @@ export class PageDocsComponent {
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
   content$ = this._route.url.pipe(
-    map((x) => {
-      const filePath = x
-        .slice(1)
-        .map(({ path }) => path)
-        .join('/');
-
-      return filePath;
-    }),
+    map((x) => x.map(({ path }) => path).join('/')),
     switchMap((x) => {
       return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDoc$(x);
     }),
@@ -74,7 +67,8 @@ export class PageDocsComponent {
       this._setLinkRenderer();
       this._scrollToContent();
     }),
-    catchError(() => {
+    catchError((err) => {
+      this._reloadDocOnError();
       return EMPTY;
     })
   );
@@ -127,7 +121,7 @@ export class PageDocsComponent {
     this._markdownService.renderer.link =
       this._docLoaderService.markdownLinkRenderFn('', {
         searchValue: version,
-        replaceValue: `docs/${version}`,
+        replaceValue: `docs`,
       });
   }
 
@@ -145,11 +139,6 @@ export class PageDocsComponent {
       this._router.navigateByUrl('/', { skipLocationChange: true })
     );
 
-    exitPage$
-      .pipe(
-        switchMap(() => this._loadFallbackDoc$()),
-        switchMap(() => this._langService.loadLanguageData$())
-      )
-      .subscribe();
+    exitPage$.pipe(switchMap(() => this._loadFallbackDoc$())).subscribe();
   }
 }
