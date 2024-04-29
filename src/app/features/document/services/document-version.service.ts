@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
@@ -8,24 +7,12 @@ import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 })
 export class DocumentVersionService {
   private _http = inject(HttpClient);
-  private _location = inject(Location);
-  private _currentVersion$ = new BehaviorSubject<string>('');
+  private _currentVersion$ = new BehaviorSubject<string>('v5');
 
   versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
 
   loadVersions$(): Observable<string[]> {
-    const path = `assets/docs/index.md`;
-
-    return this._http.get(path, { responseType: 'text' }).pipe(
-      map((x) => {
-        const versions =
-          x.match(/(##)\s(\d\.){1,}(\d*)\s*(\(deprecated\))*/g) ||
-          ([] as string[]);
-
-        return versions
-          .filter((x) => x.indexOf('deprecated') < 0)
-          .map((x) => x.split('##')[1].trim());
-      }),
+    return this._npmPackageVersions$().pipe(
       tap((x) => {
         this.versions$.next(
           x.map((x) => ({
@@ -33,7 +20,6 @@ export class DocumentVersionService {
             value: `v${x.slice(0, 1)}`,
           }))
         );
-        this._currentVersion$.next(this.versionFromUrl || this.latestVersion);
       })
     );
   }
@@ -54,35 +40,29 @@ export class DocumentVersionService {
     return this._currentVersion$.value;
   }
 
-  set currentVersion(value: string) {
-    this._currentVersion$.next(value);
-  }
+  private _npmPackageVersions$(): Observable<string[]> {
+    return this._http
+      .get('https://registry.npmjs.org/ng-dynamic-json-form', {
+        responseType: 'json',
+      })
+      .pipe(
+        map((x: any) => {
+          const versions = x.versions;
+          const versionsDetail = Object.values(versions);
 
-  get latestVersion(): string {
-    return this.versions$.value
-      .map((x) => x.value)
-      .sort()
-      .reverse()[0];
-  }
+          const nonDeprecatedVersions: string[] = versionsDetail
+            .filter((x: any) => !x.deprecated)
+            .map((x: any) => x.version);
 
-  get prevVersion(): string {
-    return this.versions$.value
-      .map((x) => x.value)
-      .sort()
-      .reverse()[1];
-  }
+          const majorVersions = nonDeprecatedVersions.reduce((acc, curr) => {
+            const targetIndex = acc.findIndex((x) => x[0] === curr[0]);
+            if (targetIndex < 0) acc.push(curr);
+            else acc[targetIndex] = curr;
+            return acc;
+          }, [] as string[]);
 
-  /**
-   * Try to get the version from URL, when it is in the form of:
-   * https://.../v../docs/get-started/...
-   * which the version should beside "docs" and starts with "v"
-   */
-  get versionFromUrl(): string | undefined {
-    const urls = this._location.path().split('#')[0].split('?')[0].split('/');
-    const docStringIndex = urls.findIndex((x) => x === 'docs');
-    const version = urls[docStringIndex - 1];
-
-    if (!version) return undefined;
-    return version.startsWith('v') ? version : undefined;
+          return majorVersions;
+        })
+      );
   }
 }

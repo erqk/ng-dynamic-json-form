@@ -37,9 +37,7 @@ export class DocumentLoaderService {
 
     if (cacheData) return of(cacheData);
 
-    const version =
-      this._docVersionService.currentVersion ||
-      this._docVersionService.latestVersion;
+    const version = this._docVersionService.currentVersion;
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
@@ -157,11 +155,11 @@ export class DocumentLoaderService {
     if (!this._router.url.includes('.md')) return;
 
     const currentRoute = this._router.url;
-    const { versionFromUrl, currentVersion } = this._docVersionService;
     const { language$, languageFromUrl } = this._languageDataService;
-    const newRoute = currentRoute
-      .replace(versionFromUrl ?? currentVersion, currentVersion)
-      .replace(`_${languageFromUrl}.md` ?? '', `_${language$.value}.md`);
+    const newRoute = currentRoute.replace(
+      `_${languageFromUrl}.md` ?? '',
+      `_${language$.value}.md`
+    );
 
     this._router.navigateByUrl(newRoute);
   }
