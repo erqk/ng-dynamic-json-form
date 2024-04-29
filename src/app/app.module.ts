@@ -13,6 +13,7 @@ import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
+import { httpCacheInterceptor } from './core/interceptors/http-cache.interceptor';
 import { DocumentVersionService } from './features/document/services/document-version.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
@@ -48,7 +49,9 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
             .pipe(switchMap(() => docVersionService.loadVersions$()));
         },
     },
-    provideHttpClient(withInterceptors([absolutePathInterceptor])),
+    provideHttpClient(
+      withInterceptors([absolutePathInterceptor, httpCacheInterceptor])
+    ),
   ],
   bootstrap: [AppComponent],
 })
