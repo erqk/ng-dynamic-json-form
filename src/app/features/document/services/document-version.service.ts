@@ -7,9 +7,11 @@ import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 })
 export class DocumentVersionService {
   private _http = inject(HttpClient);
-  private _currentVersion$ = new BehaviorSubject<string>('v5');
 
-  versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
+  readonly currentVersion = 'v5';
+  readonly versions$ = new BehaviorSubject<{ label: string; value: string }[]>(
+    []
+  );
 
   loadVersions$(): Observable<string[]> {
     return this._npmPackageVersions$().pipe(
@@ -30,14 +32,6 @@ export class DocumentVersionService {
       map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
       catchError(() => of(''))
     );
-  }
-
-  get currentVersion$(): Observable<string> {
-    return this._currentVersion$.asObservable();
-  }
-
-  get currentVersion(): string {
-    return this._currentVersion$.value;
   }
 
   private _npmPackageVersions$(): Observable<string[]> {

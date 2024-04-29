@@ -31,12 +31,8 @@ export class DocumentIndexComponent {
 
   @Input() containerClass?: string | string[];
 
-  content$ = combineLatest([
-    this._languageDataService.language$,
-    this._docVersionService.currentVersion$,
-  ]).pipe(
-    debounceTime(0),
-    switchMap(([lang, _]) => {
+  content$ = this._languageDataService.language$.pipe(
+    switchMap((lang) => {
       const _lang = this._languageDataService.languageFromUrl ?? lang;
       return this._docLoaderService.loadDoc$(`index_${_lang}.md`);
     }),

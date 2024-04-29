@@ -8,7 +8,7 @@ import { DocumentVersionService } from '../../services/document-version.service'
   standalone: true,
   imports: [CommonModule],
   template: `
-    <select [value]="currentVersion$ | async" (change)="changeVersion($event)">
+    <select [value]="currentVersion" (change)="changeVersion($event)">
       <ng-container *ngFor="let item of versions$ | async">
         <option value="{{ item.value }}">{{ item.label }}</option>
       </ng-container>
@@ -20,7 +20,7 @@ export class DocumentVersionSelectorComponent {
   private _docVersionService = inject(DocumentVersionService);
 
   versions$ = this._docVersionService.versions$;
-  currentVersion$ = this._docVersionService.currentVersion$.pipe(delay(0));
+  currentVersion = this._docVersionService.currentVersion;
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;
