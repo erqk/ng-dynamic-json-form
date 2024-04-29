@@ -7,13 +7,11 @@ import {
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
-import { TransferHttpCacheModule } from '@nguniversal/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
-import { httpCacheInterceptor } from './core/interceptors/http-cache.interceptor';
 import { DocumentVersionService } from './features/document/services/document-version.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/services/language-data.service';
@@ -25,7 +23,6 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    TransferHttpCacheModule,
     MarkdownModule.forRoot({
       loader: HttpClient,
       sanitize: SecurityContext.NONE,
@@ -49,9 +46,7 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
             .pipe(switchMap(() => docVersionService.loadVersions$()));
         },
     },
-    provideHttpClient(
-      withInterceptors([absolutePathInterceptor, httpCacheInterceptor])
-    ),
+    provideHttpClient(withInterceptors([absolutePathInterceptor])),
   ],
   bootstrap: [AppComponent],
 })
