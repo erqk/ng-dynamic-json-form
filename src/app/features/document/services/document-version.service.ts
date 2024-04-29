@@ -82,6 +82,7 @@ export class DocumentVersionService {
     const docStringIndex = urls.findIndex((x) => x === 'docs');
     const version = urls[docStringIndex - 1];
 
+    if (!version) return undefined;
     return version.startsWith('v') ? version : undefined;
   }
 }
