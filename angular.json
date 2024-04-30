@@ -59,7 +59,6 @@
               "vanilla-jsoneditor/themes/jse-theme-dark.css",
               "bootstrap-icons/font/bootstrap-icons.min.css",
               "dist/ng-dynamic-json-form/lib/styles/styles.scss",
-              "src/styles/prism-vsc-dark-plus.css",
               "src/styles/styles.scss"
             ],
             "scripts": [
@@ -164,9 +163,7 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "routes": [
-              "/"
-            ]
+            "routes": ["/"]
           },
           "configurations": {
             "production": {

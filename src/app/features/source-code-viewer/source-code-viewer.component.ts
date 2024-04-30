@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MarkdownModule } from 'ngx-markdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { forkJoin } from 'rxjs';
 import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrapper.component';
@@ -12,7 +11,6 @@ import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrap
   standalone: true,
   imports: [
     CommonModule,
-    MarkdownModule,
     UiContentWrapperComponent,
     CheckboxModule,
     FormsModule,

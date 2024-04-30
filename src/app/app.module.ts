@@ -1,13 +1,8 @@
-import { APP_INITIALIZER, NgModule, SecurityContext } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {
-  HttpClient,
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,10 +18,6 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    MarkdownModule.forRoot({
-      loader: HttpClient,
-      sanitize: SecurityContext.NONE,
-    }),
     HeaderComponent,
     UiLoadingIndicatorComponent,
   ],

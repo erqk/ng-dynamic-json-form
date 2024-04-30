@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import {
   EMPTY,
   Observable,
@@ -29,7 +28,6 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
   standalone: true,
   imports: [
     CommonModule,
-    MarkdownModule,
     UiContentWrapperComponent,
     DocumentRouterLinkDirective,
     DocumentIndexComponent,
@@ -46,7 +44,6 @@ export class PageDocsComponent {
   private _docVersionService = inject(DocumentVersionService);
   private _docLoaderService = inject(DocumentLoaderService);
   private _layoutService = inject(LayoutService);
-  private _markdownService = inject(MarkdownService);
   private _sideNavigationPaneService = inject(SideNavigationPaneService);
   private _langService = inject(LanguageDataService);
 
@@ -67,7 +64,7 @@ export class PageDocsComponent {
       this._setLinkRenderer();
       this._scrollToContent();
     }),
-    catchError((err) => {
+    catchError(() => {
       this._reloadDocOnError();
       return EMPTY;
     })
@@ -118,11 +115,11 @@ export class PageDocsComponent {
 
   private _setLinkRenderer(): void {
     const version = this._docVersionService.currentVersion;
-    this._markdownService.renderer.link =
-      this._docLoaderService.markdownLinkRenderFn('', {
-        searchValue: version,
-        replaceValue: `docs`,
-      });
+    // this._markdownService.renderer.link =
+    //   this._docLoaderService.markdownLinkRenderFn('', {
+    //     searchValue: version,
+    //     replaceValue: `docs`,
+    //   });
   }
 
   private _loadFallbackDoc$(): Observable<any> {

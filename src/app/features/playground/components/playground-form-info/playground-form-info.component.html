@@ -12,10 +12,10 @@
           hidden: selectedTab !== 0
         }"
       >
-        <markdown
+        <!-- <markdown
           class="flex-1 block overflow-hidden"
           [data]="control.value | json | language : 'javascript'"
-        ></markdown>
+        ></markdown> -->
 
         <div class="flex justify-evenly gap-4 mb-2">
           <span
@@ -41,13 +41,13 @@
         </div>
       </div>
 
-      <markdown
+      <!-- <markdown
         class="block h-full overflow-hidden"
         [ngClass]="{
           hidden: selectedTab !== 1
         }"
         [data]="control.errors | json | language : 'javascript'"
-      ></markdown>
+      ></markdown> -->
 
       <div
         class="flex flex-col gap-2 h-full"

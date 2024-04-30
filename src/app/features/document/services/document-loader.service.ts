@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -11,6 +12,7 @@ import {
   tap,
 } from 'rxjs';
 import { LanguageDataService } from '../../language/services/language-data.service';
+import { MarkdownService } from '../../markdown/markdown.service';
 import { DocumentVersionService } from './document-version.service';
 
 @Injectable({
@@ -22,11 +24,12 @@ export class DocumentLoaderService {
   private _router = inject(Router);
   private _docVersionService = inject(DocumentVersionService);
   private _languageDataService = inject(LanguageDataService);
-  private _docCache: { path: string; data: string }[] = [];
+  private _markdownService = inject(MarkdownService);
+  private _docCache: { path: string; data: SafeHtml }[] = [];
 
   docLoading$ = new BehaviorSubject<boolean>(false);
 
-  loadDoc$(path: string): Observable<string> {
+  loadDoc$(path: string): Observable<SafeHtml> {
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
@@ -60,9 +63,10 @@ export class DocumentLoaderService {
             throw 'Content not found';
           }
 
-          return x.body ?? '';
+          return this._markdownService.parse(x.body ?? '');
         }),
         tap((x) => {
+          console.log(x);
           if (this._docCache.some((x) => x.path === path)) return;
           this._docCache.push({ path, data: x });
         }),
@@ -114,41 +118,6 @@ export class DocumentLoaderService {
       this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
       table.remove();
     }
-  }
-
-  markdownLinkRenderFn(
-    routePrefix: string,
-    replaceHref?: { searchValue: string | RegExp; replaceValue: string }
-  ) {
-    return (href: string | null, title: string | null, text: string) => {
-      const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
-      const useRouter = !!prefix && href?.startsWith(prefix);
-      const routeClean = this._router.url.split('?')[0].split('#')[0];
-
-      // Anchor
-      if (href?.startsWith('#')) {
-        return `<a title="${title || text}" [routerLink]
-          href="${routeClean}${href}">${text}</a>`;
-      }
-
-      // External link
-      if (!useRouter) {
-        return `<a target="_blank" rel="noreferrer noopener"
-          title="${title || text}" href="${href}">${text}</a>`;
-      }
-
-      const _href = href
-        ?.substring(prefix.length)
-        .replace(
-          replaceHref?.searchValue || '',
-          replaceHref?.replaceValue || ''
-        );
-
-      const newHref = routePrefix ? `/${routePrefix}/${_href}` : _href;
-
-      return `<a title="${title || text}" [routerLink]
-        href="${newHref}">${text}</a>`;
-    };
   }
 
   updateUrl(): void {
