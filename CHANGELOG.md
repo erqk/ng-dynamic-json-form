@@ -1,5 +1,13 @@
 # Change log
 
+## 7.0.3 (2024-04-30)
+
+[9c601081]: https://github.com/erqk/ng-dynamic-json-form/commit/9c6010813c74986c8668d297b099a30fd133fa1a
+
+| Commit     | Type | Description                               |
+| :--------- | :--- | :---------------------------------------- |
+| [9c601081] | fix  | Keep form pristine until user interaction |
+
 ## 7.0.2
 
 ### Chore
