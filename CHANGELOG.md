@@ -1,5 +1,13 @@
 # Change log
 
+## 7.0.4 (2024-04-30)
+
+[10a1237]: https://github.com/erqk/ng-dynamic-json-form/commit/10a123711cf9c1197cf576e2c073c640742a226b
+
+| Commit    | Type | Description            |
+| :-------- | :--- | :--------------------- |
+| [10a1237] | fix  | Options trigger failed |
+
 ## 7.0.3 (2024-04-30)
 
 [9c601081]: https://github.com/erqk/ng-dynamic-json-form/commit/9c6010813c74986c8668d297b099a30fd133fa1a
