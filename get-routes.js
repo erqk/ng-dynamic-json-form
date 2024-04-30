@@ -14,17 +14,20 @@ fetch(`${docsPath}/index.md`).then(async (res) => {
   const allVersions =
     `${data}`.match(/(##)\s(\d\.){1,}(\d*)\s*(\(deprecated\))*/g) || [];
 
-  const targetVersions = allVersions
-    .filter((x) => x.indexOf("deprecated") < 0)
-    .map((x) => x.split("##")[1].trim()[0]);
+  const targetVersion = allVersions
+    .map((x) => x.split("##")[1].trim()[0])
+    .sort()
+    .reverse()[0];
 
-  const targetIndexPaths = allIndexPaths.filter((x) =>
-    targetVersions.some((ver) => x.indexOf(`/v${ver}/`) > -1)
+  const targetIndexPaths = allIndexPaths.filter(
+    (x) => x.indexOf(`/v${targetVersion}/`) > -1
   );
 
   const routes = await targetIndexPaths.reduce(async (acc, curr) => {
     const req = await fetch(`${docsPath}/${curr.replace(/(\.+\/){1,}/, "")}`);
     const fileList = await req.text();
+    if (!fileList) return acc;
+
     const result = fileList
       .match(/v{1,}.+\.md/g)
       .map((x) => x.replace(/v{1,}\d*\//, ""))
