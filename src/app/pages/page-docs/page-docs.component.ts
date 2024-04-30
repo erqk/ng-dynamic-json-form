@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import {
   EMPTY,
   Observable,
   catchError,
   delay,
-  distinctUntilChanged,
-  filter,
   from,
   map,
   switchMap,
@@ -61,17 +58,7 @@ export class PageDocsComponent {
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
   content$ = this._route.url.pipe(
-    map((x) => {
-      const filePath = x
-        .slice(1)
-        .map(({ path }) => path)
-        .join('/');
-
-      return filePath;
-    }),
-    tap(() => this._setSmoothScroll(true)),
-    distinctUntilChanged(),
-    tap(() => this._setSmoothScroll(false)),
+    map((x) => x.map(({ path }) => path).join('/')),
     switchMap((x) => {
       return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDoc$(x);
     }),
@@ -80,7 +67,7 @@ export class PageDocsComponent {
       this._setLinkRenderer();
       this._scrollToContent();
     }),
-    catchError(() => {
+    catchError((err) => {
       this._reloadDocOnError();
       return EMPTY;
     })
@@ -101,7 +88,16 @@ export class PageDocsComponent {
     this.showMobileMenu = value ?? !this.showMobileMenu;
   }
 
+  setSmoothScroll(value: boolean): void {
+    this._renderer2.setStyle(
+      document.querySelector('html'),
+      'scroll-behavior',
+      value ? 'smooth' : null
+    );
+  }
+
   private _scrollToContent(): void {
+    if (typeof window === 'undefined') return;
     if (this._useRouterScroll) return;
 
     const id = this._route.snapshot.fragment?.split('?')[0];
@@ -120,20 +116,12 @@ export class PageDocsComponent {
     });
   }
 
-  private _setSmoothScroll(value: boolean): void {
-    this._renderer2.setStyle(
-      document.querySelector('html'),
-      'scroll-behavior',
-      value ? 'smooth' : null
-    );
-  }
-
   private _setLinkRenderer(): void {
     const version = this._docVersionService.currentVersion;
     this._markdownService.renderer.link =
       this._docLoaderService.markdownLinkRenderFn('', {
         searchValue: version,
-        replaceValue: `docs/${version}`,
+        replaceValue: `docs`,
       });
   }
 
@@ -151,11 +139,6 @@ export class PageDocsComponent {
       this._router.navigateByUrl('/', { skipLocationChange: true })
     );
 
-    exitPage$
-      .pipe(
-        switchMap(() => this._loadFallbackDoc$()),
-        switchMap(() => this._langService.loadLanguageData$())
-      )
-      .subscribe();
+    exitPage$.pipe(switchMap(() => this._loadFallbackDoc$())).subscribe();
   }
 }

@@ -141,6 +141,8 @@ export class SideNavigationPaneComponent {
   }
 
   private _syncActiveIndexWithScroll(): void {
+    if (typeof window === 'undefined') return;
+
     let lastScrollPosition = 0;
     const highlightVisibleTitle = () => {
       if (this._scrolling) return;
@@ -167,6 +169,8 @@ export class SideNavigationPaneComponent {
   }
 
   private _setActiveIds(): void {
+    if (typeof window === 'undefined') return;
+
     const titles = this._linksFlatten
       .map(({ id }) => document.querySelector(`#${id}`)!)
       .filter((x) => !!x);
@@ -204,6 +208,8 @@ export class SideNavigationPaneComponent {
   }
 
   private _scrollToContent(id?: string, smoothScrolling = true): void {
+    if (typeof window === 'undefined') return;
+    
     const idFromRoute = this._router.parseUrl(this._location.path())
       .queryParams['id'];
 

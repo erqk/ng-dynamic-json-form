@@ -41,6 +41,8 @@ export class DocumentRouterLinkDirective {
   }
 
   private _listenMutation(): void {
+    if (typeof window === 'undefined') return;
+    
     this._mutationObserver = new MutationObserver(() => {
       this._highlightActiveRoute();
     });

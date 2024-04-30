@@ -57,6 +57,8 @@ export class PlaygroundEditorComponent {
   }
 
   private _initEditor(): void {
+    if (typeof window === 'undefined') return;
+
     requestAnimationFrame(() => {
       const host = this._el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;
@@ -79,6 +81,8 @@ export class PlaygroundEditorComponent {
   }
 
   private _darkThemeEvent(): void {
+    if (typeof window === 'undefined') return;
+
     const setDarkTheme = (dark = false) => {
       const host = this._el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;

@@ -1,18 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Output,
-  inject,
-} from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, debounceTime, map, switchMap, tap } from 'rxjs';
+import { combineLatest, debounceTime, map, tap } from 'rxjs';
 import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
 import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
-import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
 
 @Component({
   selector: 'app-playground-template-list',
@@ -33,7 +27,7 @@ export class PlaygroundTemplateListComponent {
 
   nameControl = new FormControl('');
   isEditing = false;
-  currentVersion = this._docVersionService.latestVersion;
+  currentVersion = this._docVersionService.currentVersion;
   showTemplateNameInput = false;
 
   list$ = combineLatest([
@@ -123,6 +117,8 @@ export class PlaygroundTemplateListComponent {
   }
 
   private _selectLastTemplate(): void {
+    if (typeof window === 'undefined') return;
+
     const templateKeys = this._templateDataService.allTemplateKeys;
 
     window.setTimeout(() => {

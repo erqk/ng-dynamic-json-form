@@ -53,6 +53,7 @@ export class HeaderComponent {
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
+    if (typeof window === 'undefined') return;
     this.showBackground = window.scrollY > 0;
   }
 

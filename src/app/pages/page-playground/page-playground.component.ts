@@ -79,7 +79,7 @@ export class PagePlaygroundComponent {
 
   configs: FormControlConfig[] | string = [];
   showEditor = false;
-  currentVersion = this._docVersionService.latestVersion;
+  currentVersion = this._docVersionService.currentVersion;
   mobileTabSelected = 0;
   asSplitSizes = this._playgroundSettingsService.asSplitSizes;
 

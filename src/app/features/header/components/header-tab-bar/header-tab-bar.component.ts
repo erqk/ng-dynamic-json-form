@@ -50,7 +50,7 @@ export class HeaderTabBarComponent {
     this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap((x) => this._setIndicatorStyle()),
+        tap(() => this._setIndicatorStyle()),
         takeUntil(this._onDestroy$)
       )
       .subscribe();
@@ -62,6 +62,8 @@ export class HeaderTabBarComponent {
   }
 
   private _setIndicatorStyle(): void {
+    if (typeof window === 'undefined') return;
+
     requestAnimationFrame(() => {
       const indicator = this._findElement('.indicator');
       const activeTab = this._findElement('a.active');
@@ -89,7 +91,7 @@ export class HeaderTabBarComponent {
 
       activeTab.scrollIntoView({
         inline: 'center',
-        block: 'nearest'
+        block: 'nearest',
       });
 
       this._renderer2.setStyle(indicator, 'opacity', '1');

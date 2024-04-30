@@ -9,9 +9,18 @@ import {
 const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
     loadComponent: () =>
       import('./pages/page-home/page-home.component').then(
         (c) => c.PageHomeComponent
+      ),
+  },
+  {
+    path: 'playground',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/page-playground/page-playground.component').then(
+        (c) => c.PagePlaygroundComponent
       ),
   },
   {
@@ -25,11 +34,8 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'playground',
-    loadComponent: () =>
-      import('./pages/page-playground/page-playground.component').then(
-        (c) => c.PagePlaygroundComponent
-      ),
+    path: '**',
+    redirectTo: '',
   },
 ];
 
@@ -39,6 +45,7 @@ const routes: Routes = [
       scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',
       scrollOffset: [0, 100],
+      initialNavigation: 'enabledBlocking',
     }),
   ],
   exports: [RouterModule],

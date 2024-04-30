@@ -1,7 +1,6 @@
 import { Component, Injector, Type, inject } from '@angular/core';
 import { NgElementConfig, createCustomElement } from '@angular/elements';
 import {
-  ActivatedRoute,
   NavigationEnd,
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
@@ -14,8 +13,8 @@ import { DocsCustomErrorMessageComponent } from './docs-example/components/docs-
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { DocumentLoaderService } from './features/document/services/document-loader.service';
 import { DocumentVersionService } from './features/document/services/document-version.service';
-import { LanguageDataService } from './features/language/services/language-data.service';
 import { ExampleContainerComponent } from './features/example-container/example-container.component';
+import { LanguageDataService } from './features/language/services/language-data.service';
 
 @Component({
   selector: 'app-root',
@@ -23,8 +22,7 @@ import { ExampleContainerComponent } from './features/example-container/example-
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  private _injector = inject(Injector);
-  private _route = inject(ActivatedRoute);
+  private _injector = inject(Injector, { optional: true });
   private _router = inject(Router);
   private _docLoaderService = inject(DocumentLoaderService);
   private _docVersionService = inject(DocumentVersionService);
@@ -45,6 +43,8 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
+    if (typeof window === 'undefined') return;
+
     this._layoutService.updateHeaderHeight();
     this._layoutService.updateWindowSize();
     fromEvent(window, 'resize', { passive: true })
@@ -79,6 +79,10 @@ export class AppComponent {
   }
 
   private _registerCustomElements(): void {
+    if (typeof window === 'undefined' || !this._injector) {
+      return;
+    }
+
     const options: NgElementConfig = {
       injector: this._injector,
     };

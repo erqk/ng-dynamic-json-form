@@ -1,11 +1,12 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 import { MarkdownModule } from 'ngx-markdown';
 import { map, switchMap } from 'rxjs/operators';
+import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ExampleContainerComponent } from 'src/app/features/example-container/example-container.component';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';

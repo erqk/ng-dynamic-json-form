@@ -6,6 +6,7 @@ import {
   catchError,
   combineLatest,
   debounceTime,
+  filter,
   map,
   switchMap,
   tap,
@@ -30,27 +31,25 @@ export class DocumentIndexComponent {
 
   @Input() containerClass?: string | string[];
 
-  content$ = combineLatest([
-    this._languageDataService.language$,
-    this._docVersionService.currentVersion$,
-  ]).pipe(
-    debounceTime(0),
-    switchMap(([lang, version]) => {
+  content$ = this._languageDataService.language$.pipe(
+    switchMap((lang) => {
       const _lang = this._languageDataService.languageFromUrl ?? lang;
-      const _version = version ?? this._docVersionService.latestVersion;
-
-      return this._docLoaderService.loadDoc$(`${_version}/index_${_lang}.md`);
+      return this._docLoaderService.loadDoc$(`index_${_lang}.md`);
     }),
     tap(() => {
       const version = this._docVersionService.currentVersion;
       this._markdownService.renderer.link =
         this._docLoaderService.markdownLinkRenderFn('', {
           searchValue: version,
-          replaceValue: `docs/${version}`,
+          replaceValue: `docs`,
         });
     }),
     map((x) => this._markdownService.parse(x)),
     map((x) => {
+      if (typeof window === 'undefined') {
+        return x;
+      }
+
       const domParser = new DOMParser();
       const html = domParser.parseFromString(x, 'text/html');
       const links = html.querySelectorAll('a');

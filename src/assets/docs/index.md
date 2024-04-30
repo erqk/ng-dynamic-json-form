@@ -1,9 +1,9 @@
-## 5.8.3
+## 5.8.4
 
 - [English](./v5/index_en.md)
 - [繁中](./v5/index_zh-TW.md)
 
-## 4.0.5
+## 4.0.5 (deprecated)
 
 - [English](./v4/index_en.md)
 - [繁中](./v4/index_zh-TW.md)

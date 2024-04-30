@@ -19,21 +19,22 @@ export class LanguageDataService {
 
   loadLanguageData$(lang?: LanguageType): Observable<any> {
     const _lang = lang ?? this.currentLanguage;
-    const timestamp = new Date().getTime();
-    const cache = this._cache.find((x) => x.lang === _lang)?.data;
-    const source$ = !cache
-      ? this._http.get(`assets/i18n/${_lang}.json?q=${timestamp}`, {
-          responseType: 'json',
-        })
-      : of(cache);
+    const source$ = () => {
+      const cacheData = this._cache.find((x) => x.lang === _lang)?.data;
+      return cacheData
+        ? of(cacheData)
+        : this._http.get(`assets/i18n/${_lang}.json`, {
+            responseType: 'json',
+          });
+    };
 
-    return source$.pipe(
+    return source$().pipe(
       tap((x) => {
         if (!x) return;
         this.language$.next(_lang);
         this.i18nContent$.next(x);
         this._cache.push({ lang: _lang, data: x });
-        window.localStorage.setItem('language', _lang);
+        this._userLanguage = _lang;
       })
     );
   }
@@ -52,7 +53,16 @@ export class LanguageDataService {
     return this.languageFromUrl ?? this._userLanguage;
   }
 
+  private set _userLanguage(val: string) {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('language', val);
+  }
+
   private get _userLanguage(): LanguageType {
+    if (typeof window === 'undefined') {
+      return 'en';
+    }
+
     const browserLanguage = window.navigator.language;
     const savedLanguage = window.localStorage.getItem('language');
     const lang = savedLanguage ?? browserLanguage;

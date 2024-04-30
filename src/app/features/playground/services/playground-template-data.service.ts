@@ -78,6 +78,8 @@ export class PlaygroundTemplateDataService {
     key: string,
     data: FormControlConfig[] | { configs?: FormControlConfig[] }
   ) {
+    if (typeof window === 'undefined') return;
+
     const noData =
       !data || (Array.isArray(data) ? !data.length : !data.configs?.length);
     if (noData) return;
@@ -113,6 +115,8 @@ export class PlaygroundTemplateDataService {
     key: string,
     data: FormControlConfig[] | { configs?: FormControlConfig[] } | null
   ) {
+    if (typeof window === 'undefined') return;
+
     const savedData = this._userTemplateSaved;
     const clearData = savedData && data === null;
     const newData = !savedData
@@ -169,6 +173,8 @@ export class PlaygroundTemplateDataService {
       [k in LanguageType]: FormControlConfig[];
     };
   } | null {
+    if (typeof window === 'undefined') return null;
+
     const savedData = window.sessionStorage.getItem(
       this._exampleSavedTemplateKey
     );
@@ -187,6 +193,8 @@ export class PlaygroundTemplateDataService {
   private get _userTemplateSaved(): {
     [key: string]: FormControlConfig[];
   } | null {
+    if (typeof window === 'undefined') return null;
+    
     const savedData = window.localStorage.getItem(this._userSavedTemplateKey);
 
     if (!savedData) {
