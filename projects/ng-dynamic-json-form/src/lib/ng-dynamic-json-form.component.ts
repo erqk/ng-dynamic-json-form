@@ -68,6 +68,7 @@ import { FormPatcherService } from './services/form-patcher.service';
 import { FormValidationService } from './services/form-validation.service';
 import { GlobalVariableService } from './services/global-variable.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
+import { markFormPristine } from './utilities/mark-form-pristine';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -401,7 +402,8 @@ export class NgDynamicJsonFormComponent
     if (!this._allowFormDirty) {
       // The FormControl of ControlValueAccessor
       const formControl = this._controlDirective?.form;
-      !formControl?.pristine && formControl?.markAsPristine();
+      formControl?.markAsPristine();
+      this.form && markFormPristine(this.form);
     }
 
     // No ControlValueAccessor is used, update the form errors manually
