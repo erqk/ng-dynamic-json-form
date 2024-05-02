@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Injector, Type, inject } from '@angular/core';
 import { NgElementConfig, createCustomElement } from '@angular/elements';
 import {
@@ -5,6 +6,7 @@ import {
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
   Router,
+  RouterOutlet,
 } from '@angular/router';
 import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime, delay, tap } from 'rxjs/operators';
@@ -13,11 +15,20 @@ import { DocsCustomErrorMessageComponent } from './docs-example/components/docs-
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { DocsLoaderService } from './features/docs/services/docs-loader.service';
 import { ExampleContainerComponent } from './features/example-container/example-container.component';
+import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/language-data.service';
+import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 import { VersionService } from './features/version/version.service';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeaderComponent,
+    UiLoadingIndicatorComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

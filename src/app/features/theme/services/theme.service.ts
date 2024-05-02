@@ -63,7 +63,7 @@ export class ThemeService {
   setPrimengTheme(): void {
     this._setTheme(
       'primeng-theme',
-      `assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
+      `assets/primeng-theme/${this.currentTheme.key}.css`
     );
   }
 
