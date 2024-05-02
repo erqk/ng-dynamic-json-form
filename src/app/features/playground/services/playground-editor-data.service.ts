@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import { combineLatest, map } from 'rxjs';
 import { Content } from 'vanilla-jsoneditor';
-import { LanguageDataService } from '../../language/services/language-data.service';
+import { LanguageDataService } from '../../language/language-data.service';
 import { PlaygroundTemplateDataService } from './playground-template-data.service';
 
 @Injectable({ providedIn: 'root' })

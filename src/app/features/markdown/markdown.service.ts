@@ -5,14 +5,14 @@ import hljs from 'highlight.js';
 import { Marked } from 'marked';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { markedHighlight } from 'marked-highlight';
-import { DocumentVersionService } from '../document/services/document-version.service';
+import { VersionService } from '../version/version.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarkdownService {
   private _router = inject(Router);
-  private _docVersionService = inject(DocumentVersionService);
+  private _versionService = inject(VersionService);
   private _domSanitizer = inject(DomSanitizer);
   private _marked = new Marked(
     gfmHeadingId(),
@@ -26,7 +26,7 @@ export class MarkdownService {
   );
 
   parse(val: string): SafeHtml {
-    const version = this._docVersionService.currentVersion;
+    const version = this._versionService.currentVersion;
     const renderer = {
       link: this._linkRendererFn('', {
         searchValue: version,

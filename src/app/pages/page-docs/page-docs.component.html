@@ -20,14 +20,12 @@
           'h-[calc(100vh-var(--header-height))]'
         ]"
       >
-        <app-document-version-selector
-          class="block mb-5"
-        ></app-document-version-selector>
+        <app-version-selector class="block mb-5"></app-version-selector>
 
-        <app-document-index
+        <app-side-panel-primary
           [containerClass]="['gap-y-2']"
           (click)="setSmoothScroll(false)"
-        ></app-document-index>
+        ></app-side-panel-primary>
       </div>
 
       <div
@@ -50,9 +48,9 @@
           'h-[calc(100vh-var(--header-height))]'
         ]"
       >
-        <app-side-navigation-pane
+        <app-side-panel-secondary
           (click)="setSmoothScroll(true)"
-        ></app-side-navigation-pane>
+        ></app-side-panel-secondary>
       </div>
     </div>
   </ui-content-wrapper>
@@ -84,12 +82,10 @@
         : 'translate-x-[calc(-100%-1rem)]'
     ]"
   >
-    <app-document-version-selector
-      class="block mb-5"
-    ></app-document-version-selector>
-    <app-document-index
+    <app-version-selector class="block mb-5"></app-version-selector>
+    <app-side-panel-primary
       [containerClass]="['gap-y-6 break-keep whitespace-nowrap']"
-    ></app-document-index>
+    ></app-side-panel-primary>
   </div>
 
   <button

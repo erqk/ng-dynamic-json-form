@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   selector: '[docRouterLink]',
   standalone: true,
 })
-export class DocumentRouterLinkDirective {
+export class DocsRouterLinkDirective {
   private _router = inject(Router);
   private _el = inject(ElementRef);
   private _mutationObserver?: MutationObserver;

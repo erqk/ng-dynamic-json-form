@@ -8,7 +8,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ExampleContainerComponent } from 'src/app/features/example-container/example-container.component';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
-import { LanguageDataService } from '../../features/language/services/language-data.service';
+import { LanguageDataService } from '../../features/language/language-data.service';
 import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({

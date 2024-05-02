@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { debounceTime, map, takeUntil, tap, windowWhen } from 'rxjs/operators';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
 import { LayoutService } from 'src/app/core/services/layout.service';

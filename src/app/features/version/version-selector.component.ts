@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { delay } from 'rxjs/operators';
-import { DocumentVersionService } from '../../services/document-version.service';
+import { VersionService } from './version.service';
 
 @Component({
-  selector: 'app-document-version-selector',
+  selector: 'app-version-selector',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -16,11 +16,11 @@ import { DocumentVersionService } from '../../services/document-version.service'
   `,
   styles: [],
 })
-export class DocumentVersionSelectorComponent {
-  private _docVersionService = inject(DocumentVersionService);
+export class VersionSelectorComponent {
+  private _versionService = inject(VersionService);
 
-  versions$ = this._docVersionService.versions$;
-  currentVersion = this._docVersionService.currentVersion;
+  versions$ = this._versionService.versions$;
+  currentVersion = this._versionService.currentVersion;
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;

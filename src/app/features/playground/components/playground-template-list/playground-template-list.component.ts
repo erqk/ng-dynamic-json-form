@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, debounceTime, map, tap } from 'rxjs';
-import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
+import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-playground-template-list',
@@ -18,7 +18,7 @@ import { PlaygroundTemplateDataService } from '../../services/playground-templat
 export class PlaygroundTemplateListComponent {
   private _langService = inject(LanguageDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
-  private _docVersionService = inject(DocumentVersionService);
+  private _versionService = inject(VersionService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
   private _currentTemplate: PlaygroundConfigItem | null = null;
@@ -27,7 +27,7 @@ export class PlaygroundTemplateListComponent {
 
   nameControl = new FormControl('');
   isEditing = false;
-  currentVersion = this._docVersionService.currentVersion;
+  currentVersion = this._versionService.currentVersion;
   showTemplateNameInput = false;
 
   list$ = combineLatest([

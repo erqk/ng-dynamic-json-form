@@ -11,18 +11,18 @@ import {
   of,
   tap,
 } from 'rxjs';
-import { LanguageDataService } from '../../language/services/language-data.service';
+import { LanguageDataService } from '../../language/language-data.service';
 import { MarkdownService } from '../../markdown/markdown.service';
-import { DocumentVersionService } from './document-version.service';
+import { VersionService } from '../../version/version.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentLoaderService {
+export class DocsLoaderService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
   private _router = inject(Router);
-  private _docVersionService = inject(DocumentVersionService);
+  private _versionService = inject(VersionService);
   private _languageDataService = inject(LanguageDataService);
   private _markdownService = inject(MarkdownService);
   private _docCache: { path: string; data: SafeHtml }[] = [];
@@ -40,7 +40,7 @@ export class DocumentLoaderService {
 
     if (cacheData) return of(cacheData);
 
-    const version = this._docVersionService.currentVersion;
+    const version = this._versionService.currentVersion;
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
@@ -83,7 +83,7 @@ export class DocumentLoaderService {
 
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
-    const version = this._docVersionService.currentVersion;
+    const version = this._versionService.currentVersion;
     const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;

@@ -13,7 +13,7 @@ import {
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { FORM_CONFIG_BASIC_EN } from 'src/app/example/configs/basic/form-config-basic_en.constant';
 import { FORM_CONFIG_BASIC_ZHTW } from 'src/app/example/configs/basic/form-config-basic_zh-TW.constant';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
 
 @Component({
   selector: 'app-docs-custom-error-message',

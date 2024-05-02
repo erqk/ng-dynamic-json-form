@@ -9,7 +9,7 @@ import {
   startWith,
 } from 'rxjs';
 import { LanguageType } from '../../language/language.type';
-import { LanguageDataService } from '../../language/services/language-data.service';
+import { LanguageDataService } from '../../language/language-data.service';
 import { PLAYGROUND_CONFIGS } from '../constants/playground-configs.constant';
 import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
 

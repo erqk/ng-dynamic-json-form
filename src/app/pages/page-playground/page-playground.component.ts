@@ -24,9 +24,8 @@ import { CustomInputGroupComponent } from 'src/app/example/components/custom-inp
 import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
-import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
 import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
 import { PlaygroundTemplateListComponent } from 'src/app/features/playground/components/playground-template-list/playground-template-list.component';
@@ -34,6 +33,7 @@ import { PlaygroundEditorDataService } from 'src/app/features/playground/service
 import { PlaygroundSettingsService } from 'src/app/features/playground/services/playground-settings.service';
 import { PlaygroundTemplateDataService } from 'src/app/features/playground/services/playground-template-data.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
+import { VersionService } from 'src/app/features/version/version.service';
 import { Content } from 'vanilla-jsoneditor';
 
 @Component({
@@ -70,7 +70,7 @@ export class PagePlaygroundComponent {
   private _layoutService = inject(LayoutService);
   private _langService = inject(LanguageDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
-  private _docVersionService = inject(DocumentVersionService);
+  private _versionService = inject(VersionService);
   private _playgroundSettingsService = inject(PlaygroundSettingsService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
@@ -79,7 +79,7 @@ export class PagePlaygroundComponent {
 
   configs: FormControlConfig[] | string = [];
   showEditor = false;
-  currentVersion = this._docVersionService.currentVersion;
+  currentVersion = this._versionService.currentVersion;
   mobileTabSelected = 0;
   asSplitSizes = this._playgroundSettingsService.asSplitSizes;
 

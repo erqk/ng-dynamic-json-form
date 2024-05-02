@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { LanguageType } from '../language.type';
+import { LanguageType } from './language.type';
 
 @Injectable({
   providedIn: 'root',

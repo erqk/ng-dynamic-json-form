@@ -21,7 +21,7 @@ import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { DOCS_CONFIGS_INDEX_EN } from 'src/app/docs-example/configs/index_en';
 import { DOCS_CONFIGS_INDEX_ZHTW } from 'src/app/docs-example/configs/index_zh-TW';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
-import { LanguageDataService } from '../language/services/language-data.service';
+import { LanguageDataService } from '../language/language-data.service';
 import { PlaygroundEditorComponent } from '../playground/components/playground-editor/playground-editor.component';
 
 @Component({

@@ -13,15 +13,15 @@ import {
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
-import { DocumentIndexComponent } from 'src/app/features/document/components/document-index/document-index.component';
-import { DocumentVersionSelectorComponent } from 'src/app/features/document/components/document-version-selector/document-version-selector.component';
-import { DocumentRouterLinkDirective } from 'src/app/features/document/directives/document-router-link.directive';
-import { DocumentLoaderService } from 'src/app/features/document/services/document-loader.service';
-import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
-import { SideNavigationPaneComponent } from 'src/app/features/side-navigation-pane/side-navigation-pane.component';
-import { SideNavigationPaneService } from 'src/app/features/side-navigation-pane/side-navigation-pane.service';
+import { DocsRouterLinkDirective } from 'src/app/features/docs/directives/doc-router-link.directive';
+import { DocsLoaderService } from 'src/app/features/docs/services/docs-loader.service';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { SidePanelPrimaryComponent } from 'src/app/features/side-panel/components/side-panel-primary/side-panel-primary.component';
+import { SidePanelSecondaryComponent } from 'src/app/features/side-panel/components/side-panel-secondary/side-panel-secondary.component';
+import { SidePanelService } from 'src/app/features/side-panel/services/side-panel.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
+import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
+import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-page-docs',
@@ -29,10 +29,10 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
   imports: [
     CommonModule,
     UiContentWrapperComponent,
-    DocumentRouterLinkDirective,
-    DocumentIndexComponent,
-    DocumentVersionSelectorComponent,
-    SideNavigationPaneComponent,
+    DocsRouterLinkDirective,
+    SidePanelPrimaryComponent,
+    VersionSelectorComponent,
+    SidePanelSecondaryComponent,
   ],
   templateUrl: './page-docs.component.html',
   styleUrls: ['./page-docs.component.scss'],
@@ -41,10 +41,10 @@ export class PageDocsComponent {
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
   private _renderer2 = inject(Renderer2);
-  private _docVersionService = inject(DocumentVersionService);
-  private _docLoaderService = inject(DocumentLoaderService);
+  private _docVersionService = inject(VersionService);
+  private _docLoaderService = inject(DocsLoaderService);
   private _layoutService = inject(LayoutService);
-  private _sideNavigationPaneService = inject(SideNavigationPaneService);
+  private _sideNavigationPaneService = inject(SidePanelService);
   private _langService = inject(LanguageDataService);
 
   private _useRouterScroll = false;
@@ -57,7 +57,9 @@ export class PageDocsComponent {
   content$ = this._route.url.pipe(
     map((x) => x.map(({ path }) => path).join('/')),
     switchMap((x) => {
-      return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDocHtml$(x);
+      return !x
+        ? this._loadFallbackDoc$()
+        : this._docLoaderService.loadDocHtml$(x);
     }),
     tap(() => {
       this.toggleMobileMenu(false);

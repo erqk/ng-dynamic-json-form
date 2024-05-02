@@ -1,27 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import {
-  catchError,
-  map,
-  switchMap,
-  tap
-} from 'rxjs';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
-import { DocumentRouterLinkDirective } from '../../directives/document-router-link.directive';
-import { DocumentLoaderService } from '../../services/document-loader.service';
-import { DocumentVersionService } from '../../services/document-version.service';
+import { catchError, switchMap, tap } from 'rxjs';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { DocsRouterLinkDirective } from '../../../docs/directives/doc-router-link.directive';
+import { DocsLoaderService } from '../../../docs/services/docs-loader.service';
+import { VersionService } from '../../../version/version.service';
 
 @Component({
-  selector: 'app-document-index',
+  selector: 'app-side-panel-primary',
   standalone: true,
-  imports: [CommonModule, DocumentRouterLinkDirective],
-  templateUrl: './document-index.component.html',
+  imports: [CommonModule, DocsRouterLinkDirective],
+  templateUrl: './side-panel-primary.component.html',
 })
-export class DocumentIndexComponent {
+export class SidePanelPrimaryComponent {
   private _domSanitizer = inject(DomSanitizer);
-  private _docLoaderService = inject(DocumentLoaderService);
-  private _docVersionService = inject(DocumentVersionService);
+  private _docLoaderService = inject(DocsLoaderService);
+  private _versionService = inject(VersionService);
   private _languageDataService = inject(LanguageDataService);
 
   @Input() containerClass?: string | string[];
@@ -32,7 +27,7 @@ export class DocumentIndexComponent {
       return this._docLoaderService.loadDocHtml$(`index_${_lang}.md`);
     }),
     tap(() => {
-      const version = this._docVersionService.currentVersion;
+      const version = this._versionService.currentVersion;
       // this._markdownService.renderer.link =
       //   this._docLoaderService.markdownLinkRenderFn('', {
       //     searchValue: version,

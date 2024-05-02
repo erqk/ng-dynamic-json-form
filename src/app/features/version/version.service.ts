@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentVersionService {
+export class VersionService {
   private _http = inject(HttpClient);
 
   readonly currentVersion = 'v7';

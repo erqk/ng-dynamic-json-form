@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { SideNaviagionPaneLink } from './side-navigation-pane-link.interface';
+import { SidePanelSecondaryItem } from '../interfaces/side-panel-secondary-item.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SideNavigationPaneService {
+export class SidePanelService {
   h2$ = new BehaviorSubject<Element[]>([]);
   h3$ = new BehaviorSubject<Element[]>([]);
 
-  navigationLinks$ = new Subject<SideNaviagionPaneLink[]>();
+  navigationLinks$ = new Subject<SidePanelSecondaryItem[]>();
 
   buildNavigationLinks(): void {
     if (typeof window === 'undefined') return;
@@ -40,7 +40,7 @@ export class SideNavigationPaneService {
       }
 
       return acc;
-    }, [] as SideNaviagionPaneLink[]);
+    }, [] as SidePanelSecondaryItem[]);
 
     this.navigationLinks$.next(links);
   }

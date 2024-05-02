@@ -7,10 +7,10 @@ import { switchMap } from 'rxjs';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
-import { DocumentVersionService } from './features/document/services/document-version.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
-import { LanguageDataService } from './features/language/services/language-data.service';
+import { LanguageDataService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
+import { VersionService } from './features/version/version.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,17 +24,13 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
   providers: [
     {
       provide: APP_INITIALIZER,
-      deps: [LanguageDataService, DocumentVersionService],
+      deps: [LanguageDataService, VersionService],
       multi: true,
       useFactory:
-        (
-          languageDataService: LanguageDataService,
-          docVersionService: DocumentVersionService
-        ) =>
-        () => {
-          return languageDataService
+        (lang: LanguageDataService, version: VersionService) => () => {
+          return lang
             .loadLanguageData$()
-            .pipe(switchMap(() => docVersionService.loadVersions$()));
+            .pipe(switchMap(() => version.loadVersions$()));
         },
     },
     provideHttpClient(withInterceptors([absolutePathInterceptor])),

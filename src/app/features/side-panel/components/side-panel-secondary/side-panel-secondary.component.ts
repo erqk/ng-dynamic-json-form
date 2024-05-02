@@ -4,12 +4,12 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
-import { UiContentWrapperComponent } from '../ui-content-wrapper/ui-content-wrapper.component';
-import { SideNaviagionPaneLink } from './side-navigation-pane-link.interface';
-import { SideNavigationPaneService } from './side-navigation-pane.service';
+import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
+import { SidePanelSecondaryItem } from '../../interfaces/side-panel-secondary-item.interface';
+import { SidePanelService } from '../../services/side-panel.service';
 
 @Component({
-  selector: 'app-side-navigation-pane',
+  selector: 'app-side-panel-secondary',
   standalone: true,
   imports: [CommonModule, UiContentWrapperComponent],
   template: `
@@ -54,22 +54,22 @@ import { SideNavigationPaneService } from './side-navigation-pane.service';
       </ng-container>
     </ng-template>
   `,
-  styleUrls: ['./side-navigation-pane.component.scss'],
+  styleUrls: ['./side-panel-secondary.component.scss'],
   animations: [FADE_UP_ANIMATION],
 })
-export class SideNavigationPaneComponent {
-  private _sideNavigationPaneService = inject(SideNavigationPaneService);
+export class SidePanelSecondaryComponent {
+  private _sideNavigationPaneService = inject(SidePanelService);
   private _router = inject(Router);
   private _location = inject(Location);
   private _currentLinkIndex = 0;
-  private _linksFlatten: SideNaviagionPaneLink[] = [];
+  private _linksFlatten: SidePanelSecondaryItem[] = [];
   private _scrolling = false;
   private _scrollingTimeout: number = 0;
 
   private readonly _reset$ = new Subject<void>();
   private readonly _onDestroy$ = new Subject<void>();
 
-  links: SideNaviagionPaneLink[] = [];
+  links: SidePanelSecondaryItem[] = [];
   currentActiveId = ['', ''];
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
@@ -84,7 +84,7 @@ export class SideNavigationPaneComponent {
     this._onDestroy$.complete();
   }
 
-  onLinkClick(e: Event, item: SideNaviagionPaneLink): void {
+  onLinkClick(e: Event, item: SidePanelSecondaryItem): void {
     const el = e.target as HTMLElement;
     const newUrl = this._router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
@@ -125,10 +125,10 @@ export class SideNavigationPaneComponent {
       .subscribe();
   }
 
-  private _flattenLinks(links: SideNaviagionPaneLink[]): void {
+  private _flattenLinks(links: SidePanelSecondaryItem[]): void {
     this._linksFlatten = [];
 
-    const flatten = (input: SideNaviagionPaneLink[]) => {
+    const flatten = (input: SidePanelSecondaryItem[]) => {
       for (const item of input) {
         this._linksFlatten.push(item);
         if (!item.children) continue;
@@ -209,7 +209,7 @@ export class SideNavigationPaneComponent {
 
   private _scrollToContent(id?: string, smoothScrolling = true): void {
     if (typeof window === 'undefined') return;
-    
+
     const idFromRoute = this._router.parseUrl(this._location.path())
       .queryParams['id'];
 

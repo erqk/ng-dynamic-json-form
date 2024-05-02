@@ -5,7 +5,7 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { HOST_ORIGIN } from 'src/app/core/injection-tokens/x-forwared-host.token';
+import { HOST_ORIGIN } from 'src/app/core/injection-tokens/host-origin.token';
 import { AppServerModule } from './src/main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
