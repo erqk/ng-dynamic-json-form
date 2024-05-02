@@ -57,7 +57,7 @@ export class PageDocsComponent {
   content$ = this._route.url.pipe(
     map((x) => x.map(({ path }) => path).join('/')),
     switchMap((x) => {
-      return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDoc$(x);
+      return !x ? this._loadFallbackDoc$() : this._docLoaderService.loadDocHtml$(x);
     }),
     tap(() => {
       this.toggleMobileMenu(false);

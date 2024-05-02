@@ -1,4 +1,4 @@
-import { FormControlConfig } from 'projects/ng-dynamic-json-form/src/public-api';
+import { FormControlConfig } from "ng-dynamic-json-form";
 
 export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
   {

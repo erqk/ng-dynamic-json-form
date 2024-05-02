@@ -29,7 +29,7 @@ export class DocumentLoaderService {
 
   docLoading$ = new BehaviorSubject<boolean>(false);
 
-  loadDoc$(path: string): Observable<SafeHtml> {
+  loadDocHtml$(path: string): Observable<SafeHtml> {
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }

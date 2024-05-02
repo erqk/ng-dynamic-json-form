@@ -1,4 +1,4 @@
-import { FormControlConfig } from 'projects/ng-dynamic-json-form/src/public-api';
+import { FormControlConfig } from 'ng-dynamic-json-form';
 import { FORM_CONFIG_BASIC_EN } from '../../basic/form-config-basic_en.constant';
 
 const target = (name: string) =>

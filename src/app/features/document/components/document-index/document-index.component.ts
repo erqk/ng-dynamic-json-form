@@ -29,7 +29,7 @@ export class DocumentIndexComponent {
   content$ = this._languageDataService.language$.pipe(
     switchMap((lang) => {
       const _lang = this._languageDataService.languageFromUrl ?? lang;
-      return this._docLoaderService.loadDoc$(`index_${_lang}.md`);
+      return this._docLoaderService.loadDocHtml$(`index_${_lang}.md`);
     }),
     tap(() => {
       const version = this._docVersionService.currentVersion;

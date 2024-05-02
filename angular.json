@@ -1,25 +1,25 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "",
   "projects": {
     "ng-dynamic-json-form": {
       "projectType": "library",
-      "root": "projects/ng-dynamic-json-form",
-      "sourceRoot": "projects/ng-dynamic-json-form/src",
+      "root": "lib",
+      "sourceRoot": "lib/src",
       "prefix": "",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/ng-dynamic-json-form/ng-package.json"
+            "project": "lib/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-dynamic-json-form/tsconfig.lib.prod.json"
+              "tsConfig": "lib/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ng-dynamic-json-form/tsconfig.lib.json"
+              "tsConfig": "lib/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,9 +27,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/ng-dynamic-json-form/tsconfig.spec.json",
+            "tsConfig": "ng-dynamic-json-form/tsconfig.spec.json",
             "polyfills": ["zone.js", "zone.js/testing"],
-            "karmaConfig": "projects/ng-dynamic-json-form/karma.conf.js"
+            "karmaConfig": "ng-dynamic-json-form/karma.conf.js"
           }
         }
       }
@@ -58,14 +58,10 @@
             "styles": [
               "vanilla-jsoneditor/themes/jse-theme-dark.css",
               "bootstrap-icons/font/bootstrap-icons.min.css",
-              "dist/ng-dynamic-json-form/lib/styles/styles.scss",
+              "dist/ng-dynamic-json-form/styles/styles.scss",
               "src/styles/styles.scss"
             ],
-            "scripts": [
-              "node_modules/marked/marked.min.js",
-              "node_modules/prismjs/prism.js",
-              "node_modules/prismjs/components/prism-css.min.js"
-            ]
+            "scripts": ["node_modules/marked/marked.min.js"]
           },
           "configurations": {
             "production": {
