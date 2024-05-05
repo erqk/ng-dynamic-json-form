@@ -10,10 +10,9 @@ import {
 } from '@angular/forms';
 import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
-  FormControlConfig,
   NgDynamicJsonFormComponent,
   UiComponents,
-  provideNgDynamicJsonForm,
+  provideNgDynamicJsonForm
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
@@ -77,7 +76,6 @@ export class PagePlaygroundComponent {
   form = new FormGroup({});
   formControl = new UntypedFormControl('');
 
-  configs: FormControlConfig[] | string = [];
   showEditor = false;
   currentVersion = this._versionService.currentVersion;
   mobileTabSelected = 0;

@@ -13,8 +13,8 @@ import {
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
-import { DocsRouterLinkDirective } from 'src/app/features/docs/directives/doc-router-link.directive';
-import { DocsLoaderService } from 'src/app/features/docs/services/docs-loader.service';
+import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
+import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { SidePanelPrimaryComponent } from 'src/app/features/side-panel/components/side-panel-primary/side-panel-primary.component';
 import { SidePanelSecondaryComponent } from 'src/app/features/side-panel/components/side-panel-secondary/side-panel-secondary.component';
@@ -62,6 +62,7 @@ export class PageDocsComponent {
         : this._docLoaderService.loadDocHtml$(x);
     }),
     tap(() => {
+      this.onDocReady();
       this.toggleMobileMenu(false);
       this._setLinkRenderer();
       this._scrollToContent();

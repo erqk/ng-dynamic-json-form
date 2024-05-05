@@ -66,7 +66,6 @@ export class DocsLoaderService {
           return this._markdownService.parse(x.body ?? '');
         }),
         tap((x) => {
-          console.log(x);
           if (this._docCache.some((x) => x.path === path)) return;
           this._docCache.push({ path, data: x });
         }),

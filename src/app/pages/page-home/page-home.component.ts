@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 import { map, switchMap } from 'rxjs/operators';
 import { LayoutService } from 'src/app/core/services/layout.service';
-import { ExampleContainerComponent } from 'src/app/features/example-container/example-container.component';
+import { DocFormViewerComponent } from 'src/app/features/doc/components/doc-form-viewer/doc-form-viewer.component';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { LanguageDataService } from '../../features/language/language-data.service';
 import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
@@ -20,7 +20,7 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
     ReactiveFormsModule,
     UiContentWrapperComponent,
     UiLoadingIndicatorComponent,
-    ExampleContainerComponent,
+    DocFormViewerComponent,
     NgDynamicJsonFormComponent,
   ],
   templateUrl: './page-home.component.html',

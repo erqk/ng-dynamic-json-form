@@ -1,0 +1,32 @@
+<div class="flex bg-gray-700/10">
+  <ng-container *ngIf="tabs.length === 1">
+    <span class="p-3 px-5 pb-2">{{ tabs[0] }}</span>
+  </ng-container>
+
+  <ng-container *ngIf="tabs.length > 1">
+    <ng-container *ngFor="let item of tabs">
+      <button
+        class="p-3 px-5 pb-2 border-b-2 duration-200"
+        [ngClass]="{
+          'border-transparent': item !== activeTab,
+          'border-[var(--primary-500)]': item === activeTab,
+          'opacity-60': item !== activeTab
+        }"
+        (click)="toggleTab(item)"
+      >
+        {{ item }}
+      </button>
+    </ng-container>
+  </ng-container>
+</div>
+
+<div class="content relative z-0 duration-300">
+  <ng-content></ng-content>
+
+  <button
+    class="btn-copy absolute z-10 top-2 right-2 p-2 bg-gray-600/30 backdrop-blur-sm rounded-lg text-white"
+    (click)="copyToClipboard()"
+  >
+    <i class="bi bi-copy"></i>
+  </button>
+</div>

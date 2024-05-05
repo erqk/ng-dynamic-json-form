@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { tap } from 'rxjs';
-import { DocsLoaderService } from 'src/app/features/docs/services/docs-loader.service';
+import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageType } from './language.type';
 import { LanguageDataService } from './language-data.service';
 

@@ -1,0 +1,47 @@
+<div [ngClass]="['relative z-0']">
+  <ng-container *ngIf="!showFormOnly">
+    <div class="toolbar absolute z-10 top-2 right-2 flex gap-1">
+      <ng-container *ngIf="showEditor">
+        <button type="button" (click)="reset()">
+          <i class="bi bi-arrow-repeat rotate-45 text-lg"></i>
+        </button>
+      </ng-container>
+
+      <button type="button" (click)="showEditor ? onConfirm() : onEdit()">
+        <i
+          class="bi text-lg"
+          [ngClass]="showEditor ? 'bi-check-lg' : 'bi-pencil-square'"
+        ></i>
+      </button>
+    </div>
+  </ng-container>
+
+  <div
+    class="relative z-0 duration-200"
+    [ngStyle]="{
+      'min-height': showEditor ? minHeight : formHeight
+    }"
+  >
+    <div #formContent>
+      <ng-dynamic-json-form
+        class="block p-1"
+        [configs]="configs"
+        [uiComponents]="uiComponents[ui]"
+      ></ng-dynamic-json-form>
+    </div>
+
+    <ng-container *ngIf="!showFormOnly">
+      <app-playground-editor
+        class="absolute top-0 left-0 h-full w-full duration-200"
+        [ngClass]="{
+          'opacity-0 pointer-events-none': !showEditor
+        }"
+        [mainMenuBar]="false"
+        [statusBar]="false"
+        [navigationBar]="false"
+        [data]="$any({ json: configs })"
+        (onEditing)="onEditorChange($event)"
+      ></app-playground-editor>
+    </ng-container>
+  </div>
+</div>

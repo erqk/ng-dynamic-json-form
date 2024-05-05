@@ -15,7 +15,7 @@ import {
 export class ThemeService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
 
-  themes = [
+  themes: { key: 'dark' | 'light'; class: string }[] = [
     {
       key: 'light',
       class: 'bi bi-brightness-high-fill',
@@ -60,28 +60,14 @@ export class ThemeService {
     return event$;
   }
 
-  setPrimengTheme(): void {
-    this._setTheme(
-      'primeng-theme',
-      `assets/primeng-theme/${this.currentTheme.key}.css`
-    );
-  }
-
-  setMaterialTheme(): void {
-    const filename =
-      this.currentTheme.key === 'dark' ? 'pink-bluegrey' : 'deeppurple-amber';
-
-    this._setTheme('material-theme', `assets/material-theme/${filename}.css`);
-  }
-
-  private _setTheme(stylesheetId: string, stylesheetPath: string): void {
+  setTheme(id: string, path: string): void {
     const style =
-      (document.head.querySelector(`#${stylesheetId}`) as HTMLLinkElement) ||
+      (document.head.querySelector(`#${id}`) as HTMLLinkElement) ||
       this._renderer2.createElement('link');
 
-    this._renderer2.setProperty(style, 'id', stylesheetId);
+    this._renderer2.setProperty(style, 'id', id);
     this._renderer2.setProperty(style, 'rel', 'stylesheet');
-    this._renderer2.setProperty(style, 'href', stylesheetPath);
+    this._renderer2.setProperty(style, 'href', path);
 
     if (!document.head.contains(style)) {
       this._renderer2.insertBefore(

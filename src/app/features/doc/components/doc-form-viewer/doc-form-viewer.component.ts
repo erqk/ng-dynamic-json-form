@@ -21,11 +21,11 @@ import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { DOCS_CONFIGS_INDEX_EN } from 'src/app/docs-example/configs/index_en';
 import { DOCS_CONFIGS_INDEX_ZHTW } from 'src/app/docs-example/configs/index_zh-TW';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
-import { LanguageDataService } from '../language/language-data.service';
-import { PlaygroundEditorComponent } from '../playground/components/playground-editor/playground-editor.component';
+import { LanguageDataService } from '../../../language/language-data.service';
+import { PlaygroundEditorComponent } from '../../../playground/components/playground-editor/playground-editor.component';
 
 @Component({
-  selector: 'app-example-container',
+  selector: 'doc-form-viewer',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -40,15 +40,16 @@ import { PlaygroundEditorComponent } from '../playground/components/playground-e
       },
     }),
   ],
-  templateUrl: './example-container.component.html',
-  styleUrls: ['./example-container.component.scss'],
+  templateUrl: './doc-form-viewer.component.html',
+  styleUrls: ['./doc-form-viewer.component.scss'],
 })
-export class ExampleContainerComponent implements OnInit, AfterViewInit {
+export class DocFormViewerComponent implements OnInit, AfterViewInit {
   private _cd = inject(ChangeDetectorRef);
   private _langService = inject(LanguageDataService);
 
-  @Input() configs: FormControlConfig[] = [];
+  @Input() configs: string | FormControlConfig[] = [];
   @Input() configPath = '';
+  @Input() showFormOnly = false;
   @Input() minHeight = '20rem';
   @Input() ui: 'Default' | 'PrimeNg' | 'Angular Material' = 'Default';
 

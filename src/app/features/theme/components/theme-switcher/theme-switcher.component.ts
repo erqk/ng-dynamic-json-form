@@ -3,6 +3,7 @@ import { Component, Renderer2, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, skip, takeUntil, tap } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
+import { THEME_LIST } from '../../constants/themes.constant';
 
 @Component({
   selector: 'app-theme-switcher',
@@ -20,7 +21,7 @@ export class ThemeSwitcherComponent {
   currentTheme = this._themeService.currentTheme;
 
   ngOnInit(): void {
-    this.switchTheme(this.currentTheme.key as 'light' | 'dark');
+    this.switchTheme(this.currentTheme.key);
     this._themeService
       .prefersDark$()
       .pipe(
@@ -46,7 +47,12 @@ export class ThemeSwitcherComponent {
     this._renderer2.setAttribute(html, 'class', nextTheme.key);
     this._themeService.theme$.next(nextTheme.key);
     this._themeService.savedTheme = nextTheme.key;
-    this._themeService.setPrimengTheme();
-    this._themeService.setMaterialTheme();
+
+    for (const key in THEME_LIST) {
+      this._themeService.setTheme(
+        `${key}-theme`,
+        THEME_LIST[key][nextTheme.key]
+      );
+    }
   }
 }

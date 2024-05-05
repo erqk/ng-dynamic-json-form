@@ -1,0 +1,16 @@
+:host {
+  @apply block my-4 border border-[var(--border-color-25)] rounded-lg overflow-hidden;
+}
+
+.content {
+  .btn-copy {
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  &:hover {
+    .btn-copy {
+      opacity: 1;
+    }
+  }
+}

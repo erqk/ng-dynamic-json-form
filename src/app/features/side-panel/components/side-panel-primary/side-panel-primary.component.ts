@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { catchError, switchMap, tap } from 'rxjs';
+import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
+import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
-import { DocsRouterLinkDirective } from '../../../docs/directives/doc-router-link.directive';
-import { DocsLoaderService } from '../../../docs/services/docs-loader.service';
 import { VersionService } from '../../../version/version.service';
 
 @Component({
