@@ -8,7 +8,6 @@ import { FormLayout } from '../../models/form-layout.interface';
 import { ControlTypeByConfigPipe } from '../../pipes/control-type-by-config.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
-import { FormArrayComponent } from '../form-array/form-array.component';
 import { FormControlComponent } from '../form-control/form-control.component';
 
 @Component({
@@ -21,7 +20,6 @@ import { FormControlComponent } from '../form-control/form-control.component';
     HostIdDirective,
     ControlLayoutDirective,
     FormControlComponent,
-    FormArrayComponent,
     ControlTypeByConfigPipe,
   ],
   templateUrl: './form-group.component.html',

@@ -1,4 +1,3 @@
-import { FormArrayConfig } from './form-array-config.interface';
 import { FormControlCondition } from './form-control-condition.type';
 import { FormControlOptions } from './form-control-options.interface';
 import { FormControlType } from './form-control-type.type';
@@ -31,9 +30,6 @@ export interface FormControlConfig {
    * ></p-calendar>
    */
   extra?: any;
-
-  /**Provide to make this control as a FormArray, cannot use with `children` */
-  formArray?: FormArrayConfig;
 
   /**Don't render the UI of this control if set to true. */
   hidden?: boolean;

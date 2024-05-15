@@ -43,14 +43,6 @@
             }"
           ></form-group>
         </ng-container>
-
-        <!-- FormArray -->
-        <ng-container *ngIf="(item | controlTypeByConfig) === 'FormArray'">
-          <form-array
-            [config]="item"
-            [formArray]="$any(parentForm.controls[item.formControlName])"
-          ></form-array>
-        </ng-container>
       </content-wrapper>
     </ng-container>
   </ng-container>

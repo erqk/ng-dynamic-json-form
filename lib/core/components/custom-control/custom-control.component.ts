@@ -19,11 +19,11 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     optional: true,
   });
 
-  /**Must be override by using instance of `AbstractControl`
+  /**Must assign it with instance of `AbstractControl`
    * @example
-   * public override control = new FormControl() 'or' new UntypedFormControl();
-   * public override control = new FormGroup() 'or' new UntypedFormGroup();
-   * public override control = new FormArray() 'or' new UntypedFormArray();
+   * override control = new FormControl() 'or' new UntypedFormControl();
+   * override control = new FormGroup() 'or' new UntypedFormGroup();
+   * override control = new FormArray() 'or' new UntypedFormArray();
    */
   public control?: AbstractControl;
   public data?: FormControlConfig;

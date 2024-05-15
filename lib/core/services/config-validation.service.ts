@@ -15,8 +15,6 @@ export class ConfigValidationService {
         configValidationErrors: ['No configs found'],
       };
 
-    const data = Array.isArray(configs) ? { configs } : configs;
-
     const win = window as any;
     const ajv: Ajv = win.ajv || new Ajv({ allErrors: true });
     const validate: ValidateFunction<unknown> =
@@ -31,8 +29,11 @@ export class ConfigValidationService {
     }
 
     try {
-      const parsed = JSON.parse(JSON.stringify(data));
-      const valid = validate(parsed);
+      const data = Array.isArray(configs)
+        ? { configs }
+        : JSON.parse(configs.replaceAll('\\n', '').replaceAll('\\', ''));
+
+      const valid = validate(data);
 
       if (!valid) {
         return {
@@ -46,7 +47,7 @@ export class ConfigValidationService {
       }
 
       return {
-        configs: (parsed as any)['configs'] ?? null,
+        configs: (data as any)['configs'] ?? null,
         configValidationErrors: [],
       };
     } catch (err: any) {

@@ -39,7 +39,6 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { FormArrayItemHeaderComponent } from './components/form-array-item-header/form-array-item-header.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormTitleComponent } from './components/form-title/form-title.component';
@@ -81,7 +80,6 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormControlComponent,
     HostIdDirective,
     ControlLayoutDirective,
-    FormArrayItemHeaderComponent,
     FormTitleComponent,
     FormGroupComponent,
     IsControlRequiredPipe,

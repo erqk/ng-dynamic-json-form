@@ -1,5 +1,4 @@
 export * from './custom-components.type';
-export * from './form-array-config.interface';
 export * from './form-control-condition.type';
 export * from './form-control-config.interface';
 export * from './form-control-options.interface';

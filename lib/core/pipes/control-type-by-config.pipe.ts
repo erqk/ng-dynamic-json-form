@@ -6,17 +6,11 @@ import { FormControlConfig } from '../models';
   standalone: true,
 })
 export class ControlTypeByConfigPipe implements PipeTransform {
-  transform(
-    config: FormControlConfig
-  ): 'FormControl' | 'FormGroup' | 'FormArray' {
-    if (!config.formArray && !config.children) {
+  transform(config: FormControlConfig): 'FormControl' | 'FormGroup' {
+    if (!config.children) {
       return 'FormControl';
     }
 
-    if (!config.formArray) {
-      return 'FormGroup'
-    }
-
-    return 'FormArray'
+    return 'FormGroup';
   }
 }
