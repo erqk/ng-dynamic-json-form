@@ -31,11 +31,11 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public onTouched = () => {};
 
   writeValue(obj: any): void {
-    this._internal_control.patchValue(this._internal_mapData('input', obj));
+    this.control?.patchValue(this._internal_mapData('input', obj));
   }
 
   registerOnChange(fn: any): void {
-    this._internal_control.valueChanges
+    this.control?.valueChanges
       .pipe(map((x) => this._internal_mapData('output', x)))
       .subscribe(fn);
   }
@@ -45,14 +45,24 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled
-      ? this._internal_control.disable()
-      : this._internal_control.enable();
+    isDisabled ? this.control?.disable() : this.control?.enable();
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._internal_control?.errors;
+    return this.control?.errors ?? null;
   }
+
+  markAsDirty: AbstractControl['markAsDirty'] = (args) => {
+    this.control?.markAsDirty(args);
+  };
+
+  markAsTouched: AbstractControl['markAsTouched'] = (args) => {
+    this.control?.markAsTouched(args);
+  };
+
+  setErrors: AbstractControl['setErrors'] = (args) => {
+    this.control?.setErrors(args);
+  };
 
   onOptionsGet(data: OptionItem[]): void {
     if (!this.data || !this.data.options) {
@@ -68,17 +78,5 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     if (!service) return data;
 
     return service.mapData(type, data, this.data);
-  }
-
-  /**@internal */
-  private get _internal_control(): AbstractControl {
-    if (!this.control || !(this.control instanceof AbstractControl)) {
-      throw {
-        message: `The component extends CustomControlComponent but control is not defined`,
-        component: this,
-      };
-    }
-
-    return this.control;
   }
 }

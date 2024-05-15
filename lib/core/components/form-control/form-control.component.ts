@@ -235,18 +235,19 @@ export class FormControlComponent
     ])
       .pipe(
         tap(([hideErrors, _]) => {
-          const childControl = this._controlComponentRef!['_internal_control'];
-          const errors = childControl.errors ?? this.control!.errors;
+          const controlComponent = this._controlComponentRef!;
+          const errors =
+            controlComponent.control?.errors ?? this.control!.errors;
 
-          childControl.setErrors(hideErrors ? null : errors, {
+          controlComponent.setErrors(hideErrors ? null : errors, {
             emitEvent: false,
           });
 
           if (hideErrors === false) {
             this.control!.markAsTouched();
             this.control!.markAsDirty();
-            childControl.markAsTouched();
-            childControl.markAsDirty();
+            controlComponent.markAsTouched();
+            controlComponent.markAsDirty();
           }
         }),
         takeUntilDestroyed(this._destroyRef)
