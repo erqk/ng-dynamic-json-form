@@ -12,7 +12,7 @@ beforeAll(() => {
 });
 
 describe('Set fallback value depends on type', () => {
-  it('Should get false value if checkbox value is undefined', () => {
+  it('Checkbox value should becomes false when it is undefined', () => {
     const result = service['_fallbackValue']({
       formControlName: 'checkbox',
       type: 'checkbox',
@@ -21,7 +21,7 @@ describe('Set fallback value depends on type', () => {
     expect(result).toBe(false);
   });
 
-  it('Should get false value if switch value is undefined', () => {
+  it('Switch value should becomes false when it is undefined', () => {
     const result = service['_fallbackValue']({
       formControlName: 'switch',
       type: 'switch',
