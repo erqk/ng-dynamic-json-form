@@ -1,12 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { FormControlConfig } from '../models/form-control-config.interface';
 import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormGeneratorService {
-  reset$ = new Subject<void>();
   private _formValidationService = inject(FormValidationService);
 
   generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
@@ -22,7 +20,7 @@ export class FormGeneratorService {
       );
 
       if (isFormControl) {
-        control = new FormControl(item.value ?? '', {
+        control = new FormControl(item.value ?? this._fallbackValue(item), {
           validators,
         });
       }
@@ -43,6 +41,27 @@ export class FormGeneratorService {
     return formGroup;
   }
 
-  // TODO: Get fallback value based on the `type` given.
-  private _fallbackValue(): void {}
+  private _fallbackValue(item: FormControlConfig): any {
+    switch (item.type) {
+      case 'checkbox':
+      case 'switch':
+        return false;
+
+      default:
+        return item.value;
+    }
+  }
+
+  private _formControlName(item: FormControlConfig): string {
+    const replaceSpaces = (str: string) => str.replaceAll(/\s/g, '_');
+    const removeSpecialCharacters = (str: string) =>
+      str.replaceAll(/[.,]/g, '');
+
+    const result = [replaceSpaces, removeSpecialCharacters].reduce(
+      (acc, fn) => fn(acc),
+      item.formControlName
+    );
+
+    return result;
+  }
 }

@@ -272,8 +272,6 @@ export class NgDynamicJsonFormComponent
   ngOnDestroy(): void {
     this._reset$.next();
     this._reset$.complete();
-    this._formGeneratorService.reset$.next();
-    this._formGeneratorService.reset$.complete();
     this._optionsDataService.onDestroy();
   }
 
@@ -389,7 +387,6 @@ export class NgDynamicJsonFormComponent
 
   private _clearListeners(): void {
     this._reset$.next();
-    this._formGeneratorService.reset$.next();
     this._optionsDataService.cancelAllRequest();
   }
 
