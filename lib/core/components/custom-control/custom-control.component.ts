@@ -28,8 +28,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public control?: AbstractControl;
   public data?: FormControlConfig;
 
-  public onTouched = () => {};
-
   writeValue(obj: any): void {
     this.control?.patchValue(this._internal_mapData('input', obj));
   }
@@ -41,7 +39,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    return;
   }
 
   setDisabledState(isDisabled: boolean): void {

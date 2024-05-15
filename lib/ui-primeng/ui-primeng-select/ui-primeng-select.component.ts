@@ -28,4 +28,10 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
 })
 export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
+
+  onTouched = () => {};
+
+  override registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
 }

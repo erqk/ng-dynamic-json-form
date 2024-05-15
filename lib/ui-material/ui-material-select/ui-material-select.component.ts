@@ -32,6 +32,8 @@ export class UiMaterialSelectComponent extends CustomControlComponent {
   private _controlValueService = inject(ControlValueService);
   override control = new UntypedFormControl('');
 
+  onTouched = () => {};
+
   override writeValue(obj: any): void {
     const value = this._controlValueService.getOptionsValue('stringified', obj);
     this.control.setValue(value);
@@ -41,5 +43,9 @@ export class UiMaterialSelectComponent extends CustomControlComponent {
     this.control.valueChanges
       .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
       .subscribe(fn);
+  }
+
+  override registerOnTouched(fn: any): void {
+    this.onTouched = fn;
   }
 }
