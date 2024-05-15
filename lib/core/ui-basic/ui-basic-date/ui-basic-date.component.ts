@@ -4,7 +4,6 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import {
   CustomControlComponent,
-  NG_DYNAMIC_JSON_FORM_CONFIG,
   PropsBindingDirective,
 } from '../../../public-api';
 
@@ -17,7 +16,6 @@ import {
 })
 export class UiBasicDateComponent extends CustomControlComponent {
   private _locale = inject(LOCALE_ID);
-  private _formConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, { optional: true });
 
   dateSettings = {
     min: '',
