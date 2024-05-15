@@ -1,7 +1,6 @@
 export type FormControlType =
   | 'checkbox'
   | 'date'
-  | 'email'
   | 'number'
   | 'password'
   | 'radio'
