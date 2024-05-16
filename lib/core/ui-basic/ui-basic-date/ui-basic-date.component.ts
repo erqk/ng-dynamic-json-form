@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, LOCALE_ID, inject } from '@angular/core';
+import { Component, HostBinding, LOCALE_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import {
@@ -17,15 +17,17 @@ import {
 export class UiBasicDateComponent extends CustomControlComponent {
   private _locale = inject(LOCALE_ID);
 
-  dateSettings = {
-    min: '',
-    max: '',
-  };
+  @HostBinding('class') hostClass = 'ui-basic';
 
   override control = new FormGroup({
     date: new FormControl(''),
     time: new FormControl(''),
   });
+
+  dateSettings = {
+    min: '',
+    max: '',
+  };
 
   override writeValue(obj: any): void {
     if (!obj) return;

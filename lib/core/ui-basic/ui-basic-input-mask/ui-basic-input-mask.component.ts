@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import {
@@ -28,5 +28,6 @@ import {
   styles: [],
 })
 export class UiBasicInputMaskComponent extends CustomControlComponent {
+  @HostBinding('class') hostClass = 'ui-basic';
   override control = new FormControl('');
 }

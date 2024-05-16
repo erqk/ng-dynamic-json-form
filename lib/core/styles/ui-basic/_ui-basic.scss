@@ -6,7 +6,7 @@
 @use "./ui-basic-switch" as switch;
 @use "./ui-basic-textarea" as textarea;
 
-.ng-dynamic-json-form.ui-basic {
+.ng-dynamic-json-form .ui-basic {
   * {
     box-sizing: border-box;
   }

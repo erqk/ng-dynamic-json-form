@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -16,6 +16,8 @@ import {
 export class UiBasicRangeComponent extends CustomControlComponent {
   override control = new FormControl(0);
   tickMarks: any[] = [];
+
+  @HostBinding('class') hostClass = 'ui-basic';
 
   ngOnInit(): void {
     this._getTickMarksCount();

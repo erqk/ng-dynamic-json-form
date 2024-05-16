@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -27,5 +27,6 @@ import {
   styles: [],
 })
 export class UiBasicTextareaComponent extends CustomControlComponent {
+  @HostBinding('class') hostClass = 'ui-basic';
   override control = new FormControl('');
 }

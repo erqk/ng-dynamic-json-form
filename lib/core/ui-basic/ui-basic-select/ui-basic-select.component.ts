@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostBinding, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { map } from 'rxjs';
 import {
@@ -17,6 +17,9 @@ import {
 })
 export class UiBasicSelectComponent extends CustomControlComponent {
   private _controlValueService = inject(ControlValueService);
+
+  @HostBinding('class') hostClass = 'ui-basic';
+
   override control = new FormControl('');
 
   onTouched = () => {};

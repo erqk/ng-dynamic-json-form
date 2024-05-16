@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -14,5 +14,6 @@ import {
   styles: [],
 })
 export class UiBasicInputComponent extends CustomControlComponent {
+  @HostBinding('class') hostClass = 'ui-basic';
   override control = new UntypedFormControl('');
 }
