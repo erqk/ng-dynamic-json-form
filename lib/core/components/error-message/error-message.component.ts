@@ -17,8 +17,8 @@ import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
-import { GlobalLayoutComponents } from '../../models/global-layout-components.interface';
-import { GlobalLayoutTemplates } from '../../models/global-layout-templates.interface';
+import { LayoutComponents } from '../../models/global-layout-components.interface';
+import { LayoutTemplates } from '../../models/global-layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
 
 @Component({
@@ -35,8 +35,8 @@ export class ErrorMessageComponent implements OnChanges, AfterViewInit {
   @Input() control?: AbstractControl | null = null;
   @Input() touched = false;
   @Input() validators?: ValidatorConfig[];
-  @Input() customComponent?: GlobalLayoutComponents['errorMessage'];
-  @Input() customTemplate?: GlobalLayoutTemplates['errorMessage'];
+  @Input() customComponent?: LayoutComponents['errorMessage'];
+  @Input() customTemplate?: LayoutTemplates['errorMessage'];
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;

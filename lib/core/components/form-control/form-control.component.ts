@@ -102,8 +102,8 @@ export class FormControlComponent
     this._onTouched();
   }
 
-  layoutComponents = this._globalVariableService.globalLayoutComponents;
-  layoutTemplates = this._globalVariableService.globalLayoutTemplates;
+  layoutComponents = this._globalVariableService.layoutComponents;
+  layoutTemplates = this._globalVariableService.layoutTemplates;
   customTemplates = this._globalVariableService.customTemplates;
 
   loading = false;

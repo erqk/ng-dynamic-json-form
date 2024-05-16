@@ -34,8 +34,8 @@ export class ContentWrapperComponent {
   errorTemplates = this._globalVariableService.errorTemplates;
   labelComponents = this._globalVariableService.labelComponents;
   labelTemplates = this._globalVariableService.labelTemplates;
-  globalLayoutComponents = this._globalVariableService.globalLayoutComponents;
-  globalLayoutTemplates = this._globalVariableService.globalLayoutTemplates;
+  layoutComponents = this._globalVariableService.layoutComponents;
+  layoutTemplates = this._globalVariableService.layoutTemplates;
 
   get showErrors(): boolean {
     const controlTouched = this.control?.touched ?? false;

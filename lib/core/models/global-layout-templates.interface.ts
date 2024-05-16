@@ -1,6 +1,6 @@
 import { TemplateRef } from '@angular/core';
 
-export interface GlobalLayoutTemplates {
+export interface LayoutTemplates {
   loading?: TemplateRef<any>;
   errorMessage?: TemplateRef<any>;
   formTitle?: TemplateRef<any>;

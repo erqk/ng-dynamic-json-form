@@ -24,8 +24,8 @@ export class GlobalVariableService {
   errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
   labelComponents: NgDynamicJsonFormComponent['labelComponents'];
   labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
-  globalLayoutComponents: NgDynamicJsonFormComponent['globalLayoutComponents'];
-  globalLayoutTemplates: NgDynamicJsonFormComponent['globalLayoutTemplates'];
+  layoutComponents: NgDynamicJsonFormComponent['layoutComponents'];
+  layoutTemplates: NgDynamicJsonFormComponent['layoutTemplates'];
 
   setup(variables: GlobalVariables): void {
     this.customValidators = variables.customValidators;
@@ -33,8 +33,8 @@ export class GlobalVariableService {
     this.customTemplates = variables.customTemplates;
     this.errorComponents = variables.errorComponents;
     this.errorTemplates = variables.errorTemplates;
-    this.globalLayoutComponents = variables.globalLayoutComponents;
-    this.globalLayoutTemplates = variables.globalLayoutTemplates;
+    this.layoutComponents = variables.layoutComponents;
+    this.layoutTemplates = variables.layoutTemplates;
     this.hostElement = variables.hostElement;
     this.labelComponents = variables.labelComponents;
     this.labelTemplates = variables.labelTemplates;

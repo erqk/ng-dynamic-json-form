@@ -13,7 +13,7 @@ import {
   PLATFORM_ID,
   SimpleChanges,
   forwardRef,
-  inject
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -49,8 +49,8 @@ import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
 import { FormLayout } from './models/form-layout.interface';
-import { GlobalLayoutComponents } from './models/global-layout-components.interface';
-import { GlobalLayoutTemplates } from './models/global-layout-templates.interface';
+import { LayoutComponents } from './models/global-layout-components.interface';
+import { LayoutTemplates } from './models/global-layout-templates.interface';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
@@ -176,9 +176,9 @@ export class NgDynamicJsonFormComponent
   @Input() errorTemplates?: CustomTemplates;
 
   /**Custom components/templates for global layout UI */
-  @Input() globalLayoutComponents?: GlobalLayoutComponents =
-    this._providerConfig?.globalLayoutComponents;
-  @Input() globalLayoutTemplates?: GlobalLayoutTemplates;
+  @Input() layoutComponents?: LayoutComponents =
+    this._providerConfig?.layoutComponents;
+  @Input() layoutTemplates?: LayoutTemplates;
 
   /**Custom components/templates for label of specific control,
    * where `formControlName` is the key */
@@ -222,8 +222,8 @@ export class NgDynamicJsonFormComponent
       customTemplates: this.customTemplates,
       errorComponents: this.errorComponents,
       errorTemplates: this.errorTemplates,
-      globalLayoutComponents: this.globalLayoutComponents,
-      globalLayoutTemplates: this.globalLayoutTemplates,
+      layoutComponents: this.layoutComponents,
+      layoutTemplates: this.layoutTemplates,
       hostElement: this._el.nativeElement,
       labelComponents: this.labelComponents,
       labelTemplates: this.labelTemplates,

@@ -1,7 +1,7 @@
 import { InjectionToken, Provider } from '@angular/core';
 import { UiComponents } from './models';
 import { CustomValidators } from './models/custom-validators.type';
-import { GlobalLayoutComponents } from './models/global-layout-components.interface';
+import { LayoutComponents } from './models/global-layout-components.interface';
 
 interface FormConfig {
   /**
@@ -30,7 +30,7 @@ interface FormConfig {
    * ></ng-dynamic-json-form>
    */
   customValidators?: CustomValidators;
-  globalLayoutComponents?: GlobalLayoutComponents;
+  layoutComponents?: LayoutComponents;
   uiComponents?: UiComponents;
 }
 
