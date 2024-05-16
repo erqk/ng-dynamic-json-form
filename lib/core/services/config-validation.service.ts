@@ -1,63 +1,77 @@
 import { Injectable } from '@angular/core';
-import Ajv, { ValidateFunction } from 'ajv';
-import * as schema from '../config-schema.json';
+import { ErrorObject, ValidateFunction } from 'ajv';
 import { FormControlConfig } from '../models';
+import { ConfigValidationErrors } from '../models/config-validation-errors.interface';
+import { getValueInObject } from '../utilities/get-value-in-object';
+import { NgDynamicJsonFormSchema } from '../utilities/schema-validator';
 
+const validate = NgDynamicJsonFormSchema as ValidateFunction;
 @Injectable()
 export class ConfigValidationService {
-  validateAndGetConfig(configs: string | FormControlConfig[] | undefined): {
+  validateAndGetConfig(input: string | FormControlConfig[] | undefined): {
     configs: FormControlConfig[] | null;
-    configValidationErrors: string[];
+    errors?: ConfigValidationErrors[];
   } {
-    if (!configs)
-      return {
-        configs: null,
-        configValidationErrors: ['No configs found'],
-      };
+    const failedResult = {
+      configs: null,
+      errors: [{ errors: 'No configs found' }],
+    };
 
-    const win = window as any;
-    const ajv: Ajv = win.ajv || new Ajv({ allErrors: true });
-    const validate: ValidateFunction<unknown> =
-      win.ngDynamiJsonFormValidateFn || ajv.compile(schema);
-
-    if (!win.ajv) {
-      win.ajv = ajv;
+    if (!input) {
+      return failedResult;
     }
 
-    if (!win.ngDynamiJsonFormValidateFn) {
-      win.ngDynamiJsonFormValidateFn = validate;
-    }
+    if (Array.isArray(input)) {
+      if (!input.length) return failedResult;
 
-    try {
-      const data = Array.isArray(configs)
-        ? { configs }
-        : JSON.parse(configs.replaceAll('\\n', '').replaceAll('\\', ''));
-
-      const valid = validate(data);
-
-      if (!valid) {
+      if (!validate(input)) {
         return {
           configs: null,
-          configValidationErrors: [
-            ...(validate.errors ?? []).map((x) =>
-              JSON.stringify(x, undefined, 4)
-            ),
-          ],
+          errors: validate.errors?.map((x) =>
+            this._getBeautifyErrors(x, input)
+          ),
         };
       }
 
-      return {
-        configs: (data as any)['configs'] ?? null,
-        configValidationErrors: [],
-      };
-    } catch (err: any) {
-      return {
-        configs: null,
-        configValidationErrors: [
-          // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
-          JSON.stringify(err, Object.getOwnPropertyNames(err), 4),
-        ],
-      };
+      return { configs: input };
     }
+
+    if (typeof input === 'string') {
+      try {
+        const data = JSON.parse(input);
+        return this.validateAndGetConfig(data);
+      } catch (err: any) {
+        return {
+          configs: null,
+          errors: [
+            {
+              // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+              errors: JSON.stringify(err, Object.getOwnPropertyNames(err), 4),
+            },
+          ],
+        };
+      }
+    }
+
+    return failedResult;
+  }
+
+  private _getBeautifyErrors(
+    err: ErrorObject,
+    configs: FormControlConfig[]
+  ): ConfigValidationErrors {
+    const paths = err.instancePath.substring(1).split('/');
+    const lastSegment = paths[paths.length - 1];
+    const isObject = new RegExp(/^\d+$/).test(lastSegment);
+    const configPath = isObject ? paths.join('.') : paths[paths.length - 2];
+    const config = getValueInObject(configs, configPath);
+    const errorMessage = isObject
+      ? err.message ?? ''
+      : `"${lastSegment}" ${err.message}`;
+
+    return {
+      errors: errorMessage,
+      config,
+    };
   }
 }

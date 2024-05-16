@@ -116,9 +116,16 @@
 
   // ==================== Errors ======================
   .config-validation-error {
-    color: var(--color-error);
     white-space: pre-wrap;
     word-break: break-all;
+
+    code {
+      display: block;
+      line-height: 1.25;
+      border: solid 1px var(--color-error);
+      font-size: 0.8em;
+      padding: 1em;
+    }
   }
 
   .error-message {

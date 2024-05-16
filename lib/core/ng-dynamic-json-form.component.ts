@@ -44,6 +44,7 @@ import { FormTitleComponent } from './components/form-title/form-title.component
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
 import { FormControlConfig } from './models';
+import { ConfigValidationErrors } from './models/config-validation-errors.interface';
 import { CustomComponents } from './models/custom-components.type';
 import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
@@ -139,7 +140,7 @@ export class NgDynamicJsonFormComponent
   private _allowFormDirty = false;
 
   configGet: FormControlConfig[] = [];
-  configValidationErrors: string[] = [];
+  configValidationErrors: ConfigValidationErrors[] = [];
 
   form?: UntypedFormGroup;
 
@@ -275,20 +276,18 @@ export class NgDynamicJsonFormComponent
     const validationResult = this._configValidationService.validateAndGetConfig(
       this.configs
     );
-    if (!validationResult.configs) {
-      this.configValidationErrors = validationResult.configValidationErrors;
-      return;
-    }
 
     this.configGet = validationResult.configs ?? [];
-    this._formPatcherService.config = this.configGet;
+    this.configValidationErrors = validationResult.errors ?? [];
     this._allowFormDirty = false;
 
-    this.form = this._formGeneratorService.generateFormGroup(this.configGet);
-    this._globalVariableService.rootForm = this.form;
-    this.formGet.emit(this.form);
+    if (!validationResult.errors?.length) {
+      this.form = this._formGeneratorService.generateFormGroup(this.configGet);
+      this._globalVariableService.rootForm = this.form;
+      this.formGet.emit(this.form);
 
-    this._setupListeners();
+      this._setupListeners();
+    }
   }
 
   private _getControlDirective(): void {

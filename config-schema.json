@@ -1,0 +1,245 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "NgDynamicJsonFormSchema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "formControlName": {
+        "type": "string"
+      },
+      "conditions": {
+        "$ref": "#/definitions/conditionConfig"
+      },
+      "children": {
+        "$ref": "#"
+      },
+      "description": {
+        "type": "string"
+      },
+      "hidden": {
+        "type": "boolean",
+        "description": "Don't render the UI of this control if set to true."
+      },
+      "label": {
+        "type": "string"
+      },
+      "layout": {
+        "$ref": "#/definitions/layoutConfig"
+      },
+      "placeholder": {
+        "type": "string"
+      },
+      "readonly": {
+        "type": "boolean"
+      },
+      "value": {},
+      "validators": { "$ref": "#/definitions/validatorConfig" }
+    },
+    "required": ["formControlName"]
+  },
+  "definitions": {
+    "conditionIfConfig": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": [
+        { "type": "string" },
+        {
+          "enum": [
+            "===",
+            "!==",
+            ">=",
+            ">",
+            "<=",
+            "<",
+            "includes",
+            "notIncludes"
+          ]
+        },
+        {}
+      ]
+    },
+    "conditionGroupConfig": {
+      "type": "object",
+      "properties": {
+        "&&": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        },
+        "||": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditionConfig": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/conditionGroupConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "labelPositionConfig": {
+      "enum": ["after", "before"],
+      "default": "after"
+    },
+    "extra": {
+      "type": "object"
+    },
+    "optionsSourceConfig": {
+      "type": "object",
+      "properties": {
+        "src": {
+          "type": "string"
+        },
+        "method": {
+          "enum": ["GET", "POST"]
+        },
+        "params": {
+          "type": "object"
+        },
+        "paramsFromControls": {
+          "type": "object"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "labelKey": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "valueKeys": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["labelKey"]
+        },
+        "slice": {
+          "type": "array",
+          "items": [{ "type": "number" }, { "type": "number" }],
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": ["src", "method", "data"]
+    },
+    "optionsTriggerConfig": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/optionsSourceConfig"
+        }
+      ],
+      "properties": {
+        "action": {
+          "enum": ["FILTER", "REQUEST"]
+        },
+        "triggerValuePath": {
+          "type": "string"
+        },
+        "filterMatchPath": {
+          "type": "string"
+        },
+        "debounceTime": {
+          "type": "number"
+        }
+      },
+      "required": ["action", "triggerValuePath"]
+    },
+    "optionsItemConfig": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": ["label"]
+    },
+    "layoutConfig": {
+      "type": "object",
+      "properties": {
+        "hostClass": {
+          "type": "string"
+        },
+        "hostStyles": {
+          "type": "string"
+        },
+        "labelClass": {
+          "type": "string"
+        },
+        "labelStyles": {
+          "type": "string"
+        },
+        "contentClass": {
+          "type": "string"
+        },
+        "contentStyles": {
+          "type": "string"
+        },
+        "descriptionClass": {
+          "type": "string"
+        },
+        "descriptionStyles": {
+          "type": "string"
+        },
+        "errorClass": {
+          "type": "string"
+        },
+        "errorStyles": {
+          "type": "string"
+        },
+        "descriptionPosition": {
+          "enum": ["after", "before"]
+        },
+        "hideErrorMessage": {
+          "type": "boolean"
+        },
+        "hideLabel": {
+          "type": "boolean"
+        },
+        "contentCollapsible": {
+          "enum": ["collapse", "expand"],
+          "description": "Enable expand/collapse of content. The default state will be determined by value provided"
+        },
+        "autoAddRequiredClass": {
+          "type": "boolean",
+          "description": "Add `required` class automatically to control if there's validator named `required`. Default is true."
+        }
+      }
+    },
+    "validatorConfig": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {},
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  }
+}

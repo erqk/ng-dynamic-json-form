@@ -1,19 +1,17 @@
-<ng-container
-  *ngIf="!configs || (!$any(configs.length) && !$any(configs).configs)"
->
-  No configs found
-</ng-container>
-
 <ng-container *ngIf="!!configValidationErrors?.length">
   <div class="config-validation-error">
-    <p>Incorrect configs. Please check.</p>
-    <ng-container *ngFor="let error of configValidationErrors">
-      <p>{{ error }}</p>
+    <p>Form generation failed.</p>
+    <br />
+    <ng-container *ngFor="let item of configValidationErrors">
+      <p style="color: var(--color-error)">{{ item.errors }}</p>
+      <ng-container *ngIf="item.config">
+        <code>{{ item.config | json }}</code>
+      </ng-container>
     </ng-container>
   </div>
 </ng-container>
 
-<ng-container *ngIf="!!configGet?.length && !!form">
+<ng-container *ngIf="form">
   <form-group
     [parentForm]="form"
     [configs]="configGet"
