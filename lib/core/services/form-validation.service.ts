@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   AbstractControl,
   ValidationErrors,
@@ -12,6 +12,7 @@ import { EMPTY, Observable, map, startWith } from 'rxjs';
 import { ValidatorConfig } from '../models';
 import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
 import { clearEmpties } from '../utilities/clear-empties';
+import { GlobalVariableService } from './global-variable.service';
 
 function emailValidator(control: AbstractControl): ValidationErrors | null {
   const emailValid = RegExp(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/).test(
@@ -27,7 +28,7 @@ function emailValidator(control: AbstractControl): ValidationErrors | null {
 
 @Injectable()
 export class FormValidationService {
-  customValidators?: { [key: string]: ValidatorFn };
+  private _globalVariableService = inject(GlobalVariableService);
 
   getErrorMessages$(
     control: AbstractControl | null | undefined,
@@ -83,7 +84,7 @@ export class FormValidationService {
 
       const validator =
         builtInValidators[name as ValidatorAndConditionEnum] ??
-        this.customValidators?.[name] ??
+        this._globalVariableService.customValidators?.[name] ??
         Validators.nullValidator;
 
       return validator;

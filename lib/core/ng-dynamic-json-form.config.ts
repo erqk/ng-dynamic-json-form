@@ -4,6 +4,31 @@ import { CustomValidators } from './models/custom-validators.type';
 import { GlobalLayoutComponents } from './models/global-layout-components.interface';
 
 interface FormConfig {
+  /**
+   * User defined custom valiators. Use `name` as the key to map target ValidatorFn.
+   *
+   * @example
+   * // Config
+   * {
+   *    ...
+   *    "validators": [
+   *      { "name": "firstUppercase" }
+   *    ]
+   * }
+   *
+   * // TS
+   * validators = {
+   *    firstUppercase: firstUppercaseValidator,
+   *    url: urlValidator,
+   *    ...
+   * }
+   *
+   * // HTML
+   * <ng-dynamic-json-form
+   *  [configs]="..."
+   *  [customValidators]="validators"
+   * ></ng-dynamic-json-form>
+   */
   customValidators?: CustomValidators;
   globalLayoutComponents?: GlobalLayoutComponents;
   uiComponents?: UiComponents;

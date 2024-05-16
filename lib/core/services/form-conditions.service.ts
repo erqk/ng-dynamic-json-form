@@ -22,22 +22,15 @@ import { getBooleanOperationResult } from '../utilities/get-boolean-operation-re
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { FormValidationService } from './form-validation.service';
+import { GlobalVariableService } from './global-variable.service';
 
 @Injectable()
 export class FormConditionsService {
   /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
-  private readonly _renderer2 = inject(RendererFactory2).createRenderer(
-    null,
-    null
-  );
-  private readonly _formValidationService = inject(FormValidationService);
+  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
+  private _globalVariableService = inject(GlobalVariableService);
+  private _formValidationService = inject(FormValidationService);
   private _controlStatusUpdating = false;
-
-  /**To differentiate the host element from multiple ng-dynamic-json-form instances */
-  hostIndex = 0;
-
-  /**The host element for each NgDynamicJsonForm instance */
-  hostEl: HTMLElement | null = null;
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -108,7 +101,7 @@ export class FormConditionsService {
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
         // Must escape the "." character so that querySelector will work correctly
-        const element = this.hostEl?.querySelector(
+        const element = this._globalVariableService.hostElement?.querySelector(
           `#${controlPath.replaceAll('.', '\\.')}`
         );
 

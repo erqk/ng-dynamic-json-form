@@ -1,59 +1,43 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
 import { UntypedFormGroup } from '@angular/forms';
-
+import { BehaviorSubject } from 'rxjs';
+import { UiComponents } from '../models';
+import { CustomValidators } from '../models/custom-validators.type';
+import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
+interface GlobalVariables
+  extends Omit<
+    GlobalVariableService,
+    'setup' | 'update' | 'rootForm' | 'hideErrorMessage$'
+  > {}
+type Test = keyof GlobalVariables;
 @Injectable()
 export class GlobalVariableService {
+  hostElement?: HTMLElement;
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
-
-  customValidators?: NgDynamicJsonFormComponent['customValidators'];
-
-  uiComponents?: NgDynamicJsonFormComponent['uiComponents'];
-
-  customComponents?: NgDynamicJsonFormComponent['customComponents'];
-  customTemplates?: NgDynamicJsonFormComponent['customTemplates'];
-
-  errorComponents?: NgDynamicJsonFormComponent['errorComponents'];
-  errorTemplates?: NgDynamicJsonFormComponent['errorTemplates'];
-
-  labelComponents?: NgDynamicJsonFormComponent['labelComponents'];
-  labelTemplates?: NgDynamicJsonFormComponent['labelTemplates'];
-
-  globalLayoutComponents?: NgDynamicJsonFormComponent['globalLayoutComponents'];
-  globalLayoutTemplates?: NgDynamicJsonFormComponent['globalLayoutTemplates'];
-
   rootForm?: UntypedFormGroup;
 
-  setup({
-    customValidators,
-    customComponents,
-    customTemplates,
-    errorComponents,
-    errorTemplates,
-    globalLayoutComponents,
-    globalLayoutTemplates,
-    labelComponents,
-    labelTemplates,
-  }: {
-    customValidators: NgDynamicJsonFormComponent['customValidators'];
-    customComponents: NgDynamicJsonFormComponent['customComponents'];
-    customTemplates: NgDynamicJsonFormComponent['customTemplates'];
-    errorComponents: NgDynamicJsonFormComponent['errorComponents'];
-    errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
-    globalLayoutComponents: NgDynamicJsonFormComponent['globalLayoutComponents'];
-    globalLayoutTemplates: NgDynamicJsonFormComponent['globalLayoutTemplates'];
-    labelComponents: NgDynamicJsonFormComponent['labelComponents'];
-    labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
-  }): void {
-    this.customValidators = customValidators;
-    this.customComponents = customComponents;
-    this.customTemplates = customTemplates;
-    this.errorComponents = errorComponents;
-    this.errorTemplates = errorTemplates;
-    this.globalLayoutComponents = globalLayoutComponents;
-    this.globalLayoutTemplates = globalLayoutTemplates;
-    this.labelComponents = labelComponents;
-    this.labelTemplates = labelTemplates;
+  customValidators: CustomValidators | undefined;
+  uiComponents: UiComponents | undefined;
+  customComponents: NgDynamicJsonFormComponent['customComponents'];
+  customTemplates: NgDynamicJsonFormComponent['customTemplates'];
+  errorComponents: NgDynamicJsonFormComponent['errorComponents'];
+  errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
+  labelComponents: NgDynamicJsonFormComponent['labelComponents'];
+  labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
+  globalLayoutComponents: NgDynamicJsonFormComponent['globalLayoutComponents'];
+  globalLayoutTemplates: NgDynamicJsonFormComponent['globalLayoutTemplates'];
+
+  setup(variables: GlobalVariables): void {
+    this.customValidators = variables.customValidators;
+    this.customComponents = variables.customComponents;
+    this.customTemplates = variables.customTemplates;
+    this.errorComponents = variables.errorComponents;
+    this.errorTemplates = variables.errorTemplates;
+    this.globalLayoutComponents = variables.globalLayoutComponents;
+    this.globalLayoutTemplates = variables.globalLayoutTemplates;
+    this.hostElement = variables.hostElement;
+    this.labelComponents = variables.labelComponents;
+    this.labelTemplates = variables.labelTemplates;
+    this.uiComponents = variables.uiComponents;
   }
 }

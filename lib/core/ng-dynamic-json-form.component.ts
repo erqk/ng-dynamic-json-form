@@ -6,14 +6,14 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Injector,
   Input,
   Output,
   PLATFORM_ID,
-  Renderer2,
   SimpleChanges,
   forwardRef,
-  inject,
+  inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -27,7 +27,6 @@ import {
   UntypedFormGroup,
   ValidationErrors,
   Validator,
-  ValidatorFn,
 } from '@angular/forms';
 import {
   Subject,
@@ -44,7 +43,7 @@ import { FormGroupComponent } from './components/form-group/form-group.component
 import { FormTitleComponent } from './components/form-title/form-title.component';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
-import { FormControlConfig, UiComponents } from './models';
+import { FormControlConfig } from './models';
 import { CustomComponents } from './models/custom-components.type';
 import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
@@ -116,7 +115,6 @@ export class NgDynamicJsonFormComponent
   private _cd = inject(ChangeDetectorRef);
   private _platformId = inject(PLATFORM_ID);
   private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
   private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
   private _configValidationService = inject(ConfigValidationService);
@@ -144,46 +142,20 @@ export class NgDynamicJsonFormComponent
   configValidationErrors: string[] = [];
 
   form?: UntypedFormGroup;
-  uiComponentsGet: UiComponents = UI_BASIC_COMPONENTS;
 
   @Input() configs: FormControlConfig[] | string = [];
-
-  /**Form control components built with other libraries */
-  @Input() uiComponents?: UiComponents = this._providerConfig?.uiComponents;
-
-  /**
-   * User defined custom valiators. Use `name` as the key to map target ValidatorFn.
-   *
-   * @example
-   * JSON:
-   * {
-   *    ...
-   *    "validators": [
-   *      {
-   *        "name": "firstUppercase"
-   *      }
-   *    ]
-   * }
-   *
-   * validators = {
-   *    firstUppercase: firstUppercaseValidator,
-   *    url: urlValidator,
-   *    ...
-   * }
-   */
-  @Input() customValidators?: { [key: string]: ValidatorFn } =
-    this._providerConfig?.customValidators;
 
   /**
    * User defined custom components. Use `formControlName` as the key to map target component.
    *
    * @example
-   * JSON:
+   * // Config
    * {
    *    ...
    *    "formControlName": "compA"
    * }
    *
+   * // TS
    * components = {
    *    compA: YourComponentA,
    *    compB: YourComponentB,
@@ -199,7 +171,7 @@ export class NgDynamicJsonFormComponent
   @Input() customTemplates?: CustomTemplates;
 
   /**Custom components/templates for error message of specific control,
-   * where formControlName is the key */
+   * where `formControlName` is the key */
   @Input() errorComponents?: CustomErrorComponents;
   @Input() errorTemplates?: CustomTemplates;
 
@@ -209,7 +181,7 @@ export class NgDynamicJsonFormComponent
   @Input() globalLayoutTemplates?: GlobalLayoutTemplates;
 
   /**Custom components/templates for label of specific control,
-   * where formControlName is the key */
+   * where `formControlName` is the key */
   @Input() labelComponents?: CustomLabelComponents;
   @Input() labelTemplates?: CustomTemplates;
 
@@ -221,28 +193,20 @@ export class NgDynamicJsonFormComponent
 
   @Output() formGet = new EventEmitter();
 
+  @HostBinding('class') hostClass = 'ng-dynamic-json-form';
+
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
       return;
     }
 
-    const { configs, customValidators, uiComponents, hideErrorMessage } =
-      simpleChanges;
+    const { configs, hideErrorMessage } = simpleChanges;
 
     if (hideErrorMessage) {
       this._globalVariableService.hideErrorMessage$.next(this.hideErrorMessage);
     }
 
-    if (configs || customValidators || uiComponents) {
-      this.uiComponentsGet = {
-        ...UI_BASIC_COMPONENTS,
-        ...this.uiComponents,
-      };
-
-      this._globalVariableService.customValidators = this.customValidators;
-      this._globalVariableService.uiComponents = this.uiComponentsGet;
-
-      this._setHostUiClass();
+    if (configs) {
       this._buildForm();
     }
   }
@@ -253,20 +217,23 @@ export class NgDynamicJsonFormComponent
     }
 
     this._globalVariableService.setup({
-      customValidators: this.customValidators,
+      customValidators: this._providerConfig?.customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
       errorComponents: this.errorComponents,
       errorTemplates: this.errorTemplates,
       globalLayoutComponents: this.globalLayoutComponents,
       globalLayoutTemplates: this.globalLayoutTemplates,
+      hostElement: this._el.nativeElement,
       labelComponents: this.labelComponents,
       labelTemplates: this.labelTemplates,
+      uiComponents: {
+        ...UI_BASIC_COMPONENTS,
+        ...this._providerConfig?.uiComponents,
+      },
     });
 
     this._getControlDirective();
-    this._initHostClass();
-    this._setHostUiClass();
   }
 
   ngOnDestroy(): void {
@@ -301,23 +268,6 @@ export class NgDynamicJsonFormComponent
     isDisabled ? this.form?.disable() : this.form?.enable();
   }
 
-  private _initHostClass(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
-
-    this._renderer2.addClass(hostEl, 'ng-dynamic-json-form');
-    this._formConditionsService.hostEl = hostEl;
-  }
-
-  private _setHostUiClass(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
-    const useDefaultUi =
-      !this.uiComponents || !Object.keys(this.uiComponents).length;
-
-    useDefaultUi
-      ? this._renderer2.addClass(hostEl, 'ui-basic')
-      : this._renderer2.removeClass(hostEl, 'ui-basic');
-  }
-
   private _buildForm(): void {
     this._clearListeners();
     this.configValidationErrors = [];
@@ -331,7 +281,6 @@ export class NgDynamicJsonFormComponent
     }
 
     this.configGet = validationResult.configs ?? [];
-    this._formValidationService.customValidators = this.customValidators;
     this._formPatcherService.config = this.configGet;
     this._allowFormDirty = false;
 
