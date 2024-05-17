@@ -1,7 +1,7 @@
 import { InjectionToken, Provider } from '@angular/core';
 import { UiComponents } from './models';
 import { CustomValidators } from './models/custom-validators.type';
-import { LayoutComponents } from './models/global-layout-components.interface';
+import { LayoutComponents } from './models/layout-components.interface';
 
 interface FormConfig {
   /**

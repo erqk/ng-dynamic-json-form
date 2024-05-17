@@ -17,8 +17,8 @@ import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
-import { LayoutComponents } from '../../models/global-layout-components.interface';
-import { LayoutTemplates } from '../../models/global-layout-templates.interface';
+import { LayoutComponents } from '../../models/layout-components.interface';
+import { LayoutTemplates } from '../../models/layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
 
 @Component({

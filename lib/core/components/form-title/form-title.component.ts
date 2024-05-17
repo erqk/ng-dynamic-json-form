@@ -16,8 +16,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
-import { LayoutComponents } from '../../models/global-layout-components.interface';
-import { LayoutTemplates } from '../../models/global-layout-templates.interface';
+import { LayoutComponents } from '../../models/layout-components.interface';
+import { LayoutTemplates } from '../../models/layout-templates.interface';
 
 @Component({
   selector: 'form-title',

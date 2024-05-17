@@ -50,8 +50,8 @@ import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
 import { FormLayout } from './models/form-layout.interface';
-import { LayoutComponents } from './models/global-layout-components.interface';
-import { LayoutTemplates } from './models/global-layout-templates.interface';
+import { LayoutComponents } from './models/layout-components.interface';
+import { LayoutTemplates } from './models/layout-templates.interface';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
