@@ -1,7 +1,4 @@
-import {
-  FormControlConditionOperator,
-  FormControlIfCondition,
-} from '../models';
+import { ConditionsIfTupple, ConditionsOperator } from '../models';
 import { getBooleanOperationResult } from './get-boolean-operation-result';
 
 /**
@@ -12,7 +9,7 @@ import { getBooleanOperationResult } from './get-boolean-operation-result';
  *
  * @description
  * If one of the path's value is array and the index needs to evaluate at runtime,
- * use the syntax same with `FormControlIfCondition`.
+ * use the syntax same with `ConditionsIfTupple`.
  *
  * @example
  * ```
@@ -34,7 +31,7 @@ import { getBooleanOperationResult } from './get-boolean-operation-result';
  *
  * Resulting path: `level1.level2.list.1.value`
  *
- * If the array contains only primitive value, leave the first parameter of FormControlIfCondition empty.
+ * If the array contains only primitive value, leave the first parameter of ConditionsIfTupple empty.
  * For example, change `["value", "===", 1]` to `[,"===", 1].
  */
 export function getValueInObject(obj: any, path: string): any {
@@ -84,10 +81,10 @@ function getItemIndex(array: any[], path: string): string {
     .replace('[', '')
     .replace(']', '')
     .split(',')
-    .map((x) => x.trim()) as FormControlIfCondition;
+    .map((x) => x.trim()) as ConditionsIfTupple;
 
   const _key = removeQuotes(key);
-  const _operator = removeQuotes(operator) as FormControlConditionOperator;
+  const _operator = removeQuotes(operator) as ConditionsOperator;
 
   // The `path` is already a string, so we have to parse what is the type of the `value`.
   // If the `value` is wrapped with quotes then we take it as a string, after removing the quotes,

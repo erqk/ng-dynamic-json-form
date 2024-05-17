@@ -1,4 +1,4 @@
-import { FormControlCondition } from './form-control-condition.type';
+import { Conditions } from './conditions.type';
 import { FormControlOptions } from './form-control-options.interface';
 import { FormControlType } from './form-control-type.type';
 import { FormLayout } from './form-layout.interface';
@@ -9,7 +9,7 @@ export interface FormControlConfig {
   formControlName: string;
 
   /**Change state or toggle validators when condition met */
-  conditions?: FormControlCondition;
+  conditions?: Conditions;
 
   /**Provide to make this control as a FormGroup, cannot use with `formArray` */
   children?: FormControlConfig[];

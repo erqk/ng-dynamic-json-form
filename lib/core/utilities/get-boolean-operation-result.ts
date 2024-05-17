@@ -1,9 +1,9 @@
-import { FormControlConditionOperator } from '../models';
+import { ConditionsOperator } from '../models/conditions-operator.type';
 
 export function getBooleanOperationResult(
   left: any,
   right: any,
-  operator: FormControlConditionOperator
+  operator: ConditionsOperator
 ): boolean {
   switch (operator) {
     case '===':

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormControlGroupCondition } from '../models';
+import { ConditionsGroup } from '../models';
 import { FormConditionsService } from './form-conditions.service';
 import { FormValidationService } from './form-validation.service';
 
@@ -22,7 +22,7 @@ const formGroup = new FormGroup({
   showEmail: new FormControl(false),
 });
 
-const conditionsA: FormControlGroupCondition = {
+const conditionsA: ConditionsGroup = {
   '&&': [
     ['age', '>', 20],
     ['name', '===', 'Andrew'],
@@ -35,7 +35,7 @@ const conditionsA: FormControlGroupCondition = {
   ],
 };
 
-const conditionsB: FormControlGroupCondition = {
+const conditionsB: ConditionsGroup = {
   '||': [
     ['age', '>', 50],
     ['age', '>', 20],

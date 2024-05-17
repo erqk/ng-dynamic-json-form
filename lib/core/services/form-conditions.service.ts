@@ -11,13 +11,13 @@ import {
   tap,
 } from 'rxjs';
 import {
-  FormControlConditionType,
+  ConditionType,
+  ConditionsExtracted,
+  ConditionsGroup,
+  ConditionsIfTupple,
   FormControlConfig,
-  FormControlGroupCondition,
-  FormControlIfCondition,
   ValidatorConfig,
 } from '../models';
-import { ConditionExtracted } from '../models/condition-extracted.interface';
 import { getBooleanOperationResult } from '../utilities/get-boolean-operation-result';
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
@@ -59,7 +59,7 @@ export class FormConditionsService {
 
   private _updateControlStatus(
     form: FormGroup,
-    data: ConditionExtracted[]
+    data: ConditionsExtracted[]
   ): void {
     for (const item of data) {
       const { conditions, targetControl, validators } = item;
@@ -89,7 +89,7 @@ export class FormConditionsService {
 
           acc[key] = bool;
           return acc;
-        }, {} as { [key in FormControlConditionType]?: boolean });
+        }, {} as { [key in ConditionType]?: boolean });
 
         this._toggleValidators(targetControl, boolResults, validators);
       }
@@ -114,7 +114,7 @@ export class FormConditionsService {
 
   private _toggleElementVisibility(
     hidden: boolean,
-    data: ConditionExtracted
+    data: ConditionsExtracted
   ): void {
     const { targetControl, targetControlPath } = data;
 
@@ -133,7 +133,7 @@ export class FormConditionsService {
 
   private _toggleValidators(
     control: AbstractControl,
-    boolResults: { [key in FormControlConditionType]?: boolean },
+    boolResults: { [key in ConditionType]?: boolean },
     validatorConfig: ValidatorConfig[]
   ): void {
     if (!Object.keys(boolResults).length) return;
@@ -181,8 +181,8 @@ export class FormConditionsService {
   }
 
   private _getFlattenIfConditions(
-    input: FormControlGroupCondition
-  ): FormControlIfCondition[] {
+    input: ConditionsGroup
+  ): ConditionsIfTupple[] {
     const conditions = input['&&'] || input['||'] || [];
     const result = conditions
       .map((x) => (!Array.isArray(x) ? this._getFlattenIfConditions(x) : [x]))
@@ -198,8 +198,8 @@ export class FormConditionsService {
     form: FormGroup,
     configs: FormControlConfig[],
     prevControlPath = '',
-    result: ConditionExtracted[] = []
-  ): ConditionExtracted[] {
+    result: ConditionsExtracted[] = []
+  ): ConditionsExtracted[] {
     for (const item of configs) {
       const {
         formControlName,
@@ -246,7 +246,7 @@ export class FormConditionsService {
   /**Evaluate the boolean result from the condition. */
   private _getConditionsResult(
     form: FormGroup,
-    conditions: FormControlGroupCondition
+    conditions: ConditionsGroup
   ): boolean | undefined {
     let result: boolean | undefined = undefined;
     const _conditions = conditions['&&'] || conditions['||'] || [];
@@ -256,17 +256,17 @@ export class FormConditionsService {
 
     const ifConditions = _conditions.filter((x) =>
       Array.isArray(x)
-    ) as FormControlIfCondition[];
+    ) as ConditionsIfTupple[];
 
     const childConditions = _conditions.find((x) => '&&' in x || '||' in x) as
-      | FormControlGroupCondition
+      | ConditionsGroup
       | undefined;
 
     const childResult = !childConditions
       ? result
       : this._getConditionsResult(form, childConditions);
 
-    const predicateFn = (value: FormControlIfCondition) => {
+    const predicateFn = (value: ConditionsIfTupple) => {
       const [controlPath, operator, controlValue] = value;
       const control = form.get(getControlAndValuePath(controlPath).controlPath);
 

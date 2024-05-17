@@ -1,7 +1,7 @@
-import { FormControlConditionType } from './form-control-condition.type';
+import { ConditionType } from './conditions.type';
 
 export interface ValidatorConfig {
-  name: FormControlConditionType;
+  name: ConditionType;
   value?: any;
 
   /**Use {{value}} placeholder to display current value */
