@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
   PROPS_BINDING_INJECTORS,
@@ -18,7 +18,6 @@ import {
   encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     CheckboxModule,
     PropsBindingDirective,
@@ -34,15 +33,4 @@ import {
 })
 export class UiPrimengCheckboxComponent extends CustomControlComponent {
   override control = new FormControl<any | any[]>('');
-  selectedItems: any[] = [];
-
-  override writeValue(obj: any): void {
-    if (Array.isArray(obj)) this.selectedItems = [...obj];
-    this.control.setValue(obj);
-  }
-
-  onChanged(e: CheckboxChangeEvent): void {
-    const selectedItems: any[] = e.checked;
-    this.control.setValue(selectedItems);
-  }
 }

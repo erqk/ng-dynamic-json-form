@@ -29,21 +29,4 @@ import { Calendar, CalendarModule } from 'primeng/calendar';
 })
 export class UiPrimengDateComponent extends CustomControlComponent {
   override control = new FormControl(new Date());
-
-  minDate?: Date;
-  maxDate?: Date;
-
-  ngOnInit(): void {
-    this._setMinMaxDate();
-  }
-
-  private _setMinMaxDate(): void {
-    const min = this.data?.extra?.date?.min;
-    const max = this.data?.extra?.date?.max;
-
-    if (!min || !max) return;
-
-    this.minDate = new Date(min);
-    this.minDate = new Date(max);
-  }
 }

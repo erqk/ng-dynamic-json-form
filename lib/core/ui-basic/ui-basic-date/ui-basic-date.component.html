@@ -7,8 +7,9 @@
   >
     <input
       type="date"
-      [attr.min]="dateSettings.min"
-      [attr.max]="dateSettings.max"
+      [attr.min]="data.extra?.min"
+      [attr.max]="data.extra?.max"
+      [attr.step]="data.extra?.step"
       formControlName="date"
     />
 

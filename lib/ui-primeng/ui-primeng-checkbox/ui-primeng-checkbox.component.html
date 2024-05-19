@@ -41,10 +41,8 @@
             <p-checkbox
               [name]="'group'"
               [value]="item.value"
-              [disabled]="control.disabled"
-              [(ngModel)]="selectedItems"
+              [formControl]="control"
               [propsBinding]="[data.extra]"
-              (onChange)="onChanged($event)"
             ></p-checkbox>
           </ng-container>
         </ng-container>

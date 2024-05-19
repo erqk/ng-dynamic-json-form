@@ -24,11 +24,6 @@ export class UiBasicDateComponent extends CustomControlComponent {
     time: new FormControl(''),
   });
 
-  dateSettings = {
-    min: '',
-    max: '',
-  };
-
   override writeValue(obj: any): void {
     if (!obj) return;
 
@@ -43,36 +38,20 @@ export class UiBasicDateComponent extends CustomControlComponent {
     this.control.valueChanges
       .pipe(
         filter((x) => !!x.date && !!x.time),
-        map(() => this._dateTimeFormatted)
+        map((x) => {
+          const { date, time } = x;
+          const _date = new Date(date!);
+
+          if (time) {
+            const [hours, minutes, seconds] = time.split(':');
+            if (hours) _date.setHours(parseInt(hours));
+            if (minutes) _date.setMinutes(parseInt(minutes));
+            if (seconds) _date.setSeconds(parseInt(seconds));
+          }
+
+          return _date;
+        })
       )
       .subscribe(fn);
-  }
-
-  ngOnInit(): void {
-    this._setMinMaxDate();
-  }
-
-  private get _dateTimeFormatted(): string {
-    const controlValue = this.control.value;
-    const date =
-      this.data?.extra?.showTime === true
-        ? new Date(`${controlValue.date}T${controlValue.time}`)
-        : new Date(controlValue.time!);
-
-    return JSON.stringify(date);
-  }
-
-  private _setMinMaxDate(): void {
-    if (!this.data?.extra) return;
-
-    const { min = '', max = '' } = this.data.extra;
-
-    if (min) {
-      this.dateSettings.min = formatDate(min, 'yyyy-MM-dd', this._locale);
-    }
-
-    if (max) {
-      this.dateSettings.max = formatDate(max, 'yyyy-MM-dd', this._locale);
-    }
   }
 }
