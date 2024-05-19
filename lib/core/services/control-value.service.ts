@@ -1,24 +1,7 @@
 import { Injectable } from '@angular/core';
-import { FormControlConfig } from '../models';
 
 @Injectable()
 export class ControlValueService {
-  mapData(
-    type: 'input' | 'output',
-    data: unknown,
-    config: FormControlConfig | undefined
-  ): unknown {
-    if (!config) return data;
-
-    switch (config.type) {
-      case 'date':
-        return type === 'input' ? this._getInputDate(data) : data;
-
-      default:
-        return data;
-    }
-  }
-
   getOptionsValue(type: 'stringified' | 'parsed', input: any): any {
     const parsed = (_input: any) => {
       try {
@@ -40,16 +23,6 @@ export class ControlValueService {
 
     if (type === 'stringified') {
       return Array.isArray(input) ? input.map(stringified) : stringified(input);
-    }
-  }
-
-  private _getInputDate(input: any): Date {
-    if (!input || input instanceof Date) return input;
-
-    try {
-      return new Date(input);
-    } catch (e) {
-      throw 'Invalid Date string or number!';
     }
   }
 }
