@@ -253,11 +253,9 @@
   <ng-dynamic-json-form
     class="flex flex-col p-5 text-sm md:text-base"
     [configs]="(configs$ | async) ?? []"
-    [uiComponents]="customUiComponents[currentUi]"
     [customComponents]="customComponents"
     [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
     [formControl]="formControl"
-    (formGet)="onFormGet($event)"
   ></ng-dynamic-json-form>
 </ng-template>
 

@@ -164,7 +164,7 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
         formControlName: 'cardOther',
         placeholder: 'Other card type',
         conditions: {
-          hidden: {
+          'control.hidden': {
             '&&': [['cards.cardTypes', 'notIncludes', 3]],
           },
         },

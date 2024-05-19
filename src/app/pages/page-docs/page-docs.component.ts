@@ -68,7 +68,7 @@ export class PageDocsComponent {
       this._scrollToContent();
     }),
     catchError(() => {
-      this._reloadDocOnError();
+      // this._reloadDocOnError();
       return EMPTY;
     })
   );

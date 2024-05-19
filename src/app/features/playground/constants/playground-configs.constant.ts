@@ -18,8 +18,6 @@ import { FORM_CONFIG_DYNAMIC_POSTS_EN } from 'src/app/example/configs/dynamic-da
 import { FORM_CONFIG_DYNAMIC_POSTS_ZHTW } from 'src/app/example/configs/dynamic-data/posts/form-config-dynamic-posts_zh-TW.constant';
 import { FORM_CONFIG_DYNAMIC_PRODUCTS_EN } from 'src/app/example/configs/dynamic-data/products/form-config-dynamic-products_en.constant';
 import { FORM_CONFIG_DYNAMIC_PRODUCTS_ZHTW } from 'src/app/example/configs/dynamic-data/products/form-config-dynamic-products_zh-TW.constant';
-import { FORM_CONFIG_FAMILY_MEMBERS_EN } from 'src/app/example/configs/form-array/family-members/form-config-family-members_en.constant';
-import { FORM_CONFIG_FAMILY_MEMBERS_ZHTW } from 'src/app/example/configs/form-array/family-members/form-config-family-members_zh-TW.constant';
 import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
 
 export const PLAYGROUND_CONFIGS: {
@@ -145,18 +143,6 @@ export const PLAYGROUND_CONFIGS: {
     'zh-TW': {
       label: '動態選項 (貼文)',
       config: FORM_CONFIG_DYNAMIC_POSTS_ZHTW,
-      isExample: true,
-    },
-  },
-  'form-array-family-members': {
-    en: {
-      label: 'FormArray (Family members)',
-      config: FORM_CONFIG_FAMILY_MEMBERS_EN,
-      isExample: true,
-    },
-    'zh-TW': {
-      label: '表單陣列 (家庭成員)',
-      config: FORM_CONFIG_FAMILY_MEMBERS_ZHTW,
       isExample: true,
     },
   },

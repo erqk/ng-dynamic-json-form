@@ -22,7 +22,8 @@ export class VersionService {
             value: `v${x.slice(0, 1)}`,
           }))
         );
-      })
+      }),
+      catchError(() => of(['Latest']))
     );
   }
 

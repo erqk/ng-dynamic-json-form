@@ -12,7 +12,7 @@ import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
   NgDynamicJsonFormComponent,
   UiComponents,
-  provideNgDynamicJsonForm
+  provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
@@ -55,11 +55,13 @@ import { Content } from 'vanilla-jsoneditor';
       customValidators: {
         firstUppercase: firstUppercaseValidator,
       },
-      globalLayoutComponents: {
+      layoutComponents: {
         loading: CustomLoadingComponent,
         errorMessage: CustomErrorMessageComponent,
         // formTitle: CustomFormTitleComponent
       },
+      // uiComponents: UI_PRIMENG_COMPONENTS,
+      // uiComponents: UI_MATERIAL_COMPONENTS,
     }),
   ],
   templateUrl: './page-playground.component.html',
@@ -125,10 +127,6 @@ export class PagePlaygroundComponent {
 
   onTemplateEdit(value: boolean): void {
     this.showEditor = value;
-  }
-
-  onFormGet(e: UntypedFormGroup): void {
-    this.form = e;
   }
 
   onFormUiChange(e: string): void {

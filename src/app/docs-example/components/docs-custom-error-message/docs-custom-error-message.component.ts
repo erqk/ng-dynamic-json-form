@@ -22,7 +22,7 @@ import { LanguageDataService } from 'src/app/features/language/language-data.ser
     <div class="p-3">
       <ng-dynamic-json-form
         [configs]="[$any(configs)[language$.value]]"
-        [globalLayoutComponents]="{
+        [layoutComponents]="{
           errorMessage: customError ? errorComponent : undefined
         }"
         [formControl]="control"

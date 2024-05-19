@@ -14,7 +14,7 @@ export const FORM_CONFIG_CONDITIONS_VALIDATOR_EN: FormControlConfig[] = [
       'The name field is required when the temperature is greater than 50.',
     layout: {
       labelStyles: 'margin-bottom: 0.5rem;',
-      descriptionStyles: 'margin-bottom: 1rem;'
+      descriptionStyles: 'margin-bottom: 1rem;',
     },
     children: [
       TEMPERATURE,
@@ -22,7 +22,7 @@ export const FORM_CONFIG_CONDITIONS_VALIDATOR_EN: FormControlConfig[] = [
         ...NAME,
         value: '',
         conditions: {
-          required: {
+          'validator.required': {
             '&&': [['group.temperature', '>', 50]],
           },
         },

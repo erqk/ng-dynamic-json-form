@@ -12,6 +12,9 @@
           hidden: selectedTab !== 0
         }"
       >
+        <div class="flex-1 block overflow-auto">
+          {{ control.value | json }}
+        </div>
         <!-- <markdown
           class="flex-1 block overflow-hidden"
           [data]="control.value | json | language : 'javascript'"
@@ -41,6 +44,14 @@
         </div>
       </div>
 
+      <div
+        class="block h-full overflow-auto"
+        [ngClass]="{
+          hidden: selectedTab !== 1
+        }"
+      >
+        {{ control.errors | json }}
+      </div>
       <!-- <markdown
         class="block h-full overflow-hidden"
         [ngClass]="{

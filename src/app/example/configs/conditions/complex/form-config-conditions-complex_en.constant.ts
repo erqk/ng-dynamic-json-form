@@ -21,7 +21,7 @@ export const FORM_CONFIG_CONDITIONS_COMPLEX_EN: FormControlConfig[] = [
       },
     ],
     conditions: {
-      required: {
+      'validator.required': {
         '&&': [
           ['group.name', '===', 'Andrew'],
           ['group.age', '>', 20],
