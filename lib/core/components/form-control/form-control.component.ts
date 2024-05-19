@@ -28,18 +28,21 @@ import {
   EMPTY,
   Observable,
   combineLatest,
+  delay,
   finalize,
   startWith,
+  switchMap,
   tap,
+  timer,
 } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
 import { OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
 import { GlobalVariableService } from '../../services/global-variable.service';
-import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
-import { CustomControlComponent } from '../custom-control/custom-control.component';
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
+import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
+import { CustomControlComponent } from '../custom-control/custom-control.component';
 
 @Component({
   selector: 'form-control',
@@ -140,7 +143,6 @@ export class FormControlComponent
     this._injectInputComponent();
     this._fetchOptions();
     this._errorMessageEvent();
-    this._cd.detectChanges();
   }
 
   get showErrors(): boolean {
@@ -229,26 +231,37 @@ export class FormControlComponent
   private _errorMessageEvent(): void {
     if (!this._controlComponentRef || !this.control) return;
 
+    const control = this.control;
+    const controlComponent = this._controlComponentRef;
+
+    // Needs to add delay for `controlComponent.setErrors()` to work properly.
+    // Guess because it is called at the same time with the initialization of the control.
+    // Hence after the control is initialized, the status will be reset to VALID.
     combineLatest([
       this._hideErrorMessage$,
-      this.control.valueChanges.pipe(startWith(this.control.value)),
+      control.statusChanges.pipe(startWith(control.status)),
     ])
       .pipe(
-        tap(([hideErrors, _]) => {
-          const controlComponent = this._controlComponentRef!;
+        delay(0),
+        tap(() => {
+          const hideErrors = this._hideErrorMessage$.value;
           const errors =
-            controlComponent.control?.errors ?? this.control!.errors;
-
-          controlComponent.setErrors(hideErrors ? null : errors, {
-            emitEvent: false,
-          });
+            hideErrors || (!control.errors && !controlComponent.control?.errors)
+              ? null
+              : control.errors;
 
           if (hideErrors === false) {
-            this.control!.markAsTouched();
-            this.control!.markAsDirty();
+            control.markAsTouched();
+            control.markAsDirty();
+            controlComponent.control?.markAsTouched();
+            controlComponent.control?.markAsDirty();
             controlComponent.markAsTouched();
             controlComponent.markAsDirty();
           }
+
+          controlComponent.control?.setErrors(errors);
+          controlComponent.setErrors(errors);
+          this._cd.markForCheck();
         }),
         takeUntilDestroyed(this._destroyRef)
       )
