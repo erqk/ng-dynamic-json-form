@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  UntypedFormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import { FormControlConfig } from '../models/form-control-config.interface';
 import { FormValidationService } from './form-validation.service';
+import { ValidatorConfig } from '../models';
 
 @Injectable()
 export class FormGeneratorService {
@@ -15,14 +21,17 @@ export class FormGeneratorService {
       const isFormGroup = !!item.children?.length;
 
       let control: AbstractControl | null = null;
-      const validators = this._formValidationService.getValidators(
-        item.validators ?? []
-      );
+
+      const validatorConfigs = (item.validators ?? []).reduce((acc, curr) => {
+        if (!acc.find((x) => x.name === curr.name)) acc.push(curr);
+        return acc;
+      }, [] as ValidatorConfig[]);
+
+      const validators =
+        this._formValidationService.getValidators(validatorConfigs);
 
       if (isFormControl) {
-        control = new FormControl(item.value ?? this._fallbackValue(item), {
-          validators,
-        });
+        control = new FormControl(item.value ?? this._fallbackValue(item));
       }
 
       if (isFormGroup) {

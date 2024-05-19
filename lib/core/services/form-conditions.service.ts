@@ -1,24 +1,14 @@
 import { Injectable, RendererFactory2, inject } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
+import { Observable, filter, from, mergeMap, of, startWith, tap } from 'rxjs';
 import {
-  Observable,
-  debounceTime,
-  filter,
-  from,
-  mergeMap,
-  of,
-  startWith,
-  tap,
-} from 'rxjs';
-import {
-  ConditionType,
-  ConditionsExtracted,
+  ConditionsActionEnum,
   ConditionsGroup,
-  ConditionsIfTupple,
+  ConditionsStatementTupple,
   FormControlConfig,
   ValidatorConfig,
 } from '../models';
-import { getBooleanOperationResult } from '../utilities/get-boolean-operation-result';
+import { evaluateBooleanOperation } from '../utilities/get-boolean-operation-result';
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { FormValidationService } from './form-validation.service';
@@ -30,73 +20,141 @@ export class FormConditionsService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
-  private _controlStatusUpdating = false;
+  private _skipValueChanges = false;
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
    * @param configs The JSON data
    */
-  formConditionsEvent$(
-    form: FormGroup,
-    configs: FormControlConfig[]
-  ): Observable<any> {
-    if (!configs.length) return of(null);
+  listenConditions$(): Observable<any> {
+    const configs = this._globalVariableService.rootConfigs;
+    const form = this._globalVariableService.rootForm;
 
-    const controls = this._getControlsToListen(form, configs);
-    const conditionsExtracted = this._extractConditions(form, configs);
+    if (!configs.length || !form) {
+      return of(null);
+    }
+
+    const controls = this._getPathsOfControlsToListen(configs)
+      .map((x) => form.get(x))
+      .filter(Boolean) as AbstractControl[];
+
+    const configsWithConditions = this._configsWithConditions(configs);
 
     return from(controls).pipe(
       mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
-      filter(() => !this._controlStatusUpdating),
-      debounceTime(0),
-      tap(() => {
-        this._controlStatusUpdating = true;
-        this._updateControlStatus(form, conditionsExtracted);
-        this._controlStatusUpdating = false;
-      })
+      filter(() => !this._skipValueChanges),
+      tap(() => this._onConditionsMet(configsWithConditions))
     );
   }
 
-  private _updateControlStatus(
-    form: FormGroup,
-    data: ConditionsExtracted[]
-  ): void {
-    for (const item of data) {
-      const { conditions, targetControl, validators } = item;
-      const { disabled, hidden, ...rest } = conditions;
+  private _onConditionsMet(data: {
+    [fullControlPath: string]: FormControlConfig;
+  }): void {
+    const form = this._globalVariableService.rootForm;
+    if (!form) return;
 
-      if (disabled) {
-        const bool = this._getConditionsResult(form, disabled);
-        if (bool === undefined) continue;
+    for (const key in data) {
+      const control = form.get(key);
+      if (!control) continue;
 
-        bool ? targetControl.disable() : targetControl.enable();
-      }
+      const config = data[key];
+      const conditions = config.conditions!;
+      const actions = Object.keys(conditions) as ConditionsActionEnum[];
 
-      if (hidden) {
-        const bool = this._getConditionsResult(form, hidden);
-        if (bool === undefined) continue;
+      for (const action of actions) {
+        const bool = this._evaluateConditionsStatement(conditions[action]!);
+        if (bool === undefined) return;
 
-        this._toggleElementVisibility(bool, item);
-      }
+        const isPredefinedAction =
+          Object.values(ConditionsActionEnum).includes(action);
+        const toggleState = new RegExp(/^control\.[a-zA-Z]{1,}$/).test(action);
+        const toggleValidators = new RegExp(/^validator\.[a-zA-z]{1,}$/).test(
+          action
+        );
 
-      if (rest) {
-        const boolResults = Object.keys(rest).reduce((acc, key) => {
-          const group = rest[key];
-          if (!group) return acc;
+        if (isPredefinedAction) {
+          if (toggleState) {
+            this._toggleControlState({
+              action,
+              bool,
+              control,
+              controlPath: key,
+            });
+          }
 
-          const bool = this._getConditionsResult(form, group);
-          if (bool === undefined) return acc;
+          if (toggleValidators) {
+            this._toggleValidators({
+              action,
+              bool,
+              control,
+              validatorConfigs: config.validators ?? [],
+            });
+          }
+        } else {
+          const functions =
+            this._globalVariableService.conditionsActionFuntions;
 
-          acc[key] = bool;
-          return acc;
-        }, {} as { [key in ConditionType]?: boolean });
+          if (!functions) return;
+          if (!functions[action]) return;
 
-        this._toggleValidators(targetControl, boolResults, validators);
+          functions[action](control);
+        }
       }
     }
   }
 
-  /**Get the target element by using `id` on each `div` inside current NgDynamicJsonForm instance */
+  private _toggleControlState(data: {
+    action: ConditionsActionEnum;
+    bool: boolean;
+    control: AbstractControl;
+    controlPath: string;
+  }): void {
+    const { action, bool, control, controlPath } = data;
+    const toggleDisabled = (disabled: boolean) => {
+      this._skipValueChanges = true;
+      disabled ? control.disable() : control.enable();
+      this._skipValueChanges = false;
+    };
+
+    switch (action) {
+      case ConditionsActionEnum['control.disabled']:
+        toggleDisabled(bool);
+        break;
+
+      case ConditionsActionEnum['control.hidden']:
+        this._getTargetEl$(controlPath)
+          .pipe(
+            filter(Boolean),
+            tap((x) => {
+              this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
+              toggleDisabled(bool);
+            })
+          )
+          .subscribe();
+    }
+  }
+
+  private _toggleValidators(data: {
+    action: ConditionsActionEnum;
+    bool: boolean;
+    control: AbstractControl;
+    validatorConfigs: ValidatorConfig[];
+  }): void {
+    const { action, bool, control, validatorConfigs } = data;
+    const _validatorConfigs = bool
+      ? validatorConfigs
+      : validatorConfigs.filter(
+          (x) => x.name !== action.replace('validator.', '')
+        );
+
+    const validators =
+      this._formValidationService.getValidators(_validatorConfigs);
+
+    control.setValidators(validators);
+    control.updateValueAndValidity();
+  }
+
+  /**Get the target element by using `id`(full control path) on each `div` inside current NgDynamicJsonForm instance */
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
@@ -112,190 +170,104 @@ export class FormConditionsService {
     });
   }
 
-  private _toggleElementVisibility(
-    hidden: boolean,
-    data: ConditionsExtracted
-  ): void {
-    const { targetControl, targetControlPath } = data;
+  private _getPathsOfControlsToListen(configs: FormControlConfig[]): string[] {
+    const extractPaths = (group: ConditionsGroup): string[] => {
+      const value = group['&&'] || group['||'];
+      if (!value) return [];
 
-    this._getTargetEl$(targetControlPath)
-      .pipe(
-        tap((x) => {
-          if (!x) return;
-          this._controlStatusUpdating = true;
-          this._renderer2.setStyle(x, 'display', hidden ? 'none' : null);
-          hidden ? targetControl.disable() : targetControl.enable();
-          this._controlStatusUpdating = false;
-        })
-      )
-      .subscribe();
-  }
-
-  private _toggleValidators(
-    control: AbstractControl,
-    boolResults: { [key in ConditionType]?: boolean },
-    validatorConfig: ValidatorConfig[]
-  ): void {
-    if (!Object.keys(boolResults).length) return;
-
-    const configFilterd = validatorConfig.filter(({ name }) => {
-      const bool = boolResults[name];
-      // Let `undefined` pass the filter because this validator is not under control of conditions.
-      return bool === undefined ? true : bool;
-    });
-
-    const validators = this._formValidationService.getValidators(configFilterd);
-
-    control.setValidators(validators);
-    control.updateValueAndValidity();
-  }
-
-  /**Get all the `AbstractControl` to listen from conditions
-   */
-  private _getControlsToListen(
-    form: FormGroup,
-    configs: FormControlConfig[] = [],
-    result: AbstractControl[] = []
-  ): AbstractControl[] {
-    if (!configs.length) return [];
-
-    for (const item of configs) {
-      const { conditions, children = [] } = item;
-
-      if (conditions) {
-        const controls = Object.values(conditions)
-          .filter((x) => !!x)
-          .flatMap((x) => this._getFlattenIfConditions(x!))
-          .map((x) => form.get(getControlAndValuePath(x[0]).controlPath))
-          .filter((x) => !!x) as AbstractControl[];
-
-        result.push(...controls);
-      }
-
-      if (children.length > 0) {
-        result.push(...this._getControlsToListen(form, item.children, result));
-      }
-    }
-
-    return [...new Set(result)];
-  }
-
-  private _getFlattenIfConditions(
-    input: ConditionsGroup
-  ): ConditionsIfTupple[] {
-    const conditions = input['&&'] || input['||'] || [];
-    const result = conditions
-      .map((x) => (!Array.isArray(x) ? this._getFlattenIfConditions(x) : [x]))
-      .flat();
-
-    return result;
-  }
-
-  /**Extract all the conditions from JSON data and flatten them,
-   * then output to an array of `ConditionExtracted`
-   */
-  private _extractConditions(
-    form: FormGroup,
-    configs: FormControlConfig[],
-    prevControlPath = '',
-    result: ConditionsExtracted[] = []
-  ): ConditionsExtracted[] {
-    for (const item of configs) {
-      const {
-        formControlName,
-        conditions,
-        children = [],
-        validators = [],
-      } = item;
-
-      const targetControlPath = prevControlPath
-        ? `${prevControlPath}.${formControlName}`
-        : formControlName;
-
-      if (conditions) {
-        const targetControl = form.get(targetControlPath);
-        if (!targetControl) continue;
-
-        result.push({
-          targetControl,
-          targetControlPath,
-          conditions,
-          validators,
-        });
-      }
-
-      if (children.length > 0) {
-        const childConditions = this._extractConditions(
-          form,
-          children,
-          targetControlPath,
-          result
-        ).filter(({ targetControlPath: left }) => {
-          // Filter the duplicated conditions,
-          // to make sure `valueChanges` will trigger only once for each control
-          return !result.some(({ targetControlPath: right }) => left === right);
-        });
-
-        result.push(...childConditions);
-      }
-    }
-
-    return result;
-  }
-
-  /**Evaluate the boolean result from the condition. */
-  private _getConditionsResult(
-    form: FormGroup,
-    conditions: ConditionsGroup
-  ): boolean | undefined {
-    let result: boolean | undefined = undefined;
-    const _conditions = conditions['&&'] || conditions['||'] || [];
-    if (!_conditions.length) return result;
-
-    const groupOperator = Object.keys(conditions)[0];
-
-    const ifConditions = _conditions.filter((x) =>
-      Array.isArray(x)
-    ) as ConditionsIfTupple[];
-
-    const childConditions = _conditions.find((x) => '&&' in x || '||' in x) as
-      | ConditionsGroup
-      | undefined;
-
-    const childResult = !childConditions
-      ? result
-      : this._getConditionsResult(form, childConditions);
-
-    const predicateFn = (value: ConditionsIfTupple) => {
-      const [controlPath, operator, controlValue] = value;
-      const control = form.get(getControlAndValuePath(controlPath).controlPath);
-
-      if (!control) return undefined;
-
-      const valuePath = getControlAndValuePath(controlPath).valuePath;
-
-      // Get the value for the specific property if valuePath is provided
-      const currentValue = !valuePath
-        ? control.value
-        : getValueInObject(control.value, valuePath);
-
-      return getBooleanOperationResult(currentValue, controlValue, operator);
+      return value.flatMap((x) =>
+        Array.isArray(x)
+          ? [getControlAndValuePath(x[0]).controlPath]
+          : extractPaths(x)
+      );
     };
 
-    switch (groupOperator) {
-      case '&&':
-        result = [ifConditions.every(predicateFn), childResult]
-          .filter((x) => x !== undefined)
-          .every((x) => x);
-        break;
+    const result = configs.reduce((acc, curr) => {
+      const { conditions, children } = curr;
+      const paths = !conditions
+        ? []
+        : Object.values(conditions)
+            .filter((x) => Boolean(x) && Object.keys(x!).length > 0)
+            .flatMap((x) => extractPaths(x!));
 
-      case '||':
-        result = [ifConditions.some(predicateFn), childResult]
-          .filter((x) => x !== undefined)
-          .some((x) => x);
-        break;
-    }
+      const childrenPaths = !children?.length
+        ? []
+        : this._getPathsOfControlsToListen(children);
+
+      acc.push(...paths.concat(childrenPaths));
+      return acc;
+    }, [] as string[]);
+
+    const removeDuplicates = [...new Set(result)];
+    return removeDuplicates;
+  }
+
+  /**Get all the configs which has `conditions` set, with it's full control path as the key. */
+  private _configsWithConditions(
+    configs: FormControlConfig[],
+    parentControlPath?: string
+  ): { [fullControlPath: string]: FormControlConfig } {
+    const result = configs.reduce((acc, curr) => {
+      const { conditions, children } = curr;
+      const fullControlPath = parentControlPath
+        ? `${parentControlPath}.${curr.formControlName}`
+        : curr.formControlName;
+
+      if (conditions) acc[fullControlPath] = curr;
+      if (children && children.length) {
+        acc = {
+          ...acc,
+          ...this._configsWithConditions(children, fullControlPath),
+        };
+      }
+
+      return acc;
+    }, {} as { [fullControlPath: string]: FormControlConfig });
 
     return result;
+  }
+
+  private _evaluateConditionsStatement(
+    conditionsGroup: ConditionsGroup
+  ): boolean | undefined {
+    const form = this._globalVariableService.rootForm;
+
+    if (!form || (!conditionsGroup['&&'] && !conditionsGroup['||'])) {
+      return undefined;
+    }
+
+    const groupOperator = conditionsGroup['&&'] ? '&&' : '||';
+    const conditionsGroupItems = conditionsGroup[groupOperator]!;
+
+    const childrenStatementsResult = conditionsGroupItems
+      .filter((x) => !Array.isArray(x))
+      .map((x) => this._evaluateConditionsStatement(x as ConditionsGroup));
+
+    const statementsResult = conditionsGroupItems
+      .filter((x) => Array.isArray(x))
+      .map((x) => {
+        const [controlValuePath, operator, targetValue] =
+          x as ConditionsStatementTupple;
+        const paths = getControlAndValuePath(controlValuePath);
+        const controlValue = form.get(paths.controlPath)?.value;
+
+        const valueToEvaluate = !paths.valuePath
+          ? controlValue
+          : getValueInObject(controlValue, paths.valuePath);
+
+        const result = evaluateBooleanOperation([
+          valueToEvaluate,
+          operator,
+          targetValue,
+        ]);
+
+        return result;
+      });
+
+    const bools = childrenStatementsResult
+      .concat(statementsResult)
+      .filter((x) => x !== undefined);
+
+    return groupOperator === '&&' ? bools.every(Boolean) : bools.some(Boolean);
   }
 }

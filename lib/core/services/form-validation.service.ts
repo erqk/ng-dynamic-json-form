@@ -8,8 +8,7 @@ import {
   isFormGroup,
 } from '@angular/forms';
 import { EMPTY, Observable, map, startWith } from 'rxjs';
-import { ValidatorConfig } from '../models';
-import { ValidatorAndConditionEnum } from '../models/validator-and-condition.enum';
+import { ValidatorConfig, ValidatorsEnum } from '../models';
 import { clearEmpties } from '../utilities/clear-empties';
 import { GlobalVariableService } from './global-variable.service';
 
@@ -28,16 +27,16 @@ function emailValidator(control: AbstractControl): ValidationErrors | null {
 const builtInValidators = (
   value?: any
 ): {
-  [key in ValidatorAndConditionEnum]?: ValidatorFn;
+  [key in ValidatorsEnum]?: ValidatorFn;
 } => ({
-  [ValidatorAndConditionEnum.required]: Validators.required,
-  [ValidatorAndConditionEnum.requiredTrue]: Validators.requiredTrue,
-  [ValidatorAndConditionEnum.email]: emailValidator,
-  [ValidatorAndConditionEnum.pattern]: Validators.pattern(value),
-  [ValidatorAndConditionEnum.min]: Validators.min(value),
-  [ValidatorAndConditionEnum.max]: Validators.max(value),
-  [ValidatorAndConditionEnum.minLength]: Validators.minLength(value),
-  [ValidatorAndConditionEnum.maxLength]: Validators.maxLength(value),
+  [ValidatorsEnum.required]: Validators.required,
+  [ValidatorsEnum.requiredTrue]: Validators.requiredTrue,
+  [ValidatorsEnum.email]: emailValidator,
+  [ValidatorsEnum.pattern]: Validators.pattern(value),
+  [ValidatorsEnum.min]: Validators.min(value),
+  [ValidatorsEnum.max]: Validators.max(value),
+  [ValidatorsEnum.minLength]: Validators.minLength(value),
+  [ValidatorsEnum.maxLength]: Validators.maxLength(value),
 });
 
 @Injectable()
@@ -65,15 +64,15 @@ export class FormValidationService {
       const { name, value } = item;
       const _value = () => {
         switch (name) {
-          case ValidatorAndConditionEnum.pattern:
+          case ValidatorsEnum.pattern:
             return value instanceof RegExp
               ? value
               : new RegExp(value, item.flags);
 
-          case ValidatorAndConditionEnum.min:
-          case ValidatorAndConditionEnum.max:
-          case ValidatorAndConditionEnum.minLength:
-          case ValidatorAndConditionEnum.maxLength:
+          case ValidatorsEnum.min:
+          case ValidatorsEnum.max:
+          case ValidatorsEnum.minLength:
+          case ValidatorsEnum.maxLength:
             try {
               return typeof value !== 'number' ? parseFloat(value) : value;
             } catch {
@@ -86,7 +85,7 @@ export class FormValidationService {
       };
 
       const validator =
-        builtInValidators(_value())[name as ValidatorAndConditionEnum] ??
+        builtInValidators(_value())[name as ValidatorsEnum] ??
         this._globalVariableService.customValidators?.[name] ??
         Validators.nullValidator;
 
@@ -146,7 +145,7 @@ export class FormValidationService {
 
     // The key mapping of the `ValidationErrors` with the `ValidatorConfig`,
     // to let us get the correct message by using `name` of `ValidatorConfig`.
-    const valueKey: { [key in ValidatorAndConditionEnum]?: string } = {
+    const valueKey: { [key in ValidatorsEnum]?: string } = {
       pattern: 'requiredPattern',
       min: 'min',
       max: 'max',
@@ -162,7 +161,7 @@ export class FormValidationService {
           return key === errorKey;
         }
 
-        const targetKey = valueKey[x.name as ValidatorAndConditionEnum] ?? '';
+        const targetKey = valueKey[x.name as ValidatorsEnum] ?? '';
         const requiredValue = controlErrors[key][targetKey];
         const requiredValueMatch =
           requiredValue && x.name === 'pattern'

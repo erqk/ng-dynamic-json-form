@@ -1,6 +1,4 @@
-export enum ValidatorAndConditionEnum {
-  hidden = 'hidden',
-  disabled = 'disabled',
+export enum ValidatorsEnum {
   required = 'required',
   requiredTrue = 'requiredTrue',
   min = 'min',

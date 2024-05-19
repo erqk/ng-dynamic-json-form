@@ -1,7 +1,7 @@
-import { ConditionType } from './conditions.type';
+import { ValidatorsEnum } from './validators.enum';
 
 export interface ValidatorConfig {
-  name: ConditionType;
+  name: keyof typeof ValidatorsEnum | (string & {});
   value?: any;
 
   /**Use {{value}} placeholder to display current value */

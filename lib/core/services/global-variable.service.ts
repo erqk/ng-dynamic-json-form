@@ -1,25 +1,27 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { UiComponents } from '../models';
+import { FormControlConfig, UiComponents } from '../models';
 import { CustomValidators } from '../models/custom-validators.type';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
 interface GlobalVariables
   extends Omit<
     GlobalVariableService,
-    'setup' | 'update' | 'rootForm' | 'hideErrorMessage$'
+    'setup' | 'rootConfigs' | 'rootForm' | 'hideErrorMessage$'
   > {}
 type Test = keyof GlobalVariables;
 @Injectable()
 export class GlobalVariableService {
   hostElement?: HTMLElement;
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
+  rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
 
   customValidators: CustomValidators | undefined;
   uiComponents: UiComponents | undefined;
   customComponents: NgDynamicJsonFormComponent['customComponents'];
   customTemplates: NgDynamicJsonFormComponent['customTemplates'];
+  conditionsActionFuntions: NgDynamicJsonFormComponent['conditionsActionFuntions'];
   errorComponents: NgDynamicJsonFormComponent['errorComponents'];
   errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
   labelComponents: NgDynamicJsonFormComponent['labelComponents'];

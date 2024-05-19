@@ -1,8 +1,8 @@
 import { ConditionsGroup } from './conditions-group.type';
-import { ValidatorAndConditionEnum } from './validator-and-condition.enum';
+import { ConditionsActionEnum } from './conditions-action.enum';
 
 export type ConditionType =
-  | keyof typeof ValidatorAndConditionEnum
+  | keyof typeof ConditionsActionEnum
   | (string & {});
 
 export type Conditions = {

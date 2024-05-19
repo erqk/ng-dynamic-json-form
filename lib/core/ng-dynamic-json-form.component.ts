@@ -44,6 +44,7 @@ import { FormTitleComponent } from './components/form-title/form-title.component
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
 import { FormControlConfig } from './models';
+import { ConditionsActionFunctions } from './models/conditions-action-functions.interface';
 import { ConfigValidationErrors } from './models/config-validation-errors.interface';
 import { CustomComponents } from './models/custom-components.type';
 import { CustomErrorComponents } from './models/custom-error-components.type';
@@ -171,6 +172,13 @@ export class NgDynamicJsonFormComponent
    */
   @Input() customTemplates?: CustomTemplates;
 
+  /**Functions to execute when conditions is met.
+   * @description
+   * The function where its key is match will be called when conditions is met.
+   * The function contains an argument which is the current `AbstractControl`.
+   */
+  @Input() conditionsActionFuntions?: ConditionsActionFunctions;
+
   /**Custom components/templates for error message of specific control,
    * where `formControlName` is the key */
   @Input() errorComponents?: CustomErrorComponents;
@@ -204,7 +212,9 @@ export class NgDynamicJsonFormComponent
     const { configs, hideErrorMessage } = simpleChanges;
 
     if (hideErrorMessage) {
-      this._globalVariableService.hideErrorMessage$.next(this.hideErrorMessage);
+      this._globalVariableService.hideErrorMessage$.next(
+        hideErrorMessage.currentValue
+      );
     }
 
     if (configs) {
@@ -221,6 +231,7 @@ export class NgDynamicJsonFormComponent
       customValidators: this._providerConfig?.customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
+      conditionsActionFuntions: this.conditionsActionFuntions,
       errorComponents: this.errorComponents,
       errorTemplates: this.errorTemplates,
       layoutComponents: this.layoutComponents,
@@ -244,14 +255,10 @@ export class NgDynamicJsonFormComponent
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    // This function will always called on next event loop,
-    // so we get the errors immediately when this function is called.
     return this._formErrors;
   }
 
-  registerOnValidatorChange?(fn: () => void): void {
-    return;
-  }
+  registerOnValidatorChange?(fn: () => void): void {}
 
   writeValue(obj: any): void {
     this._formPatcherService.patchForm(this.form, obj);
@@ -284,6 +291,7 @@ export class NgDynamicJsonFormComponent
     if (!validationResult.errors?.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
       this._globalVariableService.rootForm = this.form;
+      this._globalVariableService.rootConfigs = this.configGet;
       this.formGet.emit(this.form);
 
       this._setupListeners();
@@ -303,10 +311,7 @@ export class NgDynamicJsonFormComponent
     const host = this._el.nativeElement;
     const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
-    const conditions$ = this._formConditionsService.formConditionsEvent$(
-      this.form,
-      this.configGet
-    );
+    const conditions$ = this._formConditionsService.listenConditions$();
 
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
@@ -350,7 +355,7 @@ export class NgDynamicJsonFormComponent
       this.form && markFormPristine(this.form);
     }
 
-    // No ControlValueAccessor is used, update the form errors manually
+    // No ControlValueAccessor found, update the form errors manually
     if (!this._controlDirective) {
       this.form?.setErrors(this._formErrors);
     }

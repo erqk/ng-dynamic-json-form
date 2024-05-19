@@ -2,13 +2,13 @@ import { Conditions } from './conditions.type';
 import { FormControlOptions } from './form-control-options.interface';
 import { FormControlType } from './form-control-type.type';
 import { FormLayout } from './form-layout.interface';
-import { ValidatorConfig } from './form-validator-config.interface';
+import { ValidatorConfig } from './validator-config.interface';
 import { NgxMaskConfig } from './ngx-mask-config.interface';
 
 export interface FormControlConfig {
   formControlName: string;
 
-  /**Change state or toggle validators when condition met */
+  /**Action to do on this control when condition is met. e.g. Change visibility or toggle validators */
   conditions?: Conditions;
 
   /**Provide to make this control as a FormGroup, cannot use with `formArray` */

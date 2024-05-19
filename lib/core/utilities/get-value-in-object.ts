@@ -1,5 +1,5 @@
-import { ConditionsIfTupple, ConditionsOperator } from '../models';
-import { getBooleanOperationResult } from './get-boolean-operation-result';
+import { ConditionsStatementTupple, ConditionsOperator } from '../models';
+import { evaluateBooleanOperation } from './get-boolean-operation-result';
 
 /**
  * Get the value in an object located in a specific key.
@@ -81,7 +81,7 @@ function getItemIndex(array: any[], path: string): string {
     .replace('[', '')
     .replace(']', '')
     .split(',')
-    .map((x) => x.trim()) as ConditionsIfTupple;
+    .map((x) => x.trim()) as ConditionsStatementTupple;
 
   const _key = removeQuotes(key);
   const _operator = removeQuotes(operator) as ConditionsOperator;
@@ -100,7 +100,7 @@ function getItemIndex(array: any[], path: string): string {
     const left = !_key ? item : getValueInObject(item, _key);
     const right = valueParsed();
 
-    return getBooleanOperationResult(left, right, _operator);
+    return evaluateBooleanOperation([left, _operator, right]);
   });
 
   return index < 0 ? '0' : index.toString();
