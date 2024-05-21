@@ -3,7 +3,7 @@ import { OptionSourceConfig } from './option-source-config.interface';
 
 export interface FormControlOptions {
   data?: OptionItem[];
-  src?: OptionSourceConfig;
+  src?: string | OptionSourceConfig;
   srcAppendPosition?: 'after' | 'before';
   autoSelectFirst?: boolean;
   layout?: 'row' | 'column';

@@ -29,6 +29,7 @@ import {
   Validator,
 } from '@angular/forms';
 import {
+  Observable,
   Subject,
   debounceTime,
   fromEvent,
@@ -43,7 +44,7 @@ import { FormGroupComponent } from './components/form-group/form-group.component
 import { FormTitleComponent } from './components/form-title/form-title.component';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
-import { FormControlConfig } from './models';
+import { FormControlConfig, OptionItem } from './models';
 import { ConditionsActionFunctions } from './models/conditions-action-functions.interface';
 import { ConfigValidationErrors } from './models/config-validation-errors.interface';
 import { CustomComponents } from './models/custom-components.type';
@@ -184,10 +185,16 @@ export class NgDynamicJsonFormComponent
    */
   @Input() conditionsActionFuntions?: ConditionsActionFunctions;
 
+  /**Toggle all the collapsible state */
+  @Input() collapsibleState?: FormLayout['contentCollapsible'];
+
   /**Custom components/templates for error message of specific control,
    * where `formControlName` is the key */
   @Input() errorComponents?: CustomErrorComponents;
   @Input() errorTemplates?: CustomTemplates;
+
+  /**Control the show/hide of all the error messages */
+  @Input() hideErrorMessage?: boolean;
 
   /**Custom components/templates for global layout UI */
   @Input() layoutComponents?: LayoutComponents =
@@ -199,11 +206,26 @@ export class NgDynamicJsonFormComponent
   @Input() labelComponents?: CustomLabelComponents;
   @Input() labelTemplates?: CustomTemplates;
 
-  /**Control the show/hide of all the error messages */
-  @Input() hideErrorMessage?: boolean;
-
-  /**Toggle all the collapsible state */
-  @Input() collapsibleState?: FormLayout['contentCollapsible'];
+  /**Custom observables for the options
+   * @description
+   * The key that match with the `src` will be used.
+   *
+   * @example
+   * ```ts
+   * optionsSources = {
+   *    'getCountries': getCountries$
+   * }
+   *
+   * config = {
+   *  ...
+   *  options: {
+   *    ...
+   *    src: 'getCountries'
+   *  }
+   * }
+   * ```
+   */
+  @Input() optionsSources?: { [key: string]: Observable<OptionItem[]> };
 
   @Output() formGet = new EventEmitter<UntypedFormGroup>();
   @Output() optionsLoaded = new EventEmitter();
@@ -257,6 +279,7 @@ export class NgDynamicJsonFormComponent
       hostElement: this._el.nativeElement,
       labelComponents: this.labelComponents,
       labelTemplates: this.labelTemplates,
+      optionsSources: this.optionsSources,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
         ...this._providerConfig?.uiComponents,

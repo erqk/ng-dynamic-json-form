@@ -27,6 +27,7 @@ export class GlobalVariableService {
   labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
   layoutComponents: NgDynamicJsonFormComponent['layoutComponents'];
   layoutTemplates: NgDynamicJsonFormComponent['layoutTemplates'];
+  optionsSources: NgDynamicJsonFormComponent['optionsSources'];
   uiComponents: UiComponents | undefined;
 
   setup(variables: GlobalVariables): void {
@@ -40,6 +41,7 @@ export class GlobalVariableService {
     this.hostElement = variables.hostElement;
     this.labelComponents = variables.labelComponents;
     this.labelTemplates = variables.labelTemplates;
+    this.optionsSources = variables.optionsSources;
     this.uiComponents = variables.uiComponents;
   }
 }

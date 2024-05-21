@@ -234,11 +234,12 @@ export class FormControlComponent
         this._pendingValue = null;
       } else if (autoSelectFirst && options.length > 0) {
         updateControlValue(options[0].value);
-      } else if (src.filter) {
+      } else if (typeof src !== 'string' && src.filter) {
         updateControlValue(null);
       }
 
       this._controlComponentRef?.onOptionsGet(options);
+      this._formReadyStateService.optionsLoading(false);
       this.loading = false;
       this._cd.markForCheck();
       this._cd.detectChanges();
@@ -250,15 +251,18 @@ export class FormControlComponent
 
     this.loading = true;
     this._formReadyStateService.optionsLoading(true);
-    this._optionsDataService
-      .getOptions$(src, valueChangesCallback)
-      .pipe(
-        tap((x) => {
-          onOptionsGet(x);
-          this._formReadyStateService.optionsLoading(false);
-        })
-      )
-      .subscribe();
+
+    if (typeof src === 'string') {
+      const source$ = this._globalVariableService.optionsSources?.[src];
+      if (!source$) return;
+
+      source$.pipe(tap((x) => onOptionsGet(x))).subscribe();
+    } else {
+      this._optionsDataService
+        .getOptions$(src, valueChangesCallback)
+        .pipe(tap((x) => onOptionsGet(x)))
+        .subscribe();
+    }
   }
 
   private _errorMessageEvent(): void {
