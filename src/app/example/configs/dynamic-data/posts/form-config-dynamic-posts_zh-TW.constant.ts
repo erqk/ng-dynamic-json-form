@@ -1,4 +1,5 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
+import { FORM_CONFIG_DYNAMIC_POSTS_EN } from './form-config-dynamic-posts_en.constant';
 
 export const FORM_CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
   {
@@ -10,38 +11,17 @@ export const FORM_CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
       hideLabel: true,
       descriptionPosition: 'after',
     },
-    options: {
-      sourceList: [
-        {
-          src: 'https://dummyjson.com/posts',
-          method: 'GET',
-          data: {
-            path: 'posts',
-            labelKey: 'tags',
-          },
-        },
-      ],
-    },
+    options: FORM_CONFIG_DYNAMIC_POSTS_EN.find(
+      (x) => x.formControlName === 'tagsControl'
+    )?.options,
   },
   {
     label: '已選擇標籤之貼文',
     formControlName: 'postWithTag',
     type: 'select',
-    options: {
-      trigger: {
-        action: 'REQUEST',
-        src: 'https://dummyjson.com/posts/search',
-        method: 'GET',
-        params: {
-          q: 'tags.[,includes,"love"]',
-        },
-        data: {
-          labelKey: 'title',
-          path: 'posts',
-        },
-        triggerValuePath: 'tagsControl',
-      },
-    },
+    options: FORM_CONFIG_DYNAMIC_POSTS_EN.find(
+      (x) => x.formControlName === 'postWithTag'
+    )?.options,
   },
   {
     label: '搜尋貼文',
@@ -51,21 +31,8 @@ export const FORM_CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
     label: '貼文搜尋結果',
     formControlName: 'resultPosts',
     type: 'select',
-    options: {
-      trigger: {
-        action: 'REQUEST',
-        src: 'https://dummyjson.com/posts/search',
-        method: 'GET',
-        params: {
-          q: '',
-        },
-        data: {
-          labelKey: 'title',
-          path: 'posts',
-        },
-        triggerValuePath: 'searchControl',
-        debounceTime: 500,
-      },
-    },
+    options: FORM_CONFIG_DYNAMIC_POSTS_EN.find(
+      (x) => x.formControlName === 'resultPosts'
+    )?.options,
   },
 ];

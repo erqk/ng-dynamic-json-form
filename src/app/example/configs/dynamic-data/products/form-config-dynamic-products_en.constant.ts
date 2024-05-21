@@ -6,17 +6,15 @@ export const FORM_CONFIG_DYNAMIC_PRODUCTS_EN: FormControlConfig[] = [
     formControlName: 'products',
     type: 'select',
     options: {
-      sourceList: [
-        {
-          src: 'https://dummyjson.com/products',
-          method: 'GET',
-          data: {
-            path: 'products',
-            labelKey: 'title',
-            valueKeys: ['id', 'title', 'brand'],
-          },
+      src: {
+        url: 'https://dummyjson.com/products',
+        method: 'GET',
+        mapData: {
+          contentPath: 'products',
+          labelKey: 'title',
+          valueKeys: ['id', 'title', 'brand'],
         },
-      ],
+      },
     },
   },
   {
@@ -24,18 +22,35 @@ export const FORM_CONFIG_DYNAMIC_PRODUCTS_EN: FormControlConfig[] = [
     description: 'Data filtered by the brand of selected product',
     formControlName: 'subProducts',
     type: 'select',
+    extra: {
+      autoDisplayFirst: false,
+    },
     options: {
-      trigger: {
-        action: 'FILTER',
-        src: 'https://dummyjson.com/products',
+      src: {
+        url: 'https://dummyjson.com/products',
         method: 'GET',
-        data: {
-          path: 'products',
+        mapData: {
+          contentPath: 'products',
           labelKey: 'title',
         },
-        triggerValuePath: 'products,brand',
-        filterMatchPath: 'brand',
+        filter: {
+          by: 'products',
+          conditions: {
+            '&&': [['brand', '===', 'brand']],
+          },
+        },
       },
+      // trigger: {
+      //   action: 'FILTER',
+      //   src: 'https://dummyjson.com/products',
+      //   method: 'GET',
+      //   data: {
+      //     path: 'products',
+      //     labelKey: 'title',
+      //   },
+      //   triggerValuePath: 'products,brand',
+      //   filterMatchPath: 'brand',
+      // },
     },
   },
 ];

@@ -16,16 +16,16 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
           autoDisplayFirst: false,
         },
         options: {
-          sourceList: [
-            {
-              src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json',
-              method: 'GET',
-              data: {
-                labelKey: 'name',
-                valueKeys: ['id', 'name'],
-              },
-            },
-          ],
+          // sourceList: [
+          //   {
+          //     src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json',
+          //     method: 'GET',
+          //     data: {
+          //       labelKey: 'name',
+          //       valueKeys: ['id', 'name'],
+          //     },
+          //   },
+          // ],
         },
       },
       {
@@ -36,17 +36,17 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
           autoDisplayFirst: false,
         },
         options: {
-          trigger: {
-            action: 'FILTER',
-            src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json',
-            method: 'GET',
-            data: {
-              labelKey: 'name',
-              valueKeys: ['id', 'name'],
-            },
-            triggerValuePath: 'address.country, id',
-            filterMatchPath: 'country_id',
-          },
+          // trigger: {
+          //   action: 'FILTER',
+          //   src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json',
+          //   method: 'GET',
+          //   data: {
+          //     labelKey: 'name',
+          //     valueKeys: ['id', 'name'],
+          //   },
+          //   triggerValuePath: 'address.country, id',
+          //   filterMatchPath: 'country_id',
+          // },
         },
       },
       {
@@ -57,17 +57,17 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
           autoDisplayFirst: false,
         },
         options: {
-          trigger: {
-            action: 'FILTER',
-            src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/cities.json',
-            method: 'GET',
-            data: {
-              labelKey: 'name',
-              valueKeys: ['id', 'name'],
-            },
-            triggerValuePath: 'address.state,id',
-            filterMatchPath: 'state_id',
-          },
+          // trigger: {
+          //   action: 'FILTER',
+          //   src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/cities.json',
+          //   method: 'GET',
+          //   data: {
+          //     labelKey: 'name',
+          //     valueKeys: ['id', 'name'],
+          //   },
+          //   triggerValuePath: 'address.state,id',
+          //   filterMatchPath: 'state_id',
+          // },
         },
       },
       {

@@ -1,47 +1,13 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
+import { FORM_CONFIG_DYNAMIC_MULTI_SOURCE_EN } from './form-config-dynamic-multi-source_en.constant';
 
 export const FORM_CONFIG_DYNAMIC_MULTI_SOURCE_ZHTW: FormControlConfig[] = [
   {
     label: '選項 (多來源)',
     formControlName: 'options',
     type: 'checkbox',
-    options: {
-      labelPosition: 'after',
-      data: [
-        {
-          label: 'LABEL_A',
-          value: '000',
-        },
-      ],
-      sourceList: [
-        {
-          src: 'https://dummyjson.com/products',
-          method: 'GET',
-          data: {
-            path: 'products',
-            labelKey: 'title',
-          },
-        },
-        {
-          src: 'https://dummyjson.com/carts',
-          method: 'GET',
-          data: {
-            path: 'carts.0.products',
-            labelKey: 'title',
-          },
-        },
-        {
-          src: 'https://dummyjson.com/users',
-          method: 'GET',
-          data: {
-            path: 'users',
-            labelKey: 'maidenName',
-            valueKeys: ['id', 'firstName', 'lastName', 'maidenName'],
-          },
-        },
-      ],
-      containerStyles:
-        'display:grid;grid-template-columns:repeat(auto-fill,150px);',
-    },
+    options: FORM_CONFIG_DYNAMIC_MULTI_SOURCE_EN.find(
+      (x) => x.formControlName === 'options'
+    )?.options,
   },
 ];

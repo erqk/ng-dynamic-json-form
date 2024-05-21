@@ -11,16 +11,14 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
       descriptionPosition: 'after',
     },
     options: {
-      sourceList: [
-        {
-          src: 'https://dummyjson.com/posts',
-          method: 'GET',
-          data: {
-            path: 'posts',
-            labelKey: 'tags',
-          },
+      src: {
+        url: 'https://dummyjson.com/posts',
+        method: 'GET',
+        mapData: {
+          contentPath: 'posts',
+          labelKey: 'tags',
         },
-      ],
+      },
     },
   },
   {
@@ -28,18 +26,19 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
     formControlName: 'postWithTag',
     type: 'select',
     options: {
-      trigger: {
-        action: 'REQUEST',
-        src: 'https://dummyjson.com/posts/search',
+      src: {
+        url: 'https://dummyjson.com/posts/search',
         method: 'GET',
-        params: {
-          q: 'tags.[,includes,"love"]',
-        },
-        data: {
+        mapData: {
           labelKey: 'title',
-          path: 'posts',
+          contentPath: 'posts',
         },
-        triggerValuePath: 'tagsControl',
+        trigger: {
+          by: 'tagsControl',
+          body: {
+            q: 'tags.[,includes,"love"]',
+          },
+        },
       },
     },
   },
@@ -52,20 +51,20 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
     formControlName: 'resultPosts',
     type: 'select',
     options: {
-      trigger: {
-        action: 'REQUEST',
-        src: 'https://dummyjson.com/posts/search',
-        method: 'GET',
-        params: {
-          q: '',
-        },
-        data: {
-          labelKey: 'title',
-          path: 'posts',
-        },
-        triggerValuePath: 'searchControl',
-        debounceTime: 500,
-      },
+      // trigger: {
+      //   action: 'REQUEST',
+      //   src: 'https://dummyjson.com/posts/search',
+      //   method: 'GET',
+      //   params: {
+      //     q: '',
+      //   },
+      //   data: {
+      //     labelKey: 'title',
+      //     path: 'posts',
+      //   },
+      //   triggerValuePath: 'searchControl',
+      //   debounceTime: 500,
+      // },
     },
   },
 ];

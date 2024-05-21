@@ -1,4 +1,4 @@
-import { FormControlConfig } from "ng-dynamic-json-form";
+import { FormControlConfig } from 'ng-dynamic-json-form';
 
 export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
   {
@@ -14,18 +14,17 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         type: 'select',
         extra: {
           autoDisplayFirst: false,
+          virtualScroll: true,
+          virtualScrollItemSize: 48,
         },
         options: {
-          sourceList: [
-            {
-              src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json',
-              method: 'GET',
-              data: {
-                labelKey: 'name',
-                valueKeys: ['id', 'name'],
-              },
+          src: {
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json',
+            method: 'GET',
+            mapData: {
+              labelKey: 'name',
             },
-          ],
+          },
         },
       },
       {
@@ -34,18 +33,22 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         type: 'select',
         extra: {
           autoDisplayFirst: false,
+          virtualScroll: true,
+          virtualScrollItemSize: 48
         },
         options: {
-          trigger: {
-            action: 'FILTER',
-            src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json',
+          src: {
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json',
             method: 'GET',
-            data: {
+            mapData: {
               labelKey: 'name',
-              valueKeys: ['id', 'name'],
             },
-            triggerValuePath: 'address.country, id',
-            filterMatchPath: 'country_id',
+            filter: {
+              by: 'address.country',
+              conditions: {
+                '&&': [['id', '===', 'country_id']],
+              },
+            },
           },
         },
       },
@@ -55,18 +58,22 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         type: 'select',
         extra: {
           autoDisplayFirst: false,
+          virtualScroll: true,
+          virtualScrollItemSize: 48
         },
         options: {
-          trigger: {
-            action: 'FILTER',
-            src: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/cities.json',
+          src: {
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/cities.json',
             method: 'GET',
-            data: {
+            mapData: {
               labelKey: 'name',
-              valueKeys: ['id', 'name'],
             },
-            triggerValuePath: 'address.state,id',
-            filterMatchPath: 'state_id',
+            filter: {
+              by: 'address.state',
+              conditions: {
+                '&&': [['id', '===', 'state_id']],
+              },
+            },
           },
         },
       },

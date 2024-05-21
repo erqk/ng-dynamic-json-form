@@ -177,8 +177,8 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     type: 'date',
     extra: {
       appendTo: 'body',
-      min: 'Date(2024/01/01)',
-      minDate: 'Date(2024/01/01)',
+      min: new Date(),
+      minDate: new Date(),
       showTime: true,
       showIcon: true,
     },
