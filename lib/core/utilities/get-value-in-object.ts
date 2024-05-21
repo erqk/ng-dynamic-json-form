@@ -34,7 +34,7 @@ import { evaluateBooleanOperation } from './get-boolean-operation-result';
  * If the array contains only primitive value, leave the first parameter of ConditionsIfTupple empty.
  * For example, change `["value", "===", 1]` to `[,"===", 1].
  */
-export function getValueInObject(obj: any, path: string): any {
+export function getValueInObject(obj: any, path: string | undefined): any {
   if (!path || !obj || typeof obj !== 'object') {
     return obj;
   }
