@@ -9,25 +9,25 @@ interface GlobalVariables
     GlobalVariableService,
     'setup' | 'rootConfigs' | 'rootForm' | 'hideErrorMessage$'
   > {}
-type Test = keyof GlobalVariables;
 @Injectable()
 export class GlobalVariableService {
-  hostElement?: HTMLElement;
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
 
+  // The variables that must be initialized
   customValidators: CustomValidators | undefined;
-  uiComponents: UiComponents | undefined;
   customComponents: NgDynamicJsonFormComponent['customComponents'];
   customTemplates: NgDynamicJsonFormComponent['customTemplates'];
   conditionsActionFuntions: NgDynamicJsonFormComponent['conditionsActionFuntions'];
   errorComponents: NgDynamicJsonFormComponent['errorComponents'];
   errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
+  hostElement?: HTMLElement;
   labelComponents: NgDynamicJsonFormComponent['labelComponents'];
   labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
   layoutComponents: NgDynamicJsonFormComponent['layoutComponents'];
   layoutTemplates: NgDynamicJsonFormComponent['layoutTemplates'];
+  uiComponents: UiComponents | undefined;
 
   setup(variables: GlobalVariables): void {
     this.customValidators = variables.customValidators;
