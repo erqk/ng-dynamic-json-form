@@ -284,12 +284,7 @@ export class FormControlComponent
               : control.errors;
 
           if (hideErrors === false) {
-            control.markAsTouched();
-            control.markAsDirty();
-            controlComponent.control?.markAsTouched();
-            controlComponent.control?.markAsDirty();
-            controlComponent.markAsTouched();
-            controlComponent.markAsDirty();
+            this._setControlDirtyOrTouched('both');
           }
 
           controlComponent.control?.setErrors(errors);
@@ -299,6 +294,40 @@ export class FormControlComponent
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
+  }
+
+  private _setControlDirtyOrTouched(state: 'dirty' | 'touched' | 'both'): void {
+    if (!this._controlComponentRef || !this.control) return;
+
+    const control = this.control;
+    const controlComponent = this._controlComponentRef;
+
+    const markAsDirty = () => {
+      control.markAsDirty();
+      controlComponent.control?.markAsDirty();
+      controlComponent.markAsDirty();
+    };
+
+    const markAsTouched = () => {
+      control.markAsTouched();
+      controlComponent.control?.markAsTouched();
+      controlComponent.markAsTouched();
+    };
+
+    switch (state) {
+      case 'both':
+        markAsDirty();
+        markAsTouched();
+        break;
+
+      case 'dirty':
+        markAsDirty();
+        break;
+
+      case 'touched':
+        markAsTouched();
+        break;
+    }
   }
 
   private get _inputType(): string {
