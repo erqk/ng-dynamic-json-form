@@ -244,10 +244,14 @@ export class FormControlComponent
       this._cd.detectChanges();
     };
 
+    const valueChangesCallback = () => {
+      this.loading = true;
+    };
+
     this.loading = true;
     this._formReadyStateService.optionsLoading(true);
     this._optionsDataService
-      .getOptions$(src)
+      .getOptions$(src, valueChangesCallback)
       .pipe(
         tap((x) => {
           onOptionsGet(x);

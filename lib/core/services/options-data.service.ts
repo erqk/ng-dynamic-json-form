@@ -32,14 +32,23 @@ export class OptionsDataService {
   private _httpRequestCacheService = inject(HttpRequestCacheService);
   private _cancelAll$ = new Subject<void>();
 
-  getOptions$(srcConfig: OptionSourceConfig): Observable<OptionItem[]> {
+  getOptions$(
+    srcConfig: OptionSourceConfig,
+    valueChangesCallback: () => void
+  ): Observable<OptionItem[]> {
     if (!srcConfig) {
       return EMPTY;
     }
 
     const event$ = () => {
-      if (srcConfig.filter) return this._getOptionsByFilter$(srcConfig);
-      if (srcConfig.trigger) return this._getOptionsOnTrigger$(srcConfig);
+      if (srcConfig.filter) {
+        return this._getOptionsByFilter$(srcConfig);
+      }
+
+      if (srcConfig.trigger) {
+        return this._getOptionsOnTrigger$(srcConfig, valueChangesCallback);
+      }
+
       return this._getOptions$(srcConfig);
     };
 
@@ -128,12 +137,14 @@ export class OptionsDataService {
   }
 
   private _getOptionsOnTrigger$(
-    srcConfig: OptionSourceConfig
+    srcConfig: OptionSourceConfig,
+    valueChangesCallback: () => void
   ): Observable<OptionItem[]> {
     if (!srcConfig.trigger) return of([]);
 
     return this._onTriggerControlChanges$(srcConfig.trigger).pipe(
       switchMap((x) => {
+        valueChangesCallback();
         const emptyValue = x === undefined || x === null || x === '';
         return emptyValue ? of([]) : this._getOptions$(srcConfig);
       }),
