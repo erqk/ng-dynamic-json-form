@@ -6,5 +6,6 @@ export * from './form-generator.service';
 export * from './form-patcher.service';
 export * from './form-validation.service';
 export * from './global-variable.service';
+export * from './http-request-cache.service';
 export * from './ngx-mask-config-init.service';
 export * from './options-data.service';

@@ -8,6 +8,7 @@ import {
   HostBinding,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   Type,
   ViewChild,
@@ -24,17 +25,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import {
-  EMPTY,
-  Observable,
-  combineLatest,
-  delay,
-  finalize,
-  startWith,
-  switchMap,
-  tap,
-  timer,
-} from 'rxjs';
+import { combineLatest, delay, startWith, tap } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
 import { OptionsDataService } from '../../services';
 import { ConfigMappingService } from '../../services/config-mapping.service';
@@ -64,7 +55,7 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
   styles: [':host { display: block }'],
 })
 export class FormControlComponent
-  implements OnInit, AfterViewInit, ControlValueAccessor, Validator
+  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
 {
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
@@ -76,11 +67,7 @@ export class FormControlComponent
   private _hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   private _controlComponentRef?: CustomControlComponent;
-  private _patchingValue = false;
   private _pendingValue: any = null;
-
-  /**To prevent data keep concating */
-  private _existingOptions: OptionItem[] = [];
 
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
@@ -114,7 +101,6 @@ export class FormControlComponent
 
   writeValue(obj: any): void {
     this._pendingValue = obj;
-    this._patchingValue = true;
     this._controlComponentRef?.writeValue(obj);
   }
 
@@ -143,6 +129,11 @@ export class FormControlComponent
     this._injectInputComponent();
     this._fetchOptions();
     this._errorMessageEvent();
+  }
+
+  ngOnDestroy(): void {
+    this.control = undefined;
+    this.data = undefined;
   }
 
   get showErrors(): boolean {
@@ -187,7 +178,7 @@ export class FormControlComponent
     if (!componentRef) return;
 
     componentRef.instance.data = this._configMappingService.mapCorrectConfig(
-      this.data
+      structuredClone(this.data)
     );
 
     componentRef.instance.writeValue(this._pendingValue);
@@ -201,30 +192,57 @@ export class FormControlComponent
   }
 
   private _fetchOptions(): void {
-    if (!this.data || !this.data.options) return;
-    const { sourceList, trigger, autoSelectFirst, data } = this.data.options;
+    if (!this.data || !this.data.options) {
+      this._pendingValue = null;
+      return;
+    }
 
-    if (!sourceList?.length && !trigger) {
-      if (autoSelectFirst) {
-        this.control?.setValue(data?.[0]?.value ?? null);
+    const {
+      src,
+      srcAppendPosition,
+      autoSelectFirst,
+      data = [],
+    } = this.data.options;
+
+    const updateControlValue = (value: any) => {
+      this.control?.setValue(value);
+      this._controlComponentRef?.writeValue(value);
+    };
+
+    if (!src) {
+      if (autoSelectFirst && data.length > 0) {
+        updateControlValue(data[0]?.value);
       }
 
       return;
     }
 
-    this._existingOptions = this.data.options.data || [];
+    const staticOptions = this.data.options.data || [];
+    const onOptionsGet = (data: OptionItem[]) => {
+      const options =
+        srcAppendPosition === 'before'
+          ? data.concat(staticOptions)
+          : staticOptions.concat(data);
 
-    const event$ = !trigger
-      ? this._optionsDataService.getOptions$(this.data.options)
-      : this._optionsOnTrigger$;
+      if (this._pendingValue) {
+        updateControlValue(this._pendingValue);
+        this._pendingValue = null;
+      } else if (autoSelectFirst && options.length > 0) {
+        updateControlValue(options[0].value);
+      } else if (src.filter) {
+        updateControlValue(null);
+      }
+
+      this._controlComponentRef?.onOptionsGet(options);
+      this.loading = false;
+      this._cd.markForCheck();
+      this._cd.detectChanges();
+    };
 
     this.loading = true;
-
-    event$
-      .pipe(
-        tap((x) => this._setOptionsData(x)),
-        finalize(() => (this.loading = false))
-      )
+    this._optionsDataService
+      .getOptions$(src)
+      .pipe(tap(onOptionsGet))
       .subscribe();
   }
 
@@ -266,60 +284,6 @@ export class FormControlComponent
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
-  }
-
-  private get _optionsOnTrigger$(): Observable<OptionItem[]> {
-    if (!this.data?.options) return EMPTY;
-
-    const trigger = this.data.options.trigger;
-    if (!trigger || !trigger.action) return EMPTY;
-
-    const source$ = () => {
-      switch (trigger.action) {
-        case 'FILTER':
-          return this._optionsDataService.filterOptionsOnTrigger$(trigger);
-
-        case 'REQUEST':
-          return this._optionsDataService.requestOptionsOnTrigger$(trigger);
-      }
-    };
-
-    return source$().pipe(
-      tap((x) => {
-        // Auto choose the first option if the option list contains only one option.
-        // Skip this if `_patchingValue` is true, or the value will get overwritten.
-        if (!this._patchingValue) {
-          const clearData = !x.length || x.length > 1;
-          const autoValue = clearData ? '' : x[0].value;
-          this._controlComponentRef?.writeValue(autoValue);
-        }
-
-        this._patchingValue = false;
-      })
-    );
-  }
-
-  private _setOptionsData(options: OptionItem[]): void {
-    if (!this.data || !this.data.options) {
-      return;
-    }
-
-    const existingOptions = this._existingOptions;
-    const { sourceAppendPosition, autoSelectFirst } = this.data.options;
-
-    const appendBefore = sourceAppendPosition === 'before';
-    const dataGet = appendBefore
-      ? options.concat(existingOptions)
-      : existingOptions.concat(options);
-
-    if (autoSelectFirst) {
-      this.control?.setValue(dataGet[0]?.value ?? null);
-    }
-
-    this._controlComponentRef?.onOptionsGet(dataGet);
-    this.loading = false;
-    this._cd.markForCheck();
-    this._cd.detectChanges();
   }
 
   private get _inputType(): string {

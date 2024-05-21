@@ -18,6 +18,8 @@ export * from './form-layout.interface';
 export * from './layout-components.interface';
 export * from './layout-templates.interface';
 export * from './ngx-mask-config.interface';
+export * from './option-item.interface';
+export * from './option-source-config.interface';
 export * from './ui-components.type';
 export * from './validator-config.interface';
 export * from './validators.enum';

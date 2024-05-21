@@ -56,16 +56,17 @@ import { LayoutTemplates } from './models/layout-templates.interface';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
+  ConfigMappingService,
+  ConfigValidationService,
   ControlValueService,
   FormConditionsService,
   FormGeneratorService,
+  FormPatcherService,
+  FormValidationService,
+  GlobalVariableService,
+  HttpRequestCacheService,
   OptionsDataService,
 } from './services';
-import { ConfigMappingService } from './services/config-mapping.service';
-import { ConfigValidationService } from './services/config-validation.service';
-import { FormPatcherService } from './services/form-patcher.service';
-import { FormValidationService } from './services/form-validation.service';
-import { GlobalVariableService } from './services/global-variable.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { markFormPristine } from './utilities/mark-form-pristine';
@@ -93,9 +94,10 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormConditionsService,
     FormValidationService,
     FormPatcherService,
-    NgxMaskConfigInitService,
-    OptionsDataService,
     GlobalVariableService,
+    HttpRequestCacheService,
+    OptionsDataService,
+    NgxMaskConfigInitService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => NgDynamicJsonFormComponent),
