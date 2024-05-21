@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, Subject, finalize, tap } from 'rxjs';
 
@@ -11,6 +11,7 @@ interface RequestResponse {
 interface RequestParams {
   src: string;
   method: 'POST' | 'GET';
+  headers?: any;
   body?: any;
 }
 
@@ -20,9 +21,11 @@ export class HttpRequestCacheService {
   private _http = inject(HttpClient);
 
   request$(params: RequestParams): Observable<Object> {
-    const { src, method, body } = params;
+    const { src, method, headers, body } = params;
     const source$ =
-      method === 'GET' ? this._http.get(src) : this._http.post(src, body ?? {});
+      method === 'GET'
+        ? this._http.get(src, { headers })
+        : this._http.post(src, body ?? {}, { headers });
 
     const sameRequest = this._prevSameRequest(params);
 

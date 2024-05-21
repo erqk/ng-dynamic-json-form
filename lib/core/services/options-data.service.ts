@@ -72,7 +72,7 @@ export class OptionsDataService {
       return EMPTY;
     }
 
-    const { url, method, mapData } = srcConfig;
+    const { url, method, headers, mapData } = srcConfig;
     const bodyMapped = this._mapBodyValue(srcConfig);
     const src = this._getMappedSrc(url, bodyMapped);
 
@@ -80,6 +80,7 @@ export class OptionsDataService {
       .request$({
         src,
         method,
+        headers,
         body: bodyMapped,
       })
       .pipe(

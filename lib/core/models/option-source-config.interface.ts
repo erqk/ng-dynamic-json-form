@@ -3,6 +3,7 @@ import { ConditionsGroup } from './conditions-group.type';
 export interface OptionSourceConfig {
   url: string;
   method: 'GET' | 'POST';
+  headers?: { [key: string]: string | string[] };
   body?: { [key: string]: any };
   mapData?: {
     labelKey: string;
