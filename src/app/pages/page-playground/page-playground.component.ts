@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import {
   FormControl,
@@ -6,17 +7,23 @@ import {
   FormsModule,
   ReactiveFormsModule,
   UntypedFormControl,
-  UntypedFormGroup,
 } from '@angular/forms';
 import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
   NgDynamicJsonFormComponent,
   UiComponents,
-  provideNgDynamicJsonForm,
+  provideNgDynamicJsonForm
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
-import { Observable, combineLatest, debounceTime, map } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  concatAll,
+  debounceTime,
+  map,
+  toArray
+} from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomInputGroupComponent } from 'src/app/example/components/custom-input-group/custom-input-group.component';
@@ -68,6 +75,7 @@ import { Content } from 'vanilla-jsoneditor';
   styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent {
+  private _http = inject(HttpClient);
   private _layoutService = inject(LayoutService);
   private _langService = inject(LanguageDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
@@ -99,6 +107,15 @@ export class PagePlaygroundComponent {
     Object.keys(this.customUiComponents)[0];
 
   hideErrorMessageControl = new FormControl<boolean | undefined>(undefined);
+
+  optionsSources = {
+    custom$: this._http.get('https://dummyjson.com/products').pipe(
+      map((x) => (x as any).products),
+      concatAll(),
+      map((x: any) => ({ label: x.title, value: x })),
+      toArray()
+    ),
+  };
 
   headerHeight$ = this._layoutService.headerHeight$;
   windowSize$ = this._layoutService.windowSize$;
@@ -149,5 +166,9 @@ export class PagePlaygroundComponent {
 
   onConfigEditing(e: Content): void {
     this._editorDataService.saveModifiedData(e);
+  }
+
+  onOptionsLoaded(e: boolean): void {
+    console.log('Playground: All options loaded', e);
   }
 }

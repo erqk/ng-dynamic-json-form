@@ -256,6 +256,8 @@
     [customComponents]="customComponents"
     [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
     [formControl]="formControl"
+    [optionsSources]="optionsSources"
+    (optionsLoaded)="onOptionsLoaded($event)"
   ></ng-dynamic-json-form>
 </ng-template>
 

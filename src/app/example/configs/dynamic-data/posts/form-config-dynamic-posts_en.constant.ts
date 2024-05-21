@@ -36,7 +36,7 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
         trigger: {
           by: 'tagsControl',
           body: {
-            q: 'tags.[,includes,"love"]',
+            q: 'tagsControl, tags.[,includes,"love"]',
           },
         },
       },
@@ -51,20 +51,21 @@ export const FORM_CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
     formControlName: 'resultPosts',
     type: 'select',
     options: {
-      // trigger: {
-      //   action: 'REQUEST',
-      //   src: 'https://dummyjson.com/posts/search',
-      //   method: 'GET',
-      //   params: {
-      //     q: '',
-      //   },
-      //   data: {
-      //     labelKey: 'title',
-      //     path: 'posts',
-      //   },
-      //   triggerValuePath: 'searchControl',
-      //   debounceTime: 500,
-      // },
+      src: {
+        url: 'https://dummyjson.com/posts/search',
+        method: 'GET',
+        mapData: {
+          labelKey: 'title',
+          contentPath: 'posts',
+        },
+        trigger: {
+          by: 'searchControl',
+          body: {
+            q: 'searchControl',
+          },
+          debounceTime: 500,
+        },
+      },
     },
   },
 ];
