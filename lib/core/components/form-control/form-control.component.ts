@@ -234,7 +234,7 @@ export class FormControlComponent
         this._pendingValue = null;
       } else if (autoSelectFirst && options.length > 0) {
         updateControlValue(options[0].value);
-      } else if (typeof src !== 'string' && src.filter) {
+      } else if (typeof src !== 'string' && (src.filter || src.trigger)) {
         updateControlValue(null);
       }
 
