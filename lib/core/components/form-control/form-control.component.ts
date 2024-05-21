@@ -27,9 +27,12 @@ import {
 } from '@angular/forms';
 import { combineLatest, delay, startWith, tap } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
-import { OptionsDataService } from '../../services';
-import { ConfigMappingService } from '../../services/config-mapping.service';
-import { GlobalVariableService } from '../../services/global-variable.service';
+import {
+  ConfigMappingService,
+  FormReadyStateService,
+  GlobalVariableService,
+  OptionsDataService,
+} from '../../services';
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
@@ -61,6 +64,7 @@ export class FormControlComponent
   private _destroyRef = inject(DestroyRef);
   private _configMappingService = inject(ConfigMappingService);
   private _globalVariableService = inject(GlobalVariableService);
+  private _formReadyStateService = inject(FormReadyStateService);
   private _optionsDataService = inject(OptionsDataService);
 
   private _uiComponents = this._globalVariableService.uiComponents;
@@ -194,6 +198,7 @@ export class FormControlComponent
   private _fetchOptions(): void {
     if (!this.data || !this.data.options) {
       this._pendingValue = null;
+      this._formReadyStateService.optionsLoading(false);
       return;
     }
 
@@ -240,9 +245,15 @@ export class FormControlComponent
     };
 
     this.loading = true;
+    this._formReadyStateService.optionsLoading(true);
     this._optionsDataService
       .getOptions$(src)
-      .pipe(tap(onOptionsGet))
+      .pipe(
+        tap((x) => {
+          onOptionsGet(x);
+          this._formReadyStateService.optionsLoading(false);
+        })
+      )
       .subscribe();
   }
 

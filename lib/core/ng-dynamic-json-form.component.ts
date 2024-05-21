@@ -67,6 +67,7 @@ import {
   HttpRequestCacheService,
   OptionsDataService,
 } from './services';
+import { FormReadyStateService } from './services/form-ready-state.service';
 import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { markFormPristine } from './utilities/mark-form-pristine';
@@ -94,6 +95,7 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormConditionsService,
     FormValidationService,
     FormPatcherService,
+    FormReadyStateService,
     GlobalVariableService,
     HttpRequestCacheService,
     OptionsDataService,
@@ -126,6 +128,7 @@ export class NgDynamicJsonFormComponent
   private _formConditionsService = inject(FormConditionsService);
   private _formValidationService = inject(FormValidationService);
   private _formPatcherService = inject(FormPatcherService);
+  private _formReadyStateService = inject(FormReadyStateService);
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
@@ -202,9 +205,22 @@ export class NgDynamicJsonFormComponent
   /**Toggle all the collapsible state */
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
 
-  @Output() formGet = new EventEmitter();
+  @Output() formGet = new EventEmitter<UntypedFormGroup>();
+  @Output() optionsLoaded = new EventEmitter();
 
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
+
+  constructor() {
+    this._formReadyStateService.readyState$
+      .pipe(
+        tap((x) => {
+          if (x.form) this.formGet.emit(this.form);
+          if (x.options) this.optionsLoaded.emit(true);
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
+  }
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     if (isPlatformServer(this._platformId)) {
@@ -279,7 +295,7 @@ export class NgDynamicJsonFormComponent
   }
 
   private _buildForm(): void {
-    this._clearListeners();
+    this._reset();
     this.configValidationErrors = [];
 
     const validationResult = this._configValidationService.validateAndGetConfig(
@@ -294,9 +310,8 @@ export class NgDynamicJsonFormComponent
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
-      this.formGet.emit(this.form);
-
       this._setupListeners();
+      this._formReadyStateService.updateReadyState({ form: true });
     }
   }
 
@@ -340,9 +355,10 @@ export class NgDynamicJsonFormComponent
       .subscribe();
   }
 
-  private _clearListeners(): void {
+  private _reset(): void {
     this._reset$.next();
     this._optionsDataService.cancelAllRequest();
+    this._formReadyStateService.resetState();
   }
 
   private _onFormValueChanges(): void {

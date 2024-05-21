@@ -4,6 +4,7 @@ export * from './control-value.service';
 export * from './form-conditions.service';
 export * from './form-generator.service';
 export * from './form-patcher.service';
+export * from './form-ready-state.service';
 export * from './form-validation.service';
 export * from './global-variable.service';
 export * from './http-request-cache.service';

@@ -15,6 +15,7 @@ export * from './form-control-config.interface';
 export * from './form-control-options.interface';
 export * from './form-control-type.type';
 export * from './form-layout.interface';
+export * from './form-ready-state.interface';
 export * from './layout-components.interface';
 export * from './layout-templates.interface';
 export * from './ngx-mask-config.interface';
