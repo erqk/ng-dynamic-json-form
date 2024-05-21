@@ -45,7 +45,9 @@
                 type="checkbox"
                 [propsBinding]="[data.extra]"
                 [value]="item.value | json"
-                [checked]="control.value!.includes(item.value | json)"
+                [checked]="
+                  control.value && control.value!.includes(item.value | json)
+                "
                 [disabled]="control.disabled"
                 (change)="onCheckboxChange($event)"
               />
