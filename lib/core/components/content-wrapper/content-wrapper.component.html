@@ -51,7 +51,6 @@
 
     <error-message
       [control]="control"
-      [touched]="control.touched"
       [validators]="config.validators"
       [customComponent]="errorComponents?.[config.formControlName] ?? layoutComponents?.errorMessage"
       [customTemplate]="errorTemplates?.[config.formControlName] ?? layoutTemplates?.errorMessage"

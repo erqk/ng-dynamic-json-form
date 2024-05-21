@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
-import { ErrorMessageComponent } from '../components/error-message/error-message.component';
+import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
 
 export type CustomErrorComponents = {
-  [key: string]: Type<ErrorMessageComponent>;
+  [key: string]: Type<CustomErrorMessage>;
 };

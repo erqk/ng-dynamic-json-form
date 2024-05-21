@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   HostBinding,
   Input,
-  OnChanges,
-  SimpleChanges,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -20,6 +17,7 @@ import { ValidatorConfig } from '../../models';
 import { LayoutComponents } from '../../models/layout-components.interface';
 import { LayoutTemplates } from '../../models/layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
+import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
 
 @Component({
   selector: 'error-message',
@@ -27,13 +25,12 @@ import { FormValidationService } from '../../services/form-validation.service';
   imports: [CommonModule, ControlLayoutDirective],
   templateUrl: './error-message.component.html',
 })
-export class ErrorMessageComponent implements OnChanges, AfterViewInit {
-  private _internal_cd = inject(ChangeDetectorRef);
+export class ErrorMessageComponent implements AfterViewInit {
   private _internal_destroyRef = inject(DestroyRef);
   private _internal_formValidationService = inject(FormValidationService);
+  private _customComponent: CustomErrorMessage | null = null;
 
-  @Input() control?: AbstractControl | null = null;
-  @Input() touched = false;
+  @Input() control?: AbstractControl;
   @Input() validators?: ValidatorConfig[];
   @Input() customComponent?: LayoutComponents['errorMessage'];
   @Input() customTemplate?: LayoutTemplates['errorMessage'];
@@ -45,19 +42,12 @@ export class ErrorMessageComponent implements OnChanges, AfterViewInit {
 
   errorMessages: string[] = [];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const { touched } = changes;
-
-    if (touched && touched.currentValue) {
-    }
-  }
-
   ngAfterViewInit(): void {
-    this._internal_injectComponent();
-    this._internal_getErrorMessages();
+    this._injectComponent();
+    this._getErrorMessages();
   }
 
-  private _internal_injectComponent(): void {
+  private _injectComponent(): void {
     if (!this.customComponent || !this.componentAnchor) {
       return;
     }
@@ -67,17 +57,23 @@ export class ErrorMessageComponent implements OnChanges, AfterViewInit {
       this.customComponent
     );
 
-    componentRef.instance.control = this.control;
-    componentRef.instance.validators = this.validators;
+    this._customComponent = componentRef.instance;
+
+    if (this.control) {
+      componentRef.instance.control = this.control;
+    }
   }
 
-  private _internal_getErrorMessages(): void {
+  private _getErrorMessages(): void {
     this._internal_formValidationService
       .getErrorMessages$(this.control, this.validators)
       .pipe(
         tap((x) => {
           this.errorMessages = x;
-          this._internal_cd.markForCheck();
+
+          if (this._customComponent) {
+            this._customComponent.errorMessages = [...this.errorMessages];
+          }
         }),
         takeUntilDestroyed(this._internal_destroyRef)
       )
