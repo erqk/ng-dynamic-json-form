@@ -87,8 +87,8 @@ function getItemIndex(array: any[], path: string): string {
   const _operator = removeQuotes(operator) as ConditionsOperator;
 
   // The `path` is already a string, so we have to parse what is the type of the `value`.
-  // If the `value` is wrapped with quotes then we take it as a string, after removing the quotes,
-  // else use JSON.parse() to get the value with correct type. (ex: number)
+  // If the `value` is wrapped with quotes then we take it as a string after removing the quotes.
+  // Otherwise use JSON.parse() to get the value with correct type. (ex: number)
   const valueParsed = () => {
     if (typeof value !== 'string') return value;
 

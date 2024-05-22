@@ -188,7 +188,10 @@ export class FormConditionsService {
 
       return value.flatMap((x) =>
         Array.isArray(x)
-          ? [getControlAndValuePath(x[0]).controlPath]
+          ? [
+              this._getControlPathFromStatement(x[0]) ?? '',
+              this._getControlPathFromStatement(x[2]) ?? '',
+            ]
           : extractPaths(x)
       );
     };
@@ -199,7 +202,8 @@ export class FormConditionsService {
         ? []
         : Object.values(conditions)
             .filter((x) => Boolean(x) && Object.keys(x!).length > 0)
-            .flatMap((x) => extractPaths(x!));
+            .flatMap((x) => extractPaths(x!))
+            .filter(Boolean);
 
       const childrenPaths = !children?.length
         ? []
@@ -248,23 +252,54 @@ export class FormConditionsService {
     }
 
     const mapTuppleFn = (tupple: ConditionsStatementTupple) => {
-      const [controlValuePath, operator, targetValue] = tupple;
-      const paths = getControlAndValuePath(controlValuePath);
-      const controlValue = form.get(paths.controlPath)?.value;
-
-      const valueToEvaluate = !paths.valuePath
-        ? controlValue
-        : getValueInObject(controlValue, paths.valuePath);
-
+      const [left, operator, right] = tupple;
       const result = [
-        valueToEvaluate,
+        this._getControlValueFromStatement(left),
         operator,
-        targetValue,
+        this._getControlValueFromStatement(right),
       ] as ConditionsStatementTupple;
 
       return result;
     };
 
     return evaluateConditionsStatements(conditionsGroup, mapTuppleFn);
+  }
+
+  /**Get control path using the string in the conditions statement tupple.
+   * - `['controlA', '===', 'text']` => Should get "controlA"
+   * - `['controlA', '===', 'controlB']` => Should get "controlA", "controlB" individually
+   * - `['value', '===', 'controlA,prop1']` => Should get "controlA"
+   */
+  private _getControlPathFromStatement(input: any): string | undefined {
+    const form = this._globalVariableService.rootForm;
+    if (!form) return undefined;
+    if (typeof input !== 'string') return undefined;
+
+    const paths = getControlAndValuePath(input);
+    const targetControl = form.get(paths.controlPath);
+
+    if (!targetControl) return undefined;
+    return paths.controlPath;
+  }
+
+  private _getControlValueFromStatement(input: any): any {
+    const form = this._globalVariableService.rootForm;
+
+    if (!form) return input;
+    if (typeof input !== 'string') return input;
+
+    const paths = getControlAndValuePath(input);
+    const targetControl = form.get(paths.controlPath);
+
+    // If it is string but not found in the FormGroup,
+    // then we consider it as literal string value,
+    // not control path.
+    if (!targetControl) return input;
+
+    const result = !paths.valuePath
+      ? targetControl.value
+      : getValueInObject(targetControl.value, paths.valuePath);
+
+    return result;
   }
 }
