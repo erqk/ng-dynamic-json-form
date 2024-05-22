@@ -18,11 +18,11 @@ import {
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
-import { DOCS_CONFIGS_INDEX_EN } from 'src/app/docs-example/configs/index_en';
-import { DOCS_CONFIGS_INDEX_ZHTW } from 'src/app/docs-example/configs/index_zh-TW';
+import { CONFIGS_INDEX } from 'src/app/example/configs/configs.index';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
 import { LanguageDataService } from '../../../language/language-data.service';
 import { PlaygroundEditorComponent } from '../../../playground/components/playground-editor/playground-editor.component';
+import { HttpContext } from '@angular/common/http';
 
 @Component({
   selector: 'doc-form-viewer',
@@ -44,9 +44,6 @@ import { PlaygroundEditorComponent } from '../../../playground/components/playgr
   styleUrls: ['./doc-form-viewer.component.scss'],
 })
 export class DocFormViewerComponent implements OnInit, AfterViewInit {
-  private _cd = inject(ChangeDetectorRef);
-  private _langService = inject(LanguageDataService);
-
   @Input() configs: string | FormControlConfig[] = [];
   @Input() configPath = '';
   @Input() showFormOnly = false;
@@ -57,6 +54,7 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   showEditor = false;
   formHeight = '0px';
+  configsLoaded: FormControlConfig[] = [];
 
   uiComponents: { [key: string]: UiComponents | undefined } = {
     Default: undefined,
@@ -72,7 +70,6 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this._getFormHeight();
-    this._cd.markForCheck();
   }
 
   onEditorChange(e: any): void {
@@ -85,33 +82,27 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   onConfirm(): void {
     if (this._editorData) {
-      this.configs = this._editorData;
+      this.configs = JSON.parse(JSON.stringify(this._editorData));
     }
 
     this.showEditor = false;
   }
 
   reset(): void {
-    this.configs = [];
-
-    window.setTimeout(() => {
-      this._loadConfig();
-      this._editorData = this.configs;
-      this._cd.markForCheck();
-    });
+    this.configs = JSON.parse(JSON.stringify(this.configsLoaded));
+    this._editorData = JSON.parse(JSON.stringify(this.configsLoaded));
+    this.configsLoaded = [...this.configsLoaded];
   }
 
   private _loadConfig(): void {
     if (!this.configPath) return;
 
-    const _configs =
-      this._langService.currentLanguage === 'en'
-        ? DOCS_CONFIGS_INDEX_EN
-        : DOCS_CONFIGS_INDEX_ZHTW;
+    const result = this.configPath.split('.').reduce((acc, key) => {
+      return (acc as any)[key];
+    }, CONFIGS_INDEX) as unknown as FormControlConfig;
 
-    this.configs = this.configPath.split('.').reduce((acc, key) => {
-      return acc[key];
-    }, _configs as any);
+    this.configsLoaded = [result];
+    this.reset();
   }
 
   private _getFormHeight(): void {

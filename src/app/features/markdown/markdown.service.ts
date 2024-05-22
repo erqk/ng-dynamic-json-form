@@ -55,8 +55,6 @@ export class MarkdownService {
       ?.find((x) => x.indexOf('name=') > -1)
       ?.split('name=')[1];
 
-    console.log(attributes);
-
     const container = `
       <pre name=${name ?? ''}>
         <code class="hljs language-${lang}">

@@ -38,7 +38,7 @@
         [mainMenuBar]="false"
         [statusBar]="false"
         [navigationBar]="false"
-        [data]="$any({ json: configs })"
+        [data]="$any({ json: configsLoaded })"
         (onEditing)="onEditorChange($event)"
       ></app-playground-editor>
     </ng-container>

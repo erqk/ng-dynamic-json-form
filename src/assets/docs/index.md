@@ -1,3 +1,8 @@
+## 7.0.4
+
+- [English](./v7/index_en.md)
+- [繁中](./v7/index_zh-TW.md)
+
 ## 5.8.4
 
 - [English](./v5/index_en.md)
@@ -10,8 +15,8 @@
 
 ## 3.4.1 (deprecated)
 
-- [English](./v2/index_en.md)
-- [繁中](./v2/index_zh-TW.md)
+- [English](./v3/index_en.md)
+- [繁中](./v3/index_zh-TW.md)
 
 ## 2.0.1 (deprecated)
 

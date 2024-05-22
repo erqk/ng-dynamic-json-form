@@ -24,7 +24,7 @@ export class DocCodeComponent implements OnInit {
 
   ngOnInit(): void {
     const host = this._el.nativeElement as HTMLElement;
-    this.children = Array.from(host.querySelectorAll('* > pre'));
+    this.children = Array.from(host.querySelectorAll('* > pre, * > .item'));
     this.children.forEach((x, i) => {
       const name = x.getAttribute('name');
       if (!name) return;

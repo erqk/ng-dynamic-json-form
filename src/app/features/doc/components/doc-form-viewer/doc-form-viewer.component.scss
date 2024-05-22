@@ -1,3 +1,7 @@
+:host {
+  @apply block my-4;
+}
+
 .toolbar {
   button {
     @apply px-3 py-2;
