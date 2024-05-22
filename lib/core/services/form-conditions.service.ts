@@ -1,6 +1,15 @@
 import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable, filter, from, mergeMap, of, startWith, tap } from 'rxjs';
+import {
+  Observable,
+  debounceTime,
+  filter,
+  from,
+  mergeMap,
+  of,
+  startWith,
+  tap,
+} from 'rxjs';
 import {
   ConditionsActionEnum,
   ConditionsGroup,
@@ -43,6 +52,7 @@ export class FormConditionsService {
     return from(controls).pipe(
       mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
       filter(() => !this._skipValueChanges),
+      debounceTime(0),
       tap(() => this._onConditionsMet(configsWithConditions))
     );
   }
@@ -111,9 +121,8 @@ export class FormConditionsService {
   }): void {
     const { action, bool, control, controlPath } = data;
     const toggleDisabled = (disabled: boolean) => {
-      this._skipValueChanges = true;
       disabled ? control.disable() : control.enable();
-      this._skipValueChanges = false;
+      control.updateValueAndValidity();
     };
 
     switch (action) {
@@ -126,8 +135,10 @@ export class FormConditionsService {
           .pipe(
             filter(Boolean),
             tap((x) => {
+              this._skipValueChanges = true;
               this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
               toggleDisabled(bool);
+              this._skipValueChanges = false;
             })
           )
           .subscribe();
