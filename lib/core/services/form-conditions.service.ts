@@ -8,7 +8,7 @@ import {
   FormControlConfig,
   ValidatorConfig,
 } from '../models';
-import { evaluateBooleanOperation } from '../utilities/get-boolean-operation-result';
+import { evaluateConditionsStatements } from '../utilities/evaluate-conditions-statements';
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { FormValidationService } from './form-validation.service';
@@ -236,38 +236,24 @@ export class FormConditionsService {
       return undefined;
     }
 
-    const groupOperator = conditionsGroup['&&'] ? '&&' : '||';
-    const conditionsGroupItems = conditionsGroup[groupOperator]!;
+    const mapTuppleFn = (tupple: ConditionsStatementTupple) => {
+      const [controlValuePath, operator, targetValue] = tupple;
+      const paths = getControlAndValuePath(controlValuePath);
+      const controlValue = form.get(paths.controlPath)?.value;
 
-    const childrenStatementsResult = conditionsGroupItems
-      .filter((x) => !Array.isArray(x))
-      .map((x) => this._evaluateConditionsStatement(x as ConditionsGroup));
+      const valueToEvaluate = !paths.valuePath
+        ? controlValue
+        : getValueInObject(controlValue, paths.valuePath);
 
-    const statementsResult = conditionsGroupItems
-      .filter((x) => Array.isArray(x))
-      .map((x) => {
-        const [controlValuePath, operator, targetValue] =
-          x as ConditionsStatementTupple;
-        const paths = getControlAndValuePath(controlValuePath);
-        const controlValue = form.get(paths.controlPath)?.value;
+      const result = [
+        valueToEvaluate,
+        operator,
+        targetValue,
+      ] as ConditionsStatementTupple;
 
-        const valueToEvaluate = !paths.valuePath
-          ? controlValue
-          : getValueInObject(controlValue, paths.valuePath);
+      return result;
+    };
 
-        const result = evaluateBooleanOperation([
-          valueToEvaluate,
-          operator,
-          targetValue,
-        ]);
-
-        return result;
-      });
-
-    const bools = childrenStatementsResult
-      .concat(statementsResult)
-      .filter((x) => x !== undefined);
-
-    return groupOperator === '&&' ? bools.every(Boolean) : bools.some(Boolean);
+    return evaluateConditionsStatements(conditionsGroup, mapTuppleFn);
   }
 }
