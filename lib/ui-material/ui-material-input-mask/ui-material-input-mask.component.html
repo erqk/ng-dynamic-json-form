@@ -6,7 +6,7 @@
       matInput
       type="text"
       placeholder="{{ data.placeholder }}"
-      [mask]="data.inputMask?.mask ?? ''"
+      [imask]="data.inputMask"
       [propsBinding]="[data.extra, data.inputMask]"
       [formControl]="control"
     />

@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
 } from 'ng-dynamic-json-form';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { InputText, InputTextModule } from 'primeng/inputtext';
 
 @Component({
@@ -16,15 +15,8 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
-    NgxMaskDirective,
+    IMaskDirective,
     PropsBindingDirective,
-  ],
-  providers: [
-    provideNgxMask(),
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [InputText, NgxMaskDirective],
-    },
   ],
   templateUrl: './ui-primeng-input-mask.component.html',
   styles: [],

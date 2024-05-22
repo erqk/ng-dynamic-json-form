@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import IMask, { FactoryArg, Masked } from 'imask/esm/index';
 import { FormControlConfig } from '../models';
-import { NgxMaskConfigInitService } from './ngx-mask-config-init.service';
 
 @Injectable()
 export class ConfigMappingService {
-  private _maskConfigInitService = inject(NgxMaskConfigInitService);
-
   mapCorrectConfig(input?: FormControlConfig): FormControlConfig | undefined {
     if (!input) return undefined;
 
@@ -22,10 +20,32 @@ export class ConfigMappingService {
     }
 
     if (inputMask) {
-      input.inputMask = this._maskConfigInitService.getConfig(input);
+      this._mapInputMask(inputMask);
     }
 
     return input;
+  }
+
+  private _mapInputMask(val: FactoryArg): void {
+    const mask = val as Masked;
+
+    // Number, RangeMask, Regex or pattern
+    if (typeof mask.mask === 'string') {
+      const _mask = mask.mask.trim();
+
+      if (_mask === 'Number') mask.mask = Number;
+      if (_mask === 'Imask.MaskedRange') mask.mask = IMask.MaskedRange;
+      if (new RegExp(/^\/.*\/\w*?$/).test(_mask)) {
+        const array = _mask.split('/');
+        const flags = array.concat().pop();
+        mask.mask = new RegExp(array[1], flags);
+      }
+    }
+
+    // Dynamic mask
+    if (Array.isArray(mask.mask)) {
+      mask.mask.forEach((x) => this._mapInputMask(x));
+    }
   }
 
   private _parseStringValue(input: string): any {

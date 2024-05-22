@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
 } from '../../../public-api';
 
@@ -14,17 +13,10 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgxMaskDirective,
+    IMaskDirective,
     PropsBindingDirective,
   ],
   templateUrl: './ui-basic-input-mask.component.html',
-  providers: [
-    provideNgxMask(),
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [NgxMaskDirective],
-    },
-  ],
   styles: [],
 })
 export class UiBasicInputMaskComponent extends CustomControlComponent {

@@ -69,7 +69,6 @@ import {
   OptionsDataService,
 } from './services';
 import { FormReadyStateService } from './services/form-ready-state.service';
-import { NgxMaskConfigInitService } from './services/ngx-mask-config-init.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { markFormPristine } from './utilities/mark-form-pristine';
 
@@ -100,7 +99,6 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     GlobalVariableService,
     HttpRequestCacheService,
     OptionsDataService,
-    NgxMaskConfigInitService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => NgDynamicJsonFormComponent),

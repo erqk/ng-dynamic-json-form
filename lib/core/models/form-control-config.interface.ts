@@ -1,9 +1,9 @@
+import { FactoryArg } from 'imask/esm/index';
 import { Conditions } from './conditions.type';
 import { FormControlOptions } from './form-control-options.interface';
 import { FormControlType } from './form-control-type.type';
 import { FormLayout } from './form-layout.interface';
 import { ValidatorConfig } from './validator-config.interface';
-import { NgxMaskConfig } from './ngx-mask-config.interface';
 
 export interface FormControlConfig {
   formControlName: string;
@@ -38,8 +38,7 @@ export interface FormControlConfig {
 
   layout?: FormLayout;
 
-  /**Config for ngx-mask, provide to use input with masking */
-  inputMask?: Partial<NgxMaskConfig>;
+  inputMask?: FactoryArg;
 
   /**A list of data, use with the following input type:
    * - `checkbox`
