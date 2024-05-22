@@ -38,18 +38,12 @@ describe('Set fallback value depends on type', () => {
 
 describe('Remove unwanted characters in formControlName', () => {
   it('Should replace all spaces with "_"', () => {
-    const result = service['_formControlName']({
-      formControlName: 'aaa bbb    ccc ',
-    });
-
+    const result = service['_formControlName']('aaa bbb    ccc ');
     expect(result).toBe('aaa_bbb____ccc_');
   });
 
   it('Should remove all "." and "," characters', () => {
-    const result = service['_formControlName']({
-      formControlName: 'aa,bbb..ccc',
-    });
-
+    const result = service['_formControlName']('aa,bbb..ccc');
     expect(result).toBe('aabbbccc');
   });
 });
