@@ -1,6 +1,87 @@
-# Change log
+# 8.0.0-rc.0 (2024-05-22)
 
-## 7.0.4 (2024-04-30)
+## Breaking changes
+
+### NgDynamicJsonFormComponent
+
+- Remove `uiComponents` and `customValidators` input, as this makes no sense to overwrite locally.
+- Rename `globalLayout...` to `layout...`.
+
+### ErrorMessageComponent
+
+- Use abstract class for custom component to isolate methods and variables.
+
+### FormControlConfig
+
+- Remove `formArray`, this should be done by using custom component because there are so many possibilities that are impossible to cover.
+- Remove the exposure of JSON schema.
+- Unified the `config` data structure, no more “configs” key when pass using JSON.
+
+### FormControlOptions
+
+- No more `sourceList`, use `src`
+- Rename `sourceAppendPosition` to `srcAppendPosition`
+- `trigger` is rewrite and move into `src.trigger`
+
+### Conditions
+
+- Add prefix to the name of condition to indicate action type. (e.g. `validators.xxx`, `control.xxx`)
+
+### Input mask
+
+- Input mask now use imaskjs.
+
+---
+
+### NgDynamicJsonFormComponent
+
+[5b2ac80]: https://github.com/erqk/ng-dynamic-json-form/commit/5b2ac80caf460b8a01cb920049a18a1a98c4ab1e
+[5788c98]: https://github.com/erqk/ng-dynamic-json-form/commit/5788c980b376aebfd8375cccdd37662262892364
+[5e88316]: https://github.com/erqk/ng-dynamic-json-form/commit/5e88316a614ab79975e8681ffd2801b396ae06f2
+
+- Add `optionsLoaded` event after all dynamic options are fetched.
+- Add `optionSources` input to support custom observables for dynamic options.
+- Add `conditionsActionFuntions` input to support custom action when conditions met.
+
+| Commit    | Type | Description                                                                        |
+| --------- | ---- | ---------------------------------------------------------------------------------- |
+| [5b2ac80] | feat | Add `conditionsActionFuntions` input to support custom action when conditions met. |
+| [5788c98] | feat | Add `optionsLoaded` event after all dynamic options are fetched.                   |
+| [5e88316] | feat | Add `optionSources` input to support custom observables for dynamic options.       |
+
+### Conditions
+
+[1b3fff7]: https://github.com/erqk/ng-dynamic-json-form/commit/1b3fff7d1bf9be821640068beb5eec72a5118fa6
+
+| Commit    | Type | Description                                                                              |
+| --------- | ---- | ---------------------------------------------------------------------------------------- |
+| [1b3fff7] | feat | Add support to compare dynamic value. e.g. `[thisControl.value, “>”, thatControl.value]` |
+
+## CustomControlComponent
+
+[895e06f]: https://github.com/erqk/ng-dynamic-json-form/commit/895e06ffb875a3361f76c045e90b4b1dba0905d1
+[9341deb]: https://github.com/erqk/ng-dynamic-json-form/commit/9341deb7862df46712f89b6ed5d54d83e5b3cef3
+[0626a11]: https://github.com/erqk/ng-dynamic-json-form/commit/0626a112c21eaa5a4184083f2954dead69e31c2e
+
+| Commit    | Type     | Description                                                                       |
+| --------- | -------- | --------------------------------------------------------------------------------- |
+| [895e06f] | feat     | Remove `onTouched()`, this should be implemented only if needed.                  |
+| [9341deb] | refactor | The initialization of `control` is optional. Add methods to change control state. |
+| [0626a11] | chore    | Remove `internal_mapData()` , this should be implemented on demand.               |
+
+## Other
+
+[b1cc768]: https://github.com/erqk/ng-dynamic-json-form/commit/b1cc76879372db211ff9b393e29cdb07bf1fe6a7
+[931884d]: https://github.com/erqk/ng-dynamic-json-form/commit/931884db5435f6a53be4ab51e4cf1f9ab5094352
+
+| Commit    | Type | Description                                                           |
+| --------- | ---- | --------------------------------------------------------------------- |
+| [e3dfda2] | fix  | Use prebuilt validation code in order to not relaxing the CSP policy. |
+| [e3dfda2] | fix  | The values inside extra should not be stringified.                    |
+| [b1cc768] | fix  | The date string is parsed incorrectly.                                |
+| [931884d] | fix  | Replace all invalid characters on `formControlName`.                  |
+
+# 7.0.4 (2024-04-30)
 
 [10a1237]: https://github.com/erqk/ng-dynamic-json-form/commit/10a123711cf9c1197cf576e2c073c640742a226b
 
@@ -8,7 +89,7 @@
 | :-------- | :--- | :--------------------- |
 | [10a1237] | fix  | Options trigger failed |
 
-## 7.0.3 (2024-04-30)
+# 7.0.3 (2024-04-30)
 
 [9c601081]: https://github.com/erqk/ng-dynamic-json-form/commit/9c6010813c74986c8668d297b099a30fd133fa1a
 
@@ -16,32 +97,32 @@
 | :--------- | :--- | :---------------------------------------- |
 | [9c601081] | fix  | Keep form pristine until user interaction |
 
-## 7.0.2
+# 7.0.2
 
-### Chore
+## Chore
 
 - Add class for label container.
 
-## 7.0.1
+# 7.0.1
 
-### Fix
+## Fix
 
 - `collapsibleState` not pass in correctly
 - Form controls dirty state
   - Refactor showErrors logic
   - Reduce nesting level of error message component
 
-### Feature
+## Feature
 
 - Merge collapsible container with content container.
 
-### Chore
+## Chore
 
 - Remove `errorMessages` data for custom template. (There is custom error template to use)
 
-## 7.0.0
+# 7.0.0
 
-### Feat: Use "formControlName" for custom components/templates indexing (BREAKING CHANGE)
+## Feat: Use "formControlName" for custom components/templates indexing (BREAKING CHANGE)
 
 - Remove "customLabel" in FormControlConfig
 - Remove "customComponents" in FormControlConfig
@@ -52,483 +133,483 @@
 - Add "errorComponents" to NgDynamicJsonFormComponent
 - Add "errorTemplates" to NgDynamicJsonFormComponent
 
-## 6.0.7
+# 6.0.7
 
-### Fix
+## Fix
 
 - Filter out empty or undefined string before adding class and styles.
 
-## 6.0.6
+# 6.0.6
 
-### Fix
+## Fix
 
 - Don't render FormTitleComponent if no label is provided.
 
-## 6.0.5
+# 6.0.5
 
-### Fix
+## Fix
 
 - `paramsFromOtherControls` is undefined because no FormGroup is provided.
 
-## 6.0.4
+# 6.0.4
 
-### Fix
+## Fix
 
 - JSON schema tuple set minItems and maxItems.
 
-## 6.0.3
+# 6.0.3
 
-### Fix
+## Fix
 
 - Pass FormControl instance directly to remove uncessasary errors.
 
-## 6.0.2
+# 6.0.2
 
-### Fix
+## Fix
 
 - FormControl is not defined when setValue() is called.
 
-## 6.0.1
+# 6.0.1
 
-### Fix
+## Fix
 
 - Class not added correctly.
 
-## 6.0.0
+# 6.0.0
 
-### Feature
+## Feature
 
 - Refactor HTML structure of form.
 - Add 'formGroupStyles' and 'formGroupClass'.
 
-## 5.8.3
+# 5.8.3
 
-### Fix
+## Fix
 
 - Failed to get other controls' value for the payload of option data request.
 
-## 5.8.2
+# 5.8.2
 
-### Fix
+## Fix
 
 - Options source payload null check.
 
-## 5.8.1
+# 5.8.1
 
-### Fix
+## Fix
 
 - \_getDynamicParams() not receiving FormGroup.
 
-## 5.8.0
+# 5.8.0
 
-### Feature
+## Feature
 
 - Get value from other controls when using trigger in options.
 - Enable control totally hidden by not rendering in DOM.
 
-## 5.7.1
+# 5.7.1
 
-### Fix
+## Fix
 
 - Validation message failed at start when value is empty.
 
-## 5.7.0
+# 5.7.0
 
-### Feature
+## Feature
 
 - Add `flags` support for `pattern` validator.
 
-### Fix
+## Fix
 
 - Validation message is incorrect when there is more than one validators with the same name.
 
-## 5.6.0
+# 5.6.0
 
-### Feature
+## Feature
 
 - Control whether to add `required` class automatically.
 
-### Chore
+## Chore
 
 - Use shared template for form title.
 
-### Fix
+## Fix
 
 - FormGroup's description should have the same behavior with FormControl.
 
-## 5.5.2
+# 5.5.2
 
-### Chore
+## Chore
 
 - Remove `space-between` for label styling.
 
-## 5.5.1
+# 5.5.1
 
-### Fix
+## Fix
 
 - `autoDisplayFirst` failed on static options data.
 
-## 5.5.0
+# 5.5.0
 
-### Feature
+## Feature
 
 - Add event after options data is fetched.
 
-## 5.4.0
+# 5.4.0
 
-### Feature
+## Feature
 
 - Add support for custom label.
 
-## 5.3.3
+# 5.3.3
 
-### Fix
+## Fix
 
 - Refactor the logic to make control touched and set the touch state manually for select component.
 
-## 5.3.2
+# 5.3.2
 
-### Feature
+## Feature
 
 - Auto add 'required' class to form title if has Validators.required.
 
-### Chore
+## Chore
 
 - Use [ngClass] to toggle 'readonly' class.
 
-## 5.3.1
+# 5.3.1
 
-### Fix
+## Fix
 
 - Change detection not trigger correctly. Should use `markForCheck()` instead of `detectChanges()`.
 
-## 5.3.0
+# 5.3.0
 
-### Chore
+## Chore
 
 - Remove `outputDateFormat` from `NG_DYNAMIC_JSON_FORM_CONFIG`.
 
-## 5.2.20
+# 5.2.20
 
-### Fix
+## Fix
 
 - Replace all spaces in formControlName otherwise the condition will fail to execute.
 
-## 5.2.18
+# 5.2.18
 
-### Chore
+## Chore
 
 - Reduce error message subscription count.
 
-## 5.2.17
+# 5.2.17
 
-### Fix
+## Fix
 
 - Object value parse incorrectly.
 
-## 5.2.16
+# 5.2.16
 
-### Feature
+## Feature
 
 - Enable filter of array in object by key.
 
-### Fix
+## Fix
 
 - OptionsTrigger not working correctly when using dynamic params.
 
-## 5.2.15
+# 5.2.15
 
-### Fix
+## Fix
 
 - Query selector failed because the "." character is not escape well.
 
-## 5.2.14
+# 5.2.14
 
-### Fix
+## Fix
 
 - Use default value for params if not provided during POST request.
 
-## 5.2.13
+# 5.2.13
 
-### Fix
+## Fix
 
 - Failed to fetch data for POST method and params is not dynamic.
 
-## 5.2.12
+# 5.2.12
 
-### Fix
+## Fix
 
 - Http request cache using new params value.
 - For request by trigger, check the validity of the value.
 
-## 5.2.11
+# 5.2.11
 
-### Chore
+## Chore
 
 - Write value into control even it's null or undefined.
 
-## 5.2.10
+# 5.2.10
 
-### Fix
+## Fix
 
 - `autoSelectFirst` not working on static data
 
-## 5.2.9
+# 5.2.9
 
-### Fix
+## Fix
 
 - OptionTrigger params failed on POST method.
 
-## 5.2.8
+# 5.2.8
 
-### Fix
+## Fix
 
 - `markAsDirty()`, `markAsTouched()` not working for input templates.
 - Add `takeUntilDestroy()` to errors listener inside CustomControlComponent to prevent memory leak.
 
-## 5.2.7
+# 5.2.7
 
-### Fix
+## Fix
 
 - Nullable check.
 
-## 5.2.6
+# 5.2.6
 
 ## Fix
 
 - Mark form control and form pristine after form is built.
 
-## 5.2.5
+# 5.2.5
 
-### Fix
+## Fix
 
 - All controls should be pristine after the form is built.
 
-## 5.2.4
+# 5.2.4
 
-### Fix
+## Fix
 
 - Use native setProperty() because style variable cannot be applied using Renderer2.
 
-## 5.2.3
+# 5.2.3
 
-### Fix
+## Fix
 
 - Style not applied correctly.
 
-### Feature
+## Feature
 
 - Add support for styling of error messages.
 
-## 5.2.2
+# 5.2.2
 
-### Fix
+## Fix
 
 - Move content styles of form control to inner level
 - Avoid overwriting of existing styles
 
-## 5.2.1
+# 5.2.1
 
-### Chore
+## Chore
 
 - Code refactor
 
-## 5.2.0
+# 5.2.0
 
-### Fix
+## Fix
 
 - Form errors is not updating if no ControlValueAccessor is used.
 - ControlLayoutDirective needs to work even if no layout is provided.
 
-### Feature
+## Feature
 
 - Auto select first for option items.
 
-## 5.1.9
+# 5.1.9
 
-### Fix
+## Fix
 
 - Options source http request won't complete when when there's connection keep-alive in request headers.
   - Workaround: replace http request with Subject to trigger the complete event.
 
-### Chore
+## Chore
 
 - Form input margin adjustment.
 
-## 5.1.8
+# 5.1.8
 
-### Chore
+## Chore
 
 - Revert provideNgDynamicJsonForm() provider set to multi. The behavior is not match with the expectation and cause other problems.
 
-## 5.1.7
+# 5.1.7
 
-### Fix
+## Fix
 
 - Target element to apply contentStyles and contentClass.
 
-### Chore
+## Chore
 
 - Set provideNgDynamicJsonForm() provider to multi.
 
-## 5.1.6
+# 5.1.6
 
-### Feature
+## Feature
 
 - Add 'includes', 'notIncludes' to condition type.
 
-### Fix
+## Fix
 
 - The logic to show warning message if no config provided.
 
-### Chore
+## Chore
 
 - Reduce uneccessary trigger of change detection.
 
-## 5.1.4
+# 5.1.4
 
-### Feature
+## Feature
 
 - Allow usage of custom FormTitleComponent even if `contentCollapsible` is not set.
 
-## 5.1.3
+# 5.1.3
 
-### Fix
+## Fix
 
 - .grid-container align-items should not be `flex-end`. This will break the alignment when error messages occured.
 
-## 5.1.2
+# 5.1.2
 
-### Feature
+## Feature
 
 - Pass `layout` property into FormTitle custom template
 
-## 5.1.1
+# 5.1.1
 
-### Fix
+## Fix
 
 - `extra` property not pass into FormTitleComponent.
 
-## 5.1.0
+# 5.1.0
 
-### Feature
+## Feature
 
 - Add `extra` property to form title.
 
-## 5.0.13
+# 5.0.13
 
-### Chore
+## Chore
 
 - Prevent re-validation and re-compile of ajv schema to increase performance.
 
-## 5.0.12
+# 5.0.12
 
-### Fix
+## Fix
 
 - CustomControlComponent `setErrors()` logic.
 
-## 5.0.11
+# 5.0.11
 
-### Fix
+## Fix
 
 - `writeValue()` data mapping.
 
-## 5.0.10
+# 5.0.10
 
-### Fix
+## Fix
 
 - Control prestine and dirty state.
 - Memory leaks caused by Ajv class instantiated multiple times.
 - Style default ui input border color on errors.
 
-### Feature
+## Feature
 
 - Form title custom template add `expand` and `collapsible` variable.
 
-## 5.0.9
+# 5.0.9
 
-### Fix
+## Fix
 
 - Form title initial expand state.
 
-## 5.0.6
+# 5.0.6
 
-### Feature
+## Feature
 
 - Add property `collapsibleState` to toggle all collapsible together.
 
-## 5.0.5
+# 5.0.5
 
-### Fix
+## Fix
 
 - `hideErrorMessage` toggle logic.
 - Control element flex alignment in row.
 
-## 5.0.4
+# 5.0.4
 
-### Fix
+## Fix
 
 - Form is not build when `hideErrorMessage` is set to true.
 
-## 5.0.3
+# 5.0.3
 
-### Feature
+## Feature
 
 - Add `hideErrorMessage` input to control the show/hide of all error messages.
 
-## 5.0.2
+# 5.0.2
 
-### Fix
+## Fix
 
 - Validation errors is always null when bind using ControlValueAccessor.
 
-## 5.0.1
+# 5.0.1
 
-### Fix
+## Fix
 
 - `contentClass` and `contentStyles` not correctly injected into FormGroup.
 
-## 5.0.0
+# 5.0.0
 
-### Feature
+## Feature
 
 - Support class and inline styles for content of each FormControl, FormGroup and FormArray.
 
-### Changes
+## Breaking Changes
 
 - FormLayout: Rename `childClass` to `contentClass`.
 - FormLayout: Rename `childStyles` to `contentStyles`.
 - FormLayout: Rename `childCollapsible` to `contentCollapsible`.
 
-## 4.0.5
+# 4.0.5
 
-### Feature
+## Feature
 
 - `layout.childCollapsible` supports FormControl.
 
-### Fix
+## Fix
 
 - FormTitleComponent: `overflow:hidden` should be remove once the `collapsibleEl` is fully expanded.
 
-## 4.0.4
+# 4.0.4
 
-### Fix
+## Fix
 
 - FormTitleComponent does not unsubscribe the event.
 
-### Feature
+## Feature
 
 - Improve CustomControlComponent resuability by allowing null service provider.
 
-## 4.0.2
+# 4.0.2
 
-### Fix
+## Fix
 
 - Validation errors not showing, if `customValidators` is not set.
 
-## 4.0.0
+# 4.0.0
 
-### Feature
+## Feature
 
 - Add schema validation for `configs` before building the form.
 - Add support for dynamic options data
@@ -537,48 +618,48 @@
 - Use `OnPush` strategy to improve performance
 - More dynamic and flexible property binding via `extra`.
 
-### Fix
+## Fix
 
 - Conditions not getting the correct result.
 - Conditions inside FormArray will only work for last one if multiple FormArray exists.
 
-## 3.4.1
+# 3.4.1
 
-### Fix
+## Fix
 
 - Conditions extracted is not correct
 
-## 3.4.0
+# 3.4.0
 
-### Feature
+## Feature
 
 - Support custom template for FormArray's group header.
   1. Fully customize group header using ng-template
   2. Access all the needed data using template variable
 
-### Fix
+## Fix
 
 - #50 UI native: slider tooltip position misaligned
 
-## 3.3.0
+# 3.3.0
 
-### Feature
+## Feature
 
 - Provide methods to mimic same behavior as ControlValueAccessor to reduce boilerplate.
 
-### Fix
+## Fix
 
 - Missing disabled style for native HTML element #30
 - Duplicated input components #44
 - Element content overflow issue when there is pre tag inside #45
 
-## 3.2.0
+# 3.2.0
 
-### Feature
+## Feature
 
 - Add `range`, `date` input type.
 
-### Chore
+## Chore
 
 - Add server-side check
 
@@ -586,25 +667,25 @@
 
 - `NgDynamicJsonFormCustomComponent` is now carry validation errors.
 
-## 3.1.5
+# 3.1.5
 
-### Fix
+## Fix
 
 - Input validation error should not have mask
 
   For the input that using `mask` directive, the `validation` is set to false, there shouldn't be any mask errors output.
 
-## 3.1.4
+# 3.1.4
 
-### Fix
+## Fix
 
 - Form not generate on Safari version below 16.3
 
   The use of positive lookbehind regular expression is not well supported. Use the other way to achieve same result.
 
-## 3.1.0
+# 3.1.0
 
-### Feature
+## Feature
 
 - Description is now using `pre-wrap` to process white space.
 - Group element specific property in `extra` using their `type`.
@@ -612,38 +693,38 @@
 - Able to change option's label position.
 - Native textarea now support auto resize.
 
-## 3.0.0
+# 3.0.0
 
-### Fix
+## Fix
 
 - Use more reliable way to determine whether the UI component is Angular Material using information form type `UiComponents`.
 
-### Feature
+## Feature
 
 - Update type `UiComponents`, enable it to carry more information
 
-## 2.0.1
+# 2.0.1
 
-### Fix
+## Fix
 
 - Add the missing description field in form group and form array
 - Hide error message if it's Angular Material
 
-## 2.0.0
+# 2.0.0
 
-### Feature
+## Feature
 
 - Implement masked input with ngx-mask
 - `jsonData` input can accepts JSON string
 - Add Angular Material UI components
 
-### Chore
+## Chore
 
 - Remove the use of NgModule
 - Upgrade to Angular 16
 - Rename input field `customUIComponentList` to `uiComponents`
 - Add `UiComponents` type
 
-## 1.0.0
+# 1.0.0
 
 - First release
