@@ -1,9 +1,3 @@
-@mixin option-button-wrapper {
-  .option-button-wrapper {
-    display: flex;
-  }
-}
-
 // button inside group-buttons
 @mixin option-button {
   .option-button {

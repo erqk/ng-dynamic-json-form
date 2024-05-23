@@ -12,7 +12,13 @@
   >
     <ng-container *ngFor="let item of data.options?.data">
       <div class="option-button-wrapper">
-        <label class="option-button">
+        <label
+          class="option-button"
+          [ngStyle]="{
+            'justify-content':
+              data.options?.labelPosition === 'before' ? 'space-between' : null
+          }"
+        >
           <span *ngIf="data.options?.labelPosition === 'before'">{{
             item.label
           }}</span>
