@@ -2,6 +2,18 @@
   @apply block my-4;
 }
 
+:host-context(doc-tab) {
+  @apply my-0;
+
+  .content {
+    @apply duration-0;
+  }
+}
+
+.content {
+  @apply duration-300;
+}
+
 .toolbar {
   button {
     @apply px-3 py-2;

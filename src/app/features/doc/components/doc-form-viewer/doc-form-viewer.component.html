@@ -17,7 +17,7 @@
   </ng-container>
 
   <div
-    class="relative z-0 duration-200"
+    class="content relative z-0"
     [ngStyle]="{
       'min-height': showEditor ? minHeight : formHeight
     }"
@@ -31,7 +31,7 @@
 
     <ng-container *ngIf="!showFormOnly">
       <app-playground-editor
-        class="absolute top-0 left-0 h-full w-full duration-200"
+        class="absolute top-0 left-0 h-full w-full duration-100"
         [ngClass]="{
           'opacity-0 pointer-events-none': !showEditor
         }"

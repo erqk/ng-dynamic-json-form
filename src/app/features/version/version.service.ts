@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 export class VersionService {
   private _http = inject(HttpClient);
 
-  readonly currentVersion = 'v7';
+  readonly currentVersion = 'v8';
   readonly versions$ = new BehaviorSubject<{ label: string; value: string }[]>(
     []
   );

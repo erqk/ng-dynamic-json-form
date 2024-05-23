@@ -67,7 +67,7 @@ import { Content } from 'vanilla-jsoneditor';
         errorMessage: CustomErrorMessageComponent,
         // formTitle: CustomFormTitleComponent
       },
-      // uiComponents: UI_PRIMENG_COMPONENTS,
+      uiComponents: UI_PRIMENG_COMPONENTS,
       // uiComponents: UI_MATERIAL_COMPONENTS,
     }),
   ],

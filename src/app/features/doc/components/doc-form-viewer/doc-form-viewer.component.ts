@@ -2,13 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
   OnInit,
-  ViewChild,
-  inject,
+  ViewChild
 } from '@angular/core';
 import {
   FormControlConfig,
@@ -20,9 +18,7 @@ import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import { CONFIGS_INDEX } from 'src/app/example/configs/configs.index';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
-import { LanguageDataService } from '../../../language/language-data.service';
 import { PlaygroundEditorComponent } from '../../../playground/components/playground-editor/playground-editor.component';
-import { HttpContext } from '@angular/common/http';
 
 @Component({
   selector: 'doc-form-viewer',

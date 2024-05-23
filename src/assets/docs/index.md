@@ -1,7 +1,7 @@
-## 7.0.4
+## 8.0.0
 
-- [English](./v7/index_en.md)
-- [繁中](./v7/index_zh-TW.md)
+- [English](./v8/index_en.md)
+- [繁中](./v8/index_zh-TW.md)
 
 ## 5.8.4
 

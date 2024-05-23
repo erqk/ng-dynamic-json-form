@@ -21,6 +21,7 @@ import { LanguageDataService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 import { VersionService } from './features/version/version.service';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
+import { DocTabComponent } from './features/doc/components/doc-tab/doc-tab.component';
 
 @Component({
   selector: 'app-root',
@@ -105,6 +106,7 @@ export class AppComponent {
     };
 
     create('doc-code', DocCodeComponent);
+    create('doc-tab', DocTabComponent);
     create('custom-error-message', DocsCustomErrorMessageComponent);
     create('custom-loading', CustomLoadingComponent);
     create('doc-form-viewer', DocFormViewerComponent);
