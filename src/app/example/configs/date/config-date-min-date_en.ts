@@ -6,7 +6,7 @@ export const CONFIG_DATE_MINDATE_EN: FormControlConfig = {
   label: 'Date (min date)',
   formControlName: 'minDate',
   type: 'date',
-  extra: {
+  props: {
     min: new Date(),
     minDate
   },

@@ -4,7 +4,7 @@ export const CONFIG_TEXTAREA_ZHTW: FormControlConfig = {
   label: '文字區',
   formControlName: 'textarea',
   type: 'textarea',
-  extra: {
+  props: {
     rows: 5,
   },
 };

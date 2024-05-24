@@ -12,7 +12,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         label: 'Country',
         formControlName: 'country',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
           virtualScroll: true,
           virtualScrollItemSize: 48,
@@ -31,7 +31,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         label: 'State',
         formControlName: 'state',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
           virtualScroll: true,
           virtualScrollItemSize: 48
@@ -56,7 +56,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_EN: FormControlConfig[] = [
         label: 'City',
         formControlName: 'city',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
           virtualScroll: true,
           virtualScrollItemSize: 48

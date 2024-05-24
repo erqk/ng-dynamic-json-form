@@ -175,7 +175,7 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     label: 'Date',
     formControlName: 'date',
     type: 'date',
-    extra: {
+    props: {
       appendTo: 'body',
       min: new Date(),
       minDate: new Date(),
@@ -252,7 +252,7 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     formControlName: 'temperature',
     type: 'range',
     value: 27,
-    extra: {
+    props: {
       min: -20,
       max: 80,
       step: 1,
@@ -265,7 +265,7 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     label: 'Memo',
     formControlName: 'memo',
     type: 'textarea',
-    extra: {
+    props: {
       rows: 3,
       cols: 30,
       minRows: 3,

@@ -22,7 +22,7 @@ export const FORM_CONFIG_DYNAMIC_PRODUCTS_EN: FormControlConfig[] = [
     description: 'Data filtered by the brand of selected product',
     formControlName: 'subProducts',
     type: 'select',
-    extra: {
+    props: {
       autoDisplayFirst: false,
     },
     options: {

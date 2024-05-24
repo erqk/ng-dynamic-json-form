@@ -12,7 +12,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
         label: '國家',
         formControlName: 'country',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
         },
         options: {
@@ -32,7 +32,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
         label: '州/省/縣市',
         formControlName: 'state',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
         },
         options: {
@@ -53,7 +53,7 @@ export const FORM_CONFIG_ADDRESS_DYNAMIC_ZHTW: FormControlConfig[] = [
         label: '城鎮',
         formControlName: 'city',
         type: 'select',
-        extra: {
+        props: {
           autoDisplayFirst: false,
         },
         options: {

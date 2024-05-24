@@ -4,7 +4,7 @@ export const CONFIG_TEXTAREA_EN: FormControlConfig = {
   label: 'Textarea',
   formControlName: 'textarea',
   type: 'textarea',
-  extra: {
+  props: {
     rows: 5
   }
 };

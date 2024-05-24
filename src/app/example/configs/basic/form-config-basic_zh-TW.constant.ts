@@ -175,7 +175,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     label: '日期',
     formControlName: 'date',
     type: 'date',
-    extra: {
+    props: {
       appendTo: 'body',
       min: 'Date(2024/01/01)',
       minDate: 'Date(2024/01/01)',
@@ -252,7 +252,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     formControlName: 'temperature',
     type: 'range',
     value: 27,
-    extra: {
+    props: {
       min: -20,
       max: 80,
       step: 1,
@@ -264,7 +264,7 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
     label: '備註',
     formControlName: 'memo',
     type: 'textarea',
-    extra: {
+    props: {
       rows: 3,
       cols: 30,
       minRows: 3,
