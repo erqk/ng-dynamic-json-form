@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2, inject } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EMPTY,
@@ -21,7 +22,6 @@ import { NavigatorTitleComponent } from 'src/app/features/navigator/components/n
 import { SidePanelService } from 'src/app/features/navigator/services/navigator.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
-import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-page-docs',
@@ -41,34 +41,35 @@ export class PageDocsComponent {
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
   private _renderer2 = inject(Renderer2);
-  private _docVersionService = inject(VersionService);
   private _docLoaderService = inject(DocsLoaderService);
   private _layoutService = inject(LayoutService);
   private _sideNavigationPaneService = inject(SidePanelService);
   private _langService = inject(LanguageDataService);
 
   private _useRouterScroll = false;
+  private _loadDoc$ = (type: 'safeHTML' | 'string') =>
+    this._route.url.pipe(
+      map((x) => x.map(({ path }) => path).join('/')),
+      switchMap((x) => {
+        return !x
+          ? this._loadFallbackDoc$()
+          : this._docLoaderService.loadDocHtml$(x, type);
+      })
+    );
 
   showMobileMenu = false;
 
   headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
-  content$ = this._route.url.pipe(
-    map((x) => x.map(({ path }) => path).join('/')),
-    switchMap((x) => {
-      return !x
-        ? this._loadFallbackDoc$()
-        : this._docLoaderService.loadDocHtml$(x);
-    }),
+  title$: Observable<string> = this._loadDoc$('string');
+  content$: Observable<SafeHtml> = this._loadDoc$('safeHTML').pipe(
     tap(() => {
       this.onDocReady();
       this.toggleMobileMenu(false);
-      this._setLinkRenderer();
       this._scrollToContent();
     }),
     catchError(() => {
-      // this._reloadDocOnError();
       return EMPTY;
     })
   );
@@ -79,9 +80,6 @@ export class PageDocsComponent {
 
   onDocReady(): void {
     this._docLoaderService.wrapTable();
-    this._sideNavigationPaneService.buildNavigationLinks();
-    this._docLoaderService.setCodeViewerTag();
-    this._docLoaderService.docLoading$.next(false);
   }
 
   toggleMobileMenu(value?: boolean): void {
@@ -114,15 +112,6 @@ export class PageDocsComponent {
       if (!target) return;
       scrollToTitle(target, 'auto');
     });
-  }
-
-  private _setLinkRenderer(): void {
-    const version = this._docVersionService.currentVersion;
-    // this._markdownService.renderer.link =
-    //   this._docLoaderService.markdownLinkRenderFn('', {
-    //     searchValue: version,
-    //     replaceValue: `docs`,
-    //   });
   }
 
   private _loadFallbackDoc$(): Observable<any> {

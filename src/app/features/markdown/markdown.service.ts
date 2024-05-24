@@ -32,7 +32,6 @@ export class MarkdownService {
         searchValue: version,
         replaceValue: 'docs',
       }),
-      code: this._codeRendererFn,
     };
 
     this._marked.use({ renderer: renderer as any });
@@ -42,28 +41,6 @@ export class MarkdownService {
     }) as string;
 
     return this._domSanitizer.bypassSecurityTrustHtml(result);
-  }
-
-  private _codeRendererFn(
-    code: string,
-    infoString: string | undefined,
-    escaped: boolean
-  ): string {
-    const attributes = infoString?.match(/(\w|-)+=("[^"]+")/g);
-    const lang = infoString?.split(/\s+/)[0];
-    const name = attributes
-      ?.find((x) => x.indexOf('name=') > -1)
-      ?.split('name=')[1];
-
-    const container = `
-      <pre name=${name ?? ''}>
-        <code class="hljs language-${lang}">
-          {{content}}
-        </code>
-      </pre>
-    `.replace(/\s{2,}/g, '');
-
-    return container.replace('{{content}}', code);
   }
 
   private _linkRendererFn(

@@ -42,6 +42,7 @@
         ]"
       >
         <app-navigator-title
+          [htmlString]="(title$ | async) ?? ''"
           (click)="setSmoothScroll(true)"
         ></app-navigator-title>
       </div>

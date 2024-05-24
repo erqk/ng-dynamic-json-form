@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, HostBinding, inject } from '@angular/core';
+import { Component, HostBinding, Input, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
@@ -7,6 +7,7 @@ import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
 import { SidePanelService } from '../../services/navigator.service';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-navigator-title',
@@ -72,9 +73,16 @@ export class NavigatorTitleComponent {
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
 
+  @Input() htmlString?: string;
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
-  ngAfterViewInit(): void {
+  ngOnChanges(): void {
+    this._sideNavigationPaneService.buildNavigationLinks();
+  }
+
+  ngOnInit(): void {
+    if (typeof window === 'undefined') return;
+    
     this._getLinks();
     this._onRouteChange();
   }

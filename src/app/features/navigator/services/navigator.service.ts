@@ -14,7 +14,7 @@ export class SidePanelService {
   buildNavigationLinks(): void {
     if (typeof window === 'undefined') return;
 
-    const titles = Array.from(document.querySelectorAll('markdown > *')).filter(
+    const titles = Array.from(document.querySelectorAll('*')).filter(
       (x) => x.tagName === 'H2' || x.tagName === 'H3'
     );
 

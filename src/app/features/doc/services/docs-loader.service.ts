@@ -25,11 +25,14 @@ export class DocsLoaderService {
   private _versionService = inject(VersionService);
   private _languageDataService = inject(LanguageDataService);
   private _markdownService = inject(MarkdownService);
-  private _docCache: { path: string; data: SafeHtml }[] = [];
+  private _docCache: { path: string; data: SafeHtml | string }[] = [];
 
   docLoading$ = new BehaviorSubject<boolean>(false);
 
-  loadDocHtml$(path: string): Observable<SafeHtml> {
+  loadDocHtml$(
+    path: string,
+    returnType?: 'safeHTML' | 'string'
+  ): Observable<SafeHtml | string> {
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
@@ -63,7 +66,10 @@ export class DocsLoaderService {
             throw 'Content not found';
           }
 
-          return this._markdownService.parse(x.body ?? '');
+          const str = x.body ?? '';
+          return returnType === 'safeHTML'
+            ? this._markdownService.parse(str)
+            : str;
         }),
         tap((x) => {
           if (this._docCache.some((x) => x.path === path)) return;

@@ -3,6 +3,7 @@ import { Component, Injector, Type, inject } from '@angular/core';
 import { NgElementConfig, createCustomElement } from '@angular/elements';
 import {
   NavigationEnd,
+  NavigationStart,
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
   Router,
@@ -77,15 +78,12 @@ export class AppComponent {
     // And this is one time action, no repeated subscription
     return this._router.events.pipe(
       tap((x) => {
-        if (x instanceof RouteConfigLoadStart) {
+        if (x instanceof RouteConfigLoadStart || x instanceof NavigationStart) {
           this.routeLoading = true;
         }
 
-        if (x instanceof RouteConfigLoadEnd) {
+        if (x instanceof RouteConfigLoadEnd || x instanceof NavigationEnd) {
           this.routeLoading = false;
-        }
-
-        if (x instanceof NavigationEnd) {
           this._langService.language$.next(this._langService.currentLanguage);
         }
       })
