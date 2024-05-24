@@ -4,13 +4,15 @@ import { FormControlConfig } from '../models';
 
 @Injectable()
 export class ConfigMappingService {
-  mapCorrectConfig(input?: FormControlConfig): FormControlConfig | undefined {
-    if (!input) return undefined;
+  getCorrectedConfig(input: FormControlConfig): FormControlConfig {
+    const config = window.structuredClone(input) as FormControlConfig;
+    const { formControlName, props, inputMask, children = [] } = config;
 
-    const { props, inputMask } = input;
+    config.formControlName = this._getFormControlName(formControlName);
+    config.value = config.value ?? this._getFallbackValue(config);
 
     if (props) {
-      input.props = Object.keys(props).reduce((acc, key) => {
+      config.props = Object.keys(props).reduce((acc, key) => {
         if (typeof acc[key] === 'string') {
           acc[key] = this._parseStringValue(acc[key]);
         }
@@ -23,7 +25,35 @@ export class ConfigMappingService {
       this._mapInputMask(inputMask);
     }
 
-    return input;
+    if (children.length > 0) {
+      config.children = children.map(x => this.getCorrectedConfig(x));
+    }
+
+    return config;
+  }
+
+  private _getFallbackValue(item: FormControlConfig): any {
+    switch (item.type) {
+      case 'checkbox':
+      case 'switch':
+        return false;
+
+      default:
+        return item.value;
+    }
+  }
+
+  private _getFormControlName(name: string): string {
+    const replaceSpaces = (str: string) => str.replaceAll(/\s/g, '_');
+    const removeSpecialCharacters = (str: string) =>
+      str.replaceAll(/[.,]/g, '');
+
+    const result = [replaceSpaces, removeSpecialCharacters].reduce(
+      (acc, fn) => fn(acc),
+      name
+    );
+
+    return result;
   }
 
   private _mapInputMask(val: FactoryArg): void {

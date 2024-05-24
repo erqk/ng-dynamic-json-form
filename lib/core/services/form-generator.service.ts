@@ -1,13 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  UntypedFormGroup,
-  ValidatorFn,
-} from '@angular/forms';
+import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
+import { ValidatorConfig } from '../models';
 import { FormControlConfig } from '../models/form-control-config.interface';
 import { FormValidationService } from './form-validation.service';
-import { ValidatorConfig } from '../models';
 
 @Injectable()
 export class FormGeneratorService {
@@ -31,7 +26,7 @@ export class FormGeneratorService {
         this._formValidationService.getValidators(validatorConfigs);
 
       if (isFormControl) {
-        control = new FormControl(item.value ?? this._fallbackValue(item));
+        control = new FormControl(item.value);
       }
 
       if (isFormGroup) {
@@ -42,35 +37,10 @@ export class FormGeneratorService {
         throw 'failed to generate form control!';
       }
 
-      item.formControlName = this._formControlName(item.formControlName);
       control.setValidators(validators);
       formGroup.addControl(item.formControlName, control);
     }
 
     return formGroup;
-  }
-
-  private _fallbackValue(item: FormControlConfig): any {
-    switch (item.type) {
-      case 'checkbox':
-      case 'switch':
-        return false;
-
-      default:
-        return item.value;
-    }
-  }
-
-  private _formControlName(name: string): string {
-    const replaceSpaces = (str: string) => str.replaceAll(/\s/g, '_');
-    const removeSpecialCharacters = (str: string) =>
-      str.replaceAll(/[.,]/g, '');
-
-    const result = [replaceSpaces, removeSpecialCharacters].reduce(
-      (acc, fn) => fn(acc),
-      name
-    );
-
-    return result;
   }
 }

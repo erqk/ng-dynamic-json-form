@@ -181,10 +181,7 @@ export class FormControlComponent
 
     if (!componentRef) return;
 
-    componentRef.instance.data = this._configMappingService.mapCorrectConfig(
-      structuredClone(this.data)
-    );
-
+    componentRef.instance.data = this.data;
     componentRef.instance.writeValue(this._pendingValue);
 
     if (!this.data?.readonly) {

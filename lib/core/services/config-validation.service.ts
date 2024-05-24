@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { FormControlConfig } from '../models';
 import { ConfigValidationErrors } from '../models/config-validation-errors.interface';
 import { getValueInObject } from '../utilities/get-value-in-object';
 import { NgDynamicJsonFormSchema } from '../utilities/schema-validator';
+import { ConfigMappingService } from './config-mapping.service';
 
 const validate = NgDynamicJsonFormSchema as ValidateFunction;
 @Injectable()
 export class ConfigValidationService {
+  private _configMappingService = inject(ConfigMappingService);
+
   validateAndGetConfig(input: string | FormControlConfig[] | undefined): {
     configs: FormControlConfig[] | null;
     errors?: ConfigValidationErrors[];
@@ -22,18 +25,23 @@ export class ConfigValidationService {
     }
 
     if (Array.isArray(input)) {
-      if (!input.length) return failedResult;
-
-      if (!validate(input)) {
-        return {
-          configs: null,
-          errors: validate.errors?.map((x) =>
-            this._getBeautifyErrors(x, input)
-          ),
-        };
+      if (!input.length) {
+        return failedResult;
       }
 
-      return { configs: input };
+      if (!validate(input)) {
+        failedResult.errors = (validate.errors || []).map((x) =>
+          this._getBeautifyErrors(x, input)
+        );
+
+        return failedResult;
+      }
+
+      const configsGet = input
+        .filter(Boolean)
+        .map((x) => this._configMappingService.getCorrectedConfig(x));
+
+      return { configs: configsGet };
     }
 
     if (typeof input === 'string') {
@@ -41,15 +49,14 @@ export class ConfigValidationService {
         const data = JSON.parse(input);
         return this.validateAndGetConfig(data);
       } catch (err: any) {
-        return {
-          configs: null,
-          errors: [
-            {
-              // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
-              errors: JSON.stringify(err, Object.getOwnPropertyNames(err), 4),
-            },
-          ],
-        };
+        failedResult.errors = [
+          {
+            // https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+            errors: JSON.stringify(err, Object.getOwnPropertyNames(err), 4),
+          },
+        ];
+
+        return failedResult;
       }
     }
 
