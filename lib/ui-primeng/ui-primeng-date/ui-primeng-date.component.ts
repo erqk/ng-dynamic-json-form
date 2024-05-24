@@ -21,7 +21,12 @@ import { Calendar, CalendarModule } from 'primeng/calendar';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [Calendar],
+      useValue: [
+        {
+          key: 'p-calendar',
+          token: Calendar,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-date.component.html',

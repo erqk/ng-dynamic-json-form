@@ -9,7 +9,11 @@
     }"
   >
     <select
-      [propsBinding]="[data.extra]"
+      [propsBinding]="[
+        {
+          props: data.props
+        }
+      ]"
       [formControl]="control"
       (blur)="onTouched()"
     >

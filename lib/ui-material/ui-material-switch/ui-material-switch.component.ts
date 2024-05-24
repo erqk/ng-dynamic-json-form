@@ -25,7 +25,12 @@ import {
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatSlideToggle],
+      useValue: [
+        {
+          key: 'mat-slide-toggle',
+          token: MatSlideToggle,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-switch.component.html',

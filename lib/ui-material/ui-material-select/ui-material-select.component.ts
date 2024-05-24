@@ -22,7 +22,12 @@ import { map } from 'rxjs';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatSelect],
+      useValue: [
+        {
+          key: 'mat-select',
+          token: MatSelect,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-select.component.html',

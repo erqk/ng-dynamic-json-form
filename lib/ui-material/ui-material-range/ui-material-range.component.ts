@@ -22,7 +22,12 @@ import {
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatSlider],
+      useValue: [
+        {
+          key: 'mat-slider',
+          token: MatSlider,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-range.component.html',

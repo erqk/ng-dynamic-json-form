@@ -2,7 +2,7 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
   PROPS_BINDING_INJECTORS,
@@ -21,7 +21,16 @@ import {
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [CdkTextareaAutosize],
+      useValue: [
+        {
+          key: 'cdk-textarea-autosize',
+          token: CdkTextareaAutosize,
+        },
+        {
+          key: 'mat-input',
+          token: MatInput,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-textarea.component.html',

@@ -12,7 +12,13 @@
       <mat-checkbox
         [labelPosition]="data.options.labelPosition ?? 'after'"
         [formControl]="control"
-        [propsBinding]="[data.extra]"
+        [propsBinding]="[
+          {
+            key: 'mat-checkbox',
+            props: data.props,
+            omit: ['labelPosition']
+          }
+        ]"
         >{{ data.options.data?.[0]?.label }}</mat-checkbox
       >
     </ng-container>
@@ -27,7 +33,13 @@
           [value]="item.value | json"
           [checked]="control.value.includes(item.value | json)"
           [disabled]="control.disabled"
-          [propsBinding]="[data.extra]"
+          [propsBinding]="[
+            {
+              key: 'mat-checkbox',
+              props: data.props,
+              omit: ['labelPosition', 'checked', 'disabled', 'value']
+            }
+          ]"
           (change)="onCheckboxChange($event)"
           >{{ item.label }}</mat-checkbox
         >

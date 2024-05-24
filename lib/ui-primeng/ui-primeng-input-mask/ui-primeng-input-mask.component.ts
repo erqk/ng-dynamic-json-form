@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
+  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
 } from 'ng-dynamic-json-form';
 import { InputText, InputTextModule } from 'primeng/inputtext';
@@ -19,6 +20,17 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
     PropsBindingDirective,
   ],
   templateUrl: './ui-primeng-input-mask.component.html',
+  providers: [
+    {
+      provide: PROPS_BINDING_INJECTORS,
+      useValue: [
+        {
+          key: 'p-input-text',
+          token: InputText,
+        },
+      ],
+    },
+  ],
   styles: [],
 })
 export class UiPrimengInputMaskComponent extends CustomControlComponent {

@@ -31,8 +31,14 @@
           <ng-container *ngIf="data.options.data.length === 1">
             <p-checkbox
               [binary]="true"
-              [propsBinding]="[data.extra]"
               [formControl]="control"
+              [propsBinding]="[
+                {
+                  key: 'p-checkbox',
+                  props: data.props,
+                  omit: ['binary']
+                }
+              ]"
             ></p-checkbox>
           </ng-container>
 
@@ -42,7 +48,13 @@
               [name]="'group'"
               [value]="item.value"
               [formControl]="control"
-              [propsBinding]="[data.extra]"
+              [propsBinding]="[
+                {
+                  key: 'p-checkbox',
+                  props: data.props,
+                  omit: ['binary']
+                }
+              ]"
             ></p-checkbox>
           </ng-container>
         </ng-container>

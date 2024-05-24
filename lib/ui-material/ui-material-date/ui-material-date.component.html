@@ -2,13 +2,17 @@
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
     <input
-      readonly
       matInput
       [matDatepicker]="picker"
       [formControl]="control"
-      [propsBinding]="[data.extra]"
+      [propsBinding]="[
+        {
+          key: 'mat-input',
+          props: data.props,
+          omit: ['matDatepicker']
+        }
+      ]"
     />
-    <mat-hint>{{ data.placeholder }}</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>

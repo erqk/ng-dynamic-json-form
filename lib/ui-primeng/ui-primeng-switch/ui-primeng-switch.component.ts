@@ -20,7 +20,12 @@ import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [InputSwitch],
+      useValue: [
+        {
+          key: 'p-input-switch',
+          token: InputSwitch,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-switch.component.html',

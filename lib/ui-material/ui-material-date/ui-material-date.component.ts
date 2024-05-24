@@ -29,7 +29,12 @@ import {
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatDatepickerInput],
+      useValue: [
+        {
+          key: 'mat-input',
+          token: MatDatepickerInput,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-date.component.html',

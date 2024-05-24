@@ -1,8 +1,12 @@
 <ng-container *ngIf="data">
   <textarea
     pInputTextarea
-    [attr.placeholder]="data.placeholder ?? null"
-    [propsBinding]="[data.extra]"
     [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'p-input-textarea',
+        props: data.props
+      }
+    ]"
   ></textarea>
 </ng-container>

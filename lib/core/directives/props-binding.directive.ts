@@ -11,9 +11,9 @@ import {
   inject,
 } from '@angular/core';
 
-export const PROPS_BINDING_INJECTORS = new InjectionToken<ProviderToken<any>[]>(
-  'property-binding-injector'
-);
+export const PROPS_BINDING_INJECTORS = new InjectionToken<
+  { key: string; token: ProviderToken<any> }[]
+>('property-binding-injector');
 
 @Directive({
   selector: '[propsBinding]',
@@ -29,10 +29,7 @@ export class PropsBindingDirective {
   private _renderer2 = inject(Renderer2);
   private _isViewInitialized = false;
 
-  @Input() propsBinding?: any[];
-
-  /**Properties to exclude from binding */
-  @Input() skipProperties?: string[];
+  @Input() propsBinding?: { props: any; key?: string; omit?: string[] }[];
 
   ngOnChanges(): void {
     if (!this._isViewInitialized) return;
@@ -51,18 +48,18 @@ export class PropsBindingDirective {
 
     const host = this._el.nativeElement;
 
-    this.propsBinding.forEach((props, i) => {
-      if (!props || !Object.keys(props).length) {
-        return;
-      }
+    for (const item of this.propsBinding) {
+      const { props, key, omit = [] } = item;
+      const providerToken = this._injectionTokens?.find(
+        (x) => x.key === key
+      )?.token;
 
-      const target = !this._injectionTokens?.length
-        ? null
-        : this._injector.get(this._injectionTokens[i]);
+      const target = !providerToken ? null : this._injector.get(providerToken);
 
       for (const key in props) {
         const value = props[key];
         if (value === undefined) continue;
+        if (omit.includes(key)) continue;
 
         if (target) {
           target[key] = value;
@@ -77,7 +74,7 @@ export class PropsBindingDirective {
           this._renderer2.setProperty(host, key, value);
         }
       }
-    });
+    }
 
     this._cd.markForCheck();
     this._cd.detectChanges();

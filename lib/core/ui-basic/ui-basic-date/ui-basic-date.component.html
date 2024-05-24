@@ -7,13 +7,18 @@
   >
     <input
       type="date"
-      [attr.min]="data.extra?.min"
-      [attr.max]="data.extra?.max"
-      [attr.step]="data.extra?.step"
+      [attr.min]="dateSettings.min"
+      [attr.max]="dateSettings.max"
+      [propsBinding]="[
+        {
+          props: data.props,
+          omit: ['min', 'max', 'type']
+        }
+      ]"
       formControlName="date"
     />
 
-    <ng-container *ngIf="data?.extra?.showTime === true">
+    <ng-container *ngIf="data?.props?.showTime === true">
       <input type="time" formControlName="time" />
     </ng-container>
   </div>

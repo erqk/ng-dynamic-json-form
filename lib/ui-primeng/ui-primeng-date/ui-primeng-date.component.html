@@ -1,6 +1,11 @@
 <ng-container *ngIf="data">
   <p-calendar
-    [propsBinding]="[data.extra]"
     [formControl]="control"
+    [propsBinding]="[
+    {
+      key: 'p-calendar',
+      props: data.props,
+    }
+  ]"
   ></p-calendar>
 </ng-container>

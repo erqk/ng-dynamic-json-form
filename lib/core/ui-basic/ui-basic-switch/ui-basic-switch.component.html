@@ -13,7 +13,12 @@
 
       <input
         type="checkbox"
-        [propsBinding]="[data.extra]"
+        [propsBinding]="[
+          {
+            props: data.props,
+            omit: ['type']
+          }
+        ]"
         [formControl]="control"
       />
       <span class="marker"></span>

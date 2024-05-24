@@ -33,8 +33,14 @@
             <!-- binary checkbox -->
             <ng-container *ngIf="data.options.data.length === 1">
               <input
+                #checkboxBinary
                 type="checkbox"
-                [propsBinding]="[data.extra]"
+                [propsBinding]="[
+                  {
+                    props: data.props,
+                    omit: ['type']
+                  }
+                ]"
                 [formControl]="control"
               />
             </ng-container>
@@ -43,7 +49,12 @@
             <ng-container *ngIf="data.options.data.length > 1">
               <input
                 type="checkbox"
-                [propsBinding]="[data.extra]"
+                [propsBinding]="[
+                  {
+                    props: data.props,
+                    omit: ['type']
+                  }
+                ]"
                 [value]="item.value | json"
                 [checked]="
                   control.value && control.value!.includes(item.value | json)

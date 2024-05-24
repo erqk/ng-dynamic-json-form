@@ -20,7 +20,12 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [InputText],
+      useValue: [
+        {
+          key: 'p-input-text',
+          token: InputText,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-input.component.html',

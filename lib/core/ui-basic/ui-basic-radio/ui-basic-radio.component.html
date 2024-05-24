@@ -26,7 +26,12 @@
           <input
             type="radio"
             [name]="data.formControlName"
-            [propsBinding]="[data.extra]"
+            [propsBinding]="[
+              {
+                props: data.props,
+                omit: ['type', 'name']
+              }
+            ]"
             [value]="item.value | json"
             [formControl]="control"
           />

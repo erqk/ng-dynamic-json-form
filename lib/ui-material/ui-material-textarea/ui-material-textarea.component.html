@@ -4,9 +4,17 @@
     <textarea
       matInput
       cdkTextareaAutosize
-      [attr.placeholder]="data.placeholder ?? null"
       [formControl]="control"
-      [propsBinding]="[data.extra]"
+      [propsBinding]="[
+        {
+          key: 'mat-input',
+          props: data.props
+        },
+        {
+          key: 'cdk-textarea-autosize',
+          props: data.props
+        }
+      ]"
     ></textarea>
   </mat-form-field>
 </ng-container>

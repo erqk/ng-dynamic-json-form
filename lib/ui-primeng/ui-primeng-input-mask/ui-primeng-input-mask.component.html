@@ -2,9 +2,14 @@
   <input
     type="text"
     pInputText
-    [attr.placeholder]="data.placeholder ?? null"
     [formControl]="control"
     [imask]="data.inputMask"
-    [propsBinding]="[data.extra]"
+    [propsBinding]="[
+      {
+        key: 'p-input-text',
+        props: data.props,
+        omit: ['type']
+      }
+    ]"
   />
 </ng-container>

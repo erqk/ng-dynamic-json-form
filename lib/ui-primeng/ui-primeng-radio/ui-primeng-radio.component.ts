@@ -22,7 +22,12 @@ import { map } from 'rxjs';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [RadioButton],
+      useValue: [
+        {
+          key: 'p-radio-button',
+          token: RadioButton,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-radio.component.html',

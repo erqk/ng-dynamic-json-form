@@ -24,7 +24,12 @@ import { map } from 'rxjs';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatRadioGroup],
+      useValue: [
+        {
+          key: 'mat-radio-group',
+          token: MatRadioGroup,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-radio.component.html',

@@ -20,7 +20,12 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [Dropdown],
+      useValue: [
+        {
+          key: 'p-dropdown',
+          token: Dropdown,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-select.component.html',

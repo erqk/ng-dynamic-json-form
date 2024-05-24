@@ -7,16 +7,16 @@ export class ConfigMappingService {
   mapCorrectConfig(input?: FormControlConfig): FormControlConfig | undefined {
     if (!input) return undefined;
 
-    const { extra, inputMask } = input;
+    const { props, inputMask } = input;
 
-    if (extra) {
-      input.extra = Object.keys(extra).reduce((acc, key) => {
+    if (props) {
+      input.props = Object.keys(props).reduce((acc, key) => {
         if (typeof acc[key] === 'string') {
           acc[key] = this._parseStringValue(acc[key]);
         }
 
         return acc;
-      }, extra);
+      }, props);
     }
 
     if (inputMask) {

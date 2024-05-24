@@ -1,5 +1,11 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, HostBinding, LOCALE_ID, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  LOCALE_ID,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import {
@@ -14,8 +20,12 @@ import {
   templateUrl: './ui-basic-date.component.html',
   styles: [],
 })
-export class UiBasicDateComponent extends CustomControlComponent {
+export class UiBasicDateComponent
+  extends CustomControlComponent
+  implements OnInit
+{
   private _locale = inject(LOCALE_ID);
+  dateSettings = { min: '', max: '' };
 
   @HostBinding('class') hostClass = 'ui-basic';
 
@@ -53,5 +63,13 @@ export class UiBasicDateComponent extends CustomControlComponent {
         })
       )
       .subscribe(fn);
+  }
+
+  ngOnInit(): void {
+    const { min, max } = this.data?.props ?? {};
+    this.dateSettings = {
+      min: !min ? '' : formatDate(min, 'yyyy-MM-dd', this._locale),
+      max: !max ? '' : formatDate(max, 'yyyy-MM-dd', this._locale),
+    };
   }
 }

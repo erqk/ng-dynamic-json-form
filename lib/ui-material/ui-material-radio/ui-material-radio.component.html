@@ -1,8 +1,14 @@
 <ng-container *ngIf="data">
   <mat-radio-group
     [labelPosition]="data.options?.labelPosition ?? 'after'"
-    [propsBinding]="[data.extra]"
     [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'mat-radio-group',
+        props: data.props,
+        omit: ['labelPosition']
+      }
+    ]"
   >
     <div
       class="group-buttons"

@@ -1,8 +1,14 @@
 <ng-container *ngIf="data">
   <p-dropdown
-    [propsBinding]="[data.extra]"
     [options]="data.options?.data"
     [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'p-dropdown',
+        props: data.props,
+        omit: ['options']
+      }
+    ]"
     (onHide)="onTouched()"
   ></p-dropdown>
 </ng-container>

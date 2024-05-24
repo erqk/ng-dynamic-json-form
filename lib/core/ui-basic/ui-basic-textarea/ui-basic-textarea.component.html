@@ -2,7 +2,11 @@
   <textarea
     textareaAutoHeight
     [ngClass]="{ disabled: control.disabled }"
-    [propsBinding]="[data.extra]"
+    [propsBinding]="[
+      {
+        props: data.props
+      }
+    ]"
     [formControl]="control"
   ></textarea>
 </ng-container>

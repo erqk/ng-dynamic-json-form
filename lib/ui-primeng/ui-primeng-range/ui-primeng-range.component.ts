@@ -20,7 +20,12 @@ import { Slider, SliderModule } from 'primeng/slider';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [Slider],
+      useValue: [
+        {
+          key: 'p-slider',
+          token: Slider,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-range.component.html',

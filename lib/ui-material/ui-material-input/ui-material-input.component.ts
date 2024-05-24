@@ -22,7 +22,12 @@ import {
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatInput],
+      useValue: [
+        {
+          key: 'mat-input',
+          token: MatInput,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-input.component.html',

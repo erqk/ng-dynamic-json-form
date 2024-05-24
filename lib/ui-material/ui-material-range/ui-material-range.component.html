@@ -1,5 +1,12 @@
 <ng-container *ngIf="data">
-  <mat-slider [propsBinding]="[data.extra]">
+  <mat-slider
+    [propsBinding]="[
+      {
+        key: 'mat-slider',
+        props: data.props
+      }
+    ]"
+  >
     <input matSliderThumb [formControl]="control" />
   </mat-slider>
 </ng-container>

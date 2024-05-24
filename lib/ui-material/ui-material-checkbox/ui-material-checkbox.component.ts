@@ -28,7 +28,12 @@ import { map } from 'rxjs';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [MatCheckbox],
+      useValue: [
+        {
+          key: 'mat-checkbox',
+          token: MatCheckbox,
+        },
+      ],
     },
   ],
   templateUrl: './ui-material-checkbox.component.html',
@@ -43,7 +48,7 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
       this.data?.options?.data?.length === 1
         ? obj
         : this._controlValueService.getOptionsValue('stringified', obj);
-        
+
     this.control.setValue(value);
   }
 

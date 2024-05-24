@@ -35,7 +35,7 @@ export class FormTitleComponent {
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
-  @Input() extra?: FormControlConfig['extra'];
+  @Input() props?: FormControlConfig['props'];
   @Input() collapsibleEl?: HTMLElement;
   @Input() state?: FormLayout['contentCollapsible'];
   @Input() customComponent?: LayoutComponents['formTitle'];
@@ -122,7 +122,7 @@ export class FormTitleComponent {
 
     componentRef.instance.label = this.label;
     componentRef.instance.layout = this.layout;
-    componentRef.instance.extra = this.extra;
+    componentRef.instance.props = this.props;
     componentRef.instance.collapsibleEl = this.collapsibleEl;
   }
 

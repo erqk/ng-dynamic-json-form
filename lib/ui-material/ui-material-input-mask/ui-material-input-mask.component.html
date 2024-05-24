@@ -5,10 +5,15 @@
     <input
       matInput
       type="text"
-      placeholder="{{ data.placeholder }}"
-      [imask]="data.inputMask"
-      [propsBinding]="[data.extra, data.inputMask]"
       [formControl]="control"
+      [imask]="data.inputMask"
+      [propsBinding]="[
+        {
+          key: 'mat-input',
+          props: data.props,
+          omit: ['type']
+        }
+      ]"
     />
   </mat-form-field>
 </ng-container>

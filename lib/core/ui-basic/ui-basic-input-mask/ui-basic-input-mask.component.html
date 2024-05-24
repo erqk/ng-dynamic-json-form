@@ -2,9 +2,13 @@
   <input
     type="text"
     [ngClass]="{ disabled: control.disabled }"
-    [attr.placeholder]="data.placeholder ?? ''"
     [imask]="data.inputMask"
-    [propsBinding]="[data.extra]"
+    [propsBinding]="[
+      {
+        props: data.props,
+        omit: ['type']
+      }
+    ]"
     [formControl]="control"
   />
 </ng-container>

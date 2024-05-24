@@ -20,7 +20,12 @@ import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
   providers: [
     {
       provide: PROPS_BINDING_INJECTORS,
-      useValue: [InputTextarea],
+      useValue: [
+        {
+          key: 'p-input-textarea',
+          token: InputTextarea,
+        },
+      ],
     },
   ],
   templateUrl: './ui-primeng-textarea.component.html',

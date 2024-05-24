@@ -16,7 +16,7 @@ export interface FormControlConfig {
 
   description?: string;
 
-  /**Properties for the input element or `Directive`. Example:
+  /**The properties to bind to the target element or `Directive`. Example:
    *  @example
    *  <textarea
    *    [rows]="extra.rows"
@@ -29,7 +29,7 @@ export interface FormControlConfig {
    *    [appendTo]="extra.appendTo"
    * ></p-calendar>
    */
-  extra?: any;
+  props?: any;
 
   /**Don't render the UI of this control if set to true. */
   hidden?: boolean;
