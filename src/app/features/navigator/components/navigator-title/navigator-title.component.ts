@@ -5,11 +5,11 @@ import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
-import { SidePanelSecondaryItem } from '../../interfaces/side-panel-secondary-item.interface';
-import { SidePanelService } from '../../services/side-panel.service';
+import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
+import { SidePanelService } from '../../services/navigator.service';
 
 @Component({
-  selector: 'app-side-panel-secondary',
+  selector: 'app-navigator-title',
   standalone: true,
   imports: [CommonModule, UiContentWrapperComponent],
   template: `
@@ -54,22 +54,22 @@ import { SidePanelService } from '../../services/side-panel.service';
       </ng-container>
     </ng-template>
   `,
-  styleUrls: ['./side-panel-secondary.component.scss'],
+  styleUrls: ['./navigator-title.component.scss'],
   animations: [FADE_UP_ANIMATION],
 })
-export class SidePanelSecondaryComponent {
+export class NavigatorTitleComponent {
   private _sideNavigationPaneService = inject(SidePanelService);
   private _router = inject(Router);
   private _location = inject(Location);
   private _currentLinkIndex = 0;
-  private _linksFlatten: SidePanelSecondaryItem[] = [];
+  private _linksFlatten: NavigatorTitleItem[] = [];
   private _scrolling = false;
   private _scrollingTimeout: number = 0;
 
   private readonly _reset$ = new Subject<void>();
   private readonly _onDestroy$ = new Subject<void>();
 
-  links: SidePanelSecondaryItem[] = [];
+  links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
@@ -84,7 +84,7 @@ export class SidePanelSecondaryComponent {
     this._onDestroy$.complete();
   }
 
-  onLinkClick(e: Event, item: SidePanelSecondaryItem): void {
+  onLinkClick(e: Event, item: NavigatorTitleItem): void {
     const el = e.target as HTMLElement;
     const newUrl = this._router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
@@ -125,10 +125,10 @@ export class SidePanelSecondaryComponent {
       .subscribe();
   }
 
-  private _flattenLinks(links: SidePanelSecondaryItem[]): void {
+  private _flattenLinks(links: NavigatorTitleItem[]): void {
     this._linksFlatten = [];
 
-    const flatten = (input: SidePanelSecondaryItem[]) => {
+    const flatten = (input: NavigatorTitleItem[]) => {
       for (const item of input) {
         this._linksFlatten.push(item);
         if (!item.children) continue;

@@ -16,9 +16,9 @@ import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
-import { SidePanelPrimaryComponent } from 'src/app/features/side-panel/components/side-panel-primary/side-panel-primary.component';
-import { SidePanelSecondaryComponent } from 'src/app/features/side-panel/components/side-panel-secondary/side-panel-secondary.component';
-import { SidePanelService } from 'src/app/features/side-panel/services/side-panel.service';
+import { NavigatorIndexComponent } from 'src/app/features/navigator/components/navigator-index/navigator-index.component';
+import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
+import { SidePanelService } from 'src/app/features/navigator/services/navigator.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 import { VersionService } from 'src/app/features/version/version.service';
@@ -30,9 +30,9 @@ import { VersionService } from 'src/app/features/version/version.service';
     CommonModule,
     UiContentWrapperComponent,
     DocsRouterLinkDirective,
-    SidePanelPrimaryComponent,
+    NavigatorIndexComponent,
     VersionSelectorComponent,
-    SidePanelSecondaryComponent,
+    NavigatorTitleComponent,
   ],
   templateUrl: './page-docs.component.html',
   styleUrls: ['./page-docs.component.scss'],

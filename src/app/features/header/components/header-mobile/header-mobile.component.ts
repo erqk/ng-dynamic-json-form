@@ -3,7 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { LanguageSelectorComponent } from 'src/app/features/language/language-selector.component';
-import { SidePanelSecondaryComponent } from 'src/app/features/side-panel/components/side-panel-secondary/side-panel-secondary.component';
+import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
 import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-switcher/theme-switcher.component';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 
@@ -13,7 +13,7 @@ import { HeaderTabBarComponent } from 'src/app/features/header/components/header
   imports: [
     CommonModule,
     RouterModule,
-    SidePanelSecondaryComponent,
+    NavigatorTitleComponent,
     HeaderTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,

@@ -8,12 +8,12 @@ import { LanguageDataService } from 'src/app/features/language/language-data.ser
 import { VersionService } from '../../../version/version.service';
 
 @Component({
-  selector: 'app-side-panel-primary',
+  selector: 'app-navigator-index',
   standalone: true,
   imports: [CommonModule, DocsRouterLinkDirective],
-  templateUrl: './side-panel-primary.component.html',
+  templateUrl: './navigator-index.component.html',
 })
-export class SidePanelPrimaryComponent {
+export class NavigatorIndexComponent {
   private _domSanitizer = inject(DomSanitizer);
   private _docLoaderService = inject(DocsLoaderService);
   private _versionService = inject(VersionService);

@@ -22,14 +22,14 @@
       >
         <app-version-selector class="block mb-5"></app-version-selector>
 
-        <app-side-panel-primary
+        <app-navigator-index
           [containerClass]="['gap-y-2']"
           (click)="setSmoothScroll(false)"
-        ></app-side-panel-primary>
+        ></app-navigator-index>
       </div>
 
       <div
-        class="markdown block p-4 lg:p-0 mt-4 lg:mt-10 mb-24 overflow-hidden"
+        class="markdown block p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
         [innerHTML]="content$ | async"
       ></div>
 
@@ -41,9 +41,9 @@
           'h-[calc(100vh-var(--header-height))]'
         ]"
       >
-        <app-side-panel-secondary
+        <app-navigator-title
           (click)="setSmoothScroll(true)"
-        ></app-side-panel-secondary>
+        ></app-navigator-title>
       </div>
     </div>
   </ui-content-wrapper>
@@ -76,9 +76,9 @@
     ]"
   >
     <app-version-selector class="block mb-5"></app-version-selector>
-    <app-side-panel-primary
+    <app-navigator-index
       [containerClass]="['gap-y-6 break-keep whitespace-nowrap']"
-    ></app-side-panel-primary>
+    ></app-navigator-index>
   </div>
 
   <button

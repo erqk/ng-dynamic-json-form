@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-content-wrapper.component';
-import { SidePanelSecondaryComponent } from '../features/side-panel/components/side-panel-secondary/side-panel-secondary.component';
+import { NavigatorTitleComponent } from '../features/navigator/components/navigator-title/navigator-title.component';
 import { DocumentLoaderService } from '../features/document/services/document-loader.service';
 import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
@@ -14,7 +14,7 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
     CommonModule,
     RouterModule,
     UiContentWrapperComponent,
-    SidePanelSecondaryComponent,
+    NavigatorTitleComponent,
     UiLoadingIndicatorComponent,
   ],
   template: `
