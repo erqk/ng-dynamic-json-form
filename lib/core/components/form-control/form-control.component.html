@@ -21,12 +21,9 @@
 
   <div class="loading-container" [ngClass]="{ hidden: !loading }">
     <!-- Loading component -->
-    <ng-container
-      *ngComponentOutlet="layoutComponents?.loading ?? null"
-    ></ng-container>
+    <ng-container *ngComponentOutlet="loadingComponent ?? null"></ng-container>
 
     <!-- Loading template -->
-    <ng-container [ngTemplateOutlet]="layoutTemplates?.loading ?? null">
-    </ng-container>
+    <ng-container [ngTemplateOutlet]="loadingTemplate ?? null"> </ng-container>
   </div>
 </ng-container>

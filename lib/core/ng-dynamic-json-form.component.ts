@@ -12,6 +12,8 @@ import {
   Output,
   PLATFORM_ID,
   SimpleChanges,
+  TemplateRef,
+  Type,
   forwardRef,
   inject,
 } from '@angular/core';
@@ -39,21 +41,19 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormTitleComponent } from './components/form-title/form-title.component';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
-import { FormControlConfig, OptionItem } from './models';
+import { CustomComponents, FormControlConfig, OptionItem } from './models';
 import { ConditionsActionFunctions } from './models/conditions-action-functions.interface';
 import { ConfigValidationErrors } from './models/config-validation-errors.interface';
-import { CustomComponents } from './models/custom-components.type';
 import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
 import { FormLayout } from './models/form-layout.interface';
-import { LayoutComponents } from './models/layout-components.interface';
-import { LayoutTemplates } from './models/layout-templates.interface';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './ng-dynamic-json-form.config';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import {
@@ -131,26 +131,23 @@ export class NgDynamicJsonFormComponent
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
   private _reset$ = new Subject<void>();
-
-  private _onTouched = () => {};
-  private _onChange = (x: any) => {};
-
   private _controlDirective: FormControlDirective | null = null;
-
-  /**Whether to allow the form to mark as dirty
+  /**
+   * Whether to allow the form to mark as dirty
    * @description
    * If false, then it willl automatically set to pristine
    * after each value changes.
    */
   private _allowFormDirty = false;
 
+  private _onTouched = () => {};
+  private _onChange = (x: any) => {};
+
   configGet: FormControlConfig[] = [];
   configValidationErrors: ConfigValidationErrors[] = [];
-
   form?: UntypedFormGroup;
 
   @Input() configs: FormControlConfig[] | string = [];
-
   /**
    * User defined custom components. Use `formControlName` as the key to map target component.
    *
@@ -169,49 +166,50 @@ export class NgDynamicJsonFormComponent
    * }
    */
   @Input() customComponents?: CustomComponents;
-
   /**
-   * Custom templates for input, suitable for input using only `FormControl`.
-   * To use `FormGroup` or `FormArray`, use `CustomControlComponent` instead.
+   * Custom templates for input, using `formControlName` as the key.
+   * Use this if creating a custom component is way too much.
+   *
+   * The template variables available:
+   * - `control` The FormControl for this input
+   * - `data` The config for this input
    */
   @Input() customTemplates?: CustomTemplates;
-
-  /**Functions to execute when conditions is met.
+  /**
+   * Functions to execute when conditions is met.
    * @description
    * The function where its key is match will be called when conditions is met.
    * The function contains an argument which is the current `AbstractControl`.
    */
   @Input() conditionsActionFuntions?: ConditionsActionFunctions;
 
-  /**Toggle all the collapsible state */
+  @Input() hideErrorMessage?: boolean;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
 
-  /**Custom components/templates for error message of specific control,
-   * where `formControlName` is the key */
+  // Custom error components/templates
   @Input() errorComponents?: CustomErrorComponents;
+  @Input() errorComponentDefault?: Type<CustomErrorMessage>;
   @Input() errorTemplates?: CustomTemplates;
+  @Input() errorTemplateDefault?: TemplateRef<any>;
 
-  /**Control the show/hide of all the error messages */
-  @Input() hideErrorMessage?: boolean;
-
-  /**Custom components/templates for global layout UI */
-  @Input() layoutComponents?: LayoutComponents =
-    this._providerConfig?.layoutComponents;
-  @Input() layoutTemplates?: LayoutTemplates;
-
-  /**Custom components/templates for label of specific control,
-   * where `formControlName` is the key */
+  // Custom label components/templates
   @Input() labelComponents?: CustomLabelComponents;
+  @Input() labelComponentDefault?: Type<FormTitleComponent>;
   @Input() labelTemplates?: CustomTemplates;
+  @Input() labelTemplateDefault?: TemplateRef<any>;
 
-  /**Custom observables for the options
+  // Custom loading components/templates
+  @Input() loadingComponent?: Type<any>;
+  @Input() loadingTemplate?: TemplateRef<any>;
+  /**
+   * Custom observables for the options
    * @description
-   * The key that match with the `src` will be used.
+   * The observable with key that match with the `src` will be used.
    *
    * @example
    * ```ts
    * optionsSources = {
-   *    'getCountries': getCountries$
+   *    'getCountries': ...
    * }
    *
    * config = {
@@ -265,25 +263,7 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    this._globalVariableService.setup({
-      customValidators: this._providerConfig?.customValidators,
-      customComponents: this.customComponents,
-      customTemplates: this.customTemplates,
-      conditionsActionFuntions: this.conditionsActionFuntions,
-      errorComponents: this.errorComponents,
-      errorTemplates: this.errorTemplates,
-      layoutComponents: this.layoutComponents,
-      layoutTemplates: this.layoutTemplates,
-      hostElement: this._el.nativeElement,
-      labelComponents: this.labelComponents,
-      labelTemplates: this.labelTemplates,
-      optionsSources: this.optionsSources,
-      uiComponents: {
-        ...UI_BASIC_COMPONENTS,
-        ...this._providerConfig?.uiComponents,
-      },
-    });
-
+    this._setupVariables();
     this._getControlDirective();
   }
 
@@ -313,6 +293,51 @@ export class NgDynamicJsonFormComponent
 
   setDisabledState?(isDisabled: boolean): void {
     isDisabled ? this.form?.disable() : this.form?.enable();
+  }
+
+  private _setupVariables(): void {
+    const {
+      customValidators,
+      labelComponent,
+      errorComponent,
+      loadingComponent,
+      uiComponents,
+    } = this._providerConfig ?? {};
+
+    const errors = {
+      errorComponents: this.errorComponents,
+      errorTemplates: this.errorTemplates,
+      errorComponentDefault: this.errorComponentDefault ?? errorComponent,
+      errorTemplateDefault: this.errorTemplateDefault,
+    };
+
+    const labels = {
+      labelComponents: this.labelComponents,
+      labelTemplates: this.labelTemplates,
+      labelComponentDefault: this.labelComponentDefault ?? labelComponent,
+      labelTemplateDefault: this.labelTemplateDefault,
+    };
+
+    const loading = {
+      loadingComponent: this.loadingComponent ?? loadingComponent,
+      loadingTemplate: this.loadingTemplate,
+    };
+
+    this._globalVariableService.setup({
+      ...errors,
+      ...labels,
+      ...loading,
+      hostElement: this._el.nativeElement,
+      customValidators,
+      customComponents: this.customComponents,
+      customTemplates: this.customTemplates,
+      conditionsActionFuntions: this.conditionsActionFuntions,
+      optionsSources: this.optionsSources,
+      uiComponents: {
+        ...UI_BASIC_COMPONENTS,
+        ...uiComponents,
+      },
+    });
   }
 
   private _buildForm(): void {

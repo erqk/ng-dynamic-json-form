@@ -8,6 +8,8 @@ import {
   Input,
   Renderer2,
   SimpleChanges,
+  TemplateRef,
+  Type,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -16,8 +18,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
-import { LayoutComponents } from '../../models/layout-components.interface';
-import { LayoutTemplates } from '../../models/layout-templates.interface';
 
 @Component({
   selector: 'form-title',
@@ -38,8 +38,8 @@ export class FormTitleComponent {
   @Input() props?: FormControlConfig['props'];
   @Input() collapsibleEl?: HTMLElement;
   @Input() state?: FormLayout['contentCollapsible'];
-  @Input() customComponent?: LayoutComponents['formTitle'];
-  @Input() customTemplate?: LayoutTemplates['formTitle'];
+  @Input() customComponent?: Type<FormTitleComponent>;
+  @Input() customTemplate?: TemplateRef<any>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;

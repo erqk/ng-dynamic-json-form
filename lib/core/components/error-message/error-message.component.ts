@@ -5,6 +5,8 @@ import {
   DestroyRef,
   HostBinding,
   Input,
+  TemplateRef,
+  Type,
   ViewChild,
   ViewContainerRef,
   inject,
@@ -14,8 +16,6 @@ import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
-import { LayoutComponents } from '../../models/layout-components.interface';
-import { LayoutTemplates } from '../../models/layout-templates.interface';
 import { FormValidationService } from '../../services/form-validation.service';
 import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
 
@@ -32,8 +32,8 @@ export class ErrorMessageComponent implements AfterViewInit {
 
   @Input() control?: AbstractControl;
   @Input() validators?: ValidatorConfig[];
-  @Input() customComponent?: LayoutComponents['errorMessage'];
-  @Input() customTemplate?: LayoutTemplates['errorMessage'];
+  @Input() customComponent?: Type<CustomErrorMessage>;
+  @Input() customTemplate?: TemplateRef<any>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;

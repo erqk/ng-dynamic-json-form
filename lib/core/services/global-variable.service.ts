@@ -15,33 +15,35 @@ export class GlobalVariableService {
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
 
-  // The variables that must be initialized
+  // =============== The variables that must be initialized ===============
+  hostElement?: HTMLElement;
+  conditionsActionFuntions: NgDynamicJsonFormComponent['conditionsActionFuntions'];
+  optionsSources: NgDynamicJsonFormComponent['optionsSources'];
+  uiComponents: UiComponents | undefined;
   customValidators: CustomValidators | undefined;
   customComponents: NgDynamicJsonFormComponent['customComponents'];
   customTemplates: NgDynamicJsonFormComponent['customTemplates'];
-  conditionsActionFuntions: NgDynamicJsonFormComponent['conditionsActionFuntions'];
+
+  // Custom error
   errorComponents: NgDynamicJsonFormComponent['errorComponents'];
   errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
-  hostElement?: HTMLElement;
+  errorTemplateDefault: NgDynamicJsonFormComponent['errorTemplateDefault'];
+  errorComponentDefault: NgDynamicJsonFormComponent['errorComponentDefault'];
+
+  // Custom label
   labelComponents: NgDynamicJsonFormComponent['labelComponents'];
   labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
-  layoutComponents: NgDynamicJsonFormComponent['layoutComponents'];
-  layoutTemplates: NgDynamicJsonFormComponent['layoutTemplates'];
-  optionsSources: NgDynamicJsonFormComponent['optionsSources'];
-  uiComponents: UiComponents | undefined;
+  labelTemplateDefault: NgDynamicJsonFormComponent['labelTemplateDefault'];
+
+  // Custom loading
+  labelComponentDefault: NgDynamicJsonFormComponent['labelComponentDefault'];
+  loadingComponent: NgDynamicJsonFormComponent['loadingComponent'];
+  loadingTemplate: NgDynamicJsonFormComponent['loadingTemplate'];
+  // ======================================================================
 
   setup(variables: GlobalVariables): void {
-    this.customValidators = variables.customValidators;
-    this.customComponents = variables.customComponents;
-    this.customTemplates = variables.customTemplates;
-    this.errorComponents = variables.errorComponents;
-    this.errorTemplates = variables.errorTemplates;
-    this.layoutComponents = variables.layoutComponents;
-    this.layoutTemplates = variables.layoutTemplates;
-    this.hostElement = variables.hostElement;
-    this.labelComponents = variables.labelComponents;
-    this.labelTemplates = variables.labelTemplates;
-    this.optionsSources = variables.optionsSources;
-    this.uiComponents = variables.uiComponents;
+    for (const key in variables) {
+      (this as any)[key] = (variables as any)[key];
+    }
   }
 }

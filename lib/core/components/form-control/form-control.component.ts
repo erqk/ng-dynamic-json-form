@@ -96,9 +96,9 @@ export class FormControlComponent
     this._onTouched();
   }
 
-  layoutComponents = this._globalVariableService.layoutComponents;
-  layoutTemplates = this._globalVariableService.layoutTemplates;
   customTemplates = this._globalVariableService.customTemplates;
+  loadingComponent = this._globalVariableService.loadingComponent;
+  loadingTemplate = this._globalVariableService.loadingTemplate;
 
   loading = false;
   useCustomLoading = false;
@@ -126,7 +126,7 @@ export class FormControlComponent
 
   ngOnInit(): void {
     this.useCustomLoading =
-      !!this.layoutComponents?.loading || !!this.layoutTemplates?.loading;
+      Boolean(this.loadingComponent) || Boolean(this.loadingTemplate);
   }
 
   ngAfterViewInit(): void {

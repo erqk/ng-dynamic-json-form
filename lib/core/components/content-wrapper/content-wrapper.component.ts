@@ -32,10 +32,12 @@ export class ContentWrapperComponent {
 
   errorComponents = this._globalVariableService.errorComponents;
   errorTemplates = this._globalVariableService.errorTemplates;
+  errorComponentDefault = this._globalVariableService.errorComponentDefault;
+  errorTemplateDefault = this._globalVariableService.errorTemplateDefault;
   labelComponents = this._globalVariableService.labelComponents;
   labelTemplates = this._globalVariableService.labelTemplates;
-  layoutComponents = this._globalVariableService.layoutComponents;
-  layoutTemplates = this._globalVariableService.layoutTemplates;
+  labelComponentDefault = this._globalVariableService.labelComponentDefault;
+  labelTemplateDefault = this._globalVariableService.labelTemplateDefault;
 
   get showErrors(): boolean {
     const controlTouched = this.control?.touched ?? false;
