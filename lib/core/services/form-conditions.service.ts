@@ -254,9 +254,9 @@ export class FormConditionsService {
     const mapTuppleFn = (tupple: ConditionsStatementTupple) => {
       const [left, operator, right] = tupple;
       const result = [
-        this._getControlValueFromStatement(left),
+        this._getValueFromStatement(left),
         operator,
-        this._getControlValueFromStatement(right),
+        this._getValueFromStatement(right),
       ] as ConditionsStatementTupple;
 
       return result;
@@ -282,7 +282,19 @@ export class FormConditionsService {
     return paths.controlPath;
   }
 
-  private _getControlValueFromStatement(input: any): any {
+  /**Get the value from the statement, either it's literaly a value or comes from a control
+   *
+   * ```json
+   * {
+   *   controlA: 'textValue',
+   *   controlB: false
+   * }
+   * ```
+   *
+   * - [controlA, "===", "value"] => ["textValue", "===", "value"]
+   * - [false, "===", "controlB"] => [false, "===", false]
+   */
+  private _getValueFromStatement(input: any): any {
     const form = this._globalVariableService.rootForm;
 
     if (!form) return input;
