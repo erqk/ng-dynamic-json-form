@@ -6,10 +6,11 @@ import { FormControlConfig } from '../models';
 export class ConfigMappingService {
   getCorrectedConfig(input: FormControlConfig): FormControlConfig {
     const config = window.structuredClone(input) as FormControlConfig;
-    const { formControlName, props, inputMask, children = [] } = config;
+    const { formControlName, type, props, inputMask, children = [] } = config;
 
     config.formControlName = this._getFormControlName(formControlName);
-    config.value = config.value ?? this._getFallbackValue(config);
+    config.value = config.value ?? this._getFallbackValue(config.value, type);
+    config.value = this._getCorrectedValue(config);
 
     if (props) {
       config.props = Object.keys(props).reduce((acc, key) => {
@@ -26,20 +27,28 @@ export class ConfigMappingService {
     }
 
     if (children.length > 0) {
-      config.children = children.map(x => this.getCorrectedConfig(x));
+      config.children = children.map((x) => this.getCorrectedConfig(x));
     }
 
     return config;
   }
 
-  private _getFallbackValue(item: FormControlConfig): any {
-    switch (item.type) {
+  private _getCorrectedValue(item: FormControlConfig): any {
+    if (item.inputMask && typeof item.value !== 'string') {
+      return `${item.value}`;
+    }
+
+    return item.value;
+  }
+
+  private _getFallbackValue(value: any, type: FormControlConfig['type']): any {
+    switch (type) {
       case 'checkbox':
       case 'switch':
         return false;
 
       default:
-        return item.value;
+        return value;
     }
   }
 
