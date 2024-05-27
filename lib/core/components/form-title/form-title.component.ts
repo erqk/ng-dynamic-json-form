@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
+import { CustomFormTitle } from '../custom-form-title/custom-form-title.abstract';
 
 @Component({
   selector: 'form-title',
@@ -32,13 +33,14 @@ export class FormTitleComponent {
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
   private _collapsibleElCssText = '';
+  private _componentRef?: CustomFormTitle;
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
   @Input() props?: FormControlConfig['props'];
   @Input() collapsibleEl?: HTMLElement;
   @Input() state?: FormLayout['contentCollapsible'];
-  @Input() customComponent?: Type<FormTitleComponent>;
+  @Input() customComponent?: Type<CustomFormTitle>;
   @Input() customTemplate?: TemplateRef<any>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
@@ -66,6 +68,10 @@ export class FormTitleComponent {
 
     this.expand = value ?? !this.expand;
     this._setElementHeight();
+
+    if (this._componentRef) {
+      this._componentRef.expand = this.expand;
+    }
   };
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
@@ -123,7 +129,10 @@ export class FormTitleComponent {
     componentRef.instance.label = this.label;
     componentRef.instance.layout = this.layout;
     componentRef.instance.props = this.props;
-    componentRef.instance.collapsibleEl = this.collapsibleEl;
+    componentRef.instance.collapsible = this.collapsible;
+    componentRef.instance.toggle = this.toggle;
+
+    this._componentRef = componentRef.instance;
   }
 
   private _listenTransition(): void {

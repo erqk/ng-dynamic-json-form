@@ -42,9 +42,9 @@ import {
   tap,
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
+import { CustomFormTitle } from './components/custom-form-title/custom-form-title.abstract';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
-import { FormTitleComponent } from './components/form-title/form-title.component';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
 import { HostIdDirective } from './directives/host-id.directive';
 import { CustomComponents, FormControlConfig, OptionItem } from './models';
@@ -83,7 +83,6 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormControlComponent,
     HostIdDirective,
     ControlLayoutDirective,
-    FormTitleComponent,
     FormGroupComponent,
     IsControlRequiredPipe,
   ],
@@ -194,7 +193,7 @@ export class NgDynamicJsonFormComponent
 
   // Custom label components/templates
   @Input() labelComponents?: CustomLabelComponents;
-  @Input() labelComponentDefault?: Type<FormTitleComponent>;
+  @Input() labelComponentDefault?: Type<CustomFormTitle>;
   @Input() labelTemplates?: CustomTemplates;
   @Input() labelTemplateDefault?: TemplateRef<any>;
 
