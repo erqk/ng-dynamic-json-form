@@ -9,5 +9,5 @@ export * from './core/components/form-title/form-title.component';
 export * from './core/directives';
 export * from './core/models';
 export * from './core/ng-dynamic-json-form.component';
-export * from './core/ng-dynamic-json-form.config';
+export * from './core/providers/ng-dynamic-json-form.provider';
 export * from './core/services';

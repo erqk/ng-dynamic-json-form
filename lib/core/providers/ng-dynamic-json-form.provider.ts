@@ -1,8 +1,7 @@
 import { InjectionToken, Provider, Type } from '@angular/core';
-import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
-import { CustomFormTitle } from './components/custom-form-title/custom-form-title.abstract';
-import { UiComponents } from './models';
-import { CustomValidators } from './models/custom-validators.type';
+import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
+import { CustomFormTitle } from '../components/custom-form-title/custom-form-title.abstract';
+import { CustomValidators, UiComponents } from '../models';
 
 interface FormConfig {
   /**
@@ -63,11 +62,9 @@ export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(
   'ng-dynamic-json-form-config'
 );
 
-export function provideNgDynamicJsonForm(config?: FormConfig): Provider[] {
-  return [
-    {
-      provide: NG_DYNAMIC_JSON_FORM_CONFIG,
-      useValue: config,
-    },
-  ];
+export function provideNgDynamicJsonForm(config?: FormConfig): Provider {
+  return {
+    provide: NG_DYNAMIC_JSON_FORM_CONFIG,
+    useValue: config,
+  };
 }
