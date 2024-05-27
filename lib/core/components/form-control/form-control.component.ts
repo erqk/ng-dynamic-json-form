@@ -28,7 +28,6 @@ import {
 import { combineLatest, delay, startWith, tap } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
 import {
-  ConfigMappingService,
   FormReadyStateService,
   GlobalVariableService,
   OptionsDataService,
@@ -62,7 +61,6 @@ export class FormControlComponent
 {
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
-  private _configMappingService = inject(ConfigMappingService);
   private _globalVariableService = inject(GlobalVariableService);
   private _formReadyStateService = inject(FormReadyStateService);
   private _optionsDataService = inject(OptionsDataService);
@@ -70,7 +68,7 @@ export class FormControlComponent
   private _uiComponents = this._globalVariableService.uiComponents;
   private _hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
-  private _controlComponentRef?: CustomControlComponent;
+  private _controlComponent?: CustomControlComponent;
   private _pendingValue: any = null;
 
   private _onChange = (_: any) => {};
@@ -105,7 +103,7 @@ export class FormControlComponent
 
   writeValue(obj: any): void {
     this._pendingValue = obj;
-    this._controlComponentRef?.writeValue(obj);
+    this._controlComponent?.writeValue(obj);
   }
 
   registerOnChange(fn: (_: any) => void): void {
@@ -117,11 +115,11 @@ export class FormControlComponent
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this._controlComponentRef?.setDisabledState(isDisabled);
+    this._controlComponent?.setDisabledState(isDisabled);
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._controlComponentRef?.validate(control) ?? null;
+    return this._controlComponent?.validate(control) ?? null;
   }
 
   ngOnInit(): void {
@@ -189,7 +187,7 @@ export class FormControlComponent
       componentRef.instance.registerOnTouched(this._onTouched);
     }
 
-    this._controlComponentRef = componentRef.instance;
+    this._controlComponent = componentRef.instance;
   }
 
   private _fetchOptions(): void {
@@ -208,7 +206,7 @@ export class FormControlComponent
 
     const updateControlValue = (value: any) => {
       this.control?.setValue(value);
-      this._controlComponentRef?.writeValue(value);
+      this._controlComponent?.writeValue(value);
     };
 
     if (!src) {
@@ -235,7 +233,7 @@ export class FormControlComponent
         updateControlValue(null);
       }
 
-      this._controlComponentRef?.onOptionsGet(options);
+      this._controlComponent?.onOptionsGet(options);
       this._formReadyStateService.optionsLoading(false);
       this.loading = false;
       this._cd.markForCheck();
@@ -263,10 +261,10 @@ export class FormControlComponent
   }
 
   private _errorMessageEvent(): void {
-    if (!this._controlComponentRef || !this.control) return;
+    if (!this._controlComponent || !this.control) return;
 
     const control = this.control;
-    const controlComponent = this._controlComponentRef;
+    const controlComponent = this._controlComponent;
 
     // Needs to add delay for `controlComponent.setErrors()` to work properly.
     // Guess because it is called at the same time with the initialization of the control.
@@ -298,10 +296,10 @@ export class FormControlComponent
   }
 
   private _setControlDirtyOrTouched(state: 'dirty' | 'touched' | 'both'): void {
-    if (!this._controlComponentRef || !this.control) return;
+    if (!this._controlComponent || !this.control) return;
 
     const control = this.control;
-    const controlComponent = this._controlComponentRef;
+    const controlComponent = this._controlComponent;
 
     const markAsDirty = () => {
       control.markAsDirty();
