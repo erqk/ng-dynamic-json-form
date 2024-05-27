@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import {
-  CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
   TextareaAutHeightDirective,
-} from '../../../public-api';
+} from '../../directives';
+import { providePropsBinding } from '../../providers/props-binding.provider';
 
 @Component({
   selector: 'ui-basic-textarea',
@@ -18,10 +18,12 @@ import {
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [TextareaAutHeightDirective],
-    },
+    providePropsBinding([
+      {
+        key: 'textarea-autoheight',
+        token: TextareaAutHeightDirective,
+      },
+    ]),
   ],
   templateUrl: './ui-basic-textarea.component.html',
   styles: [],

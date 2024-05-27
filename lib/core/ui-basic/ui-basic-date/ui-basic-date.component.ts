@@ -8,10 +8,8 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
-import {
-  CustomControlComponent,
-  PropsBindingDirective,
-} from '../../../public-api';
+import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
+import { PropsBindingDirective } from '../../directives';
 
 @Component({
   selector: 'ui-basic-date',

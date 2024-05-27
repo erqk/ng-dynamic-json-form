@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
+import { PropsBindingDirective } from '../../directives';
+import { ControlValueService } from '../../services/control-value.service';
 import { map } from 'rxjs';
-import {
-  ControlValueService,
-  CustomControlComponent,
-  PropsBindingDirective,
-} from '../../../public-api';
 
 @Component({
   selector: 'ui-basic-checkbox',

@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import {
-  CustomControlComponent,
-  PropsBindingDirective,
-} from '../../../public-api';
+import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
+import { PropsBindingDirective } from '../../directives';
 
 @Component({
   selector: 'ui-basic-input',
