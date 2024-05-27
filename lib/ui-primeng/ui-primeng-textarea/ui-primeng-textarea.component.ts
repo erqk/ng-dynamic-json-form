@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
 
@@ -18,15 +18,12 @@ import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-input-textarea',
-          token: InputTextarea,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-input-textarea',
+        token: InputTextarea,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-textarea.component.html',
   styles: [],

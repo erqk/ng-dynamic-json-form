@@ -2,19 +2,13 @@ import {
   ChangeDetectorRef,
   Directive,
   ElementRef,
-  InjectionToken,
   Injector,
   Input,
-  ProviderToken,
   Renderer2,
   SimpleChange,
   inject,
 } from '@angular/core';
-
-export const PROPS_BINDING_INJECTORS = new InjectionToken<
-  { key: string; token: ProviderToken<any> }[]
->('property-binding-injector');
-
+import { PROPS_BINDING_INJECTORS } from '../providers/props-binding.provider';
 @Directive({
   selector: '[propsBinding]',
   standalone: true,

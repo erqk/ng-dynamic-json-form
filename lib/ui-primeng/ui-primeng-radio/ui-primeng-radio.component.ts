@@ -4,8 +4,8 @@ import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   ControlValueService,
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 import { map } from 'rxjs';
@@ -20,15 +20,12 @@ import { map } from 'rxjs';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-radio-button',
-          token: RadioButton,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-radio-button',
+        token: RadioButton,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-radio.component.html',
   styles: [],

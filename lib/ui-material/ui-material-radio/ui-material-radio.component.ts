@@ -6,8 +6,8 @@ import { MatRadioGroup, MatRadioModule } from '@angular/material/radio';
 import {
   ControlValueService,
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding
 } from 'ng-dynamic-json-form';
 import { map } from 'rxjs';
 
@@ -22,15 +22,12 @@ import { map } from 'rxjs';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'mat-radio-group',
-          token: MatRadioGroup,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'mat-radio-group',
+        token: MatRadioGroup,
+      },
+    ]),
   ],
   templateUrl: './ui-material-radio.component.html',
   styles: [],

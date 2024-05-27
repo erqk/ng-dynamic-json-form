@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
 
@@ -18,15 +18,12 @@ import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-input-switch',
-          token: InputSwitch,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-input-switch',
+        token: InputSwitch,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-switch.component.html',
   styles: [],

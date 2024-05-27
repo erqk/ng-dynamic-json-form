@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { Slider, SliderModule } from 'primeng/slider';
 
@@ -18,15 +18,12 @@ import { Slider, SliderModule } from 'primeng/slider';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-slider',
-          token: Slider,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-slider',
+        token: Slider,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-range.component.html',
   styles: [],

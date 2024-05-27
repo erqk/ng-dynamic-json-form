@@ -3,8 +3,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding
 } from 'ng-dynamic-json-form';
 import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 
@@ -19,15 +19,12 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-checkbox',
-          token: Checkbox,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-checkbox',
+        token: Checkbox,
+      },
+    ])
   ],
   templateUrl: './ui-primeng-checkbox.component.html',
   styles: [],

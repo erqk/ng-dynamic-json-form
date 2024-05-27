@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -20,15 +20,12 @@ import {
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'mat-slider',
-          token: MatSlider,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'mat-slider',
+        token: MatSlider,
+      },
+    ]),
   ],
   templateUrl: './ui-material-range.component.html',
   styles: [],

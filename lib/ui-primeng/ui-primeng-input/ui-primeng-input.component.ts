@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { InputText, InputTextModule } from 'primeng/inputtext';
 
@@ -18,15 +18,12 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-input-text',
-          token: InputText,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-input-text',
+        token: InputText,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-input.component.html',
   styles: [],

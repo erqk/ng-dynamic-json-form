@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 
@@ -18,15 +18,12 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-dropdown',
-          token: Dropdown,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-dropdown',
+        token: Dropdown,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-select.component.html',
   styles: [],

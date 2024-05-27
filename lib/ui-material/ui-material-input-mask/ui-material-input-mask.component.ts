@@ -5,8 +5,8 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -21,15 +21,12 @@ import {
   ],
   templateUrl: './ui-material-input-mask.component.html',
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'mat-input',
-          token: MatInput,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'mat-input',
+        token: MatInput,
+      },
+    ]),
   ],
   styles: [],
 })

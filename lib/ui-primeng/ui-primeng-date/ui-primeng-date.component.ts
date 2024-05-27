@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
-  PROPS_BINDING_INJECTORS,
   PropsBindingDirective,
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { Calendar, CalendarModule } from 'primeng/calendar';
 
@@ -19,15 +19,12 @@ import { Calendar, CalendarModule } from 'primeng/calendar';
     PropsBindingDirective,
   ],
   providers: [
-    {
-      provide: PROPS_BINDING_INJECTORS,
-      useValue: [
-        {
-          key: 'p-calendar',
-          token: Calendar,
-        },
-      ],
-    },
+    providePropsBinding([
+      {
+        key: 'p-calendar',
+        token: Calendar,
+      },
+    ]),
   ],
   templateUrl: './ui-primeng-date.component.html',
   styles: [],
