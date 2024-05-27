@@ -1,4 +1,4 @@
-import { FormLayout } from 'lib/public-api';
+import { FormLayout } from '../../models/form-layout.interface';
 
 export abstract class CustomFormTitle {
   label?: string;
