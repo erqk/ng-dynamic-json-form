@@ -39,6 +39,9 @@ export class FormTitleComponent {
   @Input() layout?: FormControlConfig['layout'];
   @Input() props?: FormControlConfig['props'];
   @Input() collapsibleEl?: HTMLElement;
+  /**
+   * State comes from root, to overwrite all the collapsible state
+   */
   @Input() state?: FormLayout['contentCollapsible'];
   @Input() customComponent?: Type<CustomFormTitle>;
   @Input() customTemplate?: TemplateRef<any>;
@@ -49,6 +52,8 @@ export class FormTitleComponent {
   @HostBinding('class') hostClass = 'form-title';
   @HostBinding('style.display') get styleDisplay() {
     if (!this.label) return null;
+    if (this.customComponent) return null;
+
     return this._collapsible ? 'flex' : 'inline-block';
   }
   @HostBinding('style.cursor') get styleCursor() {
@@ -94,7 +99,6 @@ export class FormTitleComponent {
 
   ngOnInit(): void {
     this.collapsible = this._collapsible;
-
     this.expand =
       this.state === undefined
         ? this.layout?.contentCollapsible === 'expand'
@@ -108,12 +112,7 @@ export class FormTitleComponent {
       return;
     }
 
-    if (this.collapsible && this.collapsibleEl) {
-      this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
-      this._initCollapsibleEl();
-      this._listenTransition();
-    }
-
+    this._initCollapsibleEl();
     this._viewInitialized = true;
   }
 
@@ -129,14 +128,17 @@ export class FormTitleComponent {
     componentRef.instance.label = this.label;
     componentRef.instance.layout = this.layout;
     componentRef.instance.props = this.props;
-    componentRef.instance.collapsible = this.collapsible;
-    componentRef.instance.toggle = this.toggle;
+    componentRef.instance.collapsible = this._collapsible;
+    componentRef.instance.expand = this.expand;
 
+    this._initCollapsibleEl();
     this._componentRef = componentRef.instance;
   }
 
   private _listenTransition(): void {
-    if (!this.collapsibleEl) return;
+    if (!this.collapsibleEl) {
+      return;
+    }
 
     const transitionEnd$ = fromEvent(this.collapsibleEl, 'transitionend', {
       passive: true,
@@ -160,7 +162,13 @@ export class FormTitleComponent {
   }
 
   private _initCollapsibleEl(): void {
+    if (!this.collapsibleEl || !this.collapsible) {
+      return;
+    }
+
+    this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
     this._renderer2.addClass(this.collapsibleEl, 'collapsible-container');
+    this._listenTransition();
 
     if (!this.expand) {
       this._setCollapseStyle();
@@ -184,11 +192,14 @@ export class FormTitleComponent {
       ? 0
       : this.collapsibleEl.scrollHeight + 1;
 
+    // Set existing styles from collapsible element first
     this._renderer2.setProperty(
       this.collapsibleEl,
       'style',
       this._collapsibleElCssText || null
     );
+
+    // Then set height later to overwrite height style
     this._renderer2.setStyle(this.collapsibleEl, 'height', `${height}px`);
   }
 
