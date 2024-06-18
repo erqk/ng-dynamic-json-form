@@ -17,7 +17,14 @@ export class ControlLayoutDirective implements OnChanges {
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
-    type?: 'host' | 'label' | 'content' | 'formGroup' | 'description' | 'error';
+    type?:
+      | 'host'
+      | 'label'
+      | 'content'
+      | 'formGroup'
+      | 'description'
+      | 'inputArea'
+      | 'error';
     layout?: FormControlConfig['layout'];
   };
 

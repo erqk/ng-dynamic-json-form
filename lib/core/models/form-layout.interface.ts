@@ -9,6 +9,8 @@ export interface FormLayout {
   formGroupClass?: string;
   descriptionClass?: string;
   descriptionStyles?: string;
+  inputAreaClass?: string;
+  inputAreaStyles?: string;
   errorClass?: string;
   errorStyles?: string;
 

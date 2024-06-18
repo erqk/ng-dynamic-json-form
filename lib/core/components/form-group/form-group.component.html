@@ -7,14 +7,13 @@
         [control]="parentForm.controls[item.formControlName]"
         [collapsibleState]="collapsibleState"
         [hostId]="{
-            parentId,
-            controlName: item.formControlName,
-          }"
+          parentId,
+          controlName: item.formControlName,
+        }"
         [ngClass]="{
-          'form-control-container':
-            (item | controlTypeByConfig) === 'FormControl',
-            readonly: item.readonly,
-          }"
+          'form-control-container': (item | controlTypeByConfig) === 'FormControl',
+          readonly: item.readonly,
+        }"
         [controlLayout]="{
           type: 'host',
           layout: item.layout
@@ -27,6 +26,10 @@
             [control]="parentForm.controls[item.formControlName]"
             [formControlName]="item.formControlName"
             [customComponent]="customComponents?.[item.formControlName]"
+            [controlLayout]="{
+              type: 'inputArea',
+              layout: item.layout
+            }"
           ></form-control>
         </ng-container>
 
