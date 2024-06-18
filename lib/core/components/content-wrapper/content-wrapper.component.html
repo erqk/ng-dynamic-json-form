@@ -1,7 +1,7 @@
 <ng-container *ngIf="config && control">
   <!-- Label -->
   <ng-container *ngIf="config.label">
-    <form-title
+    <form-label
       [label]="config.label"
       [layout]="config.layout"
       [props]="config.props"
@@ -19,7 +19,7 @@
             ? null
             : (control | isControlRequired)
       }"
-    ></form-title>
+    ></form-label>
   </ng-container>
 
   <div

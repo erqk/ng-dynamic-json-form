@@ -10,4 +10,4 @@ export * from './core/providers/props-binding.provider';
 export * from './core/ng-dynamic-json-form.component';
 export * from './core/components/custom-control/custom-control.component';
 export * from './core/components/custom-error-message/custom-error-message.abstract';
-export * from './core/components/custom-form-title/custom-form-title.abstract';
+export * from './core/components/custom-form-label/custom-form-label.abstract';

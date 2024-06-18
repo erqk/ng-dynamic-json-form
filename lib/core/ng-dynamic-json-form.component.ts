@@ -42,7 +42,7 @@ import {
   tap,
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
-import { CustomFormTitle } from './components/custom-form-title/custom-form-title.abstract';
+import { CustomFormLabel } from './components/custom-form-label/custom-form-label.abstract';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { ControlLayoutDirective } from './directives/control-layout.directive';
@@ -193,7 +193,7 @@ export class NgDynamicJsonFormComponent
 
   // Custom label components/templates
   @Input() labelComponents?: CustomLabelComponents;
-  @Input() labelComponentDefault?: Type<CustomFormTitle>;
+  @Input() labelComponentDefault?: Type<CustomFormLabel>;
   @Input() labelTemplates?: CustomTemplates;
   @Input() labelTemplateDefault?: TemplateRef<any>;
 

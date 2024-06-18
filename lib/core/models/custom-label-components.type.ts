@@ -1,4 +1,4 @@
 import { Type } from '@angular/core';
-import { CustomFormTitle } from '../components/custom-form-title/custom-form-title.abstract';
+import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
 
-export type CustomLabelComponents = { [key: string]: Type<CustomFormTitle> };
+export type CustomLabelComponents = { [key: string]: Type<CustomFormLabel> };

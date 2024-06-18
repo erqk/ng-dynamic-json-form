@@ -7,14 +7,14 @@ import { FormLayout } from '../../models/form-layout.interface';
 import { IsControlRequiredPipe } from '../../pipes/is-control-required.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
-import { FormTitleComponent } from '../form-title/form-title.component';
+import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
   selector: 'content-wrapper',
   standalone: true,
   imports: [
     CommonModule,
-    FormTitleComponent,
+    FormLabelComponent,
     ErrorMessageComponent,
     ControlLayoutDirective,
     IsControlRequiredPipe,

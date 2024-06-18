@@ -18,22 +18,22 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
-import { CustomFormTitle } from '../custom-form-title/custom-form-title.abstract';
+import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract';
 
 @Component({
-  selector: 'form-title',
+  selector: 'form-label',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './form-title.component.html',
-  styleUrls: ['./form-title.component.scss'],
+  templateUrl: './form-label.component.html',
+  styleUrls: ['./form-label.component.scss'],
 })
-export class FormTitleComponent {
+export class FormLabelComponent {
   private _cd = inject(ChangeDetectorRef);
   private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
   private _collapsibleElCssText = '';
-  private _componentRef?: CustomFormTitle;
+  private _componentRef?: CustomFormLabel;
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
@@ -43,7 +43,7 @@ export class FormTitleComponent {
    * State comes from root, to overwrite all the collapsible state
    */
   @Input() state?: FormLayout['contentCollapsible'];
-  @Input() customComponent?: Type<CustomFormTitle>;
+  @Input() customComponent?: Type<CustomFormLabel>;
   @Input() customTemplate?: TemplateRef<any>;
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })

@@ -1,6 +1,6 @@
 import { InjectionToken, Provider, Type } from '@angular/core';
 import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
-import { CustomFormTitle } from '../components/custom-form-title/custom-form-title.abstract';
+import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
 import { CustomValidators, UiComponents } from '../models';
 
 interface FormConfig {
@@ -47,7 +47,7 @@ interface FormConfig {
   /**
    * Custom component for all labels in this form
    */
-  labelComponent?: Type<CustomFormTitle>;
+  labelComponent?: Type<CustomFormLabel>;
   /**
    * Custom component for all loadings in this form
    */
