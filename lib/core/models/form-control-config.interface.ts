@@ -48,8 +48,6 @@ export interface FormControlConfig {
    */
   options?: FormControlOptions;
 
-  placeholder?: string;
-
   /**Set this input to readonly, and will add a class `readonly` for styling */
   readonly?: boolean;
 
