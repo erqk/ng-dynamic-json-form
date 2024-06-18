@@ -65,6 +65,7 @@ export class PropsBindingDirective {
         }
 
         if (host) {
+          this._renderer2.setAttribute(host, key, value);
           this._renderer2.setProperty(host, key, value);
         }
       }
