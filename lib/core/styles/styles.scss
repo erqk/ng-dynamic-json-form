@@ -39,7 +39,7 @@
     row-gap: var(--row-gap);
   }
 
-  .form-title {
+  .form-label {
     font-size: var(--font-size-title);
     font-weight: var(--font-weight-title);
     margin-bottom: 0.25em;
@@ -93,7 +93,7 @@
   .form-control-container {
     min-width: 0;
 
-    .form-title {
+    .form-label {
       font-weight: var(--font-weight-label);
       font-size: var(--font-size-label);
     }

@@ -49,7 +49,7 @@ export class FormLabelComponent {
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
 
-  @HostBinding('class') hostClass = 'form-title';
+  @HostBinding('class') hostClass = 'form-label';
   @HostBinding('style.display') get styleDisplay() {
     if (!this.label) return null;
     if (this.customComponent) return null;
