@@ -34,6 +34,7 @@ import {
   Observable,
   Subject,
   debounceTime,
+  filter,
   fromEvent,
   merge,
   startWith,
@@ -228,12 +229,10 @@ export class NgDynamicJsonFormComponent
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
 
   constructor() {
-    this._formReadyStateService.readyState$
+    this._formReadyStateService.optionsReady$
       .pipe(
-        tap((x) => {
-          if (x.form) this.formGet.emit(this.form);
-          if (x.options) this.optionsLoaded.emit(true);
-        }),
+        filter(Boolean),
+        tap((x) => this.optionsLoaded.emit(x)),
         takeUntilDestroyed()
       )
       .subscribe();
@@ -356,7 +355,7 @@ export class NgDynamicJsonFormComponent
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
       this._setupListeners();
-      this._formReadyStateService.updateReadyState({ form: true });
+      this.formGet.emit(this.form);
     }
   }
 
@@ -409,8 +408,6 @@ export class NgDynamicJsonFormComponent
   private _onFormValueChanges(): void {
     let markForCheck = false;
 
-    this._onChange(this.form?.value);
-
     if (!this._allowFormDirty) {
       // The FormControl of ControlValueAccessor
       const formControl = this._controlDirective?.form;
@@ -421,6 +418,11 @@ export class NgDynamicJsonFormComponent
     // No ControlValueAccessor found, update the form errors manually
     if (!this._controlDirective) {
       this.form?.setErrors(this._formErrors);
+    }
+
+    // Call only if using ControlValueAccessor, to update the control value
+    if (this._controlDirective) {
+      this._onChange(this.form?.value);
     }
 
     if (!markForCheck) {
