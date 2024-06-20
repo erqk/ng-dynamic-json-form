@@ -232,7 +232,7 @@ export class NgDynamicJsonFormComponent
     this._formReadyStateService.optionsReady$
       .pipe(
         filter(Boolean),
-        tap((x) => this.optionsLoaded.emit(x)),
+        tap(() => this.optionsLoaded.emit()),
         takeUntilDestroyed()
       )
       .subscribe();
