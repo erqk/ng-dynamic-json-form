@@ -1,22 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormControlConfig } from '../models';
 import { FormPatcherService } from './form-patcher.service';
-
-const config: FormControlConfig[] = [
-  {
-    formControlName: 'name',
-    type: 'text',
-  },
-  {
-    formControlName: 'age',
-    type: 'number',
-  },
-  {
-    formControlName: 'checkbox',
-    type: 'checkbox',
-  },
-];
 
 const formGroup = new FormGroup({
   name: new FormControl(),
@@ -46,4 +30,4 @@ it('Age should be 20', () => {
 it('Checkbox should be false', () => {
   formPatcherService.patchForm(formGroup, { checkbox: true });
   expect(formGroup.controls.checkbox.value).toBe(true);
-})
+});

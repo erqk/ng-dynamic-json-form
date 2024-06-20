@@ -23,6 +23,44 @@ beforeAll(() => {
 
 /**Get all controls to listen */
 describe('Get all controls to listen', () => {
+  const level2Form = new FormGroup({
+    showEmail: new FormControl(false),
+    level3: new FormGroup({
+      gender: new FormControl('0'),
+    }),
+  });
+
+  const form = new FormGroup({
+    a: new FormGroup({
+      'a-1': new FormControl(''),
+    }),
+    b: new FormGroup({
+      bChild: new FormControl(''),
+    }),
+    level1: new FormGroup({
+      age: new FormControl(0),
+      name: new FormControl('Andrew'),
+      level2: level2Form,
+    }),
+    groupB: new FormGroup({
+      level1: new FormGroup({
+        name: new FormControl('Andrew'),
+        level2: level2Form,
+      }),
+    }),
+    groupC: new FormGroup({
+      level1: new FormGroup({
+        age: new FormControl(20),
+        level2: level2Form,
+      }),
+      control: new FormControl({
+        obj: {
+          prop1: undefined,
+        },
+      }),
+    }),
+  });
+
   const conditionsGroup: ConditionsGroup = {
     '&&': [
       ['level1.age', '>', 20],
@@ -60,6 +98,11 @@ describe('Get all controls to listen', () => {
       },
     ],
   };
+
+  beforeEach(() => {
+    form.reset();
+    globalVariableService.rootForm = form;
+  });
 
   it('Should collect all the control paths listed in conditions', () => {
     const result = formConditionsService['_getPathsOfControlsToListen']([
