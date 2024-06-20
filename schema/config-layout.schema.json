@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ConfigLayoutSchema",
+  "type": "object",
+  "properties": {
+    "hostClass": { "type": "string" },
+    "hostStyles": { "type": "string" },
+    "labelClass": { "type": "string" },
+    "labelStyles": { "type": "string" },
+    "contentClass": { "type": "string" },
+    "contentStyles": { "type": "string" },
+    "formGroupClass": { "type": "string" },
+    "formGroupStyles": { "type": "string" },
+    "descriptionClass": { "type": "string" },
+    "descriptionStyles": { "type": "string" },
+    "inputAreaClass": { "type": "string" },
+    "inputAreaStyles": { "type": "string" },
+    "errorClass": { "type": "string" },
+    "errorStyles": { "type": "string" },
+    "descriptionPosition": {
+      "enum": ["after", "before"]
+    },
+    "hideLabel": {
+      "type": "boolean"
+    },
+    "contentCollapsible": {
+      "enum": ["collapse", "expand"],
+      "description": "Enable expand/collapse of content. The default state will be determined by value provided"
+    },
+    "autoAddRequiredClass": {
+      "type": "boolean",
+      "description": "Add `required` class automatically to control if there's validator named `required`. Default is true."
+    }
+  }
+}

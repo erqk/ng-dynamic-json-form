@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ConfigConditionsSchema",
+  "type": "object",
+  "patternProperties": {
+    "^.+$": {
+      "$ref": "#/definitions/conditionGroupConfig"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "conditionIfConfig": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": [
+        {},
+        {
+          "enum": [
+            "===",
+            "!==",
+            ">=",
+            ">",
+            "<=",
+            "<",
+            "includes",
+            "notIncludes"
+          ]
+        },
+        {}
+      ]
+    },
+    "conditionGroupConfig": {
+      "type": "object",
+      "properties": {
+        "&&": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        },
+        "||": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/conditionIfConfig" },
+              { "$ref": "#/definitions/conditionGroupConfig" }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditionConfig": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/conditionGroupConfig"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

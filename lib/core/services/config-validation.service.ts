@@ -3,10 +3,10 @@ import { ErrorObject, ValidateFunction } from 'ajv';
 import { FormControlConfig } from '../models';
 import { ConfigValidationErrors } from '../models/config-validation-errors.interface';
 import { getValueInObject } from '../utilities/get-value-in-object';
-import { NgDynamicJsonFormSchema } from '../utilities/schema-validator';
+import { ConfigMainSchema } from '../utilities/schema-validator';
 import { ConfigMappingService } from './config-mapping.service';
 
-const validate = NgDynamicJsonFormSchema as ValidateFunction;
+const validate = ConfigMainSchema as ValidateFunction;
 @Injectable()
 export class ConfigValidationService {
   private _configMappingService = inject(ConfigMappingService);

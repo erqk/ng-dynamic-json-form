@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ConfigOptionsSchema",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "value": {}
+        }
+      }
+    },
+    "src": {
+      "oneOf": [
+        { "type": "string" },
+        { "$ref": "#/definitions/optionSourceConfig" }
+      ]
+    },
+    "srcAppendPosition": { "type": "string", "enum": ["after", "before"] },
+    "autoSelectFirst": { "type": "boolean" },
+    "layout": { "type": "string", "enum": ["row", "column"] },
+    "labelPosition": { "type": "string", "enum": ["after", "before"] },
+    "containerClass": { "type": "string" },
+    "containerStyles": { "type": "string" }
+  },
+  "definitions": {
+    "optionSourceConfig": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string" },
+        "method": { "type": "string", "enum": ["GET", "POST"] },
+        "headers": {},
+        "body": {},
+        "mapData": {
+          "type": "object",
+          "properties": {
+            "labelKey": { "type": "string" },
+            "valueKeys": { "type": "array", "items": { "type": "string" } },
+            "contentPath": { "type": "string" },
+            "slice": {
+              "type": "array",
+              "items": [{ "type": "number" }, { "type": "number" }],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "appendPosition": { "type": "string", "enum": ["after", "before"] }
+          }
+        },
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "by": { "type": "string" },
+            "body": {},
+            "debounceTime": { "type": "number" }
+          }
+        },
+        "filter": {
+          "type": "object",
+          "properties": {
+            "by": { "type": "string" },
+            "conditions": {
+              "$ref": "ConfigConditionsSchema"
+            },
+            "debounceTime": { "type": "number" }
+          }
+        }
+      }
+    }
+  }
+}
