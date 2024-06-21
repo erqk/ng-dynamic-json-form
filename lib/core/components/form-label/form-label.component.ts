@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   HostBinding,
@@ -12,7 +11,7 @@ import {
   Type,
   ViewChild,
   ViewContainerRef,
-  inject,
+  inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
@@ -28,7 +27,6 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
   styleUrls: ['./form-label.component.scss'],
 })
 export class FormLabelComponent {
-  private _cd = inject(ChangeDetectorRef);
   private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
@@ -108,7 +106,6 @@ export class FormLabelComponent {
   ngAfterViewInit(): void {
     if (this.customComponent) {
       this._injectComponent();
-      this._cd.markForCheck();
       return;
     }
 

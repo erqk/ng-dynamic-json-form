@@ -1,6 +1,5 @@
 import { CommonModule, isPlatformServer } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DestroyRef,
@@ -76,7 +75,6 @@ import { markFormPristine } from './utilities/mark-form-pristine';
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
@@ -253,6 +251,7 @@ export class NgDynamicJsonFormComponent
 
     if (configs) {
       this._buildForm();
+      this._cd.detectChanges();
     }
   }
 
@@ -406,8 +405,6 @@ export class NgDynamicJsonFormComponent
   }
 
   private _onFormValueChanges(): void {
-    let markForCheck = false;
-
     if (!this._allowFormDirty) {
       // The FormControl of ControlValueAccessor
       const formControl = this._controlDirective?.form;
@@ -423,12 +420,6 @@ export class NgDynamicJsonFormComponent
     // Call only if using ControlValueAccessor, to update the control value
     if (this._controlDirective) {
       this._onChange(this.form?.value);
-    }
-
-    if (!markForCheck) {
-      this._cd.markForCheck();
-      this._cd.detectChanges();
-      markForCheck = true;
     }
   }
 

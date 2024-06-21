@@ -131,6 +131,7 @@ export class FormControlComponent
     this._injectInputComponent();
     this._fetchOptions();
     this._errorMessageEvent();
+    this._cd.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -236,8 +237,6 @@ export class FormControlComponent
       this._controlComponent?.onOptionsGet(options);
       this._formReadyStateService.optionsLoading(false);
       this.loading = false;
-      this._cd.markForCheck();
-      this._cd.detectChanges();
     };
 
     const valueChangesCallback = () => {
@@ -288,7 +287,6 @@ export class FormControlComponent
 
           controlComponent.control?.setErrors(errors);
           controlComponent.setErrors(errors);
-          this._cd.markForCheck();
         }),
         takeUntilDestroyed(this._destroyRef)
       )
