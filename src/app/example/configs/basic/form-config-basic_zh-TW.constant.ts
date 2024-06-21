@@ -95,28 +95,36 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
       {
         label: '國家',
         formControlName: 'country',
-        placeholder: '國家',
         type: 'text',
+        props: {
+          placeholder: '國家',
+        },
       },
       {
         label: '州/省/縣市',
         formControlName: 'state',
-        placeholder: '州/省/縣市',
         type: 'text',
+        props: {
+          placeholder: '州/省/縣市',
+        },
       },
       {
         label: '郵遞區號',
         formControlName: 'postcode',
-        placeholder: '00000',
         type: 'text',
+        props: {
+          placeholder: '00000',
+        },
       },
       {
         label: '詳細地址',
         formControlName: 'address',
         type: 'text',
-        placeholder: '詳細地址',
         layout: {
           hostStyles: 'grid-column: -1/1;',
+        },
+        props: {
+          placeholder: '詳細地址',
         },
       },
     ],
@@ -162,7 +170,9 @@ export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
       },
       {
         formControlName: 'cardOther',
-        placeholder: '其他卡片類型',
+        props: {
+          placeholder: '其他卡片類型',
+        },
         conditions: {
           hidden: {
             '&&': [['cards.cardTypes', 'notIncludes', 3]],

@@ -43,7 +43,7 @@ export class DocsLoaderService {
 
     if (cacheData) return of(cacheData);
 
-    const version = this._versionService.currentVersion;
+    const version = this._versionService.docVersion;
     const lang = this._languageDataService.language$.value;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
@@ -88,7 +88,7 @@ export class DocsLoaderService {
 
   firstContentPath$(useDefaultLang = false): Observable<string> {
     const lang = this._languageDataService.language$.value;
-    const version = this._versionService.currentVersion;
+    const version = this._versionService.docVersion;
     const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
@@ -116,6 +116,10 @@ export class DocsLoaderService {
     for (const table of tables) {
       const tableWrapper = document.createElement('div');
       const tableCloned = table.cloneNode(true);
+      const wrapped =
+        table.parentElement?.classList.contains('table-wrapper') ?? false;
+
+      if (wrapped) continue;
 
       tableWrapper.classList.add('table-wrapper');
       tableWrapper.appendChild(tableCloned);

@@ -2,12 +2,10 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, HostBinding, Input, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
-import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
-import { SidePanelService } from '../../services/navigator.service';
-import { SafeHtml } from '@angular/platform-browser';
+import { NavigatorService } from '../../services/navigator.service';
 
 @Component({
   selector: 'app-navigator-title',
@@ -23,7 +21,6 @@ import { SafeHtml } from '@angular/platform-browser';
 
     <ng-template #buttonTemplate let-item="item" let-level="level">
       <button
-        [@fade-up]
         [ngClass]="{
           active: currentActiveId[level - 1] === item.id,
           child: level > 1
@@ -56,19 +53,17 @@ import { SafeHtml } from '@angular/platform-browser';
     </ng-template>
   `,
   styleUrls: ['./navigator-title.component.scss'],
-  animations: [FADE_UP_ANIMATION],
 })
 export class NavigatorTitleComponent {
-  private _sideNavigationPaneService = inject(SidePanelService);
+  private _sideNavigationPaneService = inject(NavigatorService);
   private _router = inject(Router);
   private _location = inject(Location);
   private _currentLinkIndex = 0;
   private _linksFlatten: NavigatorTitleItem[] = [];
-  private _scrolling = false;
-  private _scrollingTimeout: number = 0;
+  private _pauseScrollingHighlight = false;
 
-  private readonly _reset$ = new Subject<void>();
-  private readonly _onDestroy$ = new Subject<void>();
+  private _reset$ = new Subject<void>();
+  private _onDestroy$ = new Subject<void>();
 
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
@@ -82,7 +77,7 @@ export class NavigatorTitleComponent {
 
   ngOnInit(): void {
     if (typeof window === 'undefined') return;
-    
+
     this._getLinks();
     this._onRouteChange();
   }
@@ -101,6 +96,7 @@ export class NavigatorTitleComponent {
       block: 'center',
     });
 
+    this._pauseScrollingHighlight = true;
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
     this._router.navigateByUrl(`${newUrl}#${item.id}`, {
@@ -151,26 +147,10 @@ export class NavigatorTitleComponent {
   private _syncActiveIndexWithScroll(): void {
     if (typeof window === 'undefined') return;
 
-    let lastScrollPosition = 0;
-    const highlightVisibleTitle = () => {
-      if (this._scrolling) return;
-
-      const scrollUp = window.scrollY < lastScrollPosition;
-      const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
-
-      if (scrollUp && !!prevLinkItem) {
-        const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
-        this.currentActiveId[level] = prevLinkItem.id || '';
-      }
-
-      this._setActiveIds();
-      lastScrollPosition = window.scrollY;
-    };
-
     this._reset$.next();
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
-        tap(() => highlightVisibleTitle()),
+        tap(() => this._highlightTitle()),
         takeUntil(merge(this._onDestroy$, this._reset$))
       )
       .subscribe();
@@ -179,29 +159,14 @@ export class NavigatorTitleComponent {
   private _setActiveIds(): void {
     if (typeof window === 'undefined') return;
 
-    const titles = this._linksFlatten
-      .map(({ id }) => document.querySelector(`#${id}`)!)
-      .filter((x) => !!x);
-
-    const visibleThreshold = window.innerHeight * 0.5;
-    const rect = (input: Element) => input.getBoundingClientRect();
-    const visibleTitles = titles.filter((x) => {
-      const topEdgeVisible = rect(x).top >= 0;
-      const bottomEdgeVisible = rect(x).bottom < window.innerHeight;
-      return topEdgeVisible && bottomEdgeVisible;
-    });
-
-    const activeTitle =
-      visibleTitles.length === 1
-        ? visibleTitles[0]
-        : visibleTitles.find((x) => rect(x).top < visibleThreshold);
-
+    const activeTitle = this._getActiveTitle();
     if (!activeTitle) {
+      if (this._bodyScrollFraction < 0.05) {
+        this.currentActiveId = [];
+      }
+
       return;
     }
-
-    const newSectionAppear = rect(activeTitle).top < visibleThreshold;
-    if (!newSectionAppear) return;
 
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
     const parent = this.links.find(({ children }) =>
@@ -213,6 +178,33 @@ export class NavigatorTitleComponent {
     this._currentLinkIndex = this._linksFlatten.findIndex(
       ({ id }) => id === activeTitle!.id
     );
+  }
+
+  private _getActiveTitle(): Element | undefined {
+    const rect = (input: Element) => input.getBoundingClientRect();
+    const titles = this._linksFlatten
+      .map(({ id }) => document.querySelector(`#${id}`)!)
+      .filter((x) => !!x);
+
+    if (titles.length === 1) {
+      return titles[0];
+    }
+
+    const targetIndex = () => {
+      if (this._bodyScrollFraction > 0.99) {
+        return titles.length - 1;
+      }
+
+      if (this._bodyScrollFraction > 0.9) {
+        return Math.floor(titles.length * this._bodyScrollFraction);
+      }
+
+      return titles.findIndex(
+        (x) => rect(x).top >= 0 && rect(x).bottom < this._visibleThreshold
+      );
+    };
+
+    return titles[targetIndex()];
   }
 
   private _scrollToContent(id?: string, smoothScrolling = true): void {
@@ -231,13 +223,36 @@ export class NavigatorTitleComponent {
     const target = document.querySelector(`#${targetId}`);
     if (!target) return;
 
-    this._scrolling = true;
     scrollToTitle(target, smoothScrolling ? 'smooth' : 'auto');
+  }
 
-    clearTimeout(this._scrollingTimeout);
-    this._scrollingTimeout = window.setTimeout(
-      () => (this._scrolling = false),
-      1000
+  private _highlightTitle(): void {
+    if (typeof window === 'undefined') return;
+
+    let lastScrollPosition = 0;
+    const scrollUp = window.scrollY < lastScrollPosition;
+    const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
+
+    if (scrollUp && !!prevLinkItem) {
+      const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
+      this.currentActiveId[level] = prevLinkItem.id || '';
+    }
+
+    this._setActiveIds();
+    lastScrollPosition = window.scrollY;
+  }
+
+  private get _bodyScrollFraction(): number {
+    return (
+      Math.floor(Math.abs(document.body.getBoundingClientRect().top)) /
+      (document.body.clientHeight - window.innerHeight)
+    );
+  }
+
+  private get _visibleThreshold(): number {
+    return (
+      window.innerHeight *
+      (this._bodyScrollFraction > 0.5 ? this._bodyScrollFraction : 0.5)
     );
   }
 }

@@ -6,7 +6,7 @@ import {
   ElementRef,
   Input,
   OnInit,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import {
   FormControlConfig,
@@ -78,26 +78,34 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   onConfirm(): void {
     if (this._editorData) {
-      this.configs = JSON.parse(JSON.stringify(this._editorData));
+      this.configs = structuredClone(this._editorData);
     }
 
     this.showEditor = false;
   }
 
   reset(): void {
-    this.configs = JSON.parse(JSON.stringify(this.configsLoaded));
-    this._editorData = JSON.parse(JSON.stringify(this.configsLoaded));
+    this.configs = structuredClone(this.configsLoaded);
+    this._editorData = structuredClone(this.configsLoaded);
     this.configsLoaded = [...this.configsLoaded];
   }
 
   private _loadConfig(): void {
-    if (!this.configPath) return;
+    if (!this.configPath && !this.configs) return;
 
-    const result = this.configPath.split('.').reduce((acc, key) => {
-      return (acc as any)[key];
-    }, CONFIGS_INDEX) as unknown as FormControlConfig;
+    if (this.configPath) {
+      const configFound = this.configPath.split('.').reduce((acc, key) => {
+        return (acc as any)[key];
+      }, CONFIGS_INDEX);
+      const result = Array.isArray(configFound) ? configFound : [configFound];
 
-    this.configsLoaded = [result];
+      this.configsLoaded = result as FormControlConfig[];
+    }
+
+    if (this.configs && typeof this.configs === 'string') {
+      this.configsLoaded = JSON.parse(this.configs);
+    }
+
     this.reset();
   }
 

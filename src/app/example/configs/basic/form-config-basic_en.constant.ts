@@ -28,7 +28,7 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
     formControlName: 'age',
     type: 'number',
     inputMask: {
-      mask: '00',
+      mask: 'Number',
     },
     validators: [
       {
@@ -95,28 +95,36 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
       {
         label: 'Country',
         formControlName: 'country',
-        placeholder: 'Country',
         type: 'text',
+        props: {
+          placeholder: 'Country',
+        },
       },
       {
         label: 'State/Province',
         formControlName: 'state',
-        placeholder: 'State/Province',
         type: 'text',
+        props: {
+          placeholder: 'State/Province',
+        },
       },
       {
         label: 'Zip/Postal code',
         formControlName: 'postcode',
-        placeholder: '00000',
         type: 'text',
+        props: {
+          placeholder: '00000',
+        },
       },
       {
         label: 'Address',
         formControlName: 'address',
         type: 'text',
-        placeholder: 'Address',
         layout: {
           hostStyles: 'grid-column: -1/1;',
+        },
+        props: {
+          placeholder: 'Address',
         },
       },
     ],
@@ -162,7 +170,9 @@ export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
       },
       {
         formControlName: 'cardOther',
-        placeholder: 'Other card type',
+        props: {
+          placeholder: 'Other card type',
+        },
         conditions: {
           'control.hidden': {
             '&&': [['cards.cardTypes', 'notIncludes', 3]],

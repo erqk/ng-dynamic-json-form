@@ -12,17 +12,16 @@ import {
 import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime, delay, tap } from 'rxjs/operators';
 import { LayoutService } from './core/services/layout.service';
-import { DocsCustomErrorMessageComponent } from './docs-example/components/docs-custom-error-message/docs-custom-error-message.component';
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
+import { InputLayoutIllustrationComponent } from './example/components/input-layout-illustration/input-layout-illustration.component';
 import { DocCodeComponent } from './features/doc/components/doc-code/doc-code.component';
-import { DocsLoaderService } from './features/doc/services/docs-loader.service';
 import { DocFormViewerComponent } from './features/doc/components/doc-form-viewer/doc-form-viewer.component';
+import { DocTabComponent } from './features/doc/components/doc-tab/doc-tab.component';
+import { DocsLoaderService } from './features/doc/services/docs-loader.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 import { VersionService } from './features/version/version.service';
-import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
-import { DocTabComponent } from './features/doc/components/doc-tab/doc-tab.component';
 
 @Component({
   selector: 'app-root',
@@ -105,8 +104,8 @@ export class AppComponent {
 
     create('doc-code', DocCodeComponent);
     create('doc-tab', DocTabComponent);
-    create('custom-error-message', DocsCustomErrorMessageComponent);
     create('custom-loading', CustomLoadingComponent);
     create('doc-form-viewer', DocFormViewerComponent);
+    create('input-layout-illustration', InputLayoutIllustrationComponent);
   }
 }

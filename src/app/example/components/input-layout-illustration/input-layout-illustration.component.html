@@ -1,0 +1,74 @@
+<div
+  class="host"
+  [ngClass]="{
+    'no-tags': showTags === 'false'
+  }"
+>
+  <span>Host</span>
+  <div class="tags">
+    <span>hostClass</span>
+    <span>hostStyles</span>
+  </div>
+
+  <div class="label">
+    <span>Label</span>
+    <div class="tags">
+      <span>labelClass</span>
+      <span>labelStyles</span>
+    </div>
+  </div>
+
+  <div class="content">
+    <span>Content</span>
+    <div class="tags">
+      <span>contentClass</span>
+      <span>contentStyles</span>
+    </div>
+
+    <ng-container
+      *ngIf="descriptionPosition === 'before'"
+      [ngTemplateOutlet]="descriptionTemplate"
+    >
+    </ng-container>
+
+    <div class="input-area">
+      <span>{{ isFormGroup === "true" ? "Form Group" : "Input Area" }}</span>
+      <div class="tags">
+        <span
+          >{{ isFormGroup === "true" ? "formGroup" : "inputArea" }}Class</span
+        >
+        <span
+          >{{ isFormGroup === "true" ? "formGroup" : "inputArea" }}Styles</span
+        >
+      </div>
+
+      <ng-container *ngIf="isFormGroup === 'false'">
+        <input type="text" />
+      </ng-container>
+    </div>
+
+    <ng-container
+      *ngIf="descriptionPosition === 'after'"
+      [ngTemplateOutlet]="descriptionTemplate"
+    >
+    </ng-container>
+
+    <div class="error">
+      <span>Error</span>
+      <div class="tags">
+        <span>errorClass</span>
+        <span>errorStyles</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #descriptionTemplate>
+  <div class="description">
+    <span>Description</span>
+    <div class="tags">
+      <span>descriptionClass</span>
+      <span>descriptionStyles</span>
+    </div>
+  </div>
+</ng-template>

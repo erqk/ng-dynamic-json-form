@@ -20,8 +20,6 @@
           'h-[calc(100vh-var(--header-height))]'
         ]"
       >
-        <app-version-selector class="block mb-5"></app-version-selector>
-
         <app-navigator-index
           [containerClass]="['gap-y-2']"
           (click)="setSmoothScroll(false)"
@@ -29,7 +27,7 @@
       </div>
 
       <div
-        class="markdown block p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
+        class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
         [innerHTML]="content$ | async"
       ></div>
 
@@ -68,7 +66,7 @@
       'p-6 pb-28',
       'block lg:hidden',
       'bg-[rgba(var(--bg-color-rgb),0.95)]',
-      'max-w-[85vw] h-[calc(var(--window-height)-var(--header-height))]',
+      'w-4/5 min-w-[200px] h-[calc(var(--window-height)-var(--header-height))]',
       'overflow-auto',
       'duration-300 transition-transform',
       showMobileMenu
@@ -76,7 +74,6 @@
         : 'translate-x-[calc(-100%-1rem)]'
     ]"
   >
-    <app-version-selector class="block mb-5"></app-version-selector>
     <app-navigator-index
       [containerClass]="['gap-y-6 break-keep whitespace-nowrap']"
     ></app-navigator-index>

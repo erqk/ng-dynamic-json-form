@@ -1,6 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
-import { catchError, switchMap } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  onErrorResumeNext,
+  onErrorResumeNextWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
@@ -24,10 +33,6 @@ export class NavigatorIndexComponent {
         `index_${_lang}.md`,
         'safeHTML'
       );
-    }),
-    catchError((err) => {
-      this._docLoaderService.updateUrl();
-      throw err;
     })
   );
 }

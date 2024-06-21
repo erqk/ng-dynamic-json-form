@@ -5,7 +5,7 @@ import { NavigatorTitleItem } from '../interfaces/navigator-title-item.interface
 @Injectable({
   providedIn: 'root',
 })
-export class SidePanelService {
+export class NavigatorService {
   h2$ = new BehaviorSubject<Element[]>([]);
   h3$ = new BehaviorSubject<Element[]>([]);
 

@@ -20,7 +20,7 @@ export class VersionSelectorComponent {
   private _versionService = inject(VersionService);
 
   versions$ = this._versionService.versions$;
-  currentVersion = this._versionService.currentVersion;
+  currentVersion = this._versionService.docVersion;
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;

@@ -1,13 +1,13 @@
 {
   "FEATURES": {
-    "CONDITIONS": "根據特定控制器的值來切換顯示狀態和驗證器。",
-    "CUSTOM_COMPONENTS": "可依照需求建立自訂元件。",
-    "LAYOUT": "可靈活的建立各種版型的表單。",
-    "NESTED_LEVELS": "不限層級的巢狀 FormControl、FormGroup、FormArray。",
-    "VALIDATORS": "支援 Angular 內建驗證器和自訂驗證器。",
-    "UI_LIBRARY": "支援第三方 UI 套件。"
+    "CONDITIONS": "根據其他控制器的值切換當前控制器的狀態（隱藏或禁用）和驗證器",
+    "CUSTOM_COMPONENTS": "支援自訂元件",
+    "LAYOUT": "靈活的表單樣式和佈局",
+    "NESTED_LEVELS": "建立不顯巢狀層級的表單",
+    "VALIDATORS": "支援 Angular 內建驗證器、自訂驗證器",
+    "UI_LIBRARY": "支援第三方 UI 套件"
   },
-  "GET_STARTED": "開始使用",
+  "GET_STARTED": "開始",
   "INTRODUCTION": {
     "BRIEF": "使用 JSON 生成 Angular 表單。"
   },

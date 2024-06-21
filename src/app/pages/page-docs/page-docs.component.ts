@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, Renderer2, inject } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,14 +12,15 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { LayoutService } from 'src/app/core/services/layout.service';
+import { getHeaderHeight } from 'src/app/core/utilities/get-header-height';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { NavigatorIndexComponent } from 'src/app/features/navigator/components/navigator-index/navigator-index.component';
 import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
-import { SidePanelService } from 'src/app/features/navigator/services/navigator.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
@@ -36,17 +37,17 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
   ],
   templateUrl: './page-docs.component.html',
   styleUrls: ['./page-docs.component.scss'],
+  animations: [FADE_UP_ANIMATION],
 })
 export class PageDocsComponent {
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
+  private _viewportScroller = inject(ViewportScroller);
   private _renderer2 = inject(Renderer2);
   private _docLoaderService = inject(DocsLoaderService);
   private _layoutService = inject(LayoutService);
-  private _sideNavigationPaneService = inject(SidePanelService);
   private _langService = inject(LanguageDataService);
-
-  private _useRouterScroll = false;
+  private _useAnchorScrolling = false;
   private _loadDoc$ = (type: 'safeHTML' | 'string') =>
     this._route.url.pipe(
       map((x) => x.map(({ path }) => path).join('/')),
@@ -70,6 +71,7 @@ export class PageDocsComponent {
       this._scrollToContent();
     }),
     catchError(() => {
+      this._reloadDocOnError();
       return EMPTY;
     })
   );
@@ -79,7 +81,11 @@ export class PageDocsComponent {
   }
 
   onDocReady(): void {
-    this._docLoaderService.wrapTable();
+    if (typeof window === 'undefined') return;
+
+    window.setTimeout(() => {
+      this._docLoaderService.wrapTable();
+    });
   }
 
   toggleMobileMenu(value?: boolean): void {
@@ -96,22 +102,24 @@ export class PageDocsComponent {
 
   private _scrollToContent(): void {
     if (typeof window === 'undefined') return;
-    if (this._useRouterScroll) return;
 
     const id = this._route.snapshot.fragment?.split('?')[0];
+
+    this._viewportScroller.setOffset([0, getHeaderHeight() + 30]);
 
     if (!id) {
       window.scrollTo({ top: 0 });
       return;
     }
 
-    this._useRouterScroll = true;
+    if (!this._useAnchorScrolling) {
+      this._useAnchorScrolling = true;
 
-    requestAnimationFrame(() => {
-      const target = document.querySelector(`#${id}`);
-      if (!target) return;
-      scrollToTitle(target, 'auto');
-    });
+      window.requestAnimationFrame(() => {
+        const target = document.querySelector(`#${id}`);
+        target && scrollToTitle(target, 'auto');
+      });
+    }
   }
 
   private _loadFallbackDoc$(): Observable<any> {

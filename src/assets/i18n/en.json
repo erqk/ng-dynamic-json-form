@@ -1,13 +1,13 @@
 {
   "FEATURES": {
-    "CONDITIONS": "Conditional visibility and validators based on the value of other control.",
-    "CUSTOM_COMPONENTS": "Support custom components.",
-    "LAYOUT": "Flexible form layout.",
-    "NESTED_LEVELS": "Create FormControl, FormGroup and FormArray, with unlimited nesting level.",
-    "VALIDATORS": "Supports Angular built in validators and custom validators.",
-    "UI_LIBRARY": "Support third party UI libraries."
+    "CONDITIONS": "Toggle control status (hidden or disabled) and validators depends on value from other control",
+    "CUSTOM_COMPONENTS": "Support custom components",
+    "LAYOUT": "Flexible form layout",
+    "NESTED_LEVELS": "Create form with unlimited nesting level",
+    "VALIDATORS": "Supports Angular built in validators and custom validators",
+    "UI_LIBRARY": "Support third party UI libraries"
   },
-  "GET_STARTED": "Get started",
+  "GET_STARTED": "Getting started",
   "INTRODUCTION": {
     "BRIEF": "Generate Angular reactive form with JSON."
   },

@@ -26,20 +26,18 @@
           showEditor ? 'shadow-2xl' : ''
         ]"
       >
-        <div
-          [ngClass]="[
-            'flex gap-2 px-8 py-2 m-2 mt-4',
-            'rounded-full text-sm font-bold bg-[rgba(128,128,128,0.1)]'
-          ]"
-        >
-          <span>NgDynamicJsonForm</span>
-          <span class="uppercase">{{ currentVersion }}</span>
-        </div>
+        <div class="px-4">
+          <div class="mt-3">
+            <ng-container
+              *ngTemplateOutlet="formUiSelectTemplate"
+            ></ng-container>
+          </div>
 
-        <app-playground-template-list
-          class="block overflow-hidden"
-          (onEdit)="onTemplateEdit($event)"
-        ></app-playground-template-list>
+          <app-playground-template-list
+            class="block mt-4 overflow-hidden"
+            (onEdit)="onTemplateEdit($event)"
+          ></app-playground-template-list>
+        </div>
       </div>
 
       <app-playground-editor
@@ -71,24 +69,13 @@
           (gutterDblClick)="resetSplitSizes()"
         >
           <as-split-area
-            class="flex flex-col !overflow-hidden"
+            class="flex flex-col px-3 !overflow-hidden"
             [size]="asSplitSizes[0]"
           >
-            <!-- UI library select -->
-            <div class="flex gap-8 px-6 ml-auto">
-              <ng-container
-                *ngTemplateOutlet="formUiSelectTemplate"
-              ></ng-container>
-
-              <ng-container
-                *ngTemplateOutlet="errorMessageToggle"
-              ></ng-container>
-            </div>
-
             <!-- Form -->
             <div
               [ngClass]="[
-                'w-full h-full px-8 py-10',
+                'w-full h-full pb-10',
                 'overflow-auto beauty-scrollbar'
               ]"
             >
@@ -102,11 +89,15 @@
           <as-split-area
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
-              '!h-[calc(100vh-var(--header-height))]'
+              '!h-[calc(100vh-var(--header-height))]',
+              'flex flex-col p-4 pt-1'
             ]"
             [size]="asSplitSizes[1]"
           >
-            <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="errorMessageToggle"></ng-container>
+            <div class="flex-1 min-h-0 mt-1">
+              <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
+            </div>
           </as-split-area>
         </as-split>
       </div>
@@ -206,7 +197,7 @@
     <div
       [ngClass]="[
         mobileTabSelected === 2 ? 'block' : 'hidden',
-        'h-full overflow-hidden'
+        'mb-3 h-full overflow-hidden'
       ]"
     >
       <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
@@ -215,50 +206,69 @@
 </ng-container>
 
 <ng-template #formUiSelectTemplate let-isMobile="isMobile">
-  <div [ngClass]="['flex gap-2 items-center']">
-    <span class="shrink-0 font-bold">UI</span>
-    <select
-      [ngClass]="[isMobile ? 'bg-transparent text-inherit' : '']"
-      [ngModel]="currentUi"
-      (ngModelChange)="onFormUiChange($event)"
-    >
-      <ng-container *ngFor="let item of customUiComponents | keyvalue">
-        <option [ngValue]="item.key">{{ item.key }}</option>
-      </ng-container>
-    </select>
-  </div>
+  <select [ngModel]="currentUi" (ngModelChange)="onFormUiChange($event)">
+    <ng-container *ngFor="let item of uiComponents">
+      <option [ngValue]="item.key">{{ item.key }}</option>
+    </ng-container>
+  </select>
 </ng-template>
 
 <ng-template #errorMessageToggle>
-  <div class="ng-dynamic-json-form ui-basic">
-    <div class="form-control-container flex flex-wrap gap-3">
-      <label class="option-button switch-button justify-between">
-        <input type="checkbox" [formControl]="hideErrorMessageControl" />
-        <span>hideErrorMessage</span>
-        <span class="marker"></span>
-      </label>
+  <div class="flex flex-col gap-2">
+    <label class="grid grid-cols-[auto_1fr] gap-x-3">
+      <input type="checkbox" [formControl]="hideErrorMessageControl" />
+      <span>hideErrorMessage</span>
+      <span class="marker"></span>
+    </label>
 
-      <button
-        class="px-3 py-2 rounded-md"
-        style="background-color: var(--primary-100)"
-        (click)="hideErrorMessageControl.setValue(false)"
-      >
-        Show errors
-      </button>
-    </div>
+    <button
+      [ngClass]="[
+        'px-3 py-2',
+        'rounded-md border border-1 border-[var(--border-color-50)]',
+        'text-sm hover:shadow'
+      ]"
+      (click)="hideErrorMessageControl.setValue(false)"
+    >
+      hideErrorMessage = false
+    </button>
   </div>
 </ng-template>
 
 <ng-template #dynamicFormTemplate>
-  <ng-dynamic-json-form
-    class="flex flex-col p-5 text-sm md:text-base"
-    [configs]="(configs$ | async) ?? []"
-    [customComponents]="customComponents"
-    [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
-    [formControl]="formControl"
-    [optionsSources]="optionsSources"
-    (optionsLoaded)="onOptionsLoaded($event)"
-  ></ng-dynamic-json-form>
+  <ng-container [ngSwitch]="currentUi">
+    <ng-container *ngSwitchDefault>
+      <app-playground-form
+        class="flex flex-col p-5 text-sm md:text-base"
+        [configs]="(configs$ | async) ?? []"
+        [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
+        [control]="formControl"
+        [optionsSources]="optionsSources"
+      ></app-playground-form>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'Prime NG'">
+      <app-playground-form-primeng
+        class="flex flex-col p-5 text-sm md:text-base"
+        [configs]="(configs$ | async) ?? []"
+        [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
+        [control]="formControl"
+        [optionsSources]="optionsSources"
+      ></app-playground-form-primeng>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'Angular Material'">
+      <app-playground-form-material
+        class="flex flex-col p-5 text-sm md:text-base"
+        [configs]="(configs$ | async) ?? []"
+        [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
+        [control]="formControl"
+        [optionsSources]="optionsSources"
+      ></app-playground-form-material>
+    </ng-container>
+  </ng-container>
 </ng-template>
 
 <ng-template #formInfoTemplate>

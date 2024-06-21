@@ -1,7 +1,5 @@
 <!-- desktop -->
-<div
-  class="hidden md:flex flex-col h-full p-2 px-6 pb-16 overflow-auto beauty-scrollbar"
->
+<div class="hidden md:flex flex-col h-full overflow-auto beauty-scrollbar">
   <ng-container
     *ngFor="let item of list$ | async"
     [ngTemplateOutlet]="listItemTemplate"
@@ -12,7 +10,7 @@
     }"
   ></ng-container>
 
-  <div class="mt-8">
+  <div class="mt-3 px-4">
     <ng-container *ngTemplateOutlet="templateNameInputTemplate"></ng-container>
   </div>
 </div>
@@ -95,9 +93,8 @@
       type="text"
       [formControl]="nameControl"
       [ngClass]="[
-        'p-1 px-2 border border-[var(--border-color-50)] md:border-transparent bg-transparent',
-        'hover:border-[var(--border-color-50)] focus:border-[var(--border-color-50)]',
-        'hover:bg-[rgb(var(--bg-color-rgb))] focus:bg-[rgb(var(--bg-color-rgb))]'
+        'p-2 border border-[var(--border-color-50)] md:border-[var(--border-color-25)]',
+        'hover:border-[var(--border-color-50)] focus:border-[var(--border-color-50)]'
       ]"
       [placeholder]="i18nContent$.value.PLAYGROUND.TEMPLATE.NEW + '...'"
       (keydown.enter)="newTemplate()"

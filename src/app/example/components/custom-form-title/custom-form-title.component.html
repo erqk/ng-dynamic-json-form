@@ -1,4 +1,12 @@
-<button type="button" (click)="toggle()">
-  <span>{{ label }}</span>
-  <span></span>
-</button>
+<div class="flex align-items-center w-full">
+  <span class="flex-1">{{ label }}</span>
+  <span *ngIf="collapsible">
+    <i
+      class="bi bi-chevron-up"
+      [ngClass]="{
+        'bi-chevron-up': expand,
+        'bi-chevron-down': !expand
+      }"
+    ></i>
+  </span>
+</div>

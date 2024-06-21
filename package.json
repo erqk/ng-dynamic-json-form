@@ -9,7 +9,7 @@
     "build:docs": "ng build --base-href /ng-dynamic-json-form/",
     "test": "jest",
     "test:watch": "jest --watch",
-    "build:config-schema": "node config-schema-code-builder.js",
+    "build:config-schema": "node ./schema/config-schema-code-builder.js",
     "dev:ssr": "ng run docs:serve-ssr --port 4201",
     "serve:ssr": "node dist/docs/server/main.js",
     "build:ssr": "ng build && ng run docs:server",

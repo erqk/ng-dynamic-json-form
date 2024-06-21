@@ -5,8 +5,8 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { HOST_ORIGIN } from 'src/app/core/injection-tokens/host-origin.token';
-import { AppServerModule } from './src/main.server';
+import { HOST_ORIGIN } from './src/app/core/injection-tokens/host-origin.token';
+import bootstrap from './src/main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -20,7 +20,7 @@ export function app(): express.Express {
   server.engine(
     'html',
     ngExpressEngine({
-      bootstrap: AppServerModule,
+      bootstrap,
     })
   );
 
@@ -75,3 +75,6 @@ if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
 }
 
 export * from './src/main.server';
+
+// fixes prerendering
+export default bootstrap;

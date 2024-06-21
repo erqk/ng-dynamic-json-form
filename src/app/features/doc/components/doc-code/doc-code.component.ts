@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject } from '@angular/core';
+import { Component, ElementRef, Input, inject } from '@angular/core';
 
 @Component({
   selector: 'app-doc-code',
@@ -10,6 +10,8 @@ import { Component, ElementRef, inject } from '@angular/core';
 })
 export class DocCodeComponent {
   private _el = inject(ElementRef);
+
+  @Input() enableCopy = true;
 
   copyToClipboard(): void {
     const host = this._el.nativeElement as HTMLElement;

@@ -27,7 +27,7 @@ export class PlaygroundTemplateListComponent {
 
   nameControl = new FormControl('');
   isEditing = false;
-  currentVersion = this._versionService.currentVersion;
+  currentVersion = this._versionService.docVersion;
   showTemplateNameInput = false;
 
   list$ = combineLatest([

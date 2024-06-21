@@ -16,8 +16,8 @@
 
 .toolbar {
   button {
-    @apply px-3 py-2;
+    @apply inline-flex justify-center items-center w-10 h-10;
     @apply border border-[var(--border-color-25)];
-    @apply backdrop-blur-sm rounded-lg;
+    @apply backdrop-blur-sm rounded-full;
   }
 }

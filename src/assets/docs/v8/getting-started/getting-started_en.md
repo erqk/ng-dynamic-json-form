@@ -61,7 +61,7 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 
 </doc-code>
 
-Pass the `configs` to the `ng-dynamic-json-form` component, a simple form will be built. See [FormControlConfig]() for more.
+Pass the `configs` to the `ng-dynamic-json-form` component, a simple form will be built. See [Configs](../../v8/configs/configs_en.md) for more.
 
 <doc-tab>
 <doc-code name="HTML">
@@ -92,3 +92,89 @@ configs = [
       "label": "Name"
     }
 ]'></doc-form-viewer>
+
+## Form Binding
+
+### Using FormControl
+
+<doc-tab>
+<doc-code name="HTML">
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  ...
+  [formControl]="control"
+></ng-dynamic-json-form>
+```
+
+</doc-code>
+<doc-code name="TS">
+
+```typescript
+control = new FormControl();
+```
+
+</doc-code>
+</doc-tab>
+
+### Using FormGroup
+
+<doc-tab>
+<doc-code name="HTML">
+
+<!-- prettier-ignore -->
+```html
+<ng-dynamic-json-form
+  ...
+  (formGet)="onFormGet($event)"
+></ng-dynamic-json-form>
+```
+
+</doc-code>
+<doc-code name="TS">
+
+```typescript
+form?: UntypedFormGroup;
+
+onFormGet(e: UntypedFormGroup): void {
+  this.form = e;
+}
+```
+
+</doc-code>
+</doc-tab>
+
+## Event Listening
+
+After the form is generated, the `formGet` event will emit an `UntypedFormGroup`. We can get the form and listen to the `valueChanges` event.
+
+```tsx
+form?: UntypedFormGroup;
+
+onFormGet(e: UntypedFormGroup): void {
+  this.form = e;
+  this.form.valueChanges.pipe(
+    ...
+  ).subscribe();
+}
+
+```
+
+Or listen to only specific control and do specific task.
+
+```tsx
+form?: UntypedFormGroup;
+
+onFormGet(e: UntypedFormGroup): void {
+  this.form = e;
+  this.form.controls.name.valueChanges.pipe(
+    tap(x => {
+      if (x.length > 10) {
+        ...
+      }
+    })
+  ).subscribe();
+}
+
+```

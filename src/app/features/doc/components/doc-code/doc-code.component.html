@@ -3,10 +3,12 @@
     <ng-content></ng-content>
   </div>
 
-  <button
-    class="btn-copy absolute z-10 top-2 right-2 p-2 bg-gray-600/30 backdrop-blur-sm rounded-lg text-white"
-    (click)="copyToClipboard()"
-  >
-    <i class="bi bi-copy"></i>
-  </button>
+  <ng-container *ngIf="enableCopy === true">
+    <button
+      class="btn-copy absolute z-10 top-2 right-2 p-2 bg-gray-600/30 backdrop-blur-sm rounded-lg text-white"
+      (click)="copyToClipboard()"
+    >
+      <i class="bi bi-copy"></i>
+    </button>
+  </ng-container>
 </div>

@@ -6,12 +6,12 @@ Generate Angular reactive form with JSON data. Support conditional rendering and
 
 ## Features
 
-- Conditional visibility and validators based on the value of other control.
-- Create FormControl, FormGroup and FormArray, with unlimited nesting level.
-- Supports Angular built in validators and custom validators.
-- Support custom components.
-- Support third party UI libraries.
-- Flexible form layout.
+- Create form with unlimited nesting level
+- Toggle control status (hidden or disabled) and validators depends on value from other control
+- Supports Angular built in validators and custom validators
+- Support custom components
+- Support third party UI libraries
+- Flexible form layout
 
 ## Documentation and demo
 

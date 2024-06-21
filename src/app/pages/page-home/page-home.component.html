@@ -4,7 +4,7 @@
   }"
   [ngClass]="[
     'page',
-    '-mt-[var(--header-height)] min-h-[calc(100vh+var(--header-height)+12rem)]',
+    '-mt-[var(--header-height)] min-h-screen',
     'relative z-0 overflow-hidden'
   ]"
 >
@@ -30,7 +30,7 @@
       </button>
     </div>
 
-    <div class="absolute -z-10 left-3/4 bottom-0 md:top-1/2 -translate-x-1/2">
+    <div class="absolute -z-10 left-3/4 bottom-0 -top-12 -translate-x-1/2">
       <div class="illustration">
         <div style="--index: 0; height: 100%"></div>
         <div style="--index: 1; height: 50%; top: 35%; left: -40%"></div>
@@ -43,7 +43,7 @@
 
     <ng-container *ngIf="features$ | async as features">
       <div class="relative z-0 overflow-hidden">
-        <ui-content-wrapper class="p-10" [maxWidth]="'60rem'">
+        <ui-content-wrapper [maxWidth]="'40rem'">
           <ul class="features">
             <li>{{ features.CONDITIONS }}</li>
             <li>{{ features.NESTED_LEVELS }}</li>

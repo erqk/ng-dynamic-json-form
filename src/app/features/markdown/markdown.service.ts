@@ -26,7 +26,7 @@ export class MarkdownService {
   );
 
   parse(val: string): SafeHtml {
-    const version = this._versionService.currentVersion;
+    const version = this._versionService.docVersion;
     const renderer: RendererObject = {
       link: this._linkRendererFn('', {
         searchValue: version,
@@ -35,7 +35,8 @@ export class MarkdownService {
     };
 
     this._marked.use({ renderer: renderer as any });
-    const result = this._marked.parse(val, {
+    const tabsReplaced = val.replace(/\t/g, '  ');
+    const result = this._marked.parse(tabsReplaced, {
       async: false,
       gfm: true,
     }) as string;

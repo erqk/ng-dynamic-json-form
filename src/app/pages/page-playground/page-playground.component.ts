@@ -7,12 +7,12 @@ import {
   FormsModule,
   ReactiveFormsModule,
   UntypedFormControl,
+  UntypedFormGroup,
 } from '@angular/forms';
 import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
   NgDynamicJsonFormComponent,
-  UiComponents,
-  provideNgDynamicJsonForm
+  provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
@@ -22,10 +22,12 @@ import {
   concatAll,
   debounceTime,
   map,
-  toArray
+  tap,
+  toArray,
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
+import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
 import { CustomInputGroupComponent } from 'src/app/example/components/custom-input-group/custom-input-group.component';
 import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
@@ -34,6 +36,9 @@ import { HeaderTabBarComponent } from 'src/app/features/header/components/header
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
 import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
+import { PlaygroundFormMaterialComponent } from 'src/app/features/playground/components/playground-form/playground-form-material.component';
+import { PlaygroundFormPrimengComponent } from 'src/app/features/playground/components/playground-form/playground-form-primeng.component';
+import { PlaygroundFormComponent } from 'src/app/features/playground/components/playground-form/playground-form.component';
 import { PlaygroundTemplateListComponent } from 'src/app/features/playground/components/playground-template-list/playground-template-list.component';
 import { PlaygroundEditorDataService } from 'src/app/features/playground/services/playground-editor-data.service';
 import { PlaygroundSettingsService } from 'src/app/features/playground/services/playground-settings.service';
@@ -56,17 +61,18 @@ import { Content } from 'vanilla-jsoneditor';
     PlaygroundFormInfoComponent,
     NgDynamicJsonFormComponent,
     AngularSplitModule,
+    PlaygroundFormComponent,
+    PlaygroundFormPrimengComponent,
+    PlaygroundFormMaterialComponent,
   ],
   providers: [
     provideNgDynamicJsonForm({
       customValidators: {
         firstUppercase: firstUppercaseValidator,
       },
-      layoutComponents: {
-        loading: CustomLoadingComponent,
-        errorMessage: CustomErrorMessageComponent,
-        // formTitle: CustomFormTitleComponent
-      },
+      loadingComponent: CustomLoadingComponent,
+      errorComponent: CustomErrorMessageComponent,
+      labelComponent: CustomFormTitleComponent,
       uiComponents: UI_PRIMENG_COMPONENTS,
       // uiComponents: UI_MATERIAL_COMPONENTS,
     }),
@@ -83,19 +89,33 @@ export class PagePlaygroundComponent {
   private _playgroundSettingsService = inject(PlaygroundSettingsService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
+  uiComponents = [
+    {
+      key: 'UI Basic',
+      value: undefined,
+    },
+    {
+      key: 'Prime NG',
+      value: UI_PRIMENG_COMPONENTS,
+    },
+    {
+      key: 'Angular Material',
+      value: UI_MATERIAL_COMPONENTS,
+    },
+  ];
+
   form = new FormGroup({});
   formControl = new UntypedFormControl('');
 
   showEditor = false;
-  currentVersion = this._versionService.currentVersion;
+  currentVersion = this._versionService.docVersion;
   mobileTabSelected = 0;
   asSplitSizes = this._playgroundSettingsService.asSplitSizes;
 
-  customUiComponents: { [key: string]: UiComponents | undefined } = {
-    '--': undefined,
-    PrimeNg: UI_PRIMENG_COMPONENTS,
-    'Angular Material': UI_MATERIAL_COMPONENTS,
-  };
+  customUiComponents = this.uiComponents.reduce((acc, curr) => {
+    acc[curr.key] = curr.value;
+    return acc;
+  }, {} as any);
 
   customComponents = {
     customComponentControl: CustomInputComponent,
@@ -132,6 +152,9 @@ export class PagePlaygroundComponent {
     this._langService.language$,
   ]).pipe(
     debounceTime(0),
+    tap(() => {
+      this.hideErrorMessageControl.setValue(undefined);
+    }),
     map(([key]) => {
       const examples = this._templateDataService.getExampleTemplate(key);
       const userTemplates = this._templateDataService.getUserTemplate(key);
@@ -166,6 +189,10 @@ export class PagePlaygroundComponent {
 
   onConfigEditing(e: Content): void {
     this._editorDataService.saveModifiedData(e);
+  }
+
+  onFormGet(e: UntypedFormGroup): void {
+    this.form = e;
   }
 
   onOptionsLoaded(e: boolean): void {
