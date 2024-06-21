@@ -29,7 +29,16 @@
   margin: 10rem 1.5rem 1.5rem;
 
   h1 {
-    font-size: 2.65rem;
+    background: linear-gradient(
+      160deg,
+      var(--body-bg-color) 0%,
+      var(--primary-400) 35%,
+      var(--primary-600) 90%
+    );
+    background-clip: text;
+    color: transparent;
+    padding: 1rem;
+    font-size: 3.5rem;
     margin-bottom: 0;
   }
 
