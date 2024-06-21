@@ -137,6 +137,7 @@ export class NgDynamicJsonFormComponent
    * after each value changes.
    */
   private _allowFormDirty = false;
+  private _globalVariablesInitialized = false;
 
   private _onTouched = () => {};
   private _onChange = (x: any) => {};
@@ -249,9 +250,8 @@ export class NgDynamicJsonFormComponent
       );
     }
 
-    if (configs) {
+    if (configs && this._globalVariablesInitialized) {
       this._buildForm();
-      this._cd.detectChanges();
     }
   }
 
@@ -262,6 +262,7 @@ export class NgDynamicJsonFormComponent
 
     this._setupVariables();
     this._getControlDirective();
+    this._buildForm();
   }
 
   ngOnDestroy(): void {
@@ -335,6 +336,8 @@ export class NgDynamicJsonFormComponent
         ...uiComponents,
       },
     });
+
+    this._globalVariablesInitialized = true;
   }
 
   private _buildForm(): void {
@@ -355,6 +358,8 @@ export class NgDynamicJsonFormComponent
       this._globalVariableService.rootConfigs = this.configGet;
       this._setupListeners();
       this.formGet.emit(this.form);
+
+      this._cd.detectChanges();
     }
   }
 
