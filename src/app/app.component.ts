@@ -53,6 +53,7 @@ export class AppComponent {
     const docVersions$ = this._versionService.loadVersions$();
 
     merge(routeChange$, docVersions$).subscribe();
+    this._loadGoogleFonts();
     this._registerCustomElements();
   }
 
@@ -87,6 +88,17 @@ export class AppComponent {
         }
       })
     );
+  }
+
+  private _loadGoogleFonts(): void {
+    if (typeof window === 'undefined') return;
+
+    const link = document.createElement('link');
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap';
+    link.rel = 'stylesheet';
+
+    document.head.append(link);
   }
 
   private _registerCustomElements(): void {
