@@ -167,7 +167,6 @@ export class FormControlComponent
       return;
     }
 
-    console.log(this._uiComponents, this._globalVariableService.uiComponents);
     const inputComponent =
       this.customComponent ||
       this._uiComponents?.[this._inputType] ||
