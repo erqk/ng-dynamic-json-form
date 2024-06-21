@@ -1,4 +1,12 @@
-# 8.0.0-rc.0 (2024-05-22)
+# 8.0.0-rc.1 (2024-06-21)
+
+[055e066]: https://github.com/erqk/ng-dynamic-json-form/commit/055e066384c32606690082aa7171340e486a1ab9
+
+| Commit    | Type | Description                                                         |
+| --------- | ---- | ------------------------------------------------------------------- |
+| [055e066] | fix  | Should wait for global variables to setup before building the form. |
+
+# 8.0.0-rc.0 (2024-06-21)
 
 ## Breaking changes
 
@@ -10,6 +18,10 @@
 ### ErrorMessageComponent
 
 - Use abstract class for custom component to isolate methods and variables.
+
+### FormLabelComponent
+
+- Use abstract class `CustomFormLabel` to implement custom component, instead of extending `FormTitleComponent`.
 
 ### FormControlConfig
 
@@ -62,6 +74,7 @@
 [895e06f]: https://github.com/erqk/ng-dynamic-json-form/commit/895e06ffb875a3361f76c045e90b4b1dba0905d1
 [9341deb]: https://github.com/erqk/ng-dynamic-json-form/commit/9341deb7862df46712f89b6ed5d54d83e5b3cef3
 [0626a11]: https://github.com/erqk/ng-dynamic-json-form/commit/0626a112c21eaa5a4184083f2954dead69e31c2e
+[e3dfda2]: https://github.com/erqk/ng-dynamic-json-form/commit/e3dfda231dbe8bd0842c0535a37c6f19eb422baf
 
 | Commit    | Type     | Description                                                                       |
 | --------- | -------- | --------------------------------------------------------------------------------- |
@@ -73,6 +86,9 @@
 
 [b1cc768]: https://github.com/erqk/ng-dynamic-json-form/commit/b1cc76879372db211ff9b393e29cdb07bf1fe6a7
 [931884d]: https://github.com/erqk/ng-dynamic-json-form/commit/931884db5435f6a53be4ab51e4cf1f9ab5094352
+[c4c952d]: https://github.com/erqk/ng-dynamic-json-form/commit/c4c952d19479c469c69c8bc59f12d08c47a9b6e8
+[80a7e47]: https://github.com/erqk/ng-dynamic-json-form/commit/80a7e473c66198efeb15a292b81a88f1bec42737
+[0567dd1]: https://github.com/erqk/ng-dynamic-json-form/commit/0567dd109b29dc366e935ee94787c06623ed9659
 
 | Commit    | Type | Description                                                           |
 | --------- | ---- | --------------------------------------------------------------------- |
@@ -80,6 +96,9 @@
 | [e3dfda2] | fix  | The values inside extra should not be stringified.                    |
 | [b1cc768] | fix  | The date string is parsed incorrectly.                                |
 | [931884d] | fix  | Replace all invalid characters on `formControlName`.                  |
+| [c4c952d] | fix  | Add attribute binding for `props`.                                    |
+| [80a7e47] | feat | Remove value emission from `optionsLoaded` event.                     |
+| [0567dd1] | feat | Reset ChangeDetectionStrategy to default.                             |
 
 # 7.0.4 (2024-04-30)
 
