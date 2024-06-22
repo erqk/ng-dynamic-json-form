@@ -30,6 +30,7 @@
           <!-- binary checkbox -->
           <ng-container *ngIf="data.options.data.length === 1">
             <p-checkbox
+              #pCheckbox
               [binary]="true"
               [formControl]="control"
               [propsBinding]="[
@@ -39,6 +40,7 @@
                   omit: ['binary']
                 }
               ]"
+              (click)="$event.preventDefault()"
             ></p-checkbox>
           </ng-container>
 
@@ -55,6 +57,7 @@
                   omit: ['binary']
                 }
               ]"
+              (click)="$event.preventDefault()"
             ></p-checkbox>
           </ng-container>
         </ng-container>
@@ -64,7 +67,7 @@
             labelTemplate;
             context: {
               label: item.label,
-              isBefore: false
+              isBefore: false,
             }
           "
         ></ng-container>
