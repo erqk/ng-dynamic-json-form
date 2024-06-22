@@ -34,6 +34,10 @@ export class ConfigMappingService {
   }
 
   private _getCorrectedValue(item: FormControlConfig): any {
+    if (item.value === null || item.value === undefined) {
+      return item.value;
+    }
+
     if (item.inputMask && typeof item.value !== 'string') {
       return `${item.value}`;
     }
