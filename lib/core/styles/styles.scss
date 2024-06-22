@@ -111,15 +111,21 @@
 
   // ==================== Errors ======================
   .config-validation-error {
-    white-space: pre-wrap;
-    word-break: break-all;
-
     code {
       display: block;
       line-height: 1.25;
-      border: solid 1px var(--color-error);
       font-size: 0.8em;
-      padding: 1em;
+      padding: 1.25em;
+      margin-top: 0.5em;
+      background-color: rgba(255, 0, 0, 0.05);
+      border-radius: 0.25em;
+      background-color: color-mix(
+        in srgb,
+        var(--color-error) 8%,
+        rgba(255, 255, 255, 0.15)
+      );
+      white-space: pre;
+      overflow: auto;
     }
   }
 
