@@ -36,5 +36,7 @@ export class PlaygroundFormComponent {
   @Input() control = new FormControl();
   @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
 
-  onOptionsLoaded(): void {}
+  onOptionsLoaded(): void {
+    console.log('Options loaded');
+  }
 }

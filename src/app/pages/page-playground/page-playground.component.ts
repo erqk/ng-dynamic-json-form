@@ -167,8 +167,4 @@ export class PagePlaygroundComponent {
   onFormGet(e: UntypedFormGroup): void {
     this.form = e;
   }
-
-  onOptionsLoaded(e: boolean): void {
-    console.log('Playground: All options loaded', e);
-  }
 }
