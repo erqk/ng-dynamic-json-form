@@ -31,11 +31,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Base href rewriter
-        uses: kannansuresh/ghaction-base-href-rewriter@v1.0.0
-        with:
-          base_href: '/ng-dynamic-json-form/'
-          html_glob: '**/index.html, recursive=True' 
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
