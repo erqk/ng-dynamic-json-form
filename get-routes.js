@@ -5,7 +5,8 @@ const hostOrigin = "http://localhost:4201";
 const docsPath = `${hostOrigin}/assets/docs`;
 const routesFile = "./routes.txt";
 const endOfLine = require("os").EOL;
-const staticRoutes = ["/", "/playground"];
+const BASE_HREF = "/ng-dynamic-json-form/";
+const staticRoutes = [BASE_HREF, `${BASE_HREF}playground`];
 
 fetch(`${docsPath}/index.md`).then(async (res) => {
   if (!res.ok) return;
@@ -31,7 +32,7 @@ fetch(`${docsPath}/index.md`).then(async (res) => {
     const result = fileList
       .match(/v{1,}.+\.md/g)
       .map((x) => x.replace(/v{1,}\d*\//, ""))
-      .map((x) => `/docs/${x}`);
+      .map((x) => `${BASE_HREF}docs/${x}`);
 
     (await acc).push(...result);
     return acc;
