@@ -1,6 +1,12 @@
+<ng-container *ngIf="!configs">
+  <div class="no-configs-error">
+    <span>No configs found.</span>
+  </div>
+</ng-container>
+
 <ng-container *ngIf="!!configValidationErrors?.length">
   <div class="config-validation-error">
-    <p>Form generation failed.</p>
+    <p>Config error</p>
     <br />
     <ng-container *ngFor="let item of configValidationErrors">
       <p style="color: var(--color-error)">{{ item.errors }}</p>

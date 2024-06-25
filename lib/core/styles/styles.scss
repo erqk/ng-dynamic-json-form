@@ -110,6 +110,12 @@
   }
 
   // ==================== Errors ======================
+  .no-configs-error {
+    padding: 1rem;
+    border-radius: 0.25em;
+    background-color: color-mix(in srgb, #5f43ff 8%, rgba(255, 255, 255, 0.15));
+  }
+
   .config-validation-error {
     code {
       display: block;

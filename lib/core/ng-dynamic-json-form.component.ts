@@ -140,13 +140,13 @@ export class NgDynamicJsonFormComponent
   private _globalVariablesInitialized = false;
 
   private _onTouched = () => {};
-  private _onChange = (x: any) => {};
+  private _onChange = (_: any) => {};
 
   configGet: FormControlConfig[] = [];
   configValidationErrors: ConfigValidationErrors[] = [];
   form?: UntypedFormGroup;
 
-  @Input() configs: FormControlConfig[] | string = [];
+  @Input() configs?: FormControlConfig[] | string;
   /**
    * User defined custom components. Use `formControlName` as the key to map target component.
    *

@@ -25,10 +25,6 @@ export class ConfigValidationService {
     }
 
     if (Array.isArray(input)) {
-      if (!input.length) {
-        return failedResult;
-      }
-
       if (!validate(input)) {
         failedResult.errors = (validate.errors || []).map((x) =>
           this._getBeautifyErrors(x, input)
