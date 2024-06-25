@@ -29,7 +29,6 @@ export class FormConditionsService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
-  private _skipValueChanges = false;
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -51,7 +50,6 @@ export class FormConditionsService {
 
     return from(controls).pipe(
       mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
-      filter(() => !this._skipValueChanges),
       debounceTime(0),
       tap(() => this._onConditionsMet(configsWithConditions))
     );
@@ -135,10 +133,8 @@ export class FormConditionsService {
           .pipe(
             filter(Boolean),
             tap((x) => {
-              this._skipValueChanges = true;
               this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
               toggleDisabled(bool);
-              this._skipValueChanges = false;
             })
           )
           .subscribe();
