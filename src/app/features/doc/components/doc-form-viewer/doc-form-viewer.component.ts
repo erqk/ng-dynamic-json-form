@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
-  OnInit,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
+  inject,
 } from '@angular/core';
 import {
   FormControlConfig,
@@ -21,9 +23,8 @@ import { firstUppercaseValidator } from 'src/app/example/validators/first-upperc
 import { PlaygroundEditorComponent } from '../../../playground/components/playground-editor/playground-editor.component';
 
 @Component({
-  selector: 'doc-form-viewer',
+  selector: 'app-doc-form-viewer',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     PlaygroundEditorComponent,
@@ -39,7 +40,9 @@ import { PlaygroundEditorComponent } from '../../../playground/components/playgr
   templateUrl: './doc-form-viewer.component.html',
   styleUrls: ['./doc-form-viewer.component.scss'],
 })
-export class DocFormViewerComponent implements OnInit, AfterViewInit {
+export class DocFormViewerComponent implements OnChanges, AfterViewInit {
+  private _cd = inject(ChangeDetectorRef);
+
   @Input() configs: string | FormControlConfig[] = [];
   @Input() configPath = '';
   @Input() showFormOnly = false;
@@ -50,7 +53,7 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   showEditor = false;
   formHeight = '0px';
-  configsLoaded: FormControlConfig[] = [];
+  configsUntouched: FormControlConfig[] = [];
 
   uiComponents: { [key: string]: UiComponents | undefined } = {
     Default: undefined,
@@ -60,8 +63,18 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
 
   private _editorData: any = null;
 
-  ngOnInit(): void {
-    this._loadConfig();
+  ngOnChanges(changes: SimpleChanges): void {
+    const { configs, configPath } = changes;
+
+    if (configs) {
+      this._parseConfigs();
+      this.reset();
+    }
+
+    if (configPath) {
+      this._loadConfigFromPath();
+      this.reset();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -85,32 +98,43 @@ export class DocFormViewerComponent implements OnInit, AfterViewInit {
   }
 
   reset(): void {
-    this.configs = structuredClone(this.configsLoaded);
-    this._editorData = structuredClone(this.configsLoaded);
-    this.configsLoaded = [...this.configsLoaded];
+    const _configs = structuredClone(this.configsUntouched);
+
+    this.configs = _configs;
+    this._editorData = _configs;
+
+    // reset the editor (reassign property to trigger changes)
+    this.configsUntouched = [...this.configsUntouched];
   }
 
-  private _loadConfig(): void {
-    if (!this.configPath && !this.configs) return;
+  private _loadConfigFromPath(): void {
+    if (!this.configPath) return;
 
-    if (this.configPath) {
-      const configFound = this.configPath.split('.').reduce((acc, key) => {
-        return (acc as any)[key];
-      }, CONFIGS_INDEX);
-      const result = Array.isArray(configFound) ? configFound : [configFound];
+    const configFound = this.configPath.split('.').reduce((acc, key) => {
+      return (acc as any)[key];
+    }, CONFIGS_INDEX);
 
-      this.configsLoaded = result as FormControlConfig[];
+    const result = Array.isArray(configFound) ? configFound : [configFound];
+
+    this.configsUntouched = [...result];
+  }
+
+  private _parseConfigs(): void {
+    if (!this.configs) return;
+
+    if (typeof this.configs === 'string') {
+      this.configsUntouched = JSON.parse(this.configs);
     }
 
-    if (this.configs && typeof this.configs === 'string') {
-      this.configsLoaded = JSON.parse(this.configs);
+    if (Array.isArray(this.configs) && this.configs.length > 0) {
+      this.configsUntouched = [...this.configs];
     }
-
-    this.reset();
   }
 
   private _getFormHeight(): void {
     if (!this.formContent) return;
+
     this.formHeight = `${this.formContent.nativeElement.scrollHeight + 1}px`;
+    this._cd.detectChanges();
   }
 }

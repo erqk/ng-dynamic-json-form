@@ -7,12 +7,14 @@
       <a [routerLink]="'/'" class="logo">
         <img src="assets/logo.svg" alt="" />
       </a>
-      <span>{{ currentVersion }}</span>
+      <span class="text-lg font-light capitalize tracking-wider">{{
+        currentVersion
+      }}</span>
     </div>
 
     <header-tab-bar class="tab-bar" [links]="links"></header-tab-bar>
 
-    <div class="settings">
+    <div class="settings ml-auto">
       <app-theme-switcher></app-theme-switcher>
       <app-language-selector></app-language-selector>
     </div>

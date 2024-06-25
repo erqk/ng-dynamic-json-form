@@ -3,7 +3,6 @@
     '--header-height.px': headerHeight$.value,
   }"
   [ngClass]="[
-    'page',
     '-mt-[var(--header-height)] min-h-screen',
     'relative z-0 overflow-hidden'
   ]"
@@ -42,18 +41,22 @@
     </div>
 
     <ng-container *ngIf="features$ | async as features">
-      <div class="relative z-0 overflow-hidden">
-        <ui-content-wrapper [maxWidth]="'40rem'">
-          <ul class="features">
-            <li>{{ features.CONDITIONS }}</li>
+      <ui-content-wrapper>
+        <div class="grid lg:grid-cols-2 gap-6 mb-8 px-4 lg:px-12">
+          <ul class="features mt-8 lg:mt-24 lg:text-lg">
             <li>{{ features.NESTED_LEVELS }}</li>
+            <li>{{ features.CONDITIONS }}</li>
             <li>{{ features.VALIDATORS }}</li>
             <li>{{ features.CUSTOM_COMPONENTS }}</li>
             <li>{{ features.LAYOUT }}</li>
             <li>{{ features.UI_LIBRARY }}</li>
           </ul>
-        </ui-content-wrapper>
-      </div>
+
+          <app-doc-form-viewer
+            [configPath]="'HOME_DEMO.' + (lang$ | async)?.toUpperCase()"
+          ></app-doc-form-viewer>
+        </div>
+      </ui-content-wrapper>
     </ng-container>
   </ui-content-wrapper>
 </div>

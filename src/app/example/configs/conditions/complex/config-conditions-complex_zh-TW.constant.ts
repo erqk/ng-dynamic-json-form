@@ -1,12 +1,11 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
-import { FORM_CONFIG_BASIC_ZHTW } from '../../basic/form-config-basic_zh-TW.constant';
+import { CONFIG_BASIC_AGE_ZHTW } from '../../basic/age/config-basic-age_zh-TW';
+import { CONFIG_BASIC_NAME_ZHTW } from '../../basic/name/config-basic-name_zh-TW';
+import { CONFIG_BASIC_TOGGLES_ZHTW } from '../../basic/toggles/config-basic-toggles_zh-TW';
 
-const target = (name: string) =>
-  FORM_CONFIG_BASIC_ZHTW.find((x) => x.formControlName === name);
-
-const NAME = target('name')!;
-const AGE = target('age')!;
-const TOGGLES = target('toggles')!;
+const NAME = CONFIG_BASIC_NAME_ZHTW;
+const AGE = CONFIG_BASIC_AGE_ZHTW;
+const TOGGLES = CONFIG_BASIC_TOGGLES_ZHTW;
 
 export const CONFIG_CONDITIONS_MULTIPLE_ZHTW: FormControlConfig[] = [
   {

@@ -2,7 +2,7 @@
 
 For input like checkbox, radio and select, provide `options` to let user select data.
 
-## Provide static options
+## Static options
 
 To give static options, provide `OptionItem[]` to `options.data` .
 
@@ -102,9 +102,12 @@ We need to set the config as below:
 
 The `labelKey` specify the property to use as the `label` , and the `contentPath` is to tell where the array of data is located. The above example shows the data we need is located at `products` , so we set `contentPath` to `"products"` .
 
-### Static body and parameters
+## Body and Parameters
 
-For `POST` method, provide `body` to send it over the http request.
+Use `body` to pass data during HTTP request.
+
+- The value of `options.src.body` is static.
+- The value of `options.src.trigger.body` is dynamic, its value will update when the value of the trigger control changes.
 
 ```json
 {
@@ -178,11 +181,9 @@ For the method `GET` , `body` will transform into the parameters and merge into 
 
 </doc-tab>
 
-> `body` provided here are all static. To use dynamic body, refer to the **Use a trigger** section.
+## Data mapping
 
-### Data mapping
-
-#### Primitive value
+### Primitive value
 
 If the response data is only consists of primitive value, it’s no need to provide `labelKey` and `valueKeys`.
 
@@ -221,7 +222,7 @@ If the response data is only consists of primitive value, it’s no need to prov
 
 > This is a response that returns only an array of string, `mapData` can be omitted because `contentPath` is not needed.
 
-#### Custom option value
+### Custom option value
 
 Option’s value can be customized by providing the `valueKeys`. The `value` for each of the `OptionItem` will left only the properties listed inside the `valueKeys` .
 
@@ -316,7 +317,7 @@ If the `valueKeys` has only one item, then the `value` will become primitive.
 
 </doc-tab>
 
-#### Hoisting nested value
+### Hoisting nested value
 
 The following example shows how to hoist childA and childB to the top level.
 
@@ -534,15 +535,15 @@ The example below demonstrates that when the value of the control `productCatego
 
 ### Filter conditions
 
-The syntax of `filter.conditions` is similar with the one in the **Conditions** section. The only difference is every element’s position in the tupple must be as the following:
+The syntax of `filter.conditions` is similar with the one in the [Conditions](../../v8/conditions/conditions_en.md). The only difference is every element’s position in the tupple must be as the following:
 
 `[0, 1, 2]`
 
-| Position | Description                                                                        |
-| -------- | ---------------------------------------------------------------------------------- |
-| 0        | Target control’s value. Use empty string if value is primitive.                    |
-| 1        | The operator to evaluate condition. See Conditions.                                |
-| 2        | The value of each `OptionItem` to compare. Use empty string if value is primitive. |
+| Position | Description                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| 0        | Target control’s value. Use empty string if value is primitive.                                     |
+| 1        | The [OPERATOR](../../v8/conditions/conditions_en.md#left-operator-right) use to evaluate condition. |
+| 2        | The value of each `OptionItem` to compare. Use empty string if value is primitive.                  |
 
 #### Nested condition
 

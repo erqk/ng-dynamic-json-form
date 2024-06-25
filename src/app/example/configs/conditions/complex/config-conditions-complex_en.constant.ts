@@ -1,12 +1,11 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
-import { FORM_CONFIG_BASIC_EN } from '../../basic/form-config-basic_en.constant';
+import { CONFIG_BASIC_AGE_EN } from '../../basic/age/config-basic-age_en';
+import { CONFIG_BASIC_NAME_EN } from '../../basic/name/config-basic-name_en';
+import { CONFIG_BASIC_TOGGLES_EN } from '../../basic/toggles/config-basic-toggles_en';
 
-const target = (name: string) =>
-  FORM_CONFIG_BASIC_EN.find((x) => x.formControlName === name);
-
-const NAME = target('name')!;
-const AGE = target('age')!;
-const TOGGLES = target('toggles')!;
+const NAME = CONFIG_BASIC_NAME_EN;
+const AGE = CONFIG_BASIC_AGE_EN;
+const TOGGLES = CONFIG_BASIC_TOGGLES_EN;
 
 export const CONFIG_CONDITIONS_MULTIPLE_EN: FormControlConfig[] = [
   {

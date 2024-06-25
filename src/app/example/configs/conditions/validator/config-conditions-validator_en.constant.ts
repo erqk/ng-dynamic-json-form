@@ -1,10 +1,9 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
-import { FORM_CONFIG_BASIC_EN } from '../../basic/form-config-basic_en.constant';
+import { CONFIG_BASIC_NAME_EN } from '../../basic/name/config-basic-name_en';
+import { CONFIG_BASIC_TEMPERATURE_EN } from '../../basic/temperature/config-basic-temperature_en';
 
-const NAME = FORM_CONFIG_BASIC_EN.find((x) => x.formControlName === 'name')!;
-const TEMPERATURE = FORM_CONFIG_BASIC_EN.find(
-  (x) => x.formControlName === 'temperature'
-)!;
+const NAME = CONFIG_BASIC_NAME_EN;
+const TEMPERATURE = CONFIG_BASIC_TEMPERATURE_EN;
 
 export const CONFIG_CONDITIONS_VALIDATOR_EN: FormControlConfig[] = [
   {

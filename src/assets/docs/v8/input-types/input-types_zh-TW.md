@@ -48,7 +48,7 @@
 
 ## Checkbox / Radio
 
-使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_en.md)。
+使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_zh-TW.md)。
 
 ### Checkbox
 
@@ -83,7 +83,7 @@
 
 ## Select
 
-使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_en.md)。
+使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_zh-TW.md)。
 
 <doc-form-viewer config-path="SELECT.ZH-TW"></doc-form-viewer>
 

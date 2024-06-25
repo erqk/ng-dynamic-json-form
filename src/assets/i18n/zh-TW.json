@@ -3,7 +3,7 @@
     "CONDITIONS": "根據其他控制器的值切換當前控制器的狀態（隱藏或禁用）和驗證器",
     "CUSTOM_COMPONENTS": "支援自訂元件",
     "LAYOUT": "靈活的表單樣式和佈局",
-    "NESTED_LEVELS": "建立不顯巢狀層級的表單",
+    "NESTED_LEVELS": "建立不限巢狀級數的表單",
     "VALIDATORS": "支援 Angular 內建驗證器、自訂驗證器",
     "UI_LIBRARY": "支援第三方 UI 套件"
   },

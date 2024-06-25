@@ -102,9 +102,12 @@
 
 `labelKey` 負責標記要作為 `label` 的欄位，`contentPath` 負責指定陣列資料的位置。上面的例子顯示我們需要的資料在 `products` 內，所以設定 `contentPath` 為 `products`。
 
-### 靜態 body 參數
+## Body 參數
 
 使用 `POST` 方法進行 HTTP 傳輸時，若需要帶參數，需將參數塞入 `body` 內。
+
+- `options.src.body` 為靜態參數。
+- `options.src.trigger.body` 為動態參數，當監聽的控制器發生變化時，會使用控制器的值更新參數。
 
 ```json
 {
@@ -177,9 +180,9 @@
 
 > 這邊的 `body` 內的參數都是靜態的，需要動態的 `body`，請參閱[使用觸發器](#使用觸發器)。
 
-### 資料轉換
+## 資料轉換
 
-#### 原始值
+### 原始值
 
 如果回傳的資料都是原始值，則不需提供 `labelKey` 和 `valueKeys`。
 
@@ -218,7 +221,7 @@
 
 > 此回傳的資料為 string 陣列，`mapData` 也可不提供，因為無需提供 `contentPath`。
 
-#### 自訂選項物件
+### 自訂選項物件
 
 選項的物件值可透過 `valueKeys` 來修改。只有 `valueKeys` 內設定的 key 會被保留下來，成為最終 `OptionItem` 的 `value`。
 
@@ -312,7 +315,7 @@
 
 </doc-tab>
 
-#### 提升巢狀資料
+### 提升巢狀資料
 
 以下例子說明如何把 childA 和 childB 提升到最外層。
 
@@ -533,19 +536,19 @@ The value of every key inside `trigger.body` is the path to the value we need, w
 
 ### 過濾條件
 
-[Conditions]: ../../v8/conditions/conditions_en.md
+[Conditions]: ../../v8/conditions/conditions_zh-TW.md
 
-`filter.conditions` 的語法和 [Conditions] 非常類似。唯一的差別是 tupple 內的每一個值必須根據以下排列方式排列。
+`filter.conditions` 的語法和 [Conditions](../../v8/conditions/conditions_zh-TW.md) 非常類似。唯一的差別是 tupple 內的每一個值必須根據以下排列方式排列。
 
 `[0, 1, 2]`
 
-| 位置 | 說明                                                  |
-| ---- | ----------------------------------------------------- |
-| 0    | 目標控制器的值。若為原始值則留空白字串。              |
-| 1    | 運算子，請參閱 [Conditions]。                         |
-| 2    | 每一個要比對的 `OptionItem`。若為原始值則留空白字串。 |
+| 位置 | 說明                                                                                     |
+| ---- | ---------------------------------------------------------------------------------------- |
+| 0    | 目標控制器的值。若為原始值則留空白字串。                                                 |
+| 1    | 運算子，請參閱 [OPERATOR](../../v8/conditions/conditions_zh-TW.md#left-operator-right)。 |
+| 2    | 每一個要比對的 `OptionItem`。若為原始值則留空白字串。                                    |
 
-#### Nested condition
+#### 巢狀條件
 
 `conditions` 可支援巢狀結構。
 

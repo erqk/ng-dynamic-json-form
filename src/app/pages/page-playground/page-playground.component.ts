@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { AngularSplitModule, IOutputData } from 'angular-split';
 import {
+  FormControlConfig,
   NgDynamicJsonFormComponent,
   provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
@@ -22,14 +23,13 @@ import {
   concatAll,
   debounceTime,
   map,
+  share,
   tap,
   toArray,
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
-import { CustomInputGroupComponent } from 'src/app/example/components/custom-input-group/custom-input-group.component';
-import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
@@ -117,11 +117,6 @@ export class PagePlaygroundComponent {
     return acc;
   }, {} as any);
 
-  customComponents = {
-    customComponentControl: CustomInputComponent,
-    customComponentGroup: CustomInputGroupComponent,
-  };
-
   currentUi =
     this._playgroundSettingsService.formUi ||
     Object.keys(this.customUiComponents)[0];
@@ -145,7 +140,7 @@ export class PagePlaygroundComponent {
     map((x) => Object.values(x))
   );
 
-  editorData$ = this._editorDataService.configEditorData$;
+  editorData$ = this._editorDataService.configEditorData$.pipe(share());
 
   configs$ = combineLatest([
     this._templateDataService.currentTemplateKey$,
@@ -187,8 +182,8 @@ export class PagePlaygroundComponent {
     this.mobileTabSelected = i;
   }
 
-  onConfigEditing(e: Content): void {
-    this._editorDataService.saveModifiedData(e);
+  onConfigEditing(e: FormControlConfig[]): void {
+    this._editorDataService.configModifiedData = e;
   }
 
   onFormGet(e: UntypedFormGroup): void {

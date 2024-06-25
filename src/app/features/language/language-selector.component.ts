@@ -10,9 +10,13 @@ import { LanguageDataService } from './language-data.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <select (change)="onLanguageSelect($event)" [value]="language$.value">
+    <select
+      class="doc-form-element !px-4"
+      (change)="onLanguageSelect($event)"
+      [value]="language$.value"
+    >
       <option value="en">English</option>
-      <option value="zh-TW">繁體中文</option>
+      <option value="zh-TW">中文</option>
     </select>
   `,
   styles: [],

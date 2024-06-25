@@ -45,7 +45,7 @@
           [
             'relative -z-10 pointer-events-auto',
             'h-full w-[calc(100vw-var(--panel-width)-2em)]',
-            'max-w-[calc(85rem-var(--panel-width))]',
+            'max-w-[calc(95rem-var(--panel-width))]',
             'max-h-[calc(100%-2rem)]',
             'rounded-r-lg shadow-lg overflow-hidden',
             'duration-300 transition-transform ease-[cubic-bezier(.11,.99,.57,1)]',
@@ -206,7 +206,11 @@
 </ng-container>
 
 <ng-template #formUiSelectTemplate let-isMobile="isMobile">
-  <select [ngModel]="currentUi" (ngModelChange)="onFormUiChange($event)">
+  <select
+    class="doc-form-element text-lg font-bold"
+    [ngModel]="currentUi"
+    (ngModelChange)="onFormUiChange($event)"
+  >
     <ng-container *ngFor="let item of uiComponents">
       <option [ngValue]="item.key">{{ item.key }}</option>
     </ng-container>
@@ -223,6 +227,7 @@
 
     <button
       [ngClass]="[
+        'bg-[var(--body-bg-color)]',
         'px-3 py-2',
         'rounded-md border border-1 border-[var(--border-color-50)]',
         'text-sm hover:shadow'
@@ -240,7 +245,6 @@
       <app-playground-form
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [customComponents]="customComponents"
         [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [optionsSources]="optionsSources"
@@ -251,7 +255,6 @@
       <app-playground-form-primeng
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [customComponents]="customComponents"
         [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [optionsSources]="optionsSources"
@@ -262,7 +265,6 @@
       <app-playground-form-material
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [customComponents]="customComponents"
         [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [optionsSources]="optionsSources"
@@ -272,5 +274,8 @@
 </ng-template>
 
 <ng-template #formInfoTemplate>
-  <app-playground-form-info [control]="formControl"></app-playground-form-info>
+  <app-playground-form-info
+    class="block h-full bg-[var(--body-bg-color)]"
+    [control]="formControl"
+  ></app-playground-form-info>
 </ng-template>

@@ -43,7 +43,7 @@ export const appConfig: ApplicationConfig = {
 
 ## Custom UI component
 
-The process for building the component is exactly the same with [**Custom Components**](../v8/custom-components/custom-components_en.md).
+The process for building the component is exactly the same with [Custom Components](../v8/custom-components/custom-components_en.md).
 
 The `uiComponents` can be extended, or overwritten. For example, we can extend it by adding `InputFileComponent` to the `uiComponents`. When `type` is set to `file`, the component will be used.
 

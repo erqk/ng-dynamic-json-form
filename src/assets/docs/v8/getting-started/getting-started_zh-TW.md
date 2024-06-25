@@ -61,7 +61,7 @@ import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
 
 </doc-code>
 
-將 `configs` 傳給 `ng-dynamic-json-form` 元件，就能生成一個簡單的表單。參閱 [Configs](../../v8/configs/configs_en.md) for more.
+將 `configs` 傳給 `ng-dynamic-json-form` 元件，就能生成一個簡單的表單。請參閱 [Configs](../../v8/configs/configs_zh-TW.md)。
 
 <doc-tab>
 <doc-code name="HTML">

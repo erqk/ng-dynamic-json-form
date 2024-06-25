@@ -10,16 +10,10 @@
   --primary-100: #221e38;
   --primary-50: #0c0b14;
 
-  --body-bg-color-rgb: 20, 20, 20;
+  --body-bg-color-rgb: 35, 35, 35;
   --bg-color-rgb: 40, 40, 40;
-  --text-color-rgb: 175, 175, 175;
+  --text-color-rgb: 150, 150, 150;
   --code-bg-color: rgb(36, 36, 36);
 }
 
-@mixin html {
-  code {
-    &:not([class*="lang"]) {
-      color: var(--primary-700);
-    }
-  }
-}
+@mixin html {}

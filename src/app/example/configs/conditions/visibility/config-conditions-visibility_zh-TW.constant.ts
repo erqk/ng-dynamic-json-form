@@ -1,6 +1,8 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
 
-export const CONFIG_CONDITIONS_VISIBILITY_ZHTW: FormControlConfig[] = [
+export const CONFIG_CONDITIONS_VISIBILITY_ZHTW = (
+  parentControlPath: string
+): FormControlConfig[] => [
   {
     formControlName: 'checkbox',
     type: 'checkbox',
@@ -13,7 +15,13 @@ export const CONFIG_CONDITIONS_VISIBILITY_ZHTW: FormControlConfig[] = [
     formControlName: 'text',
     conditions: {
       'control.hidden': {
-        '&&': [['checkbox', '===', false]],
+        '&&': [
+          [
+            !parentControlPath ? 'checkbox' : `${parentControlPath}.checkbox`,
+            '===',
+            false,
+          ],
+        ],
       },
     },
   },

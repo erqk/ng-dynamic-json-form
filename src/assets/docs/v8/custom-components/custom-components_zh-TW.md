@@ -86,7 +86,7 @@ onFileSelect(e: Event): void {
 >
 > </doc-code>
 >
-> 若要加入其他自訂的屬性資料，則需利用 `data.props`。請參閱 [Props](../../v8/props/props_en.md)。
+> 若要加入其他自訂的屬性資料，則需利用 `data.props`。請參閱 [Props](../../v8/props/props_zh-TW.md)。
 >
 > <doc-code enable-copy="false">
 >

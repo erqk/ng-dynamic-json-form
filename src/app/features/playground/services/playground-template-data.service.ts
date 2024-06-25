@@ -19,8 +19,7 @@ import { PlaygroundConfigItem } from '../interfaces/playground-config-item.inter
 export class PlaygroundTemplateDataService {
   private _langService = inject(LanguageDataService);
   private _templateList = PLAYGROUND_CONFIGS;
-
-  browserStorageUpdated$ = new Subject<void>();
+  private _browserStorageUpdated$ = new Subject<void>();
 
   currentTemplateKey$ = new BehaviorSubject<string>(
     Object.keys(this._templateList)[0]
@@ -28,7 +27,7 @@ export class PlaygroundTemplateDataService {
 
   exampleList$ = combineLatest([
     this._langService.language$,
-    this.browserStorageUpdated$.pipe(startWith(null)),
+    this._browserStorageUpdated$.pipe(startWith(null)),
   ]).pipe(
     debounceTime(0),
     map(([lang]) =>
@@ -47,7 +46,7 @@ export class PlaygroundTemplateDataService {
     )
   );
 
-  userTemplateList$ = this.browserStorageUpdated$.pipe(
+  userTemplateList$ = this._browserStorageUpdated$.pipe(
     startWith(null),
     map(() => {
       if (!this._userTemplateSaved) {
@@ -82,6 +81,7 @@ export class PlaygroundTemplateDataService {
 
     const noData =
       !data || (Array.isArray(data) ? !data.length : !data.configs?.length);
+
     if (noData) return;
 
     const lang = this._langService.language$.value;
@@ -101,7 +101,7 @@ export class PlaygroundTemplateDataService {
       JSON.stringify(newData)
     );
 
-    this.browserStorageUpdated$.next();
+    this._browserStorageUpdated$.next();
   }
 
   getUserTemplate(key: string): FormControlConfig[] | null {
@@ -135,7 +135,7 @@ export class PlaygroundTemplateDataService {
       JSON.stringify(newData)
     );
 
-    this.browserStorageUpdated$.next();
+    this._browserStorageUpdated$.next();
   }
 
   get allTemplateKeys(): string[] {
@@ -194,7 +194,7 @@ export class PlaygroundTemplateDataService {
     [key: string]: FormControlConfig[];
   } | null {
     if (typeof window === 'undefined') return null;
-    
+
     const savedData = window.localStorage.getItem(this._userSavedTemplateKey);
 
     if (!savedData) {

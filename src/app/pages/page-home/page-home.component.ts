@@ -42,4 +42,5 @@ export class PageHomeComponent {
 
   i18nContent$ = this._languageDataService.i18nContent$;
   headerHeight$ = this._layoutService.headerHeight$;
+  lang$ = this._languageDataService.language$;
 }

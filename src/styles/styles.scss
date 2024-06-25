@@ -1,3 +1,4 @@
+@use "./layer-order";
 @use "./tailwind";
 @use "primeng/resources/primeng.min.css";
 @use "./dark-theme" as dark;
@@ -64,7 +65,11 @@ body {
 
 doc-code,
 doc-tab {
-  @apply block my-4 border border-[var(--border-color-25)] rounded-lg overflow-hidden;
+  @apply my-4 border border-[var(--border-color-25)] rounded-lg overflow-hidden;
+
+  &:not(.hidden) {
+    @apply block;
+  }
 }
 
 doc-code {

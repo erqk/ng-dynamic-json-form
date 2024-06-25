@@ -34,7 +34,7 @@ export interface FormControlConfig {
 
 #### conditions
 
-請參閱 [Conditions](../../v8/conditions/conditions_en.md).
+請參閱 [條件](../../v8/conditions/conditions_zh-TW.md).
 
 #### children
 
@@ -58,15 +58,15 @@ export interface FormControlConfig {
 
 #### layout
 
-請參閱 [Layout](../../v8/layout/layout_en.md).
+請參閱 [佈局](../../v8/layout/layout_zh-TW.md).
 
 #### inputMask
 
-請參閱 [Input Mask](../../v8/input-mask/input-mask_en.md).
+請參閱 [輸入遮罩](../../v8/input-mask/input-mask_zh-TW.md).
 
 #### options
 
-請參閱 [Options](../../v8/options/options_en.md).
+請參閱 [選項](../../v8/options/options_zh-TW.md).
 
 #### readonly
 
@@ -74,7 +74,7 @@ export interface FormControlConfig {
 
 #### type
 
-請參閱 [Input Types](../../v8/input-types/input-types_en.md).
+請參閱 [輸入類型](../../v8/input-types/input-types_zh-TW.md).
 
 #### value
 
@@ -82,4 +82,4 @@ export interface FormControlConfig {
 
 #### validators
 
-請參閱 [Validators](../../v8/validators/validators_en.md).
+請參閱 [驗證器](../../v8/validators/validators_zh-TW.md).

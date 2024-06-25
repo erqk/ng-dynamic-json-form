@@ -6,7 +6,6 @@
   h1,
   h2,
   h3 {
-    // color: var(--primary-600);
     margin-top: 3rem;
 
     + :is(h1, h2, h3, h4, h5, h6) {
@@ -132,14 +131,6 @@
     margin: 1rem 0;
   }
 
-  .multi-column {
-    --column-count: 1;
-
-    display: grid;
-    grid-template-columns: repeat(var(--column-count), 1fr);
-    gap: 1rem;
-  }
-
   .code-wrapper {
     position: relative;
     z-index: 0;
@@ -163,9 +154,25 @@
 }
 
 @media screen and (max-width: 992px) {
-  markdown {
-    .multi-column {
-      grid-template-columns: 1fr;
+  .markdown {
+    h1,
+    h2,
+    h3 {
+      margin-top: 1.25rem;
+
+      + :is(h1, h2, h3, h4, h5, h6) {
+        margin-top: 0.5rem;
+      }
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin-top: 0.75rem;
+
+      + :is(h1, h2, h3, h4, h5, h6) {
+        margin-top: 0.5rem;
+      }
     }
   }
 }

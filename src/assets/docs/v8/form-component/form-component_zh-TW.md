@@ -24,15 +24,15 @@
 
 ### configs
 
-請參閱 [Configs](../../v8/configs/configs_en.md)。
+請參閱 [設定](../../v8/configs/configs_zh-TW.md)。
 
 ### customComponents
 
-請參閱 [Custom Components](../../v8/custom-components/custom-components_en.md)。
+請參閱 [自訂元件](../../v8/custom-components/custom-components_zh-TW.md)。
 
 ### conditionsActionFuntions
 
-請參閱 [Execute custom function](../../v8/conditions/conditions_en.md#execute-custom-function)。
+請參閱 [執行自訂動作](../../v8/conditions/conditions_zh-TW.md#執行自訂動作)。
 
 ### hideErrorMessage
 
@@ -80,7 +80,7 @@ submit(): void {
 
 ### optionsSources
 
-動態選項的自訂來源 Observable。請參閱 [Use custom observable](../../v8/options/options_en.md#use-custom-observable).
+動態選項的自訂來源 Observable。請參閱 [Use custom observable](../../v8/options/options_zh-TW.md#use-custom-observable).
 
 ### error...
 
@@ -89,7 +89,7 @@ submit(): void {
 - `errorTemplates`
 - `errorTemplateDefault`
 
-請參閱 [Custom Error](../../v8/custom-error/custom-error_en.md).
+請參閱 [自訂錯誤](../../v8/custom-error/custom-error_zh-TW.md).
 
 ### label...
 
@@ -98,14 +98,14 @@ submit(): void {
 - `labelTemplates`
 - `labelTemplateDefault`
 
-請參閱 [Custom Label](../../v8/custom-label/custom-label_en.md).
+請參閱 [自訂標題](../../v8/custom-label/custom-label_zh-TW.md).
 
 ### loading...
 
 - `loadingComponent`
 - `loadingTemplate`
 
-請參閱 [Custom Loading](../../v8/custom-loading/custom-loading_en.md).
+請參閱 [自訂 Loading](../../v8/custom-loading/custom-loading_zh-TW.md).
 
 ## @Output
 
