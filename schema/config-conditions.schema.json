@@ -30,27 +30,20 @@
         {}
       ]
     },
+    "conditionGroupItem": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "$ref": "#/definitions/conditionIfConfig" },
+          { "$ref": "#/definitions/conditionGroupConfig" }
+        ]
+      }
+    },
     "conditionGroupConfig": {
       "type": "object",
       "properties": {
-        "&&": {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              { "$ref": "#/definitions/conditionIfConfig" },
-              { "$ref": "#/definitions/conditionGroupConfig" }
-            ]
-          }
-        },
-        "||": {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              { "$ref": "#/definitions/conditionIfConfig" },
-              { "$ref": "#/definitions/conditionGroupConfig" }
-            ]
-          }
-        }
+        "&&": { "$ref": "#/definitions/conditionGroupItem" },
+        "||": { "$ref": "#/definitions/conditionGroupItem" }
       },
       "additionalProperties": false
     },

@@ -62,7 +62,7 @@
           "properties": {
             "by": { "type": "string" },
             "conditions": {
-              "$ref": "ConfigConditionsSchema"
+              "$ref": "ConfigConditionsSchema#/definitions/conditionGroupConfig"
             },
             "debounceTime": { "type": "number" }
           }
