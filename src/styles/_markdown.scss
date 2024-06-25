@@ -69,7 +69,7 @@
   }
 
   code {
-    @apply text-sm;
+    font-size: 0.925rem;
 
     &:not([class*="lang"]) {
       display: inline-block;
