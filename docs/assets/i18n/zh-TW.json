@@ -1,0 +1,28 @@
+{
+  "FEATURES": {
+    "CONDITIONS": "根據其他控制器的值切換當前控制器的狀態（隱藏或禁用）和驗證器",
+    "CUSTOM_COMPONENTS": "支援自訂元件",
+    "LAYOUT": "靈活的表單樣式和佈局",
+    "NESTED_LEVELS": "建立不限巢狀級數的表單",
+    "VALIDATORS": "支援 Angular 內建驗證器、自訂驗證器",
+    "UI_LIBRARY": "支援第三方 UI 套件"
+  },
+  "GET_STARTED": "開始",
+  "INTRODUCTION": {
+    "BRIEF": "使用 JSON 動態生成 Angular 表單"
+  },
+  "MENU": {
+    "DOCS": "文件",
+    "PLAYGROUND": "玩沙場"
+  },
+  "PLAYGROUND": {
+    "TABS": {
+      "CONFIGS": "設定",
+      "FORM": "表單",
+      "VALUE": "值 / 錯誤"
+    },
+    "TEMPLATE": {
+      "NEW": "新增"
+    }
+  }
+}
