@@ -1,4 +1,5 @@
 /
+/docs
 /playground
 /docs/getting-started/getting-started_en.md
 /docs/configs/configs_en.md

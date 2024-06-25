@@ -5,7 +5,7 @@ const hostOrigin = "http://localhost:4201";
 const docsPath = `${hostOrigin}/assets/docs`;
 const routesFile = "./routes.txt";
 const endOfLine = require("os").EOL;
-const staticRoutes = ["/", "/playground"];
+const staticRoutes = ["/", "/docs", "/playground"];
 
 fetch(`${docsPath}/index.md`).then(async (res) => {
   if (!res.ok) return;
