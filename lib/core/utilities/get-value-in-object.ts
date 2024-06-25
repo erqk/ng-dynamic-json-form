@@ -48,6 +48,10 @@ export function getValueInObject(obj: any, path: string | undefined): any {
       .split('.')
       .map((x) => x.trim())
       .reduce((acc, key) => {
+        if (acc === null || acc === undefined) {
+          return acc;
+        }
+
         const value = acc[key];
         const getKeyByIndex =
           key.startsWith('[') &&
