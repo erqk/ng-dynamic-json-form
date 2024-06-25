@@ -1,3 +1,23 @@
+# 8.0.0-rc.4 (2022-06-25)
+
+[9f70fc2]: https://github.com/erqk/ng-dynamic-json-form/commit/9f70fc24724d580d6ded8788ab6a74a87ec92b62
+[49f1db9]: https://github.com/erqk/ng-dynamic-json-form/commit/49f1db965d4124278037b906af9fd12485e077a7
+[746191f]: https://github.com/erqk/ng-dynamic-json-form/commit/746191f1b36d072406911f5bea047f83923f00a8
+[9afcfac]: https://github.com/erqk/ng-dynamic-json-form/commit/9afcfac42ed4f165b7ae839c14a540c52277e63e
+[ecf2fb1]: https://github.com/erqk/ng-dynamic-json-form/commit/ecf2fb19b685b52df0fdaa067a53e9ec64a22087
+[eac464b]: https://github.com/erqk/ng-dynamic-json-form/commit/eac464b17d9dfe18e68a14f2086987d25ab7d8ed
+[3cb5e81]: https://github.com/erqk/ng-dynamic-json-form/commit/3cb5e819bbe3a81dd6bc7e27d2231d32172aac83
+
+| Commit    | Type  | Description                                                         |
+| --------- | ----- | ------------------------------------------------------------------- |
+| [9f70fc2] | fix   | Primeng checkbox is not checked when clicking on it.                |
+| [49f1db9] | fix   | Value should remained the same when it's null or undefined.         |
+| [eac464b] | fix   | `options.src.filter.conditions` JSON schema incorrect.              |
+| [3cb5e81] | fix   | Ignore if value is null or undefined.                               |
+| [9afcfac] | chore | Show error when `configs` is not provided, not when array is empty. |
+| [ecf2fb1] | chore | Remove `skipValueChanges` variable in FormConditionsService.        |
+| [746191f] | style | Form generation error styling.                                      |
+
 # 8.0.0-rc.1 (2024-06-21)
 
 [055e066]: https://github.com/erqk/ng-dynamic-json-form/commit/055e066384c32606690082aa7171340e486a1ab9
