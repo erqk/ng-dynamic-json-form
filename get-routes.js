@@ -6,7 +6,7 @@ const docsPath = `${hostOrigin}/assets/docs`;
 const routesFile = "./routes.txt";
 const endOfLine = require("os").EOL;
 const BASE_HREF = "/ng-dynamic-json-form/";
-const staticRoutes = [BASE_HREF, `${BASE_HREF}playground`];
+const staticRoutes = ["/", `${BASE_HREF}playground`];
 
 fetch(`${docsPath}/index.md`).then(async (res) => {
   if (!res.ok) return;
