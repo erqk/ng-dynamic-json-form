@@ -42,7 +42,6 @@
           "options": {
             "outputPath": "dist/docs/browser",
             "index": "src/index.html",
-            "baseHref": "/ng-dynamic-json-form/",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
@@ -70,7 +69,8 @@
                   "maximumError": "512kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/ng-dynamic-json-form/"
             },
             "development": {
               "buildOptimizer": false,
