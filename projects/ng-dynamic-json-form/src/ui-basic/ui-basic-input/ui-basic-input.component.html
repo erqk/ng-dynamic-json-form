@@ -1,9 +1,0 @@
-<ng-container *ngIf="data">
-  <input
-    [ngClass]="{ disabled: control.disabled }"
-    [attr.type]="data.type ?? 'text'"
-    [attr.placeholder]="data.placeholder ?? null"
-    [propsBinding]="[data.extra]"
-    [formControl]="control"
-  />
-</ng-container>

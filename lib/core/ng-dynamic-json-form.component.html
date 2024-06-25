@@ -1,0 +1,26 @@
+<ng-container *ngIf="!configs">
+  <div class="no-configs-error">
+    <span>No configs found.</span>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!!configValidationErrors?.length">
+  <div class="config-validation-error">
+    <p>Config error</p>
+    <br />
+    <ng-container *ngFor="let item of configValidationErrors">
+      <p style="color: var(--color-error)">{{ item.errors }}</p>
+      <ng-container *ngIf="item.config">
+        <code>{{ item.config | json }}</code>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="form">
+  <form-group
+    [parentForm]="form"
+    [configs]="configGet"
+    [collapsibleState]="collapsibleState"
+  ></form-group>
+</ng-container>

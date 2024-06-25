@@ -1,0 +1,20 @@
+<ng-container *ngIf="data">
+  <mat-form-field class="example-full-width">
+    <mat-label>{{ data.label }}</mat-label>
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      [formControl]="control"
+      [propsBinding]="[
+        {
+          key: 'mat-input',
+          props: data.props
+        },
+        {
+          key: 'cdk-textarea-autosize',
+          props: data.props
+        }
+      ]"
+    ></textarea>
+  </mat-form-field>
+</ng-container>

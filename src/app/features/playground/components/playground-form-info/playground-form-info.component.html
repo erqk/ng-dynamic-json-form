@@ -2,22 +2,22 @@
   <div class="flex flex-col h-full">
     <div
       [ngClass]="[
-        'p-4 pb-2 h-full whitespace-pre',
+        'h-full whitespace-pre',
         'overflow-hidden beauty-scrollbar affect-child'
       ]"
     >
       <div
-        class="h-full flex flex-col"
+        class="h-full flex flex-col p-4 rounded-md"
+        style="background-color: rgba(128, 128, 128, 0.05)"
         [ngClass]="{
           hidden: selectedTab !== 0
         }"
       >
-        <markdown
-          class="flex-1 block overflow-hidden"
-          [data]="control.value | json | language : 'javascript'"
-        ></markdown>
+        <div class="flex-1 block text-sm overflow-auto">
+          {{ control.value | json }}
+        </div>
 
-        <div class="flex justify-evenly gap-4 mb-2">
+        <div class="flex justify-evenly gap-4 font-bold">
           <span
             [ngClass]="{
               'opacity-30': !control.dirty
@@ -41,13 +41,15 @@
         </div>
       </div>
 
-      <markdown
-        class="block h-full overflow-hidden"
+      <div
+        class="block h-full overflow-auto text-sm p-4 rounded-md"
+        style="background-color: rgba(128, 128, 128, 0.05)"
         [ngClass]="{
           hidden: selectedTab !== 1
         }"
-        [data]="control.errors | json | language : 'javascript'"
-      ></markdown>
+      >
+        {{ control.errors | json }}
+      </div>
 
       <div
         class="flex flex-col gap-2 h-full"
@@ -64,7 +66,7 @@
           (onEditing)="onEditing($event)"
         ></app-playground-editor>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 md:p-0 px-3">
           <ng-container *ngFor="let item of editToolbar">
             <button
               type="button"
@@ -78,29 +80,23 @@
       </div>
     </div>
 
-    <div [ngClass]="['grid grid-cols-3 gap-1 mt-auto m-4']">
+    <div [ngClass]="['grid grid-cols-3 gap-1 mt-auto', 'pt-2 md:px-0 px-3']">
       <ng-container *ngFor="let item of tabs; index as i">
         <button
           type="button"
           [ngClass]="[
             'flex items-center justify-center gap-1',
             'p-2 rounded-md',
-            'hover:bg-[color-mix(in_srgb,var(--primary-50)90%,var(--primary-700))]',
+            'hover:bg-[color-mix(in_srgb,var(--primary-50)85%,var(--primary-500))]',
             'text-sm lg:text-base',
             selectedTab === i
-              ? 'text-[var(--primary-500)] font-bold bg-[color-mix(in_srgb,var(--primary-50)90%,var(--primary-700))]'
+              ? 'text-[var(--primary-500)] font-bold'
               : 'text-inherit'
           ]"
           (click)="switchTab(i)"
         >
           <ng-container *ngIf="item.icon">
-            <i
-              class="text-lg"
-              [ngClass]="[
-                item.icon,
-                !control.errors ? 'text-inherit' : 'text-red-500'
-              ]"
-            ></i>
+            <i class="text-lg" [ngClass]="[item.icon]"></i>
           </ng-container>
 
           <ng-container *ngIf="!item.icon">

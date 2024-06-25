@@ -9,7 +9,7 @@ import {
   startWith,
 } from 'rxjs';
 import { LanguageType } from '../../language/language.type';
-import { LanguageDataService } from '../../language/services/language-data.service';
+import { LanguageDataService } from '../../language/language-data.service';
 import { PLAYGROUND_CONFIGS } from '../constants/playground-configs.constant';
 import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
 
@@ -19,8 +19,7 @@ import { PlaygroundConfigItem } from '../interfaces/playground-config-item.inter
 export class PlaygroundTemplateDataService {
   private _langService = inject(LanguageDataService);
   private _templateList = PLAYGROUND_CONFIGS;
-
-  browserStorageUpdated$ = new Subject<void>();
+  private _browserStorageUpdated$ = new Subject<void>();
 
   currentTemplateKey$ = new BehaviorSubject<string>(
     Object.keys(this._templateList)[0]
@@ -28,7 +27,7 @@ export class PlaygroundTemplateDataService {
 
   exampleList$ = combineLatest([
     this._langService.language$,
-    this.browserStorageUpdated$.pipe(startWith(null)),
+    this._browserStorageUpdated$.pipe(startWith(null)),
   ]).pipe(
     debounceTime(0),
     map(([lang]) =>
@@ -47,7 +46,7 @@ export class PlaygroundTemplateDataService {
     )
   );
 
-  userTemplateList$ = this.browserStorageUpdated$.pipe(
+  userTemplateList$ = this._browserStorageUpdated$.pipe(
     startWith(null),
     map(() => {
       if (!this._userTemplateSaved) {
@@ -78,8 +77,11 @@ export class PlaygroundTemplateDataService {
     key: string,
     data: FormControlConfig[] | { configs?: FormControlConfig[] }
   ) {
+    if (typeof window === 'undefined') return;
+
     const noData =
       !data || (Array.isArray(data) ? !data.length : !data.configs?.length);
+
     if (noData) return;
 
     const lang = this._langService.language$.value;
@@ -99,7 +101,7 @@ export class PlaygroundTemplateDataService {
       JSON.stringify(newData)
     );
 
-    this.browserStorageUpdated$.next();
+    this._browserStorageUpdated$.next();
   }
 
   getUserTemplate(key: string): FormControlConfig[] | null {
@@ -113,6 +115,8 @@ export class PlaygroundTemplateDataService {
     key: string,
     data: FormControlConfig[] | { configs?: FormControlConfig[] } | null
   ) {
+    if (typeof window === 'undefined') return;
+
     const savedData = this._userTemplateSaved;
     const clearData = savedData && data === null;
     const newData = !savedData
@@ -131,7 +135,7 @@ export class PlaygroundTemplateDataService {
       JSON.stringify(newData)
     );
 
-    this.browserStorageUpdated$.next();
+    this._browserStorageUpdated$.next();
   }
 
   get allTemplateKeys(): string[] {
@@ -169,6 +173,8 @@ export class PlaygroundTemplateDataService {
       [k in LanguageType]: FormControlConfig[];
     };
   } | null {
+    if (typeof window === 'undefined') return null;
+
     const savedData = window.sessionStorage.getItem(
       this._exampleSavedTemplateKey
     );
@@ -187,6 +193,8 @@ export class PlaygroundTemplateDataService {
   private get _userTemplateSaved(): {
     [key: string]: FormControlConfig[];
   } | null {
+    if (typeof window === 'undefined') return null;
+
     const savedData = window.localStorage.getItem(this._userSavedTemplateKey);
 
     if (!savedData) {

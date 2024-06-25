@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ErrorMessageComponent } from 'ng-dynamic-json-form';
+import { AbstractControl, FormControl } from '@angular/forms';
+import { CustomErrorMessage } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'app-custom-error-message',
@@ -8,4 +9,7 @@ import { ErrorMessageComponent } from 'ng-dynamic-json-form';
   imports: [CommonModule],
   templateUrl: './custom-error-message.component.html',
 })
-export class CustomErrorMessageComponent extends ErrorMessageComponent {}
+export class CustomErrorMessageComponent implements CustomErrorMessage {
+  control: AbstractControl<any, any> = new FormControl();
+  errorMessages: string[] = [];
+}

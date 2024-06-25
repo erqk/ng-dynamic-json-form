@@ -1,0 +1,12 @@
+<ng-container *ngIf="data">
+  <mat-slider
+    [propsBinding]="[
+      {
+        key: 'mat-slider',
+        props: data.props
+      }
+    ]"
+  >
+    <input matSliderThumb [formControl]="control" />
+  </mat-slider>
+</ng-container>

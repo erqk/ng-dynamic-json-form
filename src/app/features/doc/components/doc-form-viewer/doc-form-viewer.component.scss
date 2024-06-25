@@ -1,0 +1,23 @@
+:host {
+  @apply block my-4;
+}
+
+:host-context(doc-tab) {
+  @apply my-0;
+
+  .content {
+    @apply duration-0;
+  }
+}
+
+.content {
+  @apply duration-300;
+}
+
+.toolbar {
+  button {
+    @apply inline-flex justify-center items-center w-10 h-10;
+    @apply border border-[var(--border-color-25)];
+    @apply backdrop-blur-sm rounded-full;
+  }
+}

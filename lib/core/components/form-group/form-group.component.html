@@ -1,0 +1,52 @@
+<ng-container [formGroup]="parentForm">
+  <ng-container *ngFor="let item of configs">
+    <ng-container *ngIf="!item.hidden">
+      <content-wrapper
+        style="display: block"
+        [config]="item"
+        [control]="parentForm.controls[item.formControlName]"
+        [collapsibleState]="collapsibleState"
+        [hostId]="{
+          parentId,
+          controlName: item.formControlName,
+        }"
+        [ngClass]="{
+          'form-control-container': (item | controlTypeByConfig) === 'FormControl',
+          readonly: item.readonly,
+        }"
+        [controlLayout]="{
+          type: 'host',
+          layout: item.layout
+        }"
+      >
+        <!-- FormControl -->
+        <ng-container *ngIf="(item | controlTypeByConfig) === 'FormControl'">
+          <form-control
+            [data]="item"
+            [control]="parentForm.controls[item.formControlName]"
+            [formControlName]="item.formControlName"
+            [customComponent]="customComponents?.[item.formControlName]"
+            [controlLayout]="{
+              type: 'inputArea',
+              layout: item.layout
+            }"
+          ></form-control>
+        </ng-container>
+
+        <!-- FormGroup -->
+        <ng-container *ngIf="(item | controlTypeByConfig) === 'FormGroup'">
+          <form-group
+            [parentId]="(parentId ? parentId + '.' : '') + item.formControlName"
+            [parentForm]="$any(parentForm.controls[item.formControlName])"
+            [configs]="item.children"
+            [collapsibleState]="collapsibleState"
+            [controlLayout]="{
+              type: 'formGroup',
+              layout: item.layout
+            }"
+          ></form-group>
+        </ng-container>
+      </content-wrapper>
+    </ng-container>
+  </ng-container>
+</ng-container>

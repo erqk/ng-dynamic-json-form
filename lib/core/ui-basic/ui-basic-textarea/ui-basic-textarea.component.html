@@ -1,0 +1,13 @@
+<ng-container *ngIf="data">
+  <textarea
+    textareaAutoHeight
+    [ngClass]="{ disabled: control.disabled }"
+    [propsBinding]="[
+      {
+        key: 'textarea-autoheight',
+        props: data.props
+      }
+    ]"
+    [formControl]="control"
+  ></textarea>
+</ng-container>

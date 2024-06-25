@@ -1,6 +1,9 @@
 <div class="flex gap-4 items-center">
-  <a [routerLink]="'/'" class="shrink-0 w-6 h-6">
+  <a [routerLink]="'/'" class="flex gap-2 shrink-0 h-6">
     <img src="assets/logo.svg" alt="" />
+    <span class="font-light capitalize tracking-wider">{{
+      currentVersion
+    }}</span>
   </a>
 
   <header-tab-bar [links]="links"></header-tab-bar>
@@ -26,7 +29,7 @@
     <div
       [ngClass]="[
         'relative z-0',
-        'grid grid-cols-[1fr,auto] items-center gap-2',
+        'grid grid-cols-[1fr,auto] items-center gap-3',
         'p-1 py-4 pb-2',
         'duration-300 delay-100',
         openSettings ? 'opacity-100' : 'opacity-0'

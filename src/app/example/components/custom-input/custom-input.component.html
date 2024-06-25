@@ -1,9 +1,0 @@
-<app-source-code-viewer [source]="source">
-  <ng-container *ngIf="control">
-    <input type="text" class="border" [formControl]="control" />
-
-    <ng-container *ngIf="control.errors">
-      <div>{{ control.errors | json }}</div>
-    </ng-container>
-  </ng-container>
-</app-source-code-viewer>

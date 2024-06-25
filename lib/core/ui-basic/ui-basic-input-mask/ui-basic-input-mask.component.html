@@ -1,0 +1,14 @@
+<ng-container *ngIf="data">
+  <input
+    type="text"
+    [ngClass]="{ disabled: control.disabled }"
+    [imask]="data.inputMask"
+    [propsBinding]="[
+      {
+        props: data.props,
+        omit: ['type']
+      }
+    ]"
+    [formControl]="control"
+  />
+</ng-container>

@@ -1,0 +1,12 @@
+.content {
+  .btn-copy {
+    opacity: 0;
+    transition: 0.25s;
+  }
+
+  &:hover {
+    .btn-copy {
+      opacity: 1;
+    }
+  }
+}

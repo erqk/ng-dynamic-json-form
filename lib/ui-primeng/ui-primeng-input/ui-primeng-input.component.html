@@ -1,0 +1,14 @@
+<ng-container *ngIf="control && data">
+  <input
+    pInputText
+    [type]="data.type ?? 'text'"
+    [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'p-input-text',
+        props: data.props,
+        omit: ['type']
+      }
+    ]"
+  />
+</ng-container>

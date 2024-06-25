@@ -1,0 +1,85 @@
+<ng-container *ngIf="data">
+  <div
+    class="group-buttons"
+    [style]="data.options?.containerStyles"
+    [ngClass]="[data.options?.containerClass ?? '']"
+    [ngStyle]="{
+      'flex-direction': data.options?.layout
+    }"
+  >
+    <!-- muli-select checkbox -->
+    <ng-container *ngFor="let item of data.options?.data">
+      <label
+        class="option-button"
+        [ngStyle]="{
+          'justify-content':
+            data.options?.labelPosition === 'before' ? 'space-between' : null
+        }"
+      >
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: item.label,
+              isBefore: true
+            }
+          "
+        ></ng-container>
+
+        <ng-container *ngIf="data.options && data.options.data">
+          <!-- binary checkbox -->
+          <ng-container *ngIf="data.options.data.length === 1">
+            <p-checkbox
+              #pCheckbox
+              [binary]="true"
+              [formControl]="control"
+              [propsBinding]="[
+                {
+                  key: 'p-checkbox',
+                  props: data.props,
+                  omit: ['binary']
+                }
+              ]"
+              (click)="$event.preventDefault()"
+            ></p-checkbox>
+          </ng-container>
+
+          <!-- multi-select checkbox -->
+          <ng-container *ngIf="data.options.data.length > 1">
+            <p-checkbox
+              [name]="'group'"
+              [value]="item.value"
+              [formControl]="control"
+              [propsBinding]="[
+                {
+                  key: 'p-checkbox',
+                  props: data.props,
+                  omit: ['binary']
+                }
+              ]"
+              (click)="$event.preventDefault()"
+            ></p-checkbox>
+          </ng-container>
+        </ng-container>
+
+        <ng-container
+          *ngTemplateOutlet="
+            labelTemplate;
+            context: {
+              label: item.label,
+              isBefore: false,
+            }
+          "
+        ></ng-container>
+      </label>
+    </ng-container>
+  </div>
+
+  <ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
+    <ng-container
+      *ngIf="(data.options?.labelPosition === 'before') === isBefore"
+    >
+      <span>{{ label }}</span>
+    </ng-container>
+  </ng-template>
+</ng-container>

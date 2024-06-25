@@ -45,50 +45,40 @@
   }
 }
 
-@mixin layoutSection($tagName, $color) {
+@mixin layoutSection($color) {
   position: relative;
   border: solid 1px $color;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  border-radius: 0.25rem;
+  padding: 0.35rem 0.85rem;
+  margin: 1rem 0;
+  background-color: color-mix(in srgb, $color 5%, var(--body-bg-color));
+  color: $color;
   z-index: 0;
-
-  &::before {
-    content: $tagName;
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    transform: translateY(-50%);
-    padding: 0 0.5rem;
-    border-radius: 1rem;
-    border: solid 1px $color;
-    color: $color;
-    background-color: var(--body-bg-color);
-    pointer-events: none;
-  }
 }
 
 .docs-control-layout {
-  @include layoutSection("host", rgb(194 65 12));
+  @include layoutSection(rgb(112, 57, 154));
 
-  .label,
-  .description {
-    padding: 0.25rem;
+  .description,
+  .input-area {
+    @include layoutSection(#2d2d2d);
   }
 
   .label {
-    color: #4d9471;
+    @include layoutSection(#4d9471);
   }
 
   .content {
-    @include layoutSection("content", rgb(24, 108, 244));
+    @include layoutSection(rgb(24, 108, 244));
   }
 
   input {
     border: solid 1px var(--border-color-50);
+    margin: 1rem 0;
   }
 
   .errors {
-    @apply text-sm text-red-500 mt-2;
+    @include layoutSection(rgb(255, 42, 0));
   }
 }
 
@@ -104,6 +94,27 @@
   .css-grid-example {
     .form-control {
       background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .docs-control-layout {
+    @include layoutSection(rgb(166, 111, 207));
+
+    .description,
+    .input-area {
+      @include layoutSection(#959595);
+    }
+
+    .label {
+      @include layoutSection(#29935e);
+    }
+
+    .content {
+      @include layoutSection(rgb(24, 108, 244));
+    }
+
+    .errors {
+      @include layoutSection(rgb(196, 33, 0));
     }
   }
 }

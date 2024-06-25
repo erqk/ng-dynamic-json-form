@@ -1,18 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Output,
-  inject,
-} from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, debounceTime, map, switchMap, tap } from 'rxjs';
-import { DocumentVersionService } from 'src/app/features/document/services/document-version.service';
-import { LanguageDataService } from 'src/app/features/language/services/language-data.service';
+import { combineLatest, debounceTime, map, tap } from 'rxjs';
+import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
-import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
+import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-playground-template-list',
@@ -24,7 +18,7 @@ import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.in
 export class PlaygroundTemplateListComponent {
   private _langService = inject(LanguageDataService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
-  private _docVersionService = inject(DocumentVersionService);
+  private _versionService = inject(VersionService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
   private _currentTemplate: PlaygroundConfigItem | null = null;
@@ -33,7 +27,7 @@ export class PlaygroundTemplateListComponent {
 
   nameControl = new FormControl('');
   isEditing = false;
-  currentVersion = this._docVersionService.latestVersion;
+  currentVersion = this._versionService.docVersion;
   showTemplateNameInput = false;
 
   list$ = combineLatest([
@@ -54,7 +48,8 @@ export class PlaygroundTemplateListComponent {
 
   select(key: string): void {
     if (key === this.currentTemplateKey$.value) return;
-    this._editorDataService.configModifiedData = [];
+    
+    this._editorDataService.configModifiedData = undefined;
     this.currentTemplateKey$.next(key);
     this.setEditStatus(false);
   }
@@ -64,11 +59,16 @@ export class PlaygroundTemplateListComponent {
 
     const editorData = this._editorDataService.configModifiedData;
 
-    isUserTemplate
-      ? this._templateDataService.setUserTemplate(key, editorData)
-      : this._templateDataService.setExampleTemplate(key, editorData);
+    if (editorData !== undefined) {
+      this._editorDataService.configModifiedData = undefined;
 
-    this.currentTemplateKey$.next(key);
+      isUserTemplate
+        ? this._templateDataService.setUserTemplate(key, editorData)
+        : this._templateDataService.setExampleTemplate(key, editorData);
+
+      this.currentTemplateKey$.next(key);
+    }
+
     this.setEditStatus(false);
   }
 
@@ -116,13 +116,15 @@ export class PlaygroundTemplateListComponent {
     this.isEditing = value;
     this.onEdit.emit(this.isEditing);
 
-    if (this.isEditing) {
-      this._editorDataService.configModifiedData =
-        this._currentTemplate?.config;
-    }
+    // if (this.isEditing) {
+    //   this._editorDataService.configModifiedData =
+    //     this._currentTemplate?.config;
+    // }
   }
 
   private _selectLastTemplate(): void {
+    if (typeof window === 'undefined') return;
+
     const templateKeys = this._templateDataService.allTemplateKeys;
 
     window.setTimeout(() => {

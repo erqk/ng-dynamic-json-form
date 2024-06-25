@@ -1,0 +1,78 @@
+<ng-container *ngIf="config && control">
+  <!-- Label -->
+  <ng-container *ngIf="config.label">
+    <form-label
+      [label]="config.label"
+      [layout]="config.layout"
+      [props]="config.props"
+      [collapsibleEl]="collapsibleEl"
+      [customComponent]="labelComponents?.[config.formControlName] ?? labelComponentDefault"
+      [customTemplate]="labelTemplates?.[config.formControlName] ?? labelTemplateDefault"
+      [state]="collapsibleState"
+      [controlLayout]="{
+        type: 'label',
+        layout: config.layout
+      }"
+      [ngClass]="{
+        required:
+          config.layout?.autoAddRequiredClass === false
+            ? null
+            : (control | isControlRequired)
+      }"
+    ></form-label>
+  </ng-container>
+
+  <div
+    #collapsibleEl
+    [controlLayout]="{
+      type: 'content',
+      layout: config.layout
+    }"
+  >
+    <!-- Description (before) -->
+    <ng-container
+      *ngIf="
+        config.description && config.layout?.descriptionPosition !== 'after'
+      "
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{ data: config }"
+    ></ng-container>
+
+    <ng-content></ng-content>
+
+    <!-- Description (after) -->
+    <ng-container
+      *ngIf="
+        config.description && config.layout?.descriptionPosition === 'after'
+      "
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{ data: config }"
+    ></ng-container>
+
+    <error-message
+      [control]="control"
+      [validators]="config.validators"
+      [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
+      [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
+      [controlLayout]="{
+        type: 'error',
+        layout: config.layout
+      }"
+      [ngClass]="{
+        hidden: !showErrors
+      }"
+    ></error-message>
+  </div>
+</ng-container>
+
+<!-- Description template -->
+<ng-template #descriptionTemplate let-data="data">
+  <span
+    class="form-description"
+    [controlLayout]="{
+      type: 'description',
+      layout: data.layout
+    }"
+    >{{ data.description }}</span
+  >
+</ng-template>

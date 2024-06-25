@@ -15,7 +15,7 @@ import {
 export class ThemeService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
 
-  themes = [
+  themes: { key: 'dark' | 'light'; class: string }[] = [
     {
       key: 'light',
       class: 'bi bi-brightness-high-fill',
@@ -29,10 +29,12 @@ export class ThemeService {
   theme$ = new BehaviorSubject<string>('auto');
 
   get savedTheme(): string {
+    if (typeof window === 'undefined') return '';
     return window.localStorage.getItem('theme') || '';
   }
 
   set savedTheme(value: string) {
+    if (typeof window === 'undefined') return;
     window.localStorage.setItem('theme', value);
   }
 
@@ -41,6 +43,10 @@ export class ThemeService {
   }
 
   prefersDark$(): Observable<boolean> {
+    if (typeof window === 'undefined') {
+      return of(false);
+    }
+
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const colorSchemeChange$ = fromEvent(prefersDark, 'change', {
       passive: true,
@@ -54,41 +60,36 @@ export class ThemeService {
     return event$;
   }
 
-  setPrimengTheme(): void {
-    this._setTheme(
-      'primeng-theme',
-      `assets/primeng-theme/lara-${this.currentTheme.key}-blue.css`
-    );
-  }
+  setTheme(id: string, path: string): void {
+    const existingStyle = document.head.querySelector(
+      `#${id}`
+    ) as HTMLLinkElement;
 
-  setMaterialTheme(): void {
-    const filename =
-      this.currentTheme.key === 'dark' ? 'pink-bluegrey' : 'deeppurple-amber';
+    const insertStylesheet = (_id: string): HTMLStyleElement => {
+      const style = this._renderer2.createElement('link');
 
-    this._setTheme('material-theme', `assets/material-theme/${filename}.css`);
-  }
+      this._renderer2.setProperty(style, 'id', _id);
+      this._renderer2.setProperty(style, 'rel', 'stylesheet');
+      this._renderer2.setProperty(style, 'href', path);
 
-  private _setTheme(stylesheetId: string, stylesheetPath: string): void {
-    const style =
-      (document.head.querySelector(`#${stylesheetId}`) as HTMLLinkElement) ||
-      this._renderer2.createElement('link');
-
-    this._renderer2.setProperty(style, 'id', stylesheetId);
-    this._renderer2.setProperty(style, 'rel', 'stylesheet');
-    this._renderer2.setProperty(style, 'href', stylesheetPath);
-
-    if (!document.head.contains(style)) {
       this._renderer2.insertBefore(
         document.head,
         style,
         document.head.childNodes[0]
       );
-    }
-  }
 
-  private get _baseHref(): string {
-    return window.location.origin.indexOf('localhost') > -1
-      ? ''
-      : 'ng-dynamic-json-form';
+      return style;
+    };
+
+    if (existingStyle) {
+      const nextStyle = insertStylesheet(`${id}-next`);
+
+      nextStyle.onload = () => {
+        existingStyle.remove();
+        this._renderer2.setAttribute(nextStyle, 'id', id);
+      };
+    } else {
+      insertStylesheet(id);
+    }
   }
 }

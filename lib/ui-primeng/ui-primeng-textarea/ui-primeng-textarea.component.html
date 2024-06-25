@@ -1,0 +1,12 @@
+<ng-container *ngIf="data">
+  <textarea
+    pInputTextarea
+    [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'p-input-textarea',
+        props: data.props
+      }
+    ]"
+  ></textarea>
+</ng-container>

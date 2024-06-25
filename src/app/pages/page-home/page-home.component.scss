@@ -1,66 +1,51 @@
-.page {
-  --grid-line-color: rgba(var(--text-color-rgb), 0.1);
-  --grid-line-weight: 1px;
-  --grid-size: 5rem;
-
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(
-      0deg,
-      transparent 50%,
-      var(--grid-line-color) 50%,
-      transparent calc(50% + var(--grid-line-weight))
-    ),
-    linear-gradient(
-      90deg,
-      transparent 50%,
-      var(--grid-line-color) 50%,
-      transparent calc(50% + var(--grid-line-weight))
-    );
-  background-repeat: repeat;
-  background-size: var(--grid-size) var(--grid-size);
-}
-
 .banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10rem 1.5rem 1.5rem;
+  padding: 35vh 1.5rem 1.5rem;
+  min-height: calc(100vh - var(--header-height) + 1rem);
 
   h1 {
-    font-size: 3.25rem;
+    background: linear-gradient(
+      160deg,
+      var(--body-bg-color) 0%,
+      var(--primary-400) 35%,
+      var(--primary-600) 90%
+    );
+    background-clip: text;
+    color: transparent;
+    padding: clamp(0.5rem, 2vw, 1rem);
+    font-size: clamp(1.85rem, 6vw, 3.5rem);
     margin-bottom: 0;
   }
 
   p {
     max-width: 32rem;
-    margin: auto;
-    margin-top: 1rem;
+    margin-top: 0.25rem;
     text-align: center;
-    color: gray;
-    font-size: 1.35rem;
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    font-size: 1.5rem;
+    opacity: 0.75;
   }
 
   .logo {
-    width: 10rem;
+    width: clamp(5rem, 10vw, 8rem);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
   }
 }
 
 .illustration {
   position: relative;
-  height: 32rem;
+  height: 30rem;
   width: 24rem;
-  margin: auto;
   transform: rotate(15deg) translate3d(0, 0, 0);
   z-index: 0;
+  pointer-events: none;
 
   > * {
     --index: 0;
@@ -99,6 +84,8 @@
 }
 
 .features {
+  padding-left: 1.5rem;
+
   li {
     list-style-type: "✔️";
     padding-inline-start: 0.5rem;
@@ -109,11 +96,12 @@
 @media screen and (max-width: 992px) {
   .banner {
     h1 {
-      font-size: 1.5rem;
+      margin-top: 0;
     }
 
     p {
       font-size: 1rem;
+      margin-top: 0;
     }
   }
 

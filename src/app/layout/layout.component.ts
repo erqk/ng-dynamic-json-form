@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-content-wrapper.component';
-import { SideNavigationPaneComponent } from '../features/side-navigation-pane/side-navigation-pane.component';
-import { DocumentLoaderService } from '../features/document/services/document-loader.service';
-import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
+import { DocsLoaderService } from '../features/doc/services/docs-loader.service';
+import { NavigatorTitleComponent } from '../features/navigator/components/navigator-title/navigator-title.component';
+import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-content-wrapper.component';
+import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
   selector: 'app-layout',
@@ -14,33 +14,33 @@ import { FADE_UP_ANIMATION } from '../animations/fade-up.animation';
     CommonModule,
     RouterModule,
     UiContentWrapperComponent,
-    SideNavigationPaneComponent,
+    NavigatorTitleComponent,
     UiLoadingIndicatorComponent,
   ],
   template: `
     <ui-loading-indicator
-      *ngIf="documentLoading$.value === true"
+      *ngIf="docsLoading$.value === true"
     ></ui-loading-indicator>
 
     <ui-content-wrapper
       class="main"
       [ngClass]="{
-        hidden: documentLoading$.value === true
+        hidden: docsLoading$.value === true
       }"
       [maxWidth]="'100%'"
-      [@fade-up]="documentLoading$.value === false"
+      [@fade-up]="docsLoading$.value === false"
     >
-      <app-side-navigation-pane class="side-pane"></app-side-navigation-pane>
+      <app-navigator-title class="side-pane"></app-navigator-title>
       <div class="content">
         <router-outlet></router-outlet>
       </div>
     </ui-content-wrapper>
   `,
   styleUrls: ['./layout.component.scss'],
-  animations: [FADE_UP_ANIMATION]
+  animations: [FADE_UP_ANIMATION],
 })
 export class LayoutComponent {
-  private _documentLoaderService = inject(DocumentLoaderService);
+  private _docsLoaderService = inject(DocsLoaderService);
 
-  documentLoading$ = this._documentLoaderService.docLoading$;
+  docsLoading$ = this._docsLoaderService.docLoading$;
 }

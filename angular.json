@@ -1,36 +1,28 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "",
   "projects": {
     "ng-dynamic-json-form": {
       "projectType": "library",
-      "root": "projects/ng-dynamic-json-form",
-      "sourceRoot": "projects/ng-dynamic-json-form/src",
+      "root": "lib",
+      "sourceRoot": "lib/src",
       "prefix": "",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/ng-dynamic-json-form/ng-package.json"
+            "project": "lib/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-dynamic-json-form/tsconfig.lib.prod.json"
+              "tsConfig": "lib/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ng-dynamic-json-form/tsconfig.lib.json"
+              "tsConfig": "lib/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/ng-dynamic-json-form/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "karmaConfig": "projects/ng-dynamic-json-form/karma.conf.js"
-          }
         }
       }
     },
@@ -48,7 +40,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "docs",
+            "outputPath": "dist/docs/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -58,28 +50,23 @@
             "styles": [
               "vanilla-jsoneditor/themes/jse-theme-dark.css",
               "bootstrap-icons/font/bootstrap-icons.min.css",
-              "dist/ng-dynamic-json-form/lib/styles/styles.scss",
-              "src/styles/prism-vsc-dark-plus.css",
+              "dist/ng-dynamic-json-form/styles/styles.scss",
               "src/styles/styles.scss"
             ],
-            "scripts": [
-              "node_modules/marked/marked.min.js",
-              "node_modules/prismjs/prism.js",
-              "node_modules/prismjs/components/prism-css.min.js"
-            ]
+            "scripts": ["node_modules/marked/marked.min.js"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "4mb",
                   "maximumError": "8mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "256kb",
+                  "maximumError": "512kb"
                 }
               ],
               "outputHashing": "all"
@@ -113,17 +100,58 @@
             "browserTarget": "docs:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
-          }
+            "outputPath": "dist/docs/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "inlineStyleLanguage": "scss"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false,
+              "vendorChunk": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "docs:build:development",
+              "serverTarget": "docs:server:development"
+            },
+            "production": {
+              "browserTarget": "docs:build:production",
+              "serverTarget": "docs:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": ["/"]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "docs:build:production",
+              "serverTarget": "docs:server:production"
+            },
+            "development": {
+              "browserTarget": "docs:build:development",
+              "serverTarget": "docs:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }

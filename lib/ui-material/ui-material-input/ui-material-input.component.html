@@ -1,0 +1,18 @@
+<ng-container *ngIf="data">
+  <mat-form-field>
+    <mat-label>{{ data.label }}</mat-label>
+
+    <input
+      matInput
+      [formControl]="control"
+      [attr.type]="data.type ?? 'text'"
+      [propsBinding]="[
+        {
+          key: 'mat-input',
+          props: data.props,
+          omit: ['type']
+        }
+      ]"
+    />
+  </mat-form-field>
+</ng-container>

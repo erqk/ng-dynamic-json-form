@@ -1,3 +1,4 @@
+@use "./layer-order";
 @use "./tailwind";
 @use "primeng/resources/primeng.min.css";
 @use "./dark-theme" as dark;
@@ -12,7 +13,7 @@
 
 :root {
   --primary-50: #f7f6ff;
-  --primary-100: #efecff;  
+  --primary-100: #efecff;
   --primary-200: #cfc7ff;
   --primary-300: #afa1ff;
   --primary-400: #8f7bff;
@@ -24,13 +25,14 @@
 
   --bg-color-rgb: 255, 255, 255;
   --body-bg-color-rgb: 255, 255, 255;
-  --text-color-rgb: 80, 80, 100;
+  --text-color-rgb: 35, 35, 35;
   --body-bg-color: rgb(var(--body-bg-color-rgb));
+  --code-bg-color: rgb(215, 215, 215);
 
   --border-color-25: rgba(128, 128, 128, 0.25);
   --border-color-50: rgba(128, 128, 128, 0.5);
 
-  --page-max-width: 85rem;
+  --page-max-width: 100rem;
   --gutter-auto: calc(50% - var(--page-max-width) * 0.5);
 
   &.dark {
@@ -59,6 +61,23 @@ body {
   display: block;
   width: 1.25em;
   height: 1.25em;
+}
+
+doc-code,
+doc-tab {
+  @apply my-4 border border-[var(--border-color-25)] rounded-lg overflow-hidden;
+
+  &:not(.hidden) {
+    @apply block;
+  }
+}
+
+doc-code {
+  @apply border-0;
+}
+
+doc-tab doc-code {
+  @apply my-0 border-0 rounded-none;
 }
 
 @media (prefers-color-scheme: dark) {

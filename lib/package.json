@@ -1,0 +1,31 @@
+{
+  "name": "ng-dynamic-json-form",
+  "version": "8.0.0",
+  "author": {
+    "name": "erqk",
+    "url": "https://github.com/erqk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erqk/ng-dynamic-json-form.git"
+  },
+  "homepage": "https://erqk.github.io/ng-dynamic-json-form",
+  "keywords": [
+    "angular",
+    "ng",
+    "form",
+    "dynamic",
+    "json"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": ">=16",
+    "@angular/common": ">=16",
+    "angular-imask": ">=7"
+  },
+  "exports": {
+    "./styles": {
+      "sass": "./src/styles/styles.scss"
+    }
+  }
+}

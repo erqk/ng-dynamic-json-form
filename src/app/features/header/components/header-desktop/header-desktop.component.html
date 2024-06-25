@@ -1,12 +1,20 @@
 <div class="header">
-  <ui-content-wrapper class="content-wrapper" [maxWidth]="'var(--page-max-width)'">
-    <a [routerLink]="'/'" class="logo">
-      <img src="assets/logo.svg" alt="" />
-    </a>
+  <ui-content-wrapper
+    class="content-wrapper"
+    [maxWidth]="'var(--page-max-width)'"
+  >
+    <div class="flex items-center gap-1 mr-4">
+      <a [routerLink]="'/'" class="logo">
+        <img src="assets/logo.svg" alt="" />
+      </a>
+      <span class="text-lg font-light capitalize tracking-wider">{{
+        currentVersion
+      }}</span>
+    </div>
 
     <header-tab-bar class="tab-bar" [links]="links"></header-tab-bar>
 
-    <div class="settings">
+    <div class="settings ml-auto">
       <app-theme-switcher></app-theme-switcher>
       <app-language-selector></app-language-selector>
     </div>

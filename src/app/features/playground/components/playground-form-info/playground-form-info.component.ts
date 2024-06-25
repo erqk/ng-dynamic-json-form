@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { MarkdownModule } from 'ngx-markdown';
 import { Content } from 'vanilla-jsoneditor';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
 
 @Component({
   selector: 'app-playground-form-info',
   standalone: true,
-  imports: [CommonModule, MarkdownModule, PlaygroundEditorComponent],
+  imports: [CommonModule, PlaygroundEditorComponent],
   templateUrl: './playground-form-info.component.html',
   styleUrls: ['./playground-form-info.component.scss'],
 })

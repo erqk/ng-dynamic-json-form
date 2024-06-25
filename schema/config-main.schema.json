@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ConfigMainSchema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "formControlName": { "type": "string" },
+      "conditions": {
+        "$ref": "ConfigConditionsSchema"
+      },
+      "children": { "$ref": "#" },
+      "description": { "type": "string" },
+      "props": {},
+      "hidden": { "type": "boolean" },
+      "label": { "type": "string" },
+      "layout": {
+        "$ref": "ConfigLayoutSchema"
+      },
+      "inputMask": {},
+      "options": {
+        "$ref": "ConfigOptionsSchema"
+      },
+      "readonly": { "type": "boolean" },
+      "type": { "type": "string" },
+      "value": {},
+      "validators": {
+        "$ref": "ConfigValidatorsSchema"
+      }
+    },
+    "required": ["formControlName"]
+  }
+}

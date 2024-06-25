@@ -37,11 +37,17 @@ export class PlaygroundEditorComponent {
     const { data } = simpleChanges;
 
     if (data && this.data && this.jsonEditor) {
+      const host = this._el.nativeElement as HTMLElement;
+      const el = host.querySelector('.cm-scroller') as HTMLElement;
+      const scrollTop = el.scrollTop;
+
       try {
         this.jsonEditor.set(this.data);
       } catch (err) {
         console.error(err);
       }
+
+      el.scrollTo({ top: scrollTop });
     }
   }
 
@@ -57,28 +63,30 @@ export class PlaygroundEditorComponent {
   }
 
   private _initEditor(): void {
-    requestAnimationFrame(() => {
-      const host = this._el.nativeElement as HTMLElement;
-      const el = host.querySelector('.json-editor') as HTMLElement;
+    if (typeof window === 'undefined') return;
 
-      this.jsonEditor = new JSONEditor({
-        target: el,
-        props: {
-          mode: Mode.text,
-          content: this.data || undefined,
-          mainMenuBar: this.mainMenuBar,
-          navigationBar: this.navigationBar,
-          statusBar: this.statusBar,
-          onChange: (content, previousContent, status) => {
-            const _content = getJsonEditorContent(content) as any;
-            this.onEditing.emit(_content['json']);
-          },
+    const host = this._el.nativeElement as HTMLElement;
+    const el = host.querySelector('.json-editor') as HTMLElement;
+
+    this.jsonEditor = new JSONEditor({
+      target: el,
+      props: {
+        mode: Mode.text,
+        content: this.data || undefined,
+        mainMenuBar: this.mainMenuBar,
+        navigationBar: this.navigationBar,
+        statusBar: this.statusBar,
+        onChange: (content, previousContent, status) => {
+          const _content = getJsonEditorContent(content) as any;
+          this.onEditing.emit(_content['json']);
         },
-      });
+      },
     });
   }
 
   private _darkThemeEvent(): void {
+    if (typeof window === 'undefined') return;
+
     const setDarkTheme = (dark = false) => {
       const host = this._el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;

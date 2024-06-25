@@ -1,0 +1,14 @@
+<ng-container *ngIf="data">
+  <mat-slide-toggle
+    [labelPosition]="data.options?.labelPosition ?? 'after'"
+    [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'mat-slide-toggle',
+        props: data.props,
+        omit: ['labelPosition']
+      }
+    ]"
+    >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
+  >
+</ng-container>

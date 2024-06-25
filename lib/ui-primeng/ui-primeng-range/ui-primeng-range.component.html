@@ -1,0 +1,13 @@
+<ng-container *ngIf="data">
+  <div class="range-input">
+    <p-slider
+      [formControl]="control"
+      [propsBinding]="[
+        {
+          key: 'p-slider',
+          props: data.props
+        }
+      ]"
+    ></p-slider>
+  </div>
+</ng-container>

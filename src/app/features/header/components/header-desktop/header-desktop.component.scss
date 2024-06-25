@@ -10,7 +10,6 @@
   .logo {
     display: block;
     width: 3rem;
-    margin-right: 0.5rem;
     padding: 0.5rem;
 
     &::after {
@@ -21,7 +20,6 @@
   .settings {
     display: flex;
     align-items: center;
-    margin-left: auto;
     gap: 1rem;
   }
 }
