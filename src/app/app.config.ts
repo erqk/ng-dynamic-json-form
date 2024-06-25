@@ -1,6 +1,5 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
-import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   PreloadAllModules,
@@ -18,7 +17,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
     provideHttpClient(withInterceptors([absolutePathInterceptor])),
-    provideClientHydration(),
     provideRouter(
       appRoutes,
       withInMemoryScrolling({
