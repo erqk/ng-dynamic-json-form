@@ -6,7 +6,7 @@ export const CONFIG_BASIC_AGE_ZHTW: FormControlConfig = {
   formControlName: 'age',
   type: 'number',
   inputMask: {
-    mask: '00',
+    mask: 'Number',
   },
   validators: [
     {
