@@ -1,6 +1,14 @@
 .ng-dynamic-json-form {
   --color-primary: var(--primary-500);
   --color-border: rgba(128, 128, 128, 0.5);
+
+  .ui-basic {
+    input,
+    select {
+      background-color: rgba(var(--bg-color-rgb), 0.35);
+      backdrop-filter: blur(4px);
+    }
+  }
 }
 
 select.doc-form-element {

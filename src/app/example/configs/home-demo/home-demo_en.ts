@@ -9,8 +9,11 @@ import { CONFIG_CONDITIONS_VISIBILITY_EN } from '../conditions/visibility/config
 export const CONFIG_HOME_DEMO_COMMON_LAYOUT: FormLayout = {
   hostClass: 'p-6 m-3 rounded-xl border-gray-500/30',
   hostStyles: `
-    background: linear-gradient(145deg, color-mix(in srgb, var(--primary-200) 35%, rgba(0,0,0,0.1)), var(--body-bg-color));
-    box-shadow: 1rem 1rem 1.75rem rgba(0,0,0,0.1), -1rem -1rem 1.75rem var(--primary-100);`.replace(/\s{2,}/g, ''),
+    background: linear-gradient(145deg, var(--primary-100), var(--body-bg-color));
+    box-shadow: 1rem 1rem 1.75rem rgba(0,0,0,0.15), -1rem -1rem 1.75rem var(--body-bg-color);`.replace(
+    /\s{2,}/g,
+    ''
+  ),
 };
 
 export const CONFIG_HOME_DEMO_EN: FormControlConfig = {

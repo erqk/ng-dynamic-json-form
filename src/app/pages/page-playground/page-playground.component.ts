@@ -10,11 +10,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { AngularSplitModule, IOutputData } from 'angular-split';
-import {
-  FormControlConfig,
-  NgDynamicJsonFormComponent,
-  provideNgDynamicJsonForm,
-} from 'ng-dynamic-json-form';
+import { FormControlConfig } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import {
@@ -28,10 +24,6 @@ import {
   toArray,
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
-import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
-import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
-import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
-import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
@@ -45,7 +37,6 @@ import { PlaygroundSettingsService } from 'src/app/features/playground/services/
 import { PlaygroundTemplateDataService } from 'src/app/features/playground/services/playground-template-data.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 import { VersionService } from 'src/app/features/version/version.service';
-import { Content } from 'vanilla-jsoneditor';
 
 @Component({
   selector: 'app-page-playground',
@@ -59,23 +50,10 @@ import { Content } from 'vanilla-jsoneditor';
     PlaygroundEditorComponent,
     PlaygroundTemplateListComponent,
     PlaygroundFormInfoComponent,
-    NgDynamicJsonFormComponent,
     AngularSplitModule,
     PlaygroundFormComponent,
     PlaygroundFormPrimengComponent,
     PlaygroundFormMaterialComponent,
-  ],
-  providers: [
-    provideNgDynamicJsonForm({
-      customValidators: {
-        firstUppercase: firstUppercaseValidator,
-      },
-      loadingComponent: CustomLoadingComponent,
-      errorComponent: CustomErrorMessageComponent,
-      labelComponent: CustomFormTitleComponent,
-      uiComponents: UI_PRIMENG_COMPONENTS,
-      // uiComponents: UI_MATERIAL_COMPONENTS,
-    }),
   ],
   templateUrl: './page-playground.component.html',
   styleUrls: ['./page-playground.component.scss'],

@@ -18,6 +18,10 @@ export class NavigatorService {
       (x) => x.tagName === 'H2' || x.tagName === 'H3'
     );
 
+    if (!titles.length) {
+      return;
+    }
+
     const links = titles.reduce((acc, curr) => {
       const prevH2 = acc.filter((x) => x.tagName === 'H2').pop();
       const item = {

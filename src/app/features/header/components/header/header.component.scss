@@ -5,6 +5,25 @@
   z-index: 999;
 }
 
+.header-container {
+  @apply relative z-0;
+
+  &::before {
+    @apply absolute top-0 left-0 w-full h-full;
+
+    content: "";
+    z-index: -1;
+  }
+
+  &.show-background {
+    &::before {
+      @apply backdrop-blur;
+      background-color: rgba(var(--body-bg-color-rgb), 0.35);
+      mask: linear-gradient(var(--body-bg-color) 60%, transparent);
+    }
+  }
+}
+
 app-header-mobile {
   display: none;
 }

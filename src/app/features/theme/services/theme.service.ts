@@ -61,20 +61,35 @@ export class ThemeService {
   }
 
   setTheme(id: string, path: string): void {
-    const style =
-      (document.head.querySelector(`#${id}`) as HTMLLinkElement) ||
-      this._renderer2.createElement('link');
+    const existingStyle = document.head.querySelector(
+      `#${id}`
+    ) as HTMLLinkElement;
 
-    this._renderer2.setProperty(style, 'id', id);
-    this._renderer2.setProperty(style, 'rel', 'stylesheet');
-    this._renderer2.setProperty(style, 'href', path);
+    const insertStylesheet = (_id: string): HTMLStyleElement => {
+      const style = this._renderer2.createElement('link');
 
-    if (!document.head.contains(style)) {
+      this._renderer2.setProperty(style, 'id', _id);
+      this._renderer2.setProperty(style, 'rel', 'stylesheet');
+      this._renderer2.setProperty(style, 'href', path);
+
       this._renderer2.insertBefore(
         document.head,
         style,
         document.head.childNodes[0]
       );
+
+      return style;
+    };
+
+    if (existingStyle) {
+      const nextStyle = insertStylesheet(`${id}-next`);
+
+      nextStyle.onload = () => {
+        existingStyle.remove();
+        this._renderer2.setAttribute(nextStyle, 'id', id);
+      };
+    } else {
+      insertStylesheet(id);
     }
   }
 }

@@ -72,7 +72,11 @@ export class NavigatorTitleComponent {
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
   ngOnChanges(): void {
-    this._sideNavigationPaneService.buildNavigationLinks();
+    if (typeof window !== 'undefined') {
+      window.setTimeout(() => {
+        this._sideNavigationPaneService.buildNavigationLinks();
+      });
+    }
   }
 
   ngOnInit(): void {

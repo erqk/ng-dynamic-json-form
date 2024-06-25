@@ -19,8 +19,10 @@
       <button
         type="button"
         [ngClass]="[
-          'py-3 px-8 mt-12 bg-[var(--primary-500)] text-white rounded-full',
-          'duration-100 transition-transform',
+          'min-w-56',
+          'py-3 px-8 mt-12 bg-[var(--primary-500)] rounded-full',
+          'text-white md:text-lg',
+          'duration-500 transition-transform',
           'hover:-translate-y-1 hover:drop-shadow-lg'
         ]"
         [routerLink]="'/docs'"
@@ -29,7 +31,7 @@
       </button>
     </div>
 
-    <div class="absolute -z-10 left-3/4 bottom-0 -top-12 -translate-x-1/2">
+    <div class="absolute -z-10 left-3/4 top-[50vh] lg:top-[35vh] -translate-x-1/2">
       <div class="illustration">
         <div style="--index: 0; height: 100%"></div>
         <div style="--index: 1; height: 50%; top: 35%; left: -40%"></div>

@@ -9,7 +9,7 @@
   },
   "GET_STARTED": "開始",
   "INTRODUCTION": {
-    "BRIEF": "使用 JSON 生成 Angular 表單。"
+    "BRIEF": "使用 JSON 動態生成 Angular 表單"
   },
   "MENU": {
     "DOCS": "文件",

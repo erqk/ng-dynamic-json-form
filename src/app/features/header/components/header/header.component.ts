@@ -14,12 +14,10 @@ import { Subject, fromEvent } from 'rxjs';
   template: `
     <div
       [ngClass]="[
+        'header-container',
         'p-2 px-4 lg:p-4 lg:pb-2',
-        'border-b',
         'duration-200',
-        showBackground
-          ? 'border-[var(--border-color-25)] bg-[rgba(var(--body-bg-color-rgb),0.6)] backdrop-blur'
-          : 'border-transparent'
+        showBackground ? 'show-background' : ''
       ]"
     >
       <ng-container *ngIf="links$ | async as links">

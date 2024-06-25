@@ -50,7 +50,7 @@
   <div
     [ngClass]="[
       'block lg:hidden',
-      'fixed top-0 left-0 z-10 w-full h-full',
+      'fixed top-0 left-0 z-[1000] w-full h-full',
       'bg-[rgba(var(--bg-color-rgb),0.25)] backdrop-blur duration-100',
       showMobileMenu
         ? 'pointer-events-auto opacity-100'
@@ -62,11 +62,12 @@
   <!-- mobile docs menu -->
   <div
     [ngClass]="[
-      'fixed bottom-0 left-0 z-10',
+      'fixed bottom-0 left-0 z-[1001]',
       'p-6 pb-28',
       'block lg:hidden',
-      'bg-[rgba(var(--bg-color-rgb),0.95)]',
-      'w-4/5 min-w-[200px] h-[calc(var(--window-height)-var(--header-height))]',
+      'bg-[rgb(var(--bg-color-rgb))]',
+      'w-4/5 min-w-[200px] h-screen',
+      'border-r border-1 border-gray-500/25',
       'overflow-auto',
       'duration-300 transition-transform',
       showMobileMenu
@@ -82,7 +83,7 @@
   <button
     type="button"
     [ngClass]="[
-      'fixed z-10 bottom-8 left-4',
+      'fixed z-[1002] bottom-8 left-4',
       'flex lg:hidden items-center justify-center',
       'h-12 w-12 p-2 bg-[var(--primary-500)] text-white',
       '!rounded-full shadow-[rgba(0,0,0,0.5)] shadow-xl'
