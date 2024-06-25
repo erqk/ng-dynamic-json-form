@@ -35,7 +35,7 @@ jobs:
         uses: kannansuresh/ghaction-base-href-rewriter@v1.0.0
         with:
           base_href: '/ng-dynamic-json-form/'
-          html_glob: '**/*/index.html'
+          html_glob: 'index.html' 
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
