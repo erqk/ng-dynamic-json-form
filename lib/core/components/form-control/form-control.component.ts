@@ -202,7 +202,7 @@ export class FormControlComponent
       src,
       srcAppendPosition,
       autoSelectFirst,
-      data = [],
+      data: staticOptions = [],
     } = this.data.options;
 
     const updateControlValue = (value: any) => {
@@ -211,52 +211,50 @@ export class FormControlComponent
     };
 
     if (!src) {
-      if (autoSelectFirst && data.length > 0) {
-        updateControlValue(data[0]?.value);
+      if (autoSelectFirst && staticOptions.length > 0) {
+        updateControlValue(staticOptions[0]?.value);
       }
 
       return;
     }
 
-    const staticOptions = this.data.options.data || [];
-    const onOptionsGet = (data: OptionItem[]) => {
-      const options =
-        srcAppendPosition === 'before'
-          ? data.concat(staticOptions)
-          : staticOptions.concat(data);
-
-      if (this._pendingValue) {
-        updateControlValue(this._pendingValue);
-        this._pendingValue = null;
-      } else if (autoSelectFirst && options.length > 0) {
-        updateControlValue(options[0].value);
-      } else if (typeof src !== 'string' && (src.filter || src.trigger)) {
-        updateControlValue(null);
-      }
-
-      this._controlComponent?.onOptionsGet(options);
-      this._formReadyStateService.optionsLoading(false);
-      this.loading = false;
-    };
-
-    const valueChangesCallback = () => {
-      this.loading = true;
-    };
-
     this.loading = true;
     this._formReadyStateService.optionsLoading(true);
 
-    if (typeof src === 'string') {
-      const source$ = this._globalVariableService.optionsSources?.[src];
-      if (!source$) return;
+    const source$ =
+      typeof src === 'string'
+        ? this._globalVariableService.optionsSources?.[src]
+        : this._optionsDataService.getOptions$(
+            src,
+            () => (this.loading = false)
+          );
 
-      source$.pipe(tap((x) => onOptionsGet(x))).subscribe();
-    } else {
-      this._optionsDataService
-        .getOptions$(src, valueChangesCallback)
-        .pipe(tap((x) => onOptionsGet(x)))
-        .subscribe();
-    }
+    source$
+      ?.pipe(
+        tap((x) => {
+          const options =
+            srcAppendPosition === 'before'
+              ? x.concat(staticOptions)
+              : staticOptions.concat(x);
+
+          const usingTriggerOrFilter =
+            typeof src !== 'string' && (src.filter || src.trigger);
+
+          if (this._pendingValue) {
+            updateControlValue(this._pendingValue);
+            this._pendingValue = null;
+          } else if (autoSelectFirst && options.length > 0) {
+            updateControlValue(options[0].value);
+          } else if (usingTriggerOrFilter) {
+            updateControlValue(null);
+          }
+
+          this._controlComponent?.onOptionsGet(options);
+          this._formReadyStateService.optionsLoading(false);
+          this.loading = false;
+        })
+      )
+      .subscribe();
   }
 
   private _errorMessageEvent(): void {
