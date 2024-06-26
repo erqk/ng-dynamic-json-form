@@ -260,7 +260,7 @@ export class FormControlComponent
   }
 
   private _errorMessageEvent(): void {
-    if (!this._controlComponent || !this.control) return;
+    if (!this.control) return;
 
     const control = this.control;
     const controlComponent = this._controlComponent;
@@ -276,8 +276,10 @@ export class FormControlComponent
         delay(0),
         tap(() => {
           const hideErrors = this._hideErrorMessage$.value;
+          const controlErrors = control.errors;
+          const componentErrors = controlComponent?.control?.errors;
           const errors =
-            hideErrors || (!control.errors && !controlComponent.control?.errors)
+            hideErrors || (!controlErrors && !componentErrors)
               ? null
               : control.errors;
 
@@ -285,8 +287,8 @@ export class FormControlComponent
             this._setControlDirtyOrTouched('both');
           }
 
-          controlComponent.control?.setErrors(errors);
-          controlComponent.setErrors(errors);
+          controlComponent?.control?.setErrors(errors);
+          controlComponent?.setErrors(errors);
         }),
         takeUntilDestroyed(this._destroyRef)
       )
@@ -294,21 +296,21 @@ export class FormControlComponent
   }
 
   private _setControlDirtyOrTouched(state: 'dirty' | 'touched' | 'both'): void {
-    if (!this._controlComponent || !this.control) return;
+    if (!this.control) return;
 
     const control = this.control;
     const controlComponent = this._controlComponent;
 
     const markAsDirty = () => {
       control.markAsDirty();
-      controlComponent.control?.markAsDirty();
-      controlComponent.markAsDirty();
+      controlComponent?.control?.markAsDirty();
+      controlComponent?.markAsDirty();
     };
 
     const markAsTouched = () => {
       control.markAsTouched();
-      controlComponent.control?.markAsTouched();
-      controlComponent.markAsTouched();
+      controlComponent?.control?.markAsTouched();
+      controlComponent?.markAsTouched();
     };
 
     switch (state) {
