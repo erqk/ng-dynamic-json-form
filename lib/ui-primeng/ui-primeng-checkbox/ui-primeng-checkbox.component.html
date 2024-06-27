@@ -7,7 +7,6 @@
       'flex-direction': data.options?.layout
     }"
   >
-    <!-- muli-select checkbox -->
     <ng-container *ngFor="let item of data.options?.data">
       <label
         class="option-button"
@@ -40,7 +39,6 @@
                   omit: ['binary']
                 }
               ]"
-              (click)="$event.preventDefault()"
             ></p-checkbox>
           </ng-container>
 
@@ -57,7 +55,6 @@
                   omit: ['binary']
                 }
               ]"
-              (click)="$event.preventDefault()"
             ></p-checkbox>
           </ng-container>
         </ng-container>

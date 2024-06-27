@@ -10,5 +10,6 @@ export const CONFIG_BASIC_DATE_ZHTW: FormControlConfig = {
     minDate: 'Date(2024/01/01)',
     showTime: true,
     showIcon: true,
+    styleClass: 'w-full',
   },
 };

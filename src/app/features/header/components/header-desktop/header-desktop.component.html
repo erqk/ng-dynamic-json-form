@@ -7,9 +7,7 @@
       <a [routerLink]="'/'" class="logo">
         <img src="assets/logo.svg" alt="" />
       </a>
-      <span class="text-lg font-light capitalize tracking-wider">{{
-        currentVersion
-      }}</span>
+      <version-selector></version-selector>
     </div>
 
     <header-tab-bar class="tab-bar" [links]="links"></header-tab-bar>

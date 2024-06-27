@@ -14,17 +14,9 @@ configs = [
 ]
 ```
 
-## Pre-built UI components
+## Provide UI Components
 
-Here are some components from other UI libraries that were ready to use. Consume the pre-built components using `provideNgDynamicJsonForm()`.
-
-[PrimeNg]: https://www.npmjs.com/package/primeng
-[Angular Material]: https://www.npmjs.com/package/@angular/material
-
-| Library            | Constant name          | Path                             |
-| ------------------ | ---------------------- | -------------------------------- |
-| [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
-| [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
+Provide the `uiComponents` in the provider using `provideNgDynamicJsonForm`. There are some pre-built ui components that are ready to use. See [Pre-built UI Components](#pre-built-ui-components) below.
 
 ```tsx
 import { ApplicationConfig } from '@angular/core';
@@ -40,6 +32,16 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 ```
+
+## Pre-built UI Components
+
+[PrimeNg]: https://www.npmjs.com/package/primeng
+[Angular Material]: https://www.npmjs.com/package/@angular/material
+
+| Library            | Constant name          | Path                             |
+| ------------------ | ---------------------- | -------------------------------- |
+| [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
+| [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
 
 ## Custom UI component
 

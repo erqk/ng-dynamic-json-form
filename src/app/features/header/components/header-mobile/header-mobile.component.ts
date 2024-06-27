@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutService } from 'src/app/core/services/layout.service';
+import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 import { LanguageSelectorComponent } from 'src/app/features/language/language-selector.component';
 import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
 import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-switcher/theme-switcher.component';
-import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
-import { VersionService } from 'src/app/features/version/version.service';
+import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
 @Component({
   selector: 'app-header-mobile',
@@ -18,18 +18,17 @@ import { VersionService } from 'src/app/features/version/version.service';
     HeaderTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
+    VersionSelectorComponent,
   ],
   templateUrl: './header-mobile.component.html',
   styleUrls: ['./header-mobile.component.scss'],
 })
 export class HeaderMobileComponent {
   private _layoutService = inject(LayoutService);
-  private _versionService = inject(VersionService);
 
   @Input() links: { label: string; route: string }[] = [];
 
   openSettings = false;
-  currentVersion = this._versionService.currentVersion;
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;

@@ -14,17 +14,9 @@ configs = [
 ]
 ```
 
-## 內建 UI 元件
+## 提供 UI 元件
 
-以下為從第三方套件庫製作好的元件。注入 `provideNgDynamicJsonForm()` 來使用它們。
-
-[PrimeNg]: https://www.npmjs.com/package/primeng
-[Angular Material]: https://www.npmjs.com/package/@angular/material
-
-| 套件庫             | 常數名稱               | 路徑                             |
-| ------------------ | ---------------------- | -------------------------------- |
-| [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
-| [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
+通過 `provideNgDynamicJsonForm` 來提供 `uiComponents`。目前有一些已製作好的 UI 元件，請參閱以下 [內建 UI 元件](#內建-ui-元件)。
 
 ```tsx
 import { ApplicationConfig } from '@angular/core';
@@ -40,6 +32,16 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 ```
+
+## 內建 UI 元件
+
+[PrimeNg]: https://www.npmjs.com/package/primeng
+[Angular Material]: https://www.npmjs.com/package/@angular/material
+
+| 套件庫             | 常數名稱               | 路徑                             |
+| ------------------ | ---------------------- | -------------------------------- |
+| [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
+| [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
 
 ## 自訂 UI 元件
 

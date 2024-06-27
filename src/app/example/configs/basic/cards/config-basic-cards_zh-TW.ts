@@ -45,7 +45,7 @@ export const CONFIG_BASIC_CARDS_ZHTW: FormControlConfig = {
         placeholder: '其他卡片類型',
       },
       conditions: {
-        hidden: {
+        "control.hidden": {
           '&&': [['cards.cardTypes', 'notIncludes', 3]],
         },
       },

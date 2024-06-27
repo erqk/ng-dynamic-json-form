@@ -22,7 +22,7 @@ Import the styles with one of the following method.
 ```json
 "styles": [
     ...
-    "ng-dynamic-json-form/styles/styles.scss"
+    "node_modules/ng-dynamic-json-form/styles/styles.scss"
 ],
 ```
 
@@ -92,6 +92,10 @@ configs = [
       "label": "Name"
     }
 ]'></doc-form-viewer>
+
+## Add UI library
+
+We can use component from the other ui library in the entire form. See [Provide UI Components](../../v8/ui-components/ui-components_en.md#provide-ui-components).
 
 ## Form Binding
 

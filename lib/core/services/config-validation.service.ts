@@ -20,10 +20,6 @@ export class ConfigValidationService {
       errors: [{ errors: 'No configs found' }],
     };
 
-    if (!input) {
-      return failedResult;
-    }
-
     if (Array.isArray(input)) {
       if (!validate(input)) {
         failedResult.errors = (validate.errors || []).map((x) =>

@@ -22,7 +22,7 @@ npm i ng-dynamic-json-form
 ```json
 "styles": [
     ...
-    "ng-dynamic-json-form/styles/styles.scss"
+    "node_modules/ng-dynamic-json-form/styles/styles.scss"
 ],
 ```
 
@@ -92,6 +92,10 @@ configs = [
       "label": "Name"
     }
 ]'></doc-form-viewer>
+
+## 使用第三方 UI
+
+我們可以使用第三方 UI 的元件來生成表單，請參閱 [提供 UI 元件](../../v8/ui-components/ui-components_zh-TW.md#提供-ui-元件)。
 
 ## 綁定表單
 
