@@ -40,17 +40,6 @@ export const CONFIG_DYNAMIC_PRODUCTS_EN: FormControlConfig[] = [
           },
         },
       },
-      // trigger: {
-      //   action: 'FILTER',
-      //   src: 'https://dummyjson.com/products',
-      //   method: 'GET',
-      //   data: {
-      //     path: 'products',
-      //     labelKey: 'title',
-      //   },
-      //   triggerValuePath: 'products,brand',
-      //   filterMatchPath: 'brand',
-      // },
     },
   },
 ];
