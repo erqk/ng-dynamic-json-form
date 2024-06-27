@@ -10,5 +10,6 @@ export const CONFIG_BASIC_DATE_EN: FormControlConfig = {
     minDate: new Date(),
     showTime: true,
     showIcon: true,
+    styleClass: 'w-full',
   },
 };

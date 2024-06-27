@@ -25,4 +25,7 @@ export const CONFIG_BASIC_RELATIONSHIP_ZHTW: FormControlConfig = {
       },
     ],
   },
+  props: {
+    styleClass: 'w-full',
+  },
 };
