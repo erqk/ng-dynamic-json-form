@@ -1,3 +1,12 @@
+# 8.0.2 (2022-06-27)
+
+[15e2a8b]: https://github.com/erqk/ng-dynamic-json-form/commit/15e2a8b852e3c0ad2a8025581a2ae45e5ccd5211
+[#14487]: https://github.com/primefaces/primeng/issues/14487
+
+| Commit    | Type | Description                                                                                      |
+| --------- | ---- | ------------------------------------------------------------------------------------------------ |
+| [15e2a8b] | fix  | UiPrimengCheckboxComponent: Remove `preventDefault()` as the issue is bug [#14487] from PrimeNG. |
+
 # 8.0.1 (2022-06-26)
 
 [07ef4a2]: https://github.com/erqk/ng-dynamic-json-form/commit/07ef4a2fb3d62eed41217b92d865d464ddf19ad7
