@@ -4,7 +4,7 @@
 
 [表單元件](../v8/form-component/form-component_zh-TW.md)
 
-[輸入類型](../v8/input-types/input-types_zh-TW.md)
+[欄位類型](../v8/input-types/input-types_zh-TW.md)
 
 [自訂元件](../v8/custom-components/custom-components_zh-TW.md)
 

@@ -1,11 +1,18 @@
-<ui-loading-indicator
-  [start]="routeLoading || ((docLoading$ | async) ?? false)"
-></ui-loading-indicator>
+<div
+  class="duration-500"
+  [ngStyle]="{
+    opacity: isServer ? 0 : 1
+  }"
+>
+  <ui-loading-indicator
+    [start]="routeLoading || ((docLoading$ | async) ?? false)"
+  ></ui-loading-indicator>
 
-<div class="top-bg"></div>
+  <div class="top-bg"></div>
 
-<app-header></app-header>
+  <app-header></app-header>
 
-<div class="flex flex-col">
-  <router-outlet> </router-outlet>
+  <div class="flex flex-col">
+    <router-outlet> </router-outlet>
+  </div>
 </div>

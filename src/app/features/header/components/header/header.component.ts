@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
-import { debounceTime, map, takeUntil, tap, windowWhen } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil, tap, windowWhen } from 'rxjs/operators';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
@@ -37,6 +37,7 @@ export class HeaderComponent {
   showBackground = false;
 
   links$ = this._languageDataService.i18nContent$.pipe(
+    filter(x => Object.values(x).length > 0),
     map((x) => [
       {
         route: 'docs',

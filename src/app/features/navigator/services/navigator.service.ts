@@ -11,15 +11,15 @@ export class NavigatorService {
 
   navigationLinks$ = new Subject<NavigatorTitleItem[]>();
 
-  buildNavigationLinks(): void {
-    if (typeof window === 'undefined') return;
+  getNavigatorTitles(): NavigatorTitleItem[] {
+    if (typeof window === 'undefined') return [];
 
     const titles = Array.from(document.querySelectorAll('*')).filter(
       (x) => x.tagName === 'H2' || x.tagName === 'H3'
     );
 
     if (!titles.length) {
-      return;
+      return [];
     }
 
     const links = titles.reduce((acc, curr) => {
@@ -46,6 +46,7 @@ export class NavigatorService {
       return acc;
     }, [] as NavigatorTitleItem[]);
 
-    this.navigationLinks$.next(links);
+    // this.navigationLinks$.next(links);
+    return links;
   }
 }

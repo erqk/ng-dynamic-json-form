@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, debounceTime, map, tap } from 'rxjs';
+import { EMPTY, combineLatest, debounceTime, map, share, tap } from 'rxjs';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
 import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
@@ -21,8 +21,6 @@ export class PlaygroundTemplateListComponent {
   private _versionService = inject(VersionService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
-  private _currentTemplate: PlaygroundConfigItem | null = null;
-
   @Output() onEdit = new EventEmitter<boolean>();
 
   nameControl = new FormControl('');
@@ -30,25 +28,31 @@ export class PlaygroundTemplateListComponent {
   currentVersion = this._versionService.docVersion;
   showTemplateNameInput = false;
 
-  list$ = combineLatest([
-    this._templateDataService.exampleList$,
-    this._templateDataService.userTemplateList$,
-  ]).pipe(
-    debounceTime(0),
-    map(([examples, userTemplates]) => [...examples, ...userTemplates])
-  );
+  // When rendering in server side, the items are not wrapped inside
+  // this component, don't know the reason yet, so rendering it only
+  // on browser.
+  list$ =
+    typeof window !== 'undefined'
+      ? combineLatest([
+          this._templateDataService.exampleList$,
+          this._templateDataService.userTemplateList$,
+        ]).pipe(
+          debounceTime(0),
+          map(([examples, userTemplates]) => [...examples, ...userTemplates]),
+          share()
+        )
+      : EMPTY;
 
   currentTemplateKey$ = this._templateDataService.currentTemplateKey$;
   currentTemplate$ = combineLatest([this.list$, this.currentTemplateKey$]).pipe(
     debounceTime(0),
-    map(([list, key]) => list.find((x) => x.key === key)),
-    tap((x) => (this._currentTemplate = x ?? null))
+    map(([list, key]) => list.find((x) => x.key === key))
   );
   i18nContent$ = this._langService.i18nContent$;
 
   select(key: string): void {
     if (key === this.currentTemplateKey$.value) return;
-    
+
     this._editorDataService.configModifiedData = undefined;
     this.currentTemplateKey$.next(key);
     this.setEditStatus(false);

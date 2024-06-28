@@ -137,6 +137,23 @@
           },
           "defaultConfiguration": "development"
         },
+        "prerender-dev": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": ["/"]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "docs:build:production",
+              "serverTarget": "docs:server:production"
+            },
+            "development": {
+              "browserTarget": "docs:build:development",
+              "serverTarget": "docs:server:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {

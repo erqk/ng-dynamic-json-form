@@ -8,8 +8,8 @@ import {
   map,
   startWith,
 } from 'rxjs';
-import { LanguageType } from '../../language/language.type';
 import { LanguageDataService } from '../../language/language-data.service';
+import { LanguageType } from '../../language/language.type';
 import { PLAYGROUND_CONFIGS } from '../constants/playground-configs.constant';
 import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
 
@@ -63,7 +63,7 @@ export class PlaygroundTemplateDataService {
   );
 
   getExampleTemplate(key: string): FormControlConfig[] | null {
-    const lang = this._langService.language$.value;
+    const lang = this._langService.selectedLanguage;
     const savedData = this._exampleSaved;
 
     if (!savedData) {
@@ -84,7 +84,7 @@ export class PlaygroundTemplateDataService {
 
     if (noData) return;
 
-    const lang = this._langService.language$.value;
+    const lang = this._langService.selectedLanguage;
     const savedData = this._exampleSaved;
     const newData = !savedData
       ? { [key]: { [lang]: data } }
@@ -149,7 +149,7 @@ export class PlaygroundTemplateDataService {
   }
 
   get fallbackExample(): FormControlConfig[] {
-    const lang = this._langService.language$.value;
+    const lang = this._langService.selectedLanguage;
     const key = this._currentTemplateKey;
     const formConfig = (this._templateList as any)[key]?.[lang]?.['config'];
 

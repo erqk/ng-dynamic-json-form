@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, RendererFactory2, inject } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
+import {
+  Injectable,
+  RendererFactory2,
+  TransferState,
+  inject,
+  makeStateKey,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -12,7 +17,6 @@ import {
   tap,
 } from 'rxjs';
 import { LanguageDataService } from '../../language/language-data.service';
-import { MarkdownService } from '../../markdown/markdown.service';
 import { VersionService } from '../../version/version.service';
 
 @Injectable({
@@ -21,18 +25,14 @@ import { VersionService } from '../../version/version.service';
 export class DocsLoaderService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
-  private _router = inject(Router);
+  private _transferState = inject(TransferState);
   private _versionService = inject(VersionService);
   private _languageDataService = inject(LanguageDataService);
-  private _markdownService = inject(MarkdownService);
-  private _docCache: { path: string; data: SafeHtml | string }[] = [];
+  private _docCache: { path: string; data: string }[] = [];
 
   docLoading$ = new BehaviorSubject<boolean>(false);
 
-  loadDocHtml$(
-    path: string,
-    returnType?: 'safeHTML' | 'string'
-  ): Observable<SafeHtml | string> {
+  loadDoc$(path: string): Observable<string> {
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
@@ -44,14 +44,20 @@ export class DocsLoaderService {
     if (cacheData) return of(cacheData);
 
     const version = this._versionService.docVersion;
-    const lang = this._languageDataService.language$.value;
+    const lang = this._languageDataService.selectedLanguage;
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
     const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
+    const url = `assets/docs/${version}/${filePath}`;
+    const key = makeStateKey<string>(url);
+
+    if (this._transferState.hasKey(key)) {
+      return of(this._transferState.get(key, ''));
+    }
 
     this.docLoading$.next(true);
     return this._http
-      .get(`assets/docs/${version}/${filePath}`, {
+      .get(url, {
         responseType: 'text',
         observe: 'response',
       })
@@ -66,14 +72,12 @@ export class DocsLoaderService {
             throw 'Content not found';
           }
 
-          const str = x.body ?? '';
-          return returnType === 'safeHTML'
-            ? this._markdownService.parse(str)
-            : str;
+          return x.body ?? '';
         }),
         tap((x) => {
           if (this._docCache.some((x) => x.path === path)) return;
           this._docCache.push({ path, data: x });
+          this._transferState.set(key, x);
         }),
         finalize(() => this.docLoading$.next(false)),
         catchError((err) => {
@@ -87,13 +91,24 @@ export class DocsLoaderService {
   }
 
   firstContentPath$(useDefaultLang = false): Observable<string> {
-    const lang = this._languageDataService.language$.value;
+    const lang = this._languageDataService.selectedLanguage;
     const version = this._versionService.docVersion;
     const indexPath = `assets/docs/${version}/index_${
       useDefaultLang ? 'en' : lang
     }.md`;
+    const key = makeStateKey<string>(indexPath);
 
-    return this._http.get(indexPath, { responseType: 'text' }).pipe(
+    const source$ = () => {
+      if (this._transferState.hasKey(key)) {
+        return of(this._transferState.get(key, ''));
+      }
+
+      return this._http
+        .get(indexPath, { responseType: 'text' })
+        .pipe(tap((x) => this._transferState.set(key, x)));
+    };
+
+    return source$().pipe(
       map((x) => {
         const firstPathFound = x.match(/(\.+\/){1,}.+\.md/)?.[0];
         const relativePath = firstPathFound?.match(/(\.*\/){1,}/)?.[0] || '';
@@ -127,19 +142,6 @@ export class DocsLoaderService {
       this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
       table.remove();
     }
-  }
-
-  updateUrl(): void {
-    if (!this._router.url.includes('.md')) return;
-
-    const currentRoute = this._router.url;
-    const { language$, languageFromUrl } = this._languageDataService;
-    const newRoute = currentRoute.replace(
-      `_${languageFromUrl}.md` ?? '',
-      `_${language$.value}.md`
-    );
-
-    this._router.navigateByUrl(newRoute);
   }
 
   /**Add tag to indicate the type of file of the current */
