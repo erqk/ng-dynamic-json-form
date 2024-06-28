@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { tap } from 'rxjs';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
-import { LanguageType } from './language.type';
 import { LanguageDataService } from './language-data.service';
+import { LanguageType } from './language.type';
 
 @Component({
   selector: 'app-language-selector',
@@ -13,7 +13,7 @@ import { LanguageDataService } from './language-data.service';
     <select
       class="doc-form-element !px-4"
       (change)="onLanguageSelect($event)"
-      [value]="language$.value"
+      [value]="language$ | async"
     >
       <option value="en">English</option>
       <option value="zh-TW">中文</option>
@@ -37,7 +37,7 @@ export class LanguageSelectorComponent {
   private _switchLanguage(language: LanguageType): void {
     this._languageDataService
       .loadLanguageData$(language)
-      .pipe(tap(() => this._docsLoaderService.updateUrl()))
+      .pipe(tap(() => this._languageDataService.setLanguage(language)))
       .subscribe();
   }
 }

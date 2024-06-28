@@ -1,14 +1,14 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, Renderer2, inject } from '@angular/core';
+import { Component, DestroyRef, Renderer2, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  EMPTY,
   Observable,
-  catchError,
   delay,
-  from,
+  distinctUntilChanged,
   map,
+  of,
   switchMap,
   tap,
 } from 'rxjs';
@@ -19,6 +19,7 @@ import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
 import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { MarkdownService } from 'src/app/features/markdown/markdown.service';
 import { NavigatorIndexComponent } from 'src/app/features/navigator/components/navigator-index/navigator-index.component';
 import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
@@ -40,41 +41,40 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
   animations: [FADE_UP_ANIMATION],
 })
 export class PageDocsComponent {
+  private _destroyRef = inject(DestroyRef);
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
   private _viewportScroller = inject(ViewportScroller);
   private _renderer2 = inject(Renderer2);
   private _docLoaderService = inject(DocsLoaderService);
+  private _markdownService = inject(MarkdownService);
   private _layoutService = inject(LayoutService);
   private _langService = inject(LanguageDataService);
   private _useAnchorScrolling = false;
-  private _loadDoc$ = (type: 'safeHTML' | 'string') =>
-    this._route.url.pipe(
-      map((x) => x.map(({ path }) => path).join('/')),
-      switchMap((x) => {
-        return !x
-          ? this._loadFallbackDoc$()
-          : this._docLoaderService.loadDocHtml$(x, type);
-      })
-    );
+  private _loadDoc$ = this._route.url.pipe(
+    map((x) => x.map(({ path }) => path).join('/')),
+    switchMap((x) => (x === 'docs' ? this._getDefaultPath$() : of(x))),
+    distinctUntilChanged(),
+    switchMap((x) => this._docLoaderService.loadDoc$(x))
+  );
 
   showMobileMenu = false;
 
   headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
-  title$: Observable<string> = this._loadDoc$('string');
-  content$: Observable<SafeHtml> = this._loadDoc$('safeHTML').pipe(
+  content$: Observable<SafeHtml> = this._loadDoc$.pipe(
+    map((x) => this._markdownService.parse(x)),
     tap(() => {
       this.onDocReady();
       this.toggleMobileMenu(false);
       this._scrollToContent();
-    }),
-    catchError(() => {
-      this._reloadDocOnError();
-      return EMPTY;
     })
   );
+
+  ngOnInit(): void {
+    this._reloadOnLanguageChange();
+  }
 
   ngOnDestroy(): void {
     this._docLoaderService.clearCache();
@@ -100,6 +100,32 @@ export class PageDocsComponent {
     );
   }
 
+  private _getDefaultPath$(): Observable<any> {
+    return this._docLoaderService
+      .firstContentPath$()
+      .pipe(tap((x) => this._router.navigateByUrl(x, { replaceUrl: true })));
+  }
+
+  private _reloadOnLanguageChange(): void {
+    this._langService.language$
+      .pipe(
+        tap(() => {
+          if (!this._router.url.includes('.md')) return;
+
+          const currentRoute = this._router.url;
+          const { selectedLanguage, languageFromUrl } = this._langService;
+          const newRoute = currentRoute.replace(
+            `_${languageFromUrl}.md` ?? '',
+            `_${selectedLanguage}.md`
+          );
+
+          this._router.navigateByUrl(newRoute);
+        }),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe();
+  }
+
   private _scrollToContent(): void {
     if (typeof window === 'undefined') return;
 
@@ -120,22 +146,5 @@ export class PageDocsComponent {
         target && scrollToTitle(target, 'auto');
       });
     }
-  }
-
-  private _loadFallbackDoc$(): Observable<any> {
-    return this._docLoaderService.firstContentPath$().pipe(
-      switchMap((x) =>
-        this._router.navigateByUrl(`/${x}`, { replaceUrl: true })
-      ),
-      switchMap(() => this._langService.loadLanguageData$())
-    );
-  }
-
-  private _reloadDocOnError(): void {
-    const exitPage$ = from(
-      this._router.navigateByUrl('/', { skipLocationChange: true })
-    );
-
-    exitPage$.pipe(switchMap(() => this._loadFallbackDoc$())).subscribe();
   }
 }

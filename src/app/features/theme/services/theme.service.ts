@@ -61,9 +61,8 @@ export class ThemeService {
   }
 
   setTheme(id: string, path: string): void {
-    const existingStyle = document.head.querySelector(
-      `#${id}`
-    ) as HTMLLinkElement;
+    const getStylesheet = (id: string) =>
+      document.head.querySelector(`#${id}`) as HTMLLinkElement;
 
     const insertStylesheet = (_id: string): HTMLStyleElement => {
       const style = this._renderer2.createElement('link');
@@ -81,7 +80,12 @@ export class ThemeService {
       return style;
     };
 
+    const existingStyle = getStylesheet(id);
+    const existingNextStyle = getStylesheet(`${id}-next`);
+
     if (existingStyle) {
+      if (existingNextStyle) return;
+
       const nextStyle = insertStylesheet(`${id}-next`);
 
       nextStyle.onload = () => {

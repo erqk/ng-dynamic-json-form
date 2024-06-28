@@ -1,7 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, HostBinding, Input, inject } from '@angular/core';
+import { Component, HostBinding, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Subject, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
+import { Subject, delay, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
@@ -55,12 +55,11 @@ import { NavigatorService } from '../../services/navigator.service';
   styleUrls: ['./navigator-title.component.scss'],
 })
 export class NavigatorTitleComponent {
-  private _sideNavigationPaneService = inject(NavigatorService);
+  private _navigatorService = inject(NavigatorService);
   private _router = inject(Router);
   private _location = inject(Location);
   private _currentLinkIndex = 0;
   private _linksFlatten: NavigatorTitleItem[] = [];
-  private _pauseScrollingHighlight = false;
 
   private _reset$ = new Subject<void>();
   private _onDestroy$ = new Subject<void>();
@@ -68,21 +67,11 @@ export class NavigatorTitleComponent {
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
 
-  @Input() htmlString?: string;
   @HostBinding('class') hostClass = 'beauty-scrollbar';
-
-  ngOnChanges(): void {
-    if (typeof window !== 'undefined') {
-      window.setTimeout(() => {
-        this._sideNavigationPaneService.buildNavigationLinks();
-      });
-    }
-  }
 
   ngOnInit(): void {
     if (typeof window === 'undefined') return;
 
-    this._getLinks();
     this._onRouteChange();
   }
 
@@ -100,7 +89,6 @@ export class NavigatorTitleComponent {
       block: 'center',
     });
 
-    this._pauseScrollingHighlight = true;
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
     this._router.navigateByUrl(`${newUrl}#${item.id}`, {
@@ -109,28 +97,28 @@ export class NavigatorTitleComponent {
   }
 
   private _onRouteChange(): void {
+    this._getLinks();
+    this._syncActiveIndexWithScroll();
+
     this._router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap(() => this._syncActiveIndexWithScroll()),
+        delay(0),
+        tap(() => {
+          this._getLinks();
+          this._syncActiveIndexWithScroll();
+        }),
         takeUntil(this._onDestroy$)
       )
       .subscribe();
   }
 
   private _getLinks(): void {
-    this._sideNavigationPaneService.navigationLinks$
-      .pipe(
-        tap((x) => {
-          this.links = x;
-          this._flattenLinks(x);
-          this._syncActiveIndexWithScroll();
-          this._scrollToContent(undefined, false);
-          this._setActiveIds();
-        }),
-        takeUntil(this._onDestroy$)
-      )
-      .subscribe();
+    this.links = this._navigatorService.getNavigatorTitles();
+    this._flattenLinks(this.links);
+    this._syncActiveIndexWithScroll();
+    this._scrollToContent(undefined, false);
+    this._setActiveIds();
   }
 
   private _flattenLinks(links: NavigatorTitleItem[]): void {

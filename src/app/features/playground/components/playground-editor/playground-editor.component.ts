@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   Input,
@@ -8,7 +9,15 @@ import {
   SimpleChanges,
   inject,
 } from '@angular/core';
-import { Subject, fromEvent, map, merge, takeUntil, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  fromEvent,
+  map,
+  merge,
+  tap,
+} from 'rxjs';
 import { ThemeService } from 'src/app/features/theme/services/theme.service';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
@@ -21,9 +30,11 @@ import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
   styleUrls: ['./playground-editor.component.scss'],
 })
 export class PlaygroundEditorComponent {
+  private _destroyRef = inject(DestroyRef);
   private _el = inject(ElementRef);
   private _themeService = inject(ThemeService);
-  private _onDestroy$ = new Subject<void>();
+  private _editorInitialized = false;
+  private _editorRefreshTimeout = 0;
 
   @Input() data: Content | null = null;
   @Input() mainMenuBar = true;
@@ -36,18 +47,12 @@ export class PlaygroundEditorComponent {
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { data } = simpleChanges;
 
-    if (data && this.data && this.jsonEditor) {
-      const host = this._el.nativeElement as HTMLElement;
-      const el = host.querySelector('.cm-scroller') as HTMLElement;
-      const scrollTop = el.scrollTop;
-
+    if (data && this.jsonEditor) {
       try {
-        this.jsonEditor.set(this.data);
+        this.jsonEditor.set(data.currentValue);
       } catch (err) {
         console.error(err);
       }
-
-      el.scrollTo({ top: scrollTop });
     }
   }
 
@@ -57,8 +62,6 @@ export class PlaygroundEditorComponent {
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
     this.jsonEditor?.destroy();
   }
 
@@ -68,32 +71,44 @@ export class PlaygroundEditorComponent {
     const host = this._el.nativeElement as HTMLElement;
     const el = host.querySelector('.json-editor') as HTMLElement;
 
-    this.jsonEditor = new JSONEditor({
-      target: el,
-      props: {
-        mode: Mode.text,
-        content: this.data || undefined,
-        mainMenuBar: this.mainMenuBar,
-        navigationBar: this.navigationBar,
-        statusBar: this.statusBar,
-        onChange: (content, previousContent, status) => {
-          const _content = getJsonEditorContent(content) as any;
-          this.onEditing.emit(_content['json']);
+    // Put in the next event loop to improve performance if there are multiple editor
+    // in the same page.
+    window.setTimeout(() => {
+      this.jsonEditor = new JSONEditor({
+        target: el,
+        props: {
+          mode: Mode.text,
+          content: this.data || undefined,
+          mainMenuBar: this.mainMenuBar,
+          navigationBar: this.navigationBar,
+          statusBar: this.statusBar,
+          onChange: (content, previousContent, status) => {
+            const _content = getJsonEditorContent(content) as any;
+            this.onEditing.emit(_content['json']);
+          },
         },
-      },
-    });
+      });
+
+      this._editorInitialized = true;
+    }, 100);
   }
 
   private _darkThemeEvent(): void {
     if (typeof window === 'undefined') return;
 
     const setDarkTheme = (dark = false) => {
+      if (!this._editorInitialized) return;
+
       const host = this._el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;
 
       if (dark) el.classList.add('jse-theme-dark');
       else el.classList.remove('jse-theme-dark');
-      this.jsonEditor?.refresh();
+
+      window.clearTimeout(this._editorRefreshTimeout);
+      this._editorRefreshTimeout = window.setTimeout(() => {
+        this.jsonEditor?.refresh();
+      });
     };
 
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
@@ -105,11 +120,12 @@ export class PlaygroundEditorComponent {
     );
 
     const themeDark$ = this._themeService.theme$.pipe(
+      distinctUntilChanged(),
       tap((x) => setDarkTheme(x === 'dark'))
     );
 
     merge(prefersDark$, themeDark$)
-      .pipe(takeUntil(this._onDestroy$))
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
 }

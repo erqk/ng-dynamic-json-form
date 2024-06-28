@@ -8,7 +8,7 @@ import {
   takeUntil,
   takeWhile,
   tap,
-  timer
+  timer,
 } from 'rxjs';
 
 @Component({
@@ -28,8 +28,8 @@ import {
 })
 export class UiLoadingIndicatorComponent {
   private _step = 0;
-  private readonly _cancelTimer$ = new Subject<void>();
-  private readonly _onDestroy$ = new Subject<void>();
+  private _cancelTimer$ = new Subject<void>();
+  private _onDestroy$ = new Subject<void>();
 
   @Input() start = false;
 
@@ -38,7 +38,7 @@ export class UiLoadingIndicatorComponent {
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { start } = simpleChanges;
     if (start) {
-      if (this.start) {
+      if (start.currentValue === true) {
         this._addStep();
       } else {
         this.step = '0%';

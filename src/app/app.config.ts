@@ -7,7 +7,6 @@ import {
   withInMemoryScrolling,
   withPreloading,
 } from '@angular/router';
-import { switchMap } from 'rxjs';
 import { appRoutes } from './app.routes';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
 import { LanguageDataService } from './features/language/language-data.service';
@@ -29,12 +28,9 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       deps: [LanguageDataService, VersionService],
       multi: true,
-      useFactory:
-        (lang: LanguageDataService, version: VersionService) => () => {
-          return lang
-            .loadLanguageData$()
-            .pipe(switchMap(() => version.loadVersions$()));
-        },
+      useFactory: (lang: LanguageDataService) => () => {
+        return lang.loadLanguageData$();
+      },
     },
   ],
 };

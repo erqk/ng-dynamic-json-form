@@ -26,24 +26,25 @@
         ></app-navigator-index>
       </div>
 
-      <div
-        class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
-        [innerHTML]="content$ | async"
-      ></div>
+      <ng-container *ngIf="content$ | async as content">
+        <div
+          class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
+          [innerHTML]="content"
+        ></div>
 
-      <div
-        [ngClass]="[
-          'sticky w-64 py-10 overflow-auto',
-          'hidden lg:block',
-          'top-[var(--header-height)]',
-          'h-[calc(100vh-var(--header-height))]'
-        ]"
-      >
-        <app-navigator-title
-          [htmlString]="(title$ | async) ?? ''"
-          (click)="setSmoothScroll(true)"
-        ></app-navigator-title>
-      </div>
+        <div
+          [ngClass]="[
+            'sticky w-64 py-10 overflow-auto',
+            'hidden lg:block',
+            'top-[var(--header-height)]',
+            'h-[calc(100vh-var(--header-height))]'
+          ]"
+        >
+          <app-navigator-title
+            (click)="setSmoothScroll(true)"
+          ></app-navigator-title>
+        </div>
+      </ng-container>
     </div>
   </ui-content-wrapper>
 

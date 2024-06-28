@@ -14,6 +14,7 @@
     "serve:ssr": "node dist/docs/server/main.js",
     "build:ssr": "ng build && ng run docs:server",
     "prerender:get-routes": "node ./get-routes.js",
+    "prerender:dev": "npm run prerender:get-routes && ng run docs:prerender-dev --no-guess-routes --routes-file routes.txt",
     "prerender": "npm run prerender:get-routes && ng run docs:prerender --no-guess-routes --routes-file routes.txt"
   },
   "private": true,

@@ -9,8 +9,8 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { Observable, fromEvent, merge } from 'rxjs';
-import { debounceTime, delay, tap } from 'rxjs/operators';
+import { EMPTY, Observable, fromEvent, timer } from 'rxjs';
+import { debounceTime, switchMap, tap } from 'rxjs/operators';
 import { LayoutService } from './core/services/layout.service';
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { InputLayoutIllustrationComponent } from './example/components/input-layout-illustration/input-layout-illustration.component';
@@ -21,7 +21,6 @@ import { DocsLoaderService } from './features/doc/services/docs-loader.service';
 import { HeaderComponent } from './features/header/components/header/header.component';
 import { LanguageDataService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
-import { VersionService } from './features/version/version.service';
 
 @Component({
   selector: 'app-root',
@@ -39,22 +38,25 @@ export class AppComponent {
   private _injector = inject(Injector, { optional: true });
   private _router = inject(Router);
   private _docsLoaderService = inject(DocsLoaderService);
-  private _versionService = inject(VersionService);
   private _langService = inject(LanguageDataService);
   private _layoutService = inject(LayoutService);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
+  isServer = true;
 
-  docLoading$ = this._docsLoaderService.docLoading$.pipe(delay(0));
+  docLoading$ = timer(0).pipe(
+    switchMap(() => this._docsLoaderService.docLoading$)
+  );
 
   ngOnInit(): void {
-    const routeChange$ = this._routeChangeEvent$();
-    const docVersions$ = this._versionService.loadVersions$();
+    if (typeof window !== 'undefined') {
+      window.setTimeout(() => (this.isServer = false));
+    }
 
-    merge(routeChange$, docVersions$).subscribe();
     this._loadGoogleFonts();
     this._registerCustomElements();
+    this._routeChangeEvent$().subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -62,6 +64,7 @@ export class AppComponent {
 
     this._layoutService.updateHeaderHeight();
     this._layoutService.updateWindowSize();
+
     fromEvent(window, 'resize', { passive: true })
       .pipe(
         debounceTime(50),
@@ -74,8 +77,12 @@ export class AppComponent {
   }
 
   private _routeChangeEvent$(): Observable<any> {
-    // No need to take care of unsubscription because this is the root of the app.
-    // And this is one time action, no repeated subscription
+    if (typeof window === 'undefined') {
+      return EMPTY;
+    }
+
+    // No need to take care of unsubscription because it is one time action
+    // as this subscribe only in the root of the app.
     return this._router.events.pipe(
       tap((x) => {
         if (x instanceof RouteConfigLoadStart || x instanceof NavigationStart) {
@@ -84,7 +91,7 @@ export class AppComponent {
 
         if (x instanceof RouteConfigLoadEnd || x instanceof NavigationEnd) {
           this.routeLoading = false;
-          this._langService.language$.next(this._langService.currentLanguage);
+          this._langService.setCurrentLanguage();
         }
       })
     );
