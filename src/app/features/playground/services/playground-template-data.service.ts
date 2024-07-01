@@ -8,7 +8,7 @@ import {
   map,
   startWith,
 } from 'rxjs';
-import { LanguageDataService } from '../../language/language-data.service';
+import { LanguageService } from '../../language/language-data.service';
 import { LanguageType } from '../../language/language.type';
 import { PLAYGROUND_CONFIGS } from '../constants/playground-configs.constant';
 import { PlaygroundConfigItem } from '../interfaces/playground-config-item.interface';
@@ -17,7 +17,7 @@ import { PlaygroundConfigItem } from '../interfaces/playground-config-item.inter
   providedIn: 'root',
 })
 export class PlaygroundTemplateDataService {
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _templateList = PLAYGROUND_CONFIGS;
   private _browserStorageUpdated$ = new Subject<void>();
 

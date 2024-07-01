@@ -5,8 +5,8 @@
 
   &:hover,
   &:active {
+    border-color: var(--border-color-50);
     color: var(--primary-500);
-    font-weight: bold;
   }
 
   &.active {

@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import { combineLatest, map } from 'rxjs';
-import { LanguageDataService } from '../../language/language-data.service';
+import { LanguageService } from '../../language/language-data.service';
 import { PlaygroundTemplateDataService } from './playground-template-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class PlaygroundEditorDataService {
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
 
   private _modifiedData:

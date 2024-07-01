@@ -154,12 +154,12 @@
   }
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1024px) {
   .markdown {
     h1,
     h2,
     h3 {
-      margin-top: 1.25rem;
+      margin-top: 1.75rem;
 
       + :is(h1, h2, h3, h4, h5, h6) {
         margin-top: 0.5rem;

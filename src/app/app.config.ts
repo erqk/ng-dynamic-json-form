@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
-import { LanguageDataService } from './features/language/language-data.service';
+import { LanguageService } from './features/language/language-data.service';
 import { VersionService } from './features/version/version.service';
 
 export const appConfig: ApplicationConfig = {
@@ -26,9 +26,9 @@ export const appConfig: ApplicationConfig = {
     ),
     {
       provide: APP_INITIALIZER,
-      deps: [LanguageDataService, VersionService],
+      deps: [LanguageService, VersionService],
       multi: true,
-      useFactory: (lang: LanguageDataService) => () => {
+      useFactory: (lang: LanguageService) => () => {
         return lang.loadLanguageData$();
       },
     },

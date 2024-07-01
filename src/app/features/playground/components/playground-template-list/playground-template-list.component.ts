@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EMPTY, combineLatest, debounceTime, map, share, tap } from 'rxjs';
-import { LanguageDataService } from 'src/app/features/language/language-data.service';
-import { PlaygroundConfigItem } from '../../interfaces/playground-config-item.interface';
+import { combineLatest, debounceTime, map, share } from 'rxjs';
+import { LanguageService } from 'src/app/features/language/language-data.service';
+import { VersionService } from 'src/app/features/version/version.service';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
-import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-playground-template-list',
@@ -16,11 +15,12 @@ import { VersionService } from 'src/app/features/version/version.service';
   styleUrls: ['./playground-template-list.component.scss'],
 })
 export class PlaygroundTemplateListComponent {
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
   private _versionService = inject(VersionService);
   private _editorDataService = inject(PlaygroundEditorDataService);
 
+  @Input() isMobile = false;
   @Output() onEdit = new EventEmitter<boolean>();
 
   nameControl = new FormControl('');
@@ -28,20 +28,13 @@ export class PlaygroundTemplateListComponent {
   currentVersion = this._versionService.docVersion;
   showTemplateNameInput = false;
 
-  // When rendering in server side, the items are not wrapped inside
-  // this component, don't know the reason yet, so rendering it only
-  // on browser.
-  list$ =
-    typeof window !== 'undefined'
-      ? combineLatest([
-          this._templateDataService.exampleList$,
-          this._templateDataService.userTemplateList$,
-        ]).pipe(
-          debounceTime(0),
-          map(([examples, userTemplates]) => [...examples, ...userTemplates]),
-          share()
-        )
-      : EMPTY;
+  list$ = combineLatest([
+    this._templateDataService.exampleList$,
+    this._templateDataService.userTemplateList$,
+  ]).pipe(
+    debounceTime(0),
+    map(([examples, userTemplates]) => [...examples, ...userTemplates])
+  );
 
   currentTemplateKey$ = this._templateDataService.currentTemplateKey$;
   currentTemplate$ = combineLatest([this.list$, this.currentTemplateKey$]).pipe(
@@ -119,11 +112,6 @@ export class PlaygroundTemplateListComponent {
   setEditStatus(value: boolean): void {
     this.isEditing = value;
     this.onEdit.emit(this.isEditing);
-
-    // if (this.isEditing) {
-    //   this._editorDataService.configModifiedData =
-    //     this._currentTemplate?.config;
-    // }
   }
 
   private _selectLastTemplate(): void {

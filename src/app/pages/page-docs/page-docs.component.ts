@@ -18,10 +18,11 @@ import { getHeaderHeight } from 'src/app/core/utilities/get-header-height';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { DocsRouterLinkDirective } from 'src/app/features/doc/directives/doc-router-link.directive';
 import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
-import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { LanguageService } from 'src/app/features/language/language-data.service';
 import { MarkdownService } from 'src/app/features/markdown/markdown.service';
 import { NavigatorIndexComponent } from 'src/app/features/navigator/components/navigator-index/navigator-index.component';
 import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
+import { NavigatorService } from 'src/app/features/navigator/services/navigator.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
@@ -47,9 +48,10 @@ export class PageDocsComponent {
   private _viewportScroller = inject(ViewportScroller);
   private _renderer2 = inject(Renderer2);
   private _docLoaderService = inject(DocsLoaderService);
+  private _navigatorService = inject(NavigatorService);
   private _markdownService = inject(MarkdownService);
   private _layoutService = inject(LayoutService);
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _useAnchorScrolling = false;
   private _loadDoc$ = this._route.url.pipe(
     map((x) => x.map(({ path }) => path).join('/')),
@@ -60,13 +62,13 @@ export class PageDocsComponent {
 
   showMobileMenu = false;
 
-  headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
   windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
 
   content$: Observable<SafeHtml> = this._loadDoc$.pipe(
     map((x) => this._markdownService.parse(x)),
     tap(() => {
-      this.onDocReady();
+      this._navigatorService.getNavigatorTitles();
+      this._docLoaderService.wrapTable();
       this.toggleMobileMenu(false);
       this._scrollToContent();
     })
@@ -78,14 +80,6 @@ export class PageDocsComponent {
 
   ngOnDestroy(): void {
     this._docLoaderService.clearCache();
-  }
-
-  onDocReady(): void {
-    if (typeof window === 'undefined') return;
-
-    window.setTimeout(() => {
-      this._docLoaderService.wrapTable();
-    });
   }
 
   toggleMobileMenu(value?: boolean): void {

@@ -17,6 +17,7 @@ import {
   map,
   merge,
   tap,
+  timer,
 } from 'rxjs';
 import { ThemeService } from 'src/app/features/theme/services/theme.service';
 import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
@@ -33,8 +34,6 @@ export class PlaygroundEditorComponent {
   private _destroyRef = inject(DestroyRef);
   private _el = inject(ElementRef);
   private _themeService = inject(ThemeService);
-  private _editorInitialized = false;
-  private _editorRefreshTimeout = 0;
 
   @Input() data: Content | null = null;
   @Input() mainMenuBar = true;
@@ -57,8 +56,17 @@ export class PlaygroundEditorComponent {
   }
 
   ngAfterViewInit(): void {
-    this._initEditor();
-    this._darkThemeEvent();
+    // Put in the next event loop to improve performance if there are multiple editor
+    // in the same page.
+    timer(200)
+      .pipe(
+        tap(() => {
+          this._initEditor();
+          this._darkThemeEvent();
+        }),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -66,49 +74,49 @@ export class PlaygroundEditorComponent {
   }
 
   private _initEditor(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const host = this._el.nativeElement as HTMLElement;
     const el = host.querySelector('.json-editor') as HTMLElement;
 
-    // Put in the next event loop to improve performance if there are multiple editor
-    // in the same page.
-    window.setTimeout(() => {
-      this.jsonEditor = new JSONEditor({
-        target: el,
-        props: {
-          mode: Mode.text,
-          content: this.data || undefined,
-          mainMenuBar: this.mainMenuBar,
-          navigationBar: this.navigationBar,
-          statusBar: this.statusBar,
-          onChange: (content, previousContent, status) => {
-            const _content = getJsonEditorContent(content) as any;
-            this.onEditing.emit(_content['json']);
-          },
+    this.jsonEditor = new JSONEditor({
+      target: el,
+      props: {
+        mode: Mode.text,
+        content: this.data || undefined,
+        mainMenuBar: this.mainMenuBar,
+        navigationBar: this.navigationBar,
+        statusBar: this.statusBar,
+        onChange: (content, previousContent, status) => {
+          const _content = getJsonEditorContent(content) as any;
+          this.onEditing.emit(_content['json']);
         },
-      });
-
-      this._editorInitialized = true;
-    }, 100);
+      },
+    });
   }
 
   private _darkThemeEvent(): void {
     if (typeof window === 'undefined') return;
 
-    const setDarkTheme = (dark = false) => {
-      if (!this._editorInitialized) return;
+    let refreshTimeout = 0;
 
+    const refreshEditor = () => {
+      if (!this.jsonEditor) return;
+      if (typeof this.jsonEditor.refresh !== 'function') return;
+      this.jsonEditor.refresh();
+    };
+
+    const setDarkTheme = (dark = false) => {
       const host = this._el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;
 
       if (dark) el.classList.add('jse-theme-dark');
       else el.classList.remove('jse-theme-dark');
 
-      window.clearTimeout(this._editorRefreshTimeout);
-      this._editorRefreshTimeout = window.setTimeout(() => {
-        this.jsonEditor?.refresh();
-      });
+      window.clearTimeout(refreshTimeout);
+      refreshTimeout = window.setTimeout(() => refreshEditor());
     };
 
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');

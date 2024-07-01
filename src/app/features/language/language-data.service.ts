@@ -7,7 +7,7 @@ import { LanguageType } from './language.type';
 @Injectable({
   providedIn: 'root',
 })
-export class LanguageDataService {
+export class LanguageService {
   private _http = inject(HttpClient);
   private _transferState = inject(TransferState);
   private _location = inject(Location);

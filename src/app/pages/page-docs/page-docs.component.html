@@ -1,7 +1,6 @@
 <div
   class="beauty-scrollbar affect-child"
   [ngStyle]="{
-    '--header-height.px': (headerHeight$ | async) ?? 0,
     '--window-height.px': (windowSize$ | async)?.y ?? 0
   }"
 >
@@ -29,6 +28,7 @@
       <ng-container *ngIf="content$ | async as content">
         <div
           class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
+          docRouterLink
           [innerHTML]="content"
         ></div>
 
