@@ -6,7 +6,6 @@ import {
   inject,
   makeStateKey,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   Observable,
@@ -16,7 +15,7 @@ import {
   of,
   tap,
 } from 'rxjs';
-import { LanguageDataService } from '../../language/language-data.service';
+import { LanguageService } from '../../language/language-data.service';
 import { VersionService } from '../../version/version.service';
 
 @Injectable({
@@ -27,7 +26,7 @@ export class DocsLoaderService {
   private _http = inject(HttpClient);
   private _transferState = inject(TransferState);
   private _versionService = inject(VersionService);
-  private _languageDataService = inject(LanguageDataService);
+  private _languageDataService = inject(LanguageService);
   private _docCache: { path: string; data: string }[] = [];
 
   docLoading$ = new BehaviorSubject<boolean>(false);
@@ -124,61 +123,25 @@ export class DocsLoaderService {
   wrapTable(): void {
     if (typeof window === 'undefined') return;
 
-    const tables = Array.from(
-      document.querySelectorAll('table')
-    ) as HTMLTableElement[];
+    window.setTimeout(() => {
+      const tables = Array.from(
+        document.querySelectorAll('table')
+      ) as HTMLTableElement[];
 
-    for (const table of tables) {
-      const tableWrapper = document.createElement('div');
-      const tableCloned = table.cloneNode(true);
-      const wrapped =
-        table.parentElement?.classList.contains('table-wrapper') ?? false;
+      for (const table of tables) {
+        const tableWrapper = document.createElement('div');
+        const tableCloned = table.cloneNode(true);
+        const wrapped =
+          table.parentElement?.classList.contains('table-wrapper') ?? false;
 
-      if (wrapped) continue;
+        if (wrapped) continue;
 
-      tableWrapper.classList.add('table-wrapper');
-      tableWrapper.appendChild(tableCloned);
-      this._renderer2.appendChild(tableWrapper, tableCloned);
-      this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
-      table.remove();
-    }
-  }
-
-  /**Add tag to indicate the type of file of the current */
-  setCodeViewerTag(): void {
-    if (typeof window === 'undefined') return;
-
-    const viewers = document.querySelectorAll('pre[class^="language-"]');
-    const createTagEl = (parentEl: HTMLElement, text: string) => {
-      const el = document.createElement('span');
-      el.classList.add('code-tag');
-      this._renderer2.setProperty(el, 'innerText', text);
-      this._renderer2.appendChild(parentEl, el);
-    };
-
-    for (const item of Array.from(viewers)) {
-      const el = item as HTMLElement;
-      const type = el.classList.toString().replace('language-', '');
-
-      const wrapper = document.createElement('div');
-      wrapper.classList.add('code-wrapper');
-      this._renderer2.appendChild(wrapper, el.cloneNode(true));
-      this._renderer2.insertBefore(el.parentElement, wrapper, el);
-      el.remove();
-
-      switch (type) {
-        case 'html':
-          createTagEl(wrapper, 'HTML');
-          break;
-
-        case 'javascript':
-          createTagEl(wrapper, 'TS');
-          break;
-
-        case 'json':
-          createTagEl(wrapper, 'JSON');
-          break;
+        tableWrapper.classList.add('table-wrapper');
+        tableWrapper.appendChild(tableCloned);
+        this._renderer2.appendChild(tableWrapper, tableCloned);
+        this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
+        table.remove();
       }
-    }
+    });
   }
 }

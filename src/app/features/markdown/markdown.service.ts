@@ -28,7 +28,7 @@ export class MarkdownService {
   parse(val: string): SafeHtml {
     const version = this._versionService.docVersion;
     const renderer: RendererObject = {
-      link: this._linkRendererFn('', {
+      link: this._linkRendererFn({
         searchValue: version,
         replaceValue: 'docs',
       }),
@@ -44,37 +44,37 @@ export class MarkdownService {
     return this._domSanitizer.bypassSecurityTrustHtml(result);
   }
 
-  private _linkRendererFn(
-    routePrefix: string,
-    replaceHref?: { searchValue: string | RegExp; replaceValue: string }
-  ) {
+  private _linkRendererFn(replaceHref?: {
+    searchValue: string | RegExp;
+    replaceValue: string;
+  }) {
     return (href: string, title: string | null | undefined, text: string) => {
       const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
-      const useRouter = !!prefix && href?.startsWith(prefix);
-      const routeClean = this._router.url.split('?')[0].split('#')[0];
+      const pageAnchor = href.startsWith('#');
+      const externalLink = prefix && !href?.startsWith(prefix);
+      const routeClean = this._router.url
+        .split('?')[0]
+        .split('#')[0]
+        .substring(1);
 
-      // Anchor
-      if (href?.startsWith('#')) {
-        return `<a title="${title || text}" [routerLink]
+      if (pageAnchor) {
+        return `<a title="${title || text}" routerLink
           href="${routeClean}${href}">${text}</a>`;
       }
 
-      // External link
-      if (!useRouter) {
+      if (externalLink) {
         return `<a target="_blank" rel="noreferrer noopener"
           title="${title || text}" href="${href}">${text}</a>`;
       }
 
-      const _href = href
+      const newHref = href
         ?.substring(prefix.length)
         .replace(
           replaceHref?.searchValue || '',
           replaceHref?.replaceValue || ''
         );
 
-      const newHref = routePrefix ? `/${routePrefix}/${_href}` : _href;
-
-      return `<a title="${title || text}" [routerLink]
+      return `<a title="${title || text}" routerLink
         href="${newHref}">${text}</a>`;
     };
   }
