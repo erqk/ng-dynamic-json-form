@@ -74,7 +74,7 @@ export interface FormControlConfig {
 
 #### type
 
-請參閱 [輸入類型](../../v8/input-types/input-types_zh-TW.md).
+請參閱 [欄位類型](../../v8/input-types/input-types_zh-TW.md).
 
 #### value
 

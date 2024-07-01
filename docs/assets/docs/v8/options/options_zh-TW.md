@@ -438,8 +438,6 @@ https://dummyjson.com/products/category/smartphones
 
 ### 控制器路徑和物件路徑
 
-The value of every key inside `trigger.body` is the path to the value we need, which can be separated by `controlPath` and `valuePath`.
-
 每一個 `trigger.body` 內的 key 的值，是指向我們需要的值的路徑。該字串可拆分為 `controlPath` 和 `valuePath`，並使用 `,` 分隔。
 
 ```json
