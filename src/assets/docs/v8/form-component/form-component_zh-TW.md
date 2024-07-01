@@ -80,7 +80,7 @@ submit(): void {
 
 ### optionsSources
 
-動態選項的自訂來源 Observable。請參閱 [Use custom observable](../../v8/options/options_zh-TW.md#use-custom-observable).
+動態選項的自訂來源 Observable。請參閱 [Use custom observable](../../v8/options/options_zh-TW.md#使用自訂-observable).
 
 ### error...
 

@@ -1,0 +1,44 @@
+<div>
+  <ng-dynamic-json-form
+    [ngStyle]="styles"
+    [configs]="(configs$ | async) ?? []"
+  ></ng-dynamic-json-form>
+
+  <div class="fixed top-[calc(var(--header-height)+1rem)] right-10 z-10">
+    <button (click)="resetStyles()">RESET</button>
+
+    <ng-container *ngIf="!reseting">
+      <ng-container *ngFor="let item of styleOptions">
+        <div class="grid grid-cols-[220px_100px_1fr]">
+          <span>{{ item.key }}</span>
+          <span>{{ styles[item.key] }}</span>
+
+          <ng-container *ngIf="item.type === 'color'">
+            <input
+              type="color"
+              class="doc-form-element"
+              [value]="item.value"
+              (input)="updateStyle(item, $event)"
+            />
+          </ng-container>
+
+          <ng-container *ngIf="item.type === 'range'">
+            <!-- 
+              The order of property binding matters:
+              https://github.com/Matt-Esch/virtual-dom/issues/228
+             -->
+            <input
+              type="range"
+              class="doc-form-element"
+              [min]="item.min"
+              [max]="item.max"
+              [step]="item.step ?? 'any'"
+              [value]="item.value"
+              (input)="updateStyle(item, $event)"
+            />
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

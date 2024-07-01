@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { DocFormViewerComponent } from 'src/app/features/doc/components/doc-form-viewer/doc-form-viewer.component';
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
-import { LanguageDataService } from '../../features/language/language-data.service';
+import { LanguageService } from '../../features/language/language-data.service';
 import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
@@ -26,11 +26,10 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
   styleUrls: ['./page-home.component.scss'],
 })
 export class PageHomeComponent {
-  private _languageDataService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _layoutService = inject(LayoutService);
 
-  headerHeight$ = this._layoutService.headerHeight$;
-  lang$ = this._languageDataService.language$;
-  i18nContent$ = this._languageDataService.i18nContent$;
+  lang$ = this._langService.language$;
+  i18nContent$ = this._langService.i18nContent$;
   features$ = this.i18nContent$.pipe(map((x) => x['FEATURES']));
 }

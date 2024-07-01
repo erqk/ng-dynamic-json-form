@@ -2,9 +2,9 @@
 
 使用自訂元件來為控制器建立複雜的表單。
 
-## 建立自訂檔案元件
+## 建立自訂元件
 
-我們需要一個元件專門處理檔案資料。首先建立一個名為 `InputFileComponent` 的元件，然後繼承 `CustomControlComponent`，再將 `control` 覆寫為任一 `AbstractControl` 的實體。
+假設我們需要一個專門處理檔案資料的元件。首先建立一個名為 `InputFileComponent` 的元件，然後繼承 `CustomControlComponent`，再將 `control` 覆寫為任一 `AbstractControl` 的實體。
 
 <doc-code>
 
@@ -173,13 +173,13 @@ onOptionsGet(data: OptionItem[]): void {
 #### markAsDirty
 
 ```ts
-  markAsDirty(): void {}
+markAsDirty(): void {}
 ```
 
 #### markAsTouched
 
 ```ts
-  markAsTouched(): void {}
+markAsTouched(): void {}
 ```
 
 #### setErrors()

@@ -1,22 +1,26 @@
 <!-- desktop -->
-<div class="hidden md:flex flex-col h-full overflow-auto beauty-scrollbar">
-  <ng-container
-    *ngFor="let item of list$ | async"
-    [ngTemplateOutlet]="listItemTemplate"
-    [ngTemplateOutletContext]="{
-      key: item.key,
-      label: item.label,
-      isUserTemplate: !item.isExample
-    }"
-  ></ng-container>
+<ng-container *ngIf="!isMobile">
+  <div class="flex flex-col h-full overflow-auto beauty-scrollbar">
+    <ng-container
+      *ngFor="let item of list$ | async"
+      [ngTemplateOutlet]="listItemTemplate"
+      [ngTemplateOutletContext]="{
+        key: item.key,
+        label: item.label,
+        isUserTemplate: !item.isExample
+      }"
+    ></ng-container>
 
-  <div class="mt-3 px-4">
-    <ng-container *ngTemplateOutlet="templateNameInputTemplate"></ng-container>
+    <div class="mt-3 px-4">
+      <ng-container
+        *ngTemplateOutlet="templateNameInputTemplate"
+      ></ng-container>
+    </div>
   </div>
-</div>
+</ng-container>
 
 <!-- mobile -->
-<div class="block md:hidden">
+<ng-container *ngIf="isMobile">
   <div
     [ngClass]="[
       showTemplateNameInput ? 'hidden' : 'flex',
@@ -86,7 +90,7 @@
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
-</div>
+</ng-container>
 
 <ng-template #templateNameInputTemplate>
   <div class="flex-1 flex gap-2">

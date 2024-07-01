@@ -49,10 +49,8 @@ export class ThemeSwitcherComponent {
     this._themeService.savedTheme = nextTheme.key;
 
     for (const key in THEME_LIST) {
-      this._themeService.setTheme(
-        `${key}-theme`,
-        THEME_LIST[key][nextTheme.key]
-      );
+      const filePath = THEME_LIST[key][nextTheme.key];
+      this._themeService.setTheme(`${key}-theme`, filePath);
     }
   }
 }

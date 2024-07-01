@@ -4,7 +4,8 @@
 
   .ui-basic {
     input,
-    select {
+    select,
+    textarea {
       background-color: rgba(var(--bg-color-rgb), 0.35);
       backdrop-filter: blur(4px);
     }
@@ -17,6 +18,10 @@ select.doc-form-element {
 
   background-color: rgb(var(--bg-color-rgb));
   color: rgb(var(--text-color-rgb));
+}
+
+input.doc-form-element {
+  border: solid 1px var(--border-color-50);
 }
 
 input.doc-form-element,
@@ -32,4 +37,40 @@ select.doc-form-element {
   border-radius: 0.5rem;
   font-size: inherit;
   outline: none;
+}
+
+@mixin darkStyle {
+  input.doc-form-element,
+  textarea.doc-form-element,
+  select.doc-form-element {
+    background-color: color-mix(
+      in srgb,
+      var(--body-bg-color) 95%,
+      rgb(var(--text-color-rgb))
+    );
+  }
+
+  .ng-dynamic-json-form {
+    .ui-basic {
+      input,
+      select,
+      textarea {
+        background-color: color-mix(
+          in srgb,
+          var(--body-bg-color) 95%,
+          rgb(var(--text-color-rgb))
+        );
+      }
+    }
+  }
+}
+
+html.dark {
+  @include darkStyle();
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    @include darkStyle();
+  }
 }

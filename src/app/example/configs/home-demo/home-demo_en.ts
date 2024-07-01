@@ -33,7 +33,7 @@ export const CONFIG_HOME_DEMO_EN: FormControlConfig = {
           label: 'Level 3',
           formControlName: 'level3',
           layout: CONFIG_HOME_DEMO_COMMON_LAYOUT,
-          children: [CONFIG_BASIC_ADDRESS_EN],
+          children: [CONFIG_BASIC_ADDRESS_EN()],
         },
       ],
     },

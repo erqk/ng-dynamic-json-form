@@ -1,5 +1,5 @@
 :host {
-  --layoutBgColor: rgba(255, 255, 255, 0.35);
+  --layoutBgColor: white;
 }
 
 @mixin layoutSection($color) {
@@ -60,20 +60,20 @@ input {
 
 @mixin darkStyle {
   :host {
-    --layoutBgColor: rgba(50, 50, 50, 0.35);
+    --layoutBgColor: rgba(0, 0, 0, 0.5);
   }
 
   .host {
-    @include layoutSection(rgb(181, 143, 210));
+    @include layoutSection(rgb(163, 127, 191));
   }
 
   .description,
   .input-area {
-    @include layoutSection(#b5b5b5);
+    @include layoutSection(#9b9b9b);
   }
 
   .label {
-    @include layoutSection(#79c9a1);
+    @include layoutSection(#4fae7e);
   }
 
   .content {
@@ -81,7 +81,7 @@ input {
   }
 
   .error {
-    @include layoutSection(rgb(233, 132, 115));
+    @include layoutSection(rgb(225, 114, 94));
   }
 }
 

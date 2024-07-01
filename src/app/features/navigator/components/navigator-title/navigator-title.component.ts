@@ -1,7 +1,8 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, HostBinding, inject } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { Subject, delay, filter, fromEvent, merge, takeUntil, tap } from 'rxjs';
+import { Component, DestroyRef, HostBinding, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { Subject, fromEvent, merge, takeUntil, tap } from 'rxjs';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
@@ -55,6 +56,7 @@ import { NavigatorService } from '../../services/navigator.service';
   styleUrls: ['./navigator-title.component.scss'],
 })
 export class NavigatorTitleComponent {
+  private _destroyRef = inject(DestroyRef);
   private _navigatorService = inject(NavigatorService);
   private _router = inject(Router);
   private _location = inject(Location);
@@ -62,22 +64,26 @@ export class NavigatorTitleComponent {
   private _linksFlatten: NavigatorTitleItem[] = [];
 
   private _reset$ = new Subject<void>();
-  private _onDestroy$ = new Subject<void>();
 
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
 
   @HostBinding('class') hostClass = 'beauty-scrollbar';
 
-  ngOnInit(): void {
-    if (typeof window === 'undefined') return;
-
-    this._onRouteChange();
-  }
-
-  ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+  constructor() {
+    this._navigatorService.titles$
+      .pipe(
+        tap((x) => {
+          this.links = x;
+          this._flattenLinks(x);
+          this._syncActiveIndexWithScroll();
+          this._scrollToContent(undefined, false);
+          this._setActiveIds();
+          this._syncActiveIndexWithScroll();
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
   }
 
   onLinkClick(e: Event, item: NavigatorTitleItem): void {
@@ -94,31 +100,6 @@ export class NavigatorTitleComponent {
     this._router.navigateByUrl(`${newUrl}#${item.id}`, {
       onSameUrlNavigation: 'reload',
     });
-  }
-
-  private _onRouteChange(): void {
-    this._getLinks();
-    this._syncActiveIndexWithScroll();
-
-    this._router.events
-      .pipe(
-        filter((x) => x instanceof NavigationEnd),
-        delay(0),
-        tap(() => {
-          this._getLinks();
-          this._syncActiveIndexWithScroll();
-        }),
-        takeUntil(this._onDestroy$)
-      )
-      .subscribe();
-  }
-
-  private _getLinks(): void {
-    this.links = this._navigatorService.getNavigatorTitles();
-    this._flattenLinks(this.links);
-    this._syncActiveIndexWithScroll();
-    this._scrollToContent(undefined, false);
-    this._setActiveIds();
   }
 
   private _flattenLinks(links: NavigatorTitleItem[]): void {
@@ -143,7 +124,8 @@ export class NavigatorTitleComponent {
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
         tap(() => this._highlightTitle()),
-        takeUntil(merge(this._onDestroy$, this._reset$))
+        takeUntil(this._reset$),
+        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
   }

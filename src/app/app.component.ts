@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Type, inject } from '@angular/core';
-import { NgElementConfig, createCustomElement } from '@angular/elements';
+import {
+  ChangeDetectorRef,
+  Component,
+  Injector,
+  Type,
+  inject,
+} from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import {
   NavigationEnd,
   NavigationStart,
@@ -9,8 +15,8 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { EMPTY, Observable, fromEvent, timer } from 'rxjs';
-import { debounceTime, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, Observable, fromEvent } from 'rxjs';
+import { debounceTime, delay, tap } from 'rxjs/operators';
 import { LayoutService } from './core/services/layout.service';
 import { CustomLoadingComponent } from './example/components/custom-loading/custom-loading.component';
 import { InputLayoutIllustrationComponent } from './example/components/input-layout-illustration/input-layout-illustration.component';
@@ -18,8 +24,9 @@ import { DocCodeComponent } from './features/doc/components/doc-code/doc-code.co
 import { DocFormViewerComponent } from './features/doc/components/doc-form-viewer/doc-form-viewer.component';
 import { DocTabComponent } from './features/doc/components/doc-tab/doc-tab.component';
 import { DocsLoaderService } from './features/doc/services/docs-loader.service';
+import { FormStyleTweakerComponent } from './features/form-style-tweaker/form-style-tweaker.component';
 import { HeaderComponent } from './features/header/components/header/header.component';
-import { LanguageDataService } from './features/language/language-data.service';
+import { LanguageService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
@@ -35,19 +42,19 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  private _cd = inject(ChangeDetectorRef);
   private _injector = inject(Injector, { optional: true });
   private _router = inject(Router);
   private _docsLoaderService = inject(DocsLoaderService);
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _layoutService = inject(LayoutService);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
   isServer = true;
 
-  docLoading$ = timer(0).pipe(
-    switchMap(() => this._docsLoaderService.docLoading$)
-  );
+  headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
+  docLoading$ = this._docsLoaderService.docLoading$.pipe(delay(0));
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -92,6 +99,7 @@ export class AppComponent {
         if (x instanceof RouteConfigLoadEnd || x instanceof NavigationEnd) {
           this.routeLoading = false;
           this._langService.setCurrentLanguage();
+          this._cd.detectChanges();
         }
       })
     );
@@ -113,12 +121,13 @@ export class AppComponent {
       return;
     }
 
-    const options: NgElementConfig = {
-      injector: this._injector,
-    };
-
     const create = (selector: string, component: Type<any>) => {
-      customElements.define(selector, createCustomElement(component, options));
+      customElements.define(
+        selector,
+        createCustomElement(component, {
+          injector: this._injector!,
+        })
+      );
     };
 
     create('doc-code', DocCodeComponent);
@@ -126,5 +135,6 @@ export class AppComponent {
     create('custom-loading', CustomLoadingComponent);
     create('doc-form-viewer', DocFormViewerComponent);
     create('input-layout-illustration', InputLayoutIllustrationComponent);
+    create('form-style-tweaker', FormStyleTweakerComponent);
   }
 }

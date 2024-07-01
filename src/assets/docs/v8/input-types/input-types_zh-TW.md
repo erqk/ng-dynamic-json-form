@@ -1,6 +1,6 @@
 # 欄位類型
 
-以下為內建的欄位類型列表。將 `type` 設為以下其中一個值來建立該類型的輸入欄位。
+以下為內建的欄位類型。將 `type` 設為以下其中一個值來建立該類型的輸入欄位。
 
 - [checkbox](#checkbox)
 - [date](#date)
@@ -48,7 +48,7 @@
 
 ## Checkbox / Radio
 
-使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_zh-TW.md)。
+使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [選項](../../v8/options/options_zh-TW.md)。
 
 ### Checkbox
 
@@ -83,7 +83,7 @@
 
 ## Select
 
-使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [Options](../../v8/options/options_zh-TW.md)。
+使用 `options.data` 來提供靜態選項 。若需要動態選項，請參閱 [選項](../../v8/options/options_zh-TW.md)。
 
 <doc-form-viewer config-path="SELECT.ZH-TW"></doc-form-viewer>
 
@@ -111,3 +111,13 @@
 ## Range
 
 <doc-form-viewer config-path="RANGE.ZH-TW"></doc-form-viewer>
+
+## 更多類型
+
+如果內建的類型無法滿足需求，我們可以：
+If the built-in types are not enough to cover the needs, we can:
+
+- 擴充 `type`
+- 用其他元件去覆蓋現有的 `type`
+
+請參閱 [擴充/覆寫 UI 元件](../../v8/ui-components/ui-components_zh-TW.md#擴充覆寫-ui-元件)。

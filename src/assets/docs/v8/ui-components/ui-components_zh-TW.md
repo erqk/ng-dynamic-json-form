@@ -1,18 +1,6 @@
 # UI 元件
 
-UI 元件和自訂元件是一樣的。它們都繼承 `CustomControlComponent`。
-
-`NgDynamicJsonForm` 會根據設定的 `type` 來找對應的元件來使用。
-
-```json
-configs = [
-	{
-		...
-		"type": "checkbox"
-	},
-	...
-]
-```
+當設定相應的 `type` 時，`uiComponents` 決定哪個元件會被使用。
 
 ## 提供 UI 元件
 
@@ -43,11 +31,13 @@ export const appConfig: ApplicationConfig = {
 | [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
 | [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
 
-## 自訂 UI 元件
+## 建立自訂 UI 元件
 
-建立自訂 UI 元件的過程和 [自訂元件](../../v8/custom-components/custom-components_zh-TW.md) 一樣。
+建立自訂 UI 元件的過程和 [建立自訂元件](../../v8/custom-components/custom-components_zh-TW.md#建立自訂元件) 一樣。
 
-`uiComponents` 可以被擴充、覆寫。舉個例子，我們可以將 `InputFileComponent` 加入到 `uiComponents`。當 `type` 設為 `file` 時，該元件就會自動被選用。
+## 擴充/覆寫 UI 元件
+
+`uiComponents` 可以被覆寫或者擴充。舉個例子，我們將 `uiComponents` 多擴充一個 `file` 的類型。當 `type` 設為 `file` 時，`InputFileComponent` 元件就會被選用。
 
 ```tsx
 import { ApplicationConfig } from '@angular/core';
@@ -66,12 +56,4 @@ export const appConfig: ApplicationConfig = {
     })
   ],
 };
-```
-
-```json
-{
-  "formControlName": "file",
-  "label": "File upload",
-  "type": "file"
-}
 ```

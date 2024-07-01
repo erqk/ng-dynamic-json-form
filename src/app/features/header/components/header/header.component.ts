@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { debounceTime, filter, map, takeUntil, tap, windowWhen } from 'rxjs/operators';
-import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { LanguageService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
 import { LayoutService } from 'src/app/core/services/layout.service';
@@ -30,7 +30,7 @@ import { Subject, fromEvent } from 'rxjs';
 })
 export class HeaderComponent {
   private _el = inject(ElementRef);
-  private _languageDataService = inject(LanguageDataService);
+  private _languageDataService = inject(LanguageService);
   private _layoutService = inject(LayoutService);
   private readonly _onDestroy$ = new Subject<void>();
 

@@ -25,7 +25,7 @@ import {
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
-import { LanguageDataService } from 'src/app/features/language/language-data.service';
+import { LanguageService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
 import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
 import { PlaygroundFormMaterialComponent } from 'src/app/features/playground/components/playground-form/playground-form-material.component';
@@ -61,11 +61,13 @@ import { VersionService } from 'src/app/features/version/version.service';
 export class PagePlaygroundComponent {
   private _http = inject(HttpClient);
   private _layoutService = inject(LayoutService);
-  private _langService = inject(LanguageDataService);
+  private _langService = inject(LanguageService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
   private _versionService = inject(VersionService);
   private _playgroundSettingsService = inject(PlaygroundSettingsService);
   private _editorDataService = inject(PlaygroundEditorDataService);
+
+  MOBILE_BREAKPOINT = 992;
 
   uiComponents = [
     {
@@ -110,7 +112,6 @@ export class PagePlaygroundComponent {
     ),
   };
 
-  headerHeight$ = this._layoutService.headerHeight$;
   windowSize$ = this._layoutService.windowSize$;
 
   mobileTabs$: Observable<string[]> = this._langService.i18nContent$.pipe(

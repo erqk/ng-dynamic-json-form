@@ -2,9 +2,9 @@
 
 Use custom component to build complex form for the control.
 
-## Create a custom file input component
+## Create a custom component
 
-We need a component that can handle file input. First, create a component called `InputFileComponent` and extends it with `CustomControlComponent` , then override the `control` and assign it with an instance of `AbstractControl`.
+For example, we need a component that can handle file input. First, create a component called `InputFileComponent` and extends it with `CustomControlComponent` , then override the `control` and assign it with an instance of `AbstractControl`.
 
 <doc-code>
 
@@ -173,13 +173,13 @@ onOptionsGet(data: OptionItem[]): void {
 #### markAsDirty
 
 ```ts
-  markAsDirty(): void {}
+markAsDirty(): void {}
 ```
 
 #### markAsTouched
 
 ```ts
-  markAsTouched(): void {}
+markAsTouched(): void {}
 ```
 
 #### setErrors()

@@ -26,7 +26,7 @@ export class ThemeService {
     },
   ];
 
-  theme$ = new BehaviorSubject<string>('auto');
+  theme$ = new BehaviorSubject<'auto' | 'light' | 'dark'>('auto');
 
   get savedTheme(): string {
     if (typeof window === 'undefined') return '';
@@ -81,12 +81,14 @@ export class ThemeService {
     };
 
     const existingStyle = getStylesheet(id);
-    const existingNextStyle = getStylesheet(`${id}-next`);
 
     if (existingStyle) {
-      if (existingNextStyle) return;
+      const existingNextStyle = getStylesheet(`${id}-next`);
+      const nextStyle = existingNextStyle ?? insertStylesheet(`${id}-next`);
 
-      const nextStyle = insertStylesheet(`${id}-next`);
+      if (existingNextStyle) {
+        this._renderer2.setProperty(existingNextStyle, 'href', path);
+      }
 
       nextStyle.onload = () => {
         existingStyle.remove();

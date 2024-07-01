@@ -1,9 +1,8 @@
 <!-- desktop -->
-<ng-container *ngIf="windowSize$.value.x >= 768">
+<ng-container *ngIf="windowSize$.value.x >= MOBILE_BREAKPOINT">
   <div
-    class="relative z-0 hidden md:flex"
+    class="relative z-0 flex"
     [ngStyle]="{
-      '--header-height.px': headerHeight$.value,
       '--panel-width': '20rem'
     }"
   >
@@ -12,7 +11,7 @@
       [ngClass]="[
         'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
         'flex items-center',
-        'h-[calc(100vh-var(--header-height))]'
+        'h-[calc(100dvh-var(--header-height))]'
       ]"
     >
       <div
@@ -35,6 +34,7 @@
 
           <app-playground-template-list
             class="block mt-4 overflow-hidden"
+            [isMobile]="false"
             (onEdit)="onTemplateEdit($event)"
           ></app-playground-template-list>
         </div>
@@ -89,7 +89,7 @@
           <as-split-area
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
-              '!h-[calc(100vh-var(--header-height))]',
+              '!h-[calc(100dvh-var(--header-height))]',
               'flex flex-col p-4 pt-1'
             ]"
             [size]="asSplitSizes[1]"
@@ -106,14 +106,13 @@
 </ng-container>
 
 <!-- mobile -->
-<ng-container *ngIf="windowSize$.value.x < 768">
+<ng-container *ngIf="windowSize$.value.x < MOBILE_BREAKPOINT">
   <div
     [ngClass]="[
-      'flex flex-col md:hidden',
+      'flex flex-col',
       'h-[calc(var(--window-height)-var(--header-height))] overflow-hidden'
     ]"
     [ngStyle]="{
-      '--header-height.px': headerHeight$.value,
       '--window-height.px': windowSize$.value.y
     }"
   >
@@ -133,7 +132,7 @@
             mobileTabSelected === i
               ? 'text-[var(--primary-500)] font-bold'
               : 'text-[rgba(128,128,128,0.75)]',
-            'p-2 uppercase text-xs'
+            'px-6 py-2 uppercase text-xs'
           ]"
           (click)="switchMobileTab(i)"
         >
@@ -157,6 +156,7 @@
 
       <app-playground-template-list
         class="p-2"
+        [isMobile]="true"
         (onEdit)="onTemplateEdit($event)"
       ></app-playground-template-list>
     </div>

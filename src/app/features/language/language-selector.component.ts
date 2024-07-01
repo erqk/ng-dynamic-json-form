@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { tap } from 'rxjs';
-import { DocsLoaderService } from 'src/app/features/doc/services/docs-loader.service';
-import { LanguageDataService } from './language-data.service';
+import { LanguageService } from './language-data.service';
 import { LanguageType } from './language.type';
 
 @Component({
@@ -22,10 +21,9 @@ import { LanguageType } from './language.type';
   styles: [],
 })
 export class LanguageSelectorComponent {
-  private _languageDataService = inject(LanguageDataService);
-  private _docsLoaderService = inject(DocsLoaderService);
+  private _langService = inject(LanguageService);
 
-  language$ = this._languageDataService.language$;
+  language$ = this._langService.language$;
 
   onLanguageSelect(e: Event): void {
     const select = e.target as HTMLSelectElement;
@@ -35,9 +33,9 @@ export class LanguageSelectorComponent {
   }
 
   private _switchLanguage(language: LanguageType): void {
-    this._languageDataService
+    this._langService
       .loadLanguageData$(language)
-      .pipe(tap(() => this._languageDataService.setLanguage(language)))
+      .pipe(tap(() => this._langService.setLanguage(language)))
       .subscribe();
   }
 }

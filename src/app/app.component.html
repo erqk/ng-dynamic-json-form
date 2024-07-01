@@ -1,7 +1,10 @@
 <div
-  class="duration-500"
+  class="duration-500 transition-opacity"
+  [ngClass]="{
+    'opacity-0': isServer
+  }"
   [ngStyle]="{
-    opacity: isServer ? 0 : 1
+    '--header-height.px': headerHeight$ | async,
   }"
 >
   <ui-loading-indicator

@@ -6,8 +6,8 @@ export const CONFIG_BASIC_DATE_ZHTW: FormControlConfig = {
   type: 'date',
   props: {
     appendTo: 'body',
-    min: 'Date(2024/01/01)',
-    minDate: 'Date(2024/01/01)',
+    min: new Date(),
+    minDate: new Date(),
     showTime: true,
     showIcon: true,
     styleClass: 'w-full',

@@ -1,5 +1,5 @@
-import { FORM_CONFIG_BASIC_EN } from 'src/app/example/configs/basic/form-config-basic_en.constant';
-import { FORM_CONFIG_BASIC_ZHTW } from 'src/app/example/configs/basic/form-config-basic_zh-TW.constant';
+import { CONFIG_BASIC_EN } from 'src/app/example/configs/basic/form-config-basic_en.constant';
+import { CONFIG_BASIC_ZHTW } from 'src/app/example/configs/basic/form-config-basic_zh-TW.constant';
 import { CONFIG_CONDITIONS_MULTIPLE_EN } from 'src/app/example/configs/conditions/complex/config-conditions-complex_en.constant';
 import { CONFIG_CONDITIONS_MULTIPLE_ZHTW } from 'src/app/example/configs/conditions/complex/config-conditions-complex_zh-TW.constant';
 import { CONFIG_CONDITIONS_VALIDATOR_EN } from 'src/app/example/configs/conditions/validator/config-conditions-validator_en.constant';
@@ -27,12 +27,12 @@ export const PLAYGROUND_CONFIGS: {
   basic: {
     en: {
       label: 'Basic',
-      config: FORM_CONFIG_BASIC_EN,
+      config: CONFIG_BASIC_EN,
       isExample: true,
     },
     'zh-TW': {
       label: '基本元件',
-      config: FORM_CONFIG_BASIC_ZHTW,
+      config: CONFIG_BASIC_ZHTW,
       isExample: true,
     },
   },
@@ -86,48 +86,48 @@ export const PLAYGROUND_CONFIGS: {
   },
   'dynamic-multi-source': {
     en: {
-      label: 'Dynamic options (Multi-source)',
+      label: 'Options (Dynamic)',
       config: CONFIG_DYNAMIC_MULTI_SOURCE_EN,
       isExample: true,
     },
     'zh-TW': {
-      label: '動態選項 (多重來源)',
+      label: '選項 (動態)',
       config: CONFIG_DYNAMIC_MULTI_SOURCE_ZHTW,
       isExample: true,
     },
   },
   'dynamic-address': {
     en: {
-      label: 'Dynamic options (Address)',
+      label: 'Address (Using filter)',
       config: CONFIG_ADDRESS_DYNAMIC_EN(),
       isExample: true,
     },
     'zh-TW': {
-      label: '動態選項 (地址)',
+      label: '地址 (使用過濾器)',
       config: CONFIG_ADDRESS_DYNAMIC_ZHTW,
       isExample: true,
     },
   },
   'dynamic-products': {
     en: {
-      label: 'Dynamic options (Products)',
+      label: 'Products (Using filter)',
       config: CONFIG_DYNAMIC_PRODUCTS_EN,
       isExample: true,
     },
     'zh-TW': {
-      label: '動態選項 (商品)',
+      label: '商品 (使用過濾器)',
       config: CONFIG_DYNAMIC_PRODUCTS_ZHTW,
       isExample: true,
     },
   },
   'dynamic-posts': {
     en: {
-      label: 'Dynamic options (Posts)',
+      label: 'Posts (Using trigger)',
       config: CONFIG_DYNAMIC_POSTS_EN,
       isExample: true,
     },
     'zh-TW': {
-      label: '動態選項 (貼文)',
+      label: '貼文 (使用觸發器)',
       config: CONFIG_DYNAMIC_POSTS_ZHTW,
       isExample: true,
     },

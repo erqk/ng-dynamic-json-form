@@ -25,7 +25,7 @@ Here list all the input types that are ready to use. Set the `type` to one of th
 
 ## Number
 
-Set `type` to `number` will build input with `type="number"`. We can also use mask to achieve the same result. The mask feature is powered by `imaskjs`. See [Input mask]() for more.
+Set `type` to `number` will build input with `type="number"`. We can also use mask to achieve the same result. The mask feature is powered by `imaskjs`. See [Input mask](../../v8/input-mask/input-mask_en.md) for more.
 
 <doc-tab>
 
@@ -111,3 +111,12 @@ Use `options.data` to provide static options. For dynamic options, see [Dynamic 
 ## Range
 
 <doc-form-viewer config-path="RANGE.EN"></doc-form-viewer>
+
+## More Types
+
+If the built-in types are not enough to cover the needs, we can:
+
+- Extend the `type`
+- Replace the component to be used for the existing `type`
+
+See [Extend or Overwrite UI components](../../v8/ui-components/ui-components_en.md#extend-or-overwrite-ui-components).
