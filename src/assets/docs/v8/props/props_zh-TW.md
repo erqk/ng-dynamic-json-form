@@ -21,6 +21,36 @@
 }
 ```
 
+## 綁定目標
+
+以下為各個內建的欄位類型所對應的綁定目標。
+
+### Angular Material
+
+| 類型     | 目標                  | 選擇器 / 元件                   |
+| :------- | :-------------------- | :------------------------------ |
+| checkbox | `MatCheckbox`         | `<mat-checkbox>`                |
+| date     | `MatDatepickerInput`  | `input[matDatepicker]`          |
+| radio    | `MatRadioGroup`       | `<mat-radio-group>`             |
+| range    | `MatSlider`           | `<mat-slider>`                  |
+| select   | `MatSelect`           | `<mat-select>`                  |
+| switch   | `MatSlideToggle`      | `<mat-slide-toggle>`            |
+| text     | `MatInput`            | `input[matInput]`               |
+| textarea | `CdkTextareaAutosize` | `textarea[cdkTextareaAutosize]` |
+
+### PrimeNG
+
+| 類型     | 目標            | 選擇器 / 元件              |
+| :------- | :-------------- | :------------------------- |
+| checkbox | `Checkbox`      | `<p-checkbox>`             |
+| date     | `Calendar`      | `<p-calendar>`             |
+| radio    | `RadioButton`   | `<p-radioButton>`          |
+| range    | `Slider`        | `<p-slider>`               |
+| select   | `Dropdown`      | `<p-dropdown>`             |
+| switch   | `InputSwitch`   | `<p-inputSwitch>`          |
+| text     | `InputText`     | `input[pInputText]`        |
+| textarea | `InputTextarea` | `textarea[pInputTextarea]` |
+
 ## 日期
 
 JSON 不支援 JavaScript 的日期物件。若要轉換為日期物件，請使用下列格式之一傳入：
@@ -86,4 +116,4 @@ export class UiPrimengDateComponent extends CustomControlComponent {
 
 </doc-tab>
 
-`key` 的用處是標記要綁定的目標。如果不提供，則會綁定到 `PropsBindingDirective` 的宿主元素。
+`key` 的用處是標記要綁定的目標。如果不提供，則綁定到 `PropsBindingDirective` 的宿主元素。

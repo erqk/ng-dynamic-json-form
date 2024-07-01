@@ -21,6 +21,36 @@ Provide them using `props`:
 }
 ```
 
+## Binding Target
+
+Below shows the binding target for each built-in input types.
+
+### Angular Material
+
+| Type     | Target                | Selector / Component            |
+| :------- | :-------------------- | :------------------------------ |
+| checkbox | `MatCheckbox`         | `<mat-checkbox>`                |
+| date     | `MatDatepickerInput`  | `input[matDatepicker]`          |
+| radio    | `MatRadioGroup`       | `<mat-radio-group>`             |
+| range    | `MatSlider`           | `<mat-slider>`                  |
+| select   | `MatSelect`           | `<mat-select>`                  |
+| switch   | `MatSlideToggle`      | `<mat-slide-toggle>`            |
+| text     | `MatInput`            | `input[matInput]`               |
+| textarea | `CdkTextareaAutosize` | `textarea[cdkTextareaAutosize]` |
+
+### PrimeNG
+
+| Type     | Target          | Selector / Component       |
+| :------- | :-------------- | :------------------------- |
+| checkbox | `Checkbox`      | `<p-checkbox>`             |
+| date     | `Calendar`      | `<p-calendar>`             |
+| radio    | `RadioButton`   | `<p-radioButton>`          |
+| range    | `Slider`        | `<p-slider>`               |
+| select   | `Dropdown`      | `<p-dropdown>`             |
+| switch   | `InputSwitch`   | `<p-inputSwitch>`          |
+| text     | `InputText`     | `input[pInputText]`        |
+| textarea | `InputTextarea` | `textarea[pInputTextarea]` |
+
 ## Date
 
 JSON does not support JavaScript Date object. To convert to a JavaScript Date object, pass the value in one of the following forms:
@@ -86,4 +116,4 @@ export class UiPrimengDateComponent extends CustomControlComponent {
 
 </doc-tab>
 
-The `key` is use to match the target to bind the properties. If not provideded, it will bind to the element which the `PropsBindingDirective` is binded.
+The `key` is use to match the target to bind the properties. If not provided, it will bind to the element where `PropsBindingDirective` is binded.

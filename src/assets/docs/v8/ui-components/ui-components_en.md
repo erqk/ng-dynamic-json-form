@@ -1,18 +1,6 @@
 # UI Components
 
-UI components is exactly same with the custom components. They both need to extend `CustomControlComponent`.
-
-When the `type` is specified in the config, `NgDynamicJsonForm` willl find the matched component and use it.
-
-```json
-configs = [
-	{
-		...
-		"type": "checkbox"
-	},
-	...
-]
-```
+`uiComponents` determine which component to use when the corresponding `type` is set.
 
 ## Provide UI Components
 
@@ -43,11 +31,13 @@ export const appConfig: ApplicationConfig = {
 | [PrimeNg]          | UI_PRIMENG_COMPONENTS  | ng-dynamic-json-form/ui-primeng  |
 | [Angular Material] | UI_MATERIAL_COMPONENTS | ng-dynamic-json-form/ui-material |
 
-## Custom UI component
+## Create a custom UI component
 
-The process for building the component is exactly the same with [Custom Components](../v8/custom-components/custom-components_en.md).
+The process for building the custom UI component is same with [Create a custom component](../../v8/custom-components/custom-components_en.md#create-a-custom-component).
 
-The `uiComponents` can be extended, or overwritten. For example, we can extend it by adding `InputFileComponent` to the `uiComponents`. When `type` is set to `file`, the component will be used.
+## Extend or Overwrite UI components
+
+The `uiComponents` can be extended, or overwritten. For example, we extend `uiComponents` with a new type `file`. When the `type` is set to `file`, `InputFileComponent` will be used.
 
 ```tsx
 import { ApplicationConfig } from '@angular/core';
@@ -66,12 +56,4 @@ export const appConfig: ApplicationConfig = {
     })
   ],
 };
-```
-
-```json
-{
-  "formControlName": "file",
-  "label": "File upload",
-  "type": "file"
-}
 ```
