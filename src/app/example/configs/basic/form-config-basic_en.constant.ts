@@ -11,11 +11,11 @@ import { CONFIG_BASIC_RELATIONSHIP_EN } from './relationship/config-basic-relati
 import { CONFIG_BASIC_TEMPERATURE_EN } from './temperature/config-basic-temperature_en';
 import { CONFIG_BASIC_TOGGLES_EN } from './toggles/config-basic-toggles_en';
 
-export const FORM_CONFIG_BASIC_EN: FormControlConfig[] = [
+export const CONFIG_BASIC_EN: FormControlConfig[] = [
   CONFIG_BASIC_NAME_EN,
   CONFIG_BASIC_AGE_EN,
   CONFIG_BASIC_TOGGLES_EN,
-  CONFIG_BASIC_ADDRESS_EN,
+  CONFIG_BASIC_ADDRESS_EN(),
   CONFIG_BASIC_CARDS_EN,
   CONFIG_BASIC_DATE_EN,
   CONFIG_BASIC_EMAIL_EN,

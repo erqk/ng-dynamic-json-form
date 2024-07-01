@@ -11,7 +11,7 @@ import { CONFIG_BASIC_RELATIONSHIP_ZHTW } from './relationship/config-basic-rela
 import { CONFIG_BASIC_TEMPERATURE_ZHTW } from './temperature/config-basic-temperature_zh-TW';
 import { CONFIG_BASIC_TOGGLES_ZHTW } from './toggles/config-basic-toggles_zh-TW';
 
-export const FORM_CONFIG_BASIC_ZHTW: FormControlConfig[] = [
+export const CONFIG_BASIC_ZHTW: FormControlConfig[] = [
   CONFIG_BASIC_NAME_ZHTW,
   CONFIG_BASIC_AGE_ZHTW,
   CONFIG_BASIC_TOGGLES_ZHTW,

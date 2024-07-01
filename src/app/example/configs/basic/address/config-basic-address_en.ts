@@ -2,37 +2,46 @@ import { FormControlConfig, FormLayout } from 'ng-dynamic-json-form';
 
 const childLayout: FormLayout = {
   hostClass: '!flex flex-col',
-  contentClass: 'mt-auto'
+  contentClass: 'mt-auto',
 };
 
-export const CONFIG_BASIC_ADDRESS_EN: FormControlConfig = {
-  label: 'Address',
+export const CONFIG_BASIC_ADDRESS_EN = (translation?: {
+  addressLabel: string;
+  countryLabel: string;
+  countryPlaceholder: string;
+  stateLabel: string;
+  statePlaceholder: string;
+  postcodeLabel: string;
+  detailLabel: string;
+  detailPlaceholder: string;
+}): FormControlConfig => ({
+  label: translation?.addressLabel ?? 'Address',
   formControlName: 'address',
   layout: {
     formGroupClass: 'grid grid-cols-1 md:grid-cols-3',
-    contentCollapsible: 'collapse',
+    contentCollapsible: 'expand',
   },
   children: [
     {
-      label: 'Country',
+      label: translation?.countryLabel ?? 'Country',
       formControlName: 'country',
       type: 'text',
       props: {
-        placeholder: 'Country',
+        placeholder: translation?.countryPlaceholder ?? 'Country',
       },
       layout: childLayout,
     },
     {
-      label: 'State/Province',
+      label: translation?.stateLabel ?? 'State/Province',
       formControlName: 'state',
       type: 'text',
       props: {
-        placeholder: 'State/Province',
+        placeholder: translation?.statePlaceholder ?? 'State/Province',
       },
       layout: childLayout,
     },
     {
-      label: 'Zip/Postal code',
+      label: translation?.postcodeLabel ?? 'Zip/Postal code',
       formControlName: 'postcode',
       type: 'text',
       props: {
@@ -41,15 +50,15 @@ export const CONFIG_BASIC_ADDRESS_EN: FormControlConfig = {
       layout: childLayout,
     },
     {
-      label: 'Address',
-      formControlName: 'address',
+      label: translation?.detailLabel ?? 'Address',
+      formControlName: 'detail',
       type: 'text',
       layout: {
         hostStyles: 'grid-column: -1/1;',
       },
       props: {
-        placeholder: 'Address',
+        placeholder: translation?.detailPlaceholder ?? 'Detail',
       },
     },
   ],
-};
+});
