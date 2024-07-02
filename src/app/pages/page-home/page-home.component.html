@@ -1,9 +1,4 @@
-<div
-  [ngClass]="[
-    '-mt-[var(--header-height)] min-h-screen',
-    'relative z-0 overflow-hidden'
-  ]"
->
+<div [ngClass]="['min-h-screen', 'relative z-0 overflow-hidden']">
   <ui-content-wrapper class="relative z-0">
     <div class="banner">
       <div class="logo">
@@ -28,7 +23,9 @@
       </button>
     </div>
 
-    <div class="absolute -z-10 left-3/4 top-[50vh] lg:top-[35vh] -translate-x-1/2">
+    <div
+      class="absolute -z-10 left-3/4 top-[50vh] lg:top-[35vh] -translate-x-1/2"
+    >
       <div class="illustration">
         <div style="--index: 0; height: 100%"></div>
         <div style="--index: 1; height: 50%; top: 35%; left: -40%"></div>
