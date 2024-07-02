@@ -29,6 +29,7 @@ export class FormConditionsService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
+  private _pauseEvent = false;
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -50,6 +51,7 @@ export class FormConditionsService {
 
     return from(controls).pipe(
       mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
+      filter(() => !this._pauseEvent),
       debounceTime(0),
       tap(() => this._onConditionsMet(configsWithConditions))
     );
@@ -119,8 +121,9 @@ export class FormConditionsService {
   }): void {
     const { action, bool, control, controlPath } = data;
     const toggleDisabled = (disabled: boolean) => {
+      this._pauseEvent = true;
       disabled ? control.disable() : control.enable();
-      control.updateValueAndValidity();
+      this._pauseEvent = false;
     };
 
     switch (action) {
@@ -129,15 +132,17 @@ export class FormConditionsService {
         break;
 
       case ConditionsActionEnum['control.hidden']:
+        toggleDisabled(bool);
+
         this._getTargetEl$(controlPath)
           .pipe(
             filter(Boolean),
             tap((x) => {
               this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
-              toggleDisabled(bool);
             })
           )
           .subscribe();
+        break;
     }
   }
 
