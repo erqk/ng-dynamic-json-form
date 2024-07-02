@@ -341,6 +341,8 @@ export class NgDynamicJsonFormComponent
   }
 
   private _buildForm(): void {
+    if (!this.configs) return;
+
     this._reset();
     this.configValidationErrors = [];
 
