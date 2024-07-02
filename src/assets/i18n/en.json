@@ -9,7 +9,7 @@
   },
   "GET_STARTED": "Getting started",
   "INTRODUCTION": {
-    "BRIEF": "Generate Angular reactive form using JSON"
+    "BRIEF": "Generate Angular reactive form dynamically using JSON"
   },
   "MENU": {
     "DOCS": "Docs",
