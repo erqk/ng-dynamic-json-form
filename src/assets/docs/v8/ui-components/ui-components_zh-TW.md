@@ -23,6 +23,8 @@ export const appConfig: ApplicationConfig = {
 
 ## 內建 UI 元件
 
+> 必須先安裝相關套件，才能正常使用。
+
 [PrimeNg]: https://www.npmjs.com/package/primeng
 [Angular Material]: https://www.npmjs.com/package/@angular/material
 

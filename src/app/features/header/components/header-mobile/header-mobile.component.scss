@@ -1,12 +1,10 @@
 .btn-menu {
   --line-weight: 2px;
   --line-color: gray;
-  --btn-size: 1.35rem;
+  --btn-size: 1.5rem;
 
   width: var(--btn-size);
   height: var(--btn-size);
-  padding: 0;
-  background-color: unset;
 
   &.active {
     span {

@@ -1,4 +1,14 @@
-# 8.0.2 (2022-06-27)
+# 8.0.3 (2024-07-02)
+
+4a8e3a015cd103c16bcceaf222d57cdbd1da27c1
+f9e506fa9c8c629f5867c57b9ea446a65bf0507a
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [4a8e3a0] | fix  | Do nothing when `configs` is not provided.                               |
+| [f9e506f] | fix  | FormConditionsService: `valueChanges` events are triggering recursively. |
+
+# 8.0.2 (2024-06-27)
 
 [15e2a8b]: https://github.com/erqk/ng-dynamic-json-form/commit/15e2a8b852e3c0ad2a8025581a2ae45e5ccd5211
 [#14487]: https://github.com/primefaces/primeng/issues/14487
@@ -7,7 +17,7 @@
 | --------- | ---- | ------------------------------------------------------------------------------------------------ |
 | [15e2a8b] | fix  | UiPrimengCheckboxComponent: Remove `preventDefault()` as the issue is bug [#14487] from PrimeNG. |
 
-# 8.0.1 (2022-06-26)
+# 8.0.1 (2024-06-26)
 
 [07ef4a2]: https://github.com/erqk/ng-dynamic-json-form/commit/07ef4a2fb3d62eed41217b92d865d464ddf19ad7
 [33127f8]: https://github.com/erqk/ng-dynamic-json-form/commit/33127f8e1920cd0ce2e8d4f508dc85007ba2fc06
@@ -17,9 +27,9 @@
 | [07ef4a2] | fix      | `markAsDirty()` and `markAsTouched()` is not called if if `CustomControlComponent` doesn't exists. |
 | [33127f8] | refactor | Refactor \_fetchOptions().                                                                         |
 
-# 8.0.0 (2022-06-26)
+# 8.0.0 (2024-06-26)
 
-# 8.0.0-rc.4 (2022-06-25)
+# 8.0.0-rc.4 (2024-06-25)
 
 [9f70fc2]: https://github.com/erqk/ng-dynamic-json-form/commit/9f70fc24724d580d6ded8788ab6a74a87ec92b62
 [49f1db9]: https://github.com/erqk/ng-dynamic-json-form/commit/49f1db965d4124278037b906af9fd12485e077a7

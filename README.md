@@ -1,19 +1,19 @@
-<a href="https://codeclimate.com/github/erqk/ng-dynamic-json-form/maintainability"><img src="https://api.codeclimate.com/v1/badges/822fd579fde353c1fa47/maintainability" /></a>
+<img src="https://erqk.github.io/ng-dynamic-json-form/assets/logo.svg
+" style="display:block; width: 8rem; margin:auto;">
 
 # NgDynamicJsonForm
 
-Generate Angular reactive form with JSON data. Support conditional rendering and toggle of validators.
+<a href="https://codeclimate.com/github/erqk/ng-dynamic-json-form/maintainability"><img src="https://api.codeclimate.com/v1/badges/822fd579fde353c1fa47/maintainability" /></a>
 
-## Features
+Generate Angular reactive form dynamically using JSON. Support conditional rendering and toggle of validators.
 
-- Conditional visibility and validators based on the value of other control.
-- Create FormControl, FormGroup and FormArray, with unlimited nesting level.
-- Supports Angular built in validators and custom validators.
-- Support custom components.
-- Support third party UI libraries.
-- Flexible form layout.
-
-## Documentation and demo
+- Create form with unlimited nesting level
+- Toggle control status (hidden or disabled) and validators depends on value from other control
+- Supports Angular built in validators and custom validators
+- Support custom components
+- Support third party UI libraries
+- Flexible form layout
 
 [Documentation](https://erqk.github.io/ng-dynamic-json-form/docs)
+
 [Playground](https://erqk.github.io/ng-dynamic-json-form/playground)

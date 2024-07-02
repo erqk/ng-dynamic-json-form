@@ -14,6 +14,7 @@
 
   > .tags {
     display: inline-flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin: 0 1rem;
 
@@ -90,5 +91,7 @@ input {
 }
 
 @media (prefers-color-scheme: dark) {
-  @include darkStyle();
+  :root:not(.light) {
+    @include darkStyle();
+  }
 }

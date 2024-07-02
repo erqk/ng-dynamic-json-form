@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
@@ -27,11 +27,13 @@ export class HeaderMobileComponent {
   private _layoutService = inject(LayoutService);
 
   @Input() links: { label: string; route: string }[] = [];
+  @Output() settingsOpened = new EventEmitter<boolean>();
 
   openSettings = false;
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;
+    this.settingsOpened.emit(this.openSettings);
 
     requestAnimationFrame(() => {
       this._layoutService.updateHeaderHeight();

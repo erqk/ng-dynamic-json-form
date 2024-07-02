@@ -25,7 +25,4 @@ export const CONFIG_BASIC_RELATIONSHIP_EN: FormControlConfig = {
       },
     ],
   },
-  props: {
-    styleClass: 'w-full',
-  },
 };

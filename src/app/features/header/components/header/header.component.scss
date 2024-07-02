@@ -22,6 +22,13 @@
       mask: linear-gradient(var(--body-bg-color) 60%, transparent);
     }
   }
+
+  &.full-background {
+    &::before {
+      mask: unset;
+      border-bottom: solid 1px var(--border-color-25);
+    }
+  }
 }
 
 app-header-mobile {

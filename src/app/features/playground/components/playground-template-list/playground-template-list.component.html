@@ -24,7 +24,7 @@
   <div
     [ngClass]="[
       showTemplateNameInput ? 'hidden' : 'flex',
-      'gap-2 items-center'
+      'gap-3 items-center'
     ]"
   >
     <ng-container *ngIf="currentTemplate$ | async as currentTemplate">
@@ -48,7 +48,7 @@
     </ng-container>
 
     <select
-      class="flex-1"
+      class="flex-1 min-w-0 doc-form-element"
       [ngModel]="currentTemplateKey$.value"
       (ngModelChange)="select($event)"
     >
@@ -58,7 +58,11 @@
     </select>
 
     <!-- Add new template -->
-    <button type="button" class="p-2" (click)="toggleTemplateNameInput(true)">
+    <button
+      type="button"
+      class="p-2 text-xl"
+      (click)="toggleTemplateNameInput(true)"
+    >
       <i class="bi bi-plus-lg"></i>
     </button>
 
@@ -66,7 +70,7 @@
     <ng-container *ngIf="currentTemplate$ | async as currentTemplate">
       <button
         type="button"
-        class="p-2"
+        class="p-2 text-xl"
         (click)="save(currentTemplate.key || '', !currentTemplate.isExample)"
       >
         <i class="bi bi-floppy"></i>
@@ -83,7 +87,7 @@
     <!-- Cancel add template -->
     <button
       type="button"
-      class="p-2"
+      class="p-2 text-xl"
       [ngClass]="{ hidden: nameControl.value }"
       (click)="toggleTemplateNameInput(false)"
     >
@@ -112,11 +116,11 @@
         hidden: !nameControl.value
       }"
     >
-      <button type="button" class="p-2" (click)="cancelNewTemplate()">
+      <button type="button" class="p-2 text-lg" (click)="cancelNewTemplate()">
         <i class="bi bi-x-lg"></i>
       </button>
 
-      <button type="button" class="p-2" (click)="newTemplate()">
+      <button type="button" class="p-2 text-lg" (click)="newTemplate()">
         <i class="bi bi-check2 text-lg"></i>
       </button>
     </div>
@@ -152,28 +156,32 @@
     >
       <ng-container *ngIf="isEditing">
         <ng-container *ngIf="!isUserTemplate">
-          <button type="button" (click)="reset(key)">
+          <button type="button" class="text-lg" (click)="reset(key)">
             <i class="bi bi-arrow-repeat rotate-45"></i>
           </button>
         </ng-container>
 
         <ng-container *ngIf="isUserTemplate">
-          <button type="button" (click)="remove(key)">
+          <button type="button" class="text-lg" (click)="remove(key)">
             <i class="bi bi-trash"></i>
           </button>
         </ng-container>
 
-        <button type="button" (click)="save(key, isUserTemplate === true)">
+        <button
+          type="button"
+          class="text-lg"
+          (click)="save(key, isUserTemplate === true)"
+        >
           <i class="bi bi-check2 text-lg"></i>
         </button>
 
-        <button type="button" (click)="setEditStatus(false)">
+        <button type="button" class="text-lg" (click)="setEditStatus(false)">
           <i class="bi bi-x-lg"></i>
         </button>
       </ng-container>
 
       <ng-container *ngIf="!isEditing">
-        <button type="button" (click)="setEditStatus(true)">
+        <button type="button" class="text-lg" (click)="setEditStatus(true)">
           <i class="bi bi-pencil-square"></i>
         </button>
       </ng-container>

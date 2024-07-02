@@ -1,7 +1,9 @@
 import { FormControlConfig } from 'ng-dynamic-json-form';
 
-export const CONFIG_BASIC_DATE_EN: FormControlConfig = {
-  label: 'Date',
+export const CONFIG_BASIC_DATE_EN = (translation?: {
+  label: string;
+}): FormControlConfig => ({
+  label: translation?.label ?? 'Date',
   formControlName: 'date',
   type: 'date',
   props: {
@@ -10,6 +12,5 @@ export const CONFIG_BASIC_DATE_EN: FormControlConfig = {
     minDate: new Date(),
     showTime: true,
     showIcon: true,
-    styleClass: 'w-full',
   },
-};
+});

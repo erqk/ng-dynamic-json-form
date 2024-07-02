@@ -23,6 +23,8 @@ export const appConfig: ApplicationConfig = {
 
 ## Pre-built UI Components
 
+> The library must be installed first before using it.
+
 [PrimeNg]: https://www.npmjs.com/package/primeng
 [Angular Material]: https://www.npmjs.com/package/@angular/material
 
