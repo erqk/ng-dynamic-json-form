@@ -1,8 +1,10 @@
 # Getting started
 
+> Supports only Angular 16 and above.
+
 ## Installation
 
-### Install from npm
+### Install from npm [🔗](https://www.npmjs.com/package/ng-dynamic-json-form)
 
 <doc-code>
 

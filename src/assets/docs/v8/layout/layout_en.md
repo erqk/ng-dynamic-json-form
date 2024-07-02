@@ -43,7 +43,7 @@ Provide to let content to be able to expand/collapse by clicking the label. The 
   "label": "Label",
   "description": "description...",
   "layout": {
-    "contentCollapsible": "collapse",
+    "contentCollapsible": "expand",
     "hostClass": "p-4 border border-1 border-[var(--border-color-50)]"
   }
 }]'></doc-form-viewer>
