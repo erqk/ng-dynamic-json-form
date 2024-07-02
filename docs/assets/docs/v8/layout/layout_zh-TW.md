@@ -42,7 +42,7 @@
   "label": "標題文字",
   "description": "description...",
   "layout": {
-    "contentCollapsible": "collapse",
+    "contentCollapsible": "expand",
     "hostClass": "p-4 border border-1 border-[var(--border-color-50)]"
   }
 }]'></doc-form-viewer>

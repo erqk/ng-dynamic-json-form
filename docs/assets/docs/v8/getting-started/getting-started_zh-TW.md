@@ -1,8 +1,10 @@
 # 開始
 
+> 僅支援 Angular 16 或以上的版本。
+
 ## 安裝
 
-### 從 npm 安裝
+### 從 npm 安裝 [🔗](https://www.npmjs.com/package/ng-dynamic-json-form)
 
 <doc-code>
 
