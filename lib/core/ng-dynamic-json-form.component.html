@@ -6,10 +6,9 @@
 
 <ng-container *ngIf="!!configValidationErrors?.length">
   <div class="config-validation-error">
-    <p>Config error</p>
-    <br />
+    <div>NgDynamicJsonForm:</div>
     <ng-container *ngFor="let item of configValidationErrors">
-      <p style="color: var(--color-error)">{{ item.errors }}</p>
+      <div style="color: var(--color-error)">{{ item.errors }}</div>
       <ng-container *ngIf="item.config">
         <code>{{ item.config | json }}</code>
       </ng-container>
