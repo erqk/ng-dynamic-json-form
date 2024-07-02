@@ -9,6 +9,7 @@
 @use "./components/backdrop";
 @use "./components/loading-indicator";
 @use "./components/docs-index-container";
+@use "./primeng-override";
 
 :root {
   --primary-50: #f7f6ff;

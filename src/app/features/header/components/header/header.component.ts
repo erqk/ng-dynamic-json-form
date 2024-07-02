@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
-import { debounceTime, filter, map, takeUntil, tap, windowWhen } from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+  map,
+  takeUntil,
+  tap,
+  windowWhen,
+} from 'rxjs/operators';
 import { LanguageService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
@@ -15,14 +22,18 @@ import { Subject, fromEvent } from 'rxjs';
     <div
       [ngClass]="[
         'header-container',
-        'p-2 px-4 lg:p-4 lg:pb-2',
+        'p-3 px-7 lg:p-4 lg:pb-2',
         'duration-200',
-        showBackground ? 'show-background' : ''
+        showBackground ? 'show-background' : '',
+        fullBackground ? 'full-background' : ''
       ]"
     >
       <ng-container *ngIf="links$ | async as links">
         <app-header-desktop [links]="links"></app-header-desktop>
-        <app-header-mobile [links]="links"></app-header-mobile>
+        <app-header-mobile
+          [links]="links"
+          (settingsOpened)="fullBackground = $event"
+        ></app-header-mobile>
       </ng-container>
     </div>
   `,
@@ -35,9 +46,10 @@ export class HeaderComponent {
   private readonly _onDestroy$ = new Subject<void>();
 
   showBackground = false;
+  fullBackground = false;
 
   links$ = this._languageDataService.i18nContent$.pipe(
-    filter(x => Object.values(x).length > 0),
+    filter((x) => Object.values(x).length > 0),
     map((x) => [
       {
         route: 'docs',

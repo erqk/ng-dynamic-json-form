@@ -64,10 +64,10 @@
   <div
     [ngClass]="[
       'fixed bottom-0 left-0 z-[1001]',
-      'p-6 pb-28',
+      'p-8 pb-48',
       'block lg:hidden',
       'bg-[rgb(var(--bg-color-rgb))]',
-      'w-4/5 min-w-[200px] h-screen',
+      'w-4/5 min-w-[200px] h-[100dvh]',
       'border-r border-1 border-gray-500/25',
       'overflow-auto',
       'duration-300 transition-transform',
@@ -77,20 +77,20 @@
     ]"
   >
     <app-navigator-index
-      [containerClass]="['gap-y-6 break-keep whitespace-nowrap']"
+      [containerClass]="['gap-y-8 break-keep whitespace-nowrap']"
     ></app-navigator-index>
   </div>
 
   <button
     type="button"
     [ngClass]="[
-      'fixed z-[1002] bottom-8 left-4',
+      'fixed z-[1002] bottom-12 left-8',
       'flex lg:hidden items-center justify-center',
-      'h-12 w-12 p-2 bg-[var(--primary-500)] text-white',
+      'h-16 w-16 bg-[var(--primary-500)] text-white text-lg',
       '!rounded-full shadow-[rgba(0,0,0,0.5)] shadow-xl'
     ]"
     (click)="toggleMobileMenu()"
   >
-    <i class="bi bi-layout-text-sidebar"></i>
+    <i class="bi bi-layout-text-sidebar mb-1"></i>
   </button>
 </div>

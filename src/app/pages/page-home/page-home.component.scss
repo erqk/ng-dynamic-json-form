@@ -9,7 +9,8 @@
     background: linear-gradient(
       160deg,
       var(--body-bg-color) 0%,
-      var(--primary-400) 35%,
+      pink,
+      var(--primary-400) 50%,
       var(--primary-600) 90%
     );
     background-clip: text;
@@ -20,7 +21,6 @@
   }
 
   p {
-    max-width: 32rem;
     margin-top: 0.25rem;
     text-align: center;
     font-size: 1.5rem;
@@ -56,28 +56,29 @@
     align-items: center;
     height: 16%;
     width: 100%;
-    border: solid 2px var(--primary-500);
+    border: solid 1px var(--body-bg-color);
     border-radius: 1.25rem;
     background: linear-gradient(
       310deg,
       rgba(255, 67, 111, 0.15),
       rgba(95, 67, 255, 0.22)
     );
-    backdrop-filter: blur(4px);
-    filter: blur(calc(10px - var(--index) * 1.5px));
+    filter: blur(calc(8px - var(--index) * 1.2px));
     box-shadow: 6px 3px 8px rgba(0, 0, 0, 0.35);
     transform: skew(320deg, 8deg) translate3d(0, 0, 0);
     animation: floatingAnimation 3500ms infinite alternate;
     animation-delay: calc(var(--index) * 250ms);
-    z-index: 0;
+    z-index: var(--index);
   }
 
   @keyframes floatingAnimation {
     from {
+      box-shadow: 6px 3px 6px rgba(0, 0, 0, 0.3);
       transform: skew(320deg, 8deg) translate3d(0, 0, 0);
     }
 
     to {
+      box-shadow: 60px 48px 32px rgba(0, 0, 0, 0.1);
       transform: skew(320deg, 8deg) translate3d(-3rem, -3rem, 0);
     }
   }
@@ -93,7 +94,7 @@
   }
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1024px) {
   .banner {
     h1 {
       margin-top: 0;
@@ -106,10 +107,8 @@
   }
 
   .illustration {
-    width: 65vw;
-    height: 80vw;
-    max-width: 280px;
-    max-height: 360px;
+    max-width: 80vw;
+    max-height: 100vw;
 
     > * {
       border-radius: 1rem;
