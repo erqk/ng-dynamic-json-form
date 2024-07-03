@@ -1,7 +1,23 @@
+# 8.0.5 (2024-07-03)
+
+[bb9db3b]: https://github.com/erqk/ng-dynamic-json-form/commit/bb9db3ba87f77bb37754132a57f1d5262b014bab
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [bb9db3b] | fix  | Excute custom action only when condition is met. |
+
+# 8.0.4 (2024-07-02)
+
+[7bba193]: https://github.com/erqk/ng-dynamic-json-form/commit/7bba193c7a090f5306a187dcde350d35a8c5b9c1
+
+| Commit    | Type  | Description                       |
+| --------- | ----- | --------------------------------- |
+| [7bba193] | style | Config validation errors styling. |
+
 # 8.0.3 (2024-07-02)
 
-4a8e3a015cd103c16bcceaf222d57cdbd1da27c1
-f9e506fa9c8c629f5867c57b9ea446a65bf0507a
+[4a8e3a0]: https://github.com/erqk/ng-dynamic-json-form/commit/4a8e3a015cd103c16bcceaf222d57cdbd1da27c1
+[f9e506f]: https://github.com/erqk/ng-dynamic-json-form/commit/f9e506fa9c8c629f5867c57b9ea446a65bf0507a
 
 | Commit    | Type | Description                                                              |
 | --------- | ---- | ------------------------------------------------------------------------ |
