@@ -100,12 +100,13 @@ export class FormConditionsService {
               validatorConfigs: config.validators ?? [],
             });
           }
-        } else {
+        } else if (bool) {
           const functions =
             this._globalVariableService.conditionsActionFuntions;
 
           if (!functions) return;
           if (!functions[action]) return;
+          if (typeof functions[action] !== 'function') return;
 
           functions[action](control);
         }
