@@ -1,11 +1,6 @@
 import { CONFIG_BASIC_EN } from 'src/app/example/configs/basic/form-config-basic_en.constant';
 import { CONFIG_BASIC_ZHTW } from 'src/app/example/configs/basic/form-config-basic_zh-TW.constant';
-import { CONFIG_CONDITIONS_MULTIPLE_EN } from 'src/app/example/configs/conditions/complex/config-conditions-complex_en.constant';
-import { CONFIG_CONDITIONS_MULTIPLE_ZHTW } from 'src/app/example/configs/conditions/complex/config-conditions-complex_zh-TW.constant';
-import { CONFIG_CONDITIONS_VALIDATOR_EN } from 'src/app/example/configs/conditions/validator/config-conditions-validator_en.constant';
-import { CONFIG_CONDITIONS_VALIDATOR_ZHTW } from 'src/app/example/configs/conditions/validator/config-conditions-validator_zh-TW.constant';
-import { CONFIG_CONDITIONS_VISIBILITY_EN } from 'src/app/example/configs/conditions/visibility/config-conditions-visibility_en.constant';
-import { CONFIG_CONDITIONS_VISIBILITY_ZHTW } from 'src/app/example/configs/conditions/visibility/config-conditions-visibility_zh-TW.constant';
+import { CONFIGS_INDEX } from 'src/app/example/configs/configs.index';
 import { FORM_CONFIG_FIRST_UPPERCASE_EN } from 'src/app/example/configs/custom-validators/first-uppercase/form-config-first-uppercase_en.constant';
 import { FORM_CONFIG_FIRST_UPPERCASE_ZHTW } from 'src/app/example/configs/custom-validators/first-uppercase/form-config-first-uppercase_zh-TW.constant';
 import { CONFIG_ADDRESS_DYNAMIC_EN } from 'src/app/example/configs/dynamic-data/address/config-dynamic-address_en.constant';
@@ -36,6 +31,18 @@ export const PLAYGROUND_CONFIGS: {
       isExample: true,
     },
   },
+  'custom-component': {
+    en: {
+      label: 'Custom Component',
+      config: [CONFIGS_INDEX.CUSTOM_COMPONENT.EN],
+      isExample: true,
+    },
+    'zh-TW': {
+      label: '自訂元件',
+      config: [CONFIGS_INDEX.CUSTOM_COMPONENT['ZH-TW']],
+      isExample: true,
+    },
+  },
   'custom-validator-firstUppercase': {
     en: {
       label: 'Custom validator (Capital letters)',
@@ -51,36 +58,36 @@ export const PLAYGROUND_CONFIGS: {
   'conditions-visibility': {
     en: {
       label: 'Conditions (Visibility)',
-      config: CONFIG_CONDITIONS_VISIBILITY_EN(''),
+      config: CONFIGS_INDEX.CONDITIONS_VISIBILITY.EN,
       isExample: true,
     },
     'zh-TW': {
       label: '條件 (顯示狀態)',
-      config: CONFIG_CONDITIONS_VISIBILITY_ZHTW(''),
+      config: CONFIGS_INDEX.CONDITIONS_VISIBILITY['ZH-TW'],
       isExample: true,
     },
   },
   'conditions-validator': {
     en: {
       label: 'Conditions (Validator)',
-      config: CONFIG_CONDITIONS_VALIDATOR_EN,
+      config: CONFIGS_INDEX.CONDITIONS_VALIDATOR.EN,
       isExample: true,
     },
     'zh-TW': {
       label: '條件 (驗證器)',
-      config: CONFIG_CONDITIONS_VALIDATOR_ZHTW,
+      config: CONFIGS_INDEX.CONDITIONS_VALIDATOR['ZH-TW'],
       isExample: true,
     },
   },
   'conditions-complex': {
     en: {
       label: 'Conditions (Multiple)',
-      config: CONFIG_CONDITIONS_MULTIPLE_EN,
+      config: CONFIGS_INDEX.CONDITIONS_MULTIPLE.EN,
       isExample: true,
     },
     'zh-TW': {
       label: '條件 (多重判斷)',
-      config: CONFIG_CONDITIONS_MULTIPLE_ZHTW,
+      config: CONFIGS_INDEX.CONDITIONS_MULTIPLE['ZH-TW'],
       isExample: true,
     },
   },
