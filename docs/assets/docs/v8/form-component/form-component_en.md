@@ -39,6 +39,7 @@ See [Execute custom function](../../v8/conditions/conditions_en.md#execute-custo
 Control the display of all the error messages. Useful when need to show all the errors immediately when submit button is clicked.
 
 <doc-tab>
+
 <doc-code name="HTML">
 
 <!-- prettier-ignore -->
@@ -72,7 +73,10 @@ submit(): void {
 ```
 
 </doc-code>
+
 </doc-tab>
+
+> In order to trigger change detection, we must leave the `hideErrors` undefined at first, then set its value later when submit button is pressed.
 
 ### collapsibleState
 
