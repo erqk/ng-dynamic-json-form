@@ -67,7 +67,6 @@ export class FormControlComponent
   private _optionsDataService = inject(OptionsDataService);
 
   private _uiComponents = this._globalVariableService.uiComponents;
-  private _hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   private _controlComponent?: CustomControlComponent;
   private _pendingValue: any = null;
@@ -101,6 +100,7 @@ export class FormControlComponent
 
   loading = false;
   useCustomLoading = false;
+  hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   writeValue(obj: any): void {
     this._pendingValue = obj;
@@ -145,7 +145,7 @@ export class FormControlComponent
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
-    if (this._hideErrorMessage$) {
+    if (this.hideErrorMessage$) {
       return false;
     }
 
@@ -266,13 +266,13 @@ export class FormControlComponent
     const controlComponent = this._controlComponent;
 
     combineLatest([
-      this._hideErrorMessage$,
+      this.hideErrorMessage$,
       control.statusChanges.pipe(startWith(control.status)),
     ])
       .pipe(
         debounceTime(0),
         tap(() => {
-          const hideErrors = this._hideErrorMessage$.value;
+          const hideErrors = this.hideErrorMessage$.value;
           const controlErrors = control.errors;
           const componentErrors = controlComponent?.control?.errors;
           const errors =
