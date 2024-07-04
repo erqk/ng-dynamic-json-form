@@ -1,3 +1,15 @@
+# 8.0.6 (2024-07-04)
+
+[dcd1ee2]: https://github.com/erqk/ng-dynamic-json-form/commit/dcd1ee26356bbbcce69383206a03c95d7da5d60e
+[e4edbe9]: https://github.com/erqk/ng-dynamic-json-form/commit/e4edbe929c47577bdbf75ec4b6fc1865c8091a7a
+[0f14a12]: https://github.com/erqk/ng-dynamic-json-form/commit/0f14a12a329aa955ce56b5578cb5c9fecf21d26c
+
+| Commit    | Type     | Description                                         |
+| --------- | -------- | --------------------------------------------------- |
+| [dcd1ee2] | refactor | `getControlErrors()`                                |
+| [e4edbe9] | feat     | Sync the errors of the CVA with the parent control. |
+| [0f14a12] | feat     | Pass `hideErrorMessage` value to the ng-template.   |
+
 # 8.0.5 (2024-07-03)
 
 [bb9db3b]: https://github.com/erqk/ng-dynamic-json-form/commit/bb9db3ba87f77bb37754132a57f1d5262b014bab
