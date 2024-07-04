@@ -25,8 +25,8 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { combineLatest, delay, startWith, tap } from 'rxjs';
-import { FormControlConfig, OptionItem } from '../../models';
+import { combineLatest, debounceTime, startWith, tap } from 'rxjs';
+import { FormControlConfig } from '../../models';
 import {
   FormReadyStateService,
   GlobalVariableService,
@@ -34,6 +34,7 @@ import {
 } from '../../services';
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
+import { getControlErrors } from '../../utilities/get-control-errors';
 import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 
@@ -66,7 +67,6 @@ export class FormControlComponent
   private _optionsDataService = inject(OptionsDataService);
 
   private _uiComponents = this._globalVariableService.uiComponents;
-  private _hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   private _controlComponent?: CustomControlComponent;
   private _pendingValue: any = null;
@@ -100,6 +100,7 @@ export class FormControlComponent
 
   loading = false;
   useCustomLoading = false;
+  hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   writeValue(obj: any): void {
     this._pendingValue = obj;
@@ -144,7 +145,7 @@ export class FormControlComponent
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
-    if (this._hideErrorMessage$) {
+    if (this.hideErrorMessage$) {
       return false;
     }
 
@@ -189,6 +190,7 @@ export class FormControlComponent
     }
 
     this._controlComponent = componentRef.instance;
+    this._setControlErrors();
   }
 
   private _fetchOptions(): void {
@@ -263,17 +265,14 @@ export class FormControlComponent
     const control = this.control;
     const controlComponent = this._controlComponent;
 
-    // Needs to add delay for `controlComponent.setErrors()` to work properly.
-    // Guess because it is called at the same time with the initialization of the control.
-    // Hence after the control is initialized, the status will be reset to VALID.
     combineLatest([
-      this._hideErrorMessage$,
+      this.hideErrorMessage$,
       control.statusChanges.pipe(startWith(control.status)),
     ])
       .pipe(
-        delay(0),
+        debounceTime(0),
         tap(() => {
-          const hideErrors = this._hideErrorMessage$.value;
+          const hideErrors = this.hideErrorMessage$.value;
           const controlErrors = control.errors;
           const componentErrors = controlComponent?.control?.errors;
           const errors =
@@ -281,16 +280,30 @@ export class FormControlComponent
               ? null
               : control.errors;
 
+          if (controlComponent) {
+            controlComponent.control?.setErrors(errors);
+            controlComponent.setErrors(errors);
+            controlComponent.hideErrorMessage = hideErrors;
+          }
+
           if (hideErrors === false) {
             this._setControlDirtyOrTouched('both');
           }
-
-          controlComponent?.control?.setErrors(errors);
-          controlComponent?.setErrors(errors);
         }),
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
+  }
+
+  /**
+   * If the CVA has errors but this control doesn't,
+   * we set this control with the CVA errors
+   */
+  private _setControlErrors(): void {
+    const cvaErrors = getControlErrors(this._controlComponent?.control);
+    if (!this.control?.errors && cvaErrors) {
+      this.control?.setErrors(cvaErrors);
+    }
   }
 
   private _setControlDirtyOrTouched(state: 'dirty' | 'touched' | 'both'): void {

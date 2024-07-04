@@ -1,5 +1,6 @@
 import { CONFIG_CHECKBOX } from './checkbox';
 import { CONFIG_CONDITIONS } from './conditions';
+import { CONFIG_CUSTOM_COMPONENT } from './custom-component';
 import { CONFIG_DATE } from './date';
 import { CONFIG_HOME_DEMO } from './home-demo';
 import { CONFIG_NUMBER } from './number';
@@ -14,6 +15,7 @@ import { CONFIG_TEXTAREA } from './textarea';
 export const CONFIGS_INDEX = {
   ...CONFIG_CHECKBOX,
   ...CONFIG_CONDITIONS,
+  ...CONFIG_CUSTOM_COMPONENT,
   ...CONFIG_DATE,
   ...CONFIG_PASSWORD,
   ...CONFIG_HOME_DEMO,

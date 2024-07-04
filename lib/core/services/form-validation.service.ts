@@ -4,12 +4,9 @@ import {
   ValidationErrors,
   ValidatorFn,
   Validators,
-  isFormControl,
-  isFormGroup,
 } from '@angular/forms';
 import { EMPTY, Observable, map, startWith } from 'rxjs';
 import { ValidatorConfig, ValidatorsEnum } from '../models';
-import { clearEmpties } from '../utilities/clear-empties';
 import { GlobalVariableService } from './global-variable.service';
 
 function emailValidator(control: AbstractControl): ValidationErrors | null {
@@ -91,40 +88,6 @@ export class FormValidationService {
 
       return validator;
     });
-  }
-
-  /**Get all the errors under this `FormGroup` following the hierachy
-   * @example
-   * root: {
-   *  control1: ValidationErrors,
-   *  control2: {
-   *    childA: ValidationErrors
-   *  }
-   * }
-   */
-  getFormErrors(
-    control: AbstractControl,
-    prevResult?: ValidationErrors | null
-  ): ValidationErrors | null {
-    const controlErrors = control.errors;
-    let result = prevResult ? { ...prevResult } : null;
-    let errorsGet = null;
-
-    if (isFormControl(control)) {
-      errorsGet = controlErrors;
-    }
-
-    if (isFormGroup(control)) {
-      errorsGet = Object.keys(control.controls).reduce((acc, key) => {
-        const err = this.getFormErrors(control.controls[key], result);
-        return err ? { ...acc, [key]: err } : acc;
-      }, {});
-    }
-
-    result = clearEmpties({ ...result, ...errorsGet });
-
-    const noErrors = !result || !Object.keys(result).length;
-    return noErrors ? null : result;
   }
 
   /**Get the error messages of the control

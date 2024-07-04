@@ -6,6 +6,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { FormControlConfig, OptionItem } from '../../models';
+import { getControlErrors } from '../../utilities/get-control-errors';
 
 @Component({
   selector: 'custom-control',
@@ -21,6 +22,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
    */
   public control?: AbstractControl;
   public data?: FormControlConfig;
+  public hideErrorMessage?: boolean;
 
   writeValue(obj: any): void {
     this.control?.patchValue(obj);
@@ -39,7 +41,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this.control?.errors ?? null;
+    return getControlErrors(this.control);
   }
 
   markAsDirty(): void {}

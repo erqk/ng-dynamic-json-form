@@ -8,7 +8,6 @@ import {
   provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
-import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
 
@@ -35,10 +34,6 @@ export class PlaygroundFormComponent {
   @Input() hideErrorMessage?: boolean;
   @Input() control = new FormControl();
   @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
-
-  ngOnInit(): void {
-    this.control.valueChanges.subscribe((x) => console.log(x));
-  }
 
   onOptionsLoaded(): void {
     console.log('Options loaded');

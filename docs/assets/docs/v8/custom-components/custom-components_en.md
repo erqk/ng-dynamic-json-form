@@ -154,6 +154,10 @@ The control to bind with the view and connect with the parent form. Can be assig
 
 The config for this component.
 
+#### hideErrorMessage
+
+The `hideErrorMessage` value from root component. This is useful to control the visibility of errors.
+
 ### Methods
 
 #### onOptionsGet
@@ -216,7 +220,8 @@ Sometimes, if creating a component is way too much, we can use ng-template.
 
 The variables available for the ng-template are:
 
-| Name    | Type              | Description                     |
-| ------- | ----------------- | ------------------------------- |
-| control | AbstractControl   | The FormControl for this input. |
-| data    | FormControlConfig | The config for this input.      |
+| Name             | Type              | Description                                          |
+| ---------------- | ----------------- | ---------------------------------------------------- |
+| control          | AbstractControl   | The FormControl for this input.                      |
+| data             | FormControlConfig | The config for this input.                           |
+| hideErrorMessage | boolean           | The value of `hideErrorMessage` from root component. |
