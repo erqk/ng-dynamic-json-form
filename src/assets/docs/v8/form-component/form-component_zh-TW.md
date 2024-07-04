@@ -39,6 +39,7 @@
 控制是否隱藏所遇的錯誤訊息。可用於點擊送出按鈕後，將所有錯誤訊息顯示出來。
 
 <doc-tab>
+
 <doc-code name="HTML">
 
 <!-- prettier-ignore -->
@@ -72,7 +73,10 @@ submit(): void {
 ```
 
 </doc-code>
+
 </doc-tab>
+
+> 為了觸發 change detection，`hideErrors` 一開始為 undefined，在點擊送出按鈕之後再賦值。
 
 ### collapsibleState
 
