@@ -25,14 +25,15 @@ import { Subject, fromEvent } from 'rxjs';
         'p-3 px-7 lg:p-4 lg:pb-2',
         'duration-200',
         showBackground ? 'show-background' : '',
-        fullBackground ? 'full-background' : ''
+        openSettings ? 'full-background' : ''
       ]"
     >
       <ng-container *ngIf="links$ | async as links">
         <app-header-desktop [links]="links"></app-header-desktop>
         <app-header-mobile
           [links]="links"
-          (settingsOpened)="fullBackground = $event"
+          [openSettings]="openSettings"
+          (settingsOpened)="openSettings = $event"
         ></app-header-mobile>
       </ng-container>
     </div>
@@ -46,7 +47,7 @@ export class HeaderComponent {
   private readonly _onDestroy$ = new Subject<void>();
 
   showBackground = false;
-  fullBackground = false;
+  openSettings = false;
 
   links$ = this._languageDataService.i18nContent$.pipe(
     filter((x) => Object.values(x).length > 0),
@@ -66,6 +67,15 @@ export class HeaderComponent {
   onWindowScroll(): void {
     if (typeof window === 'undefined') return;
     this.showBackground = window.scrollY > 0;
+  }
+
+  constructor() {
+    this._layoutService.windowSize$
+      .pipe(
+        filter((x) => x.x >= 1024),
+        tap(() => (this.openSettings = false))
+      )
+      .subscribe();
   }
 
   ngAfterViewInit(): void {

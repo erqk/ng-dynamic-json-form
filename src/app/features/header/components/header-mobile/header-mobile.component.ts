@@ -27,9 +27,8 @@ export class HeaderMobileComponent {
   private _layoutService = inject(LayoutService);
 
   @Input() links: { label: string; route: string }[] = [];
+  @Input() openSettings = false;
   @Output() settingsOpened = new EventEmitter<boolean>();
-
-  openSettings = false;
 
   toggleSettings(): void {
     this.openSettings = !this.openSettings;
