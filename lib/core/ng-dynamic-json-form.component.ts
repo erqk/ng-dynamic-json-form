@@ -70,6 +70,7 @@ import {
 } from './services';
 import { FormReadyStateService } from './services/form-ready-state.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
+import { getControlErrors } from './utilities/get-control-errors';
 import { markFormPristine } from './utilities/mark-form-pristine';
 
 @Component({
@@ -123,7 +124,6 @@ export class NgDynamicJsonFormComponent
   private _configValidationService = inject(ConfigValidationService);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formConditionsService = inject(FormConditionsService);
-  private _formValidationService = inject(FormValidationService);
   private _formPatcherService = inject(FormPatcherService);
   private _formReadyStateService = inject(FormReadyStateService);
   private _globalVariableService = inject(GlobalVariableService);
@@ -433,7 +433,7 @@ export class NgDynamicJsonFormComponent
   private get _formErrors(): ValidationErrors | null {
     if (!this.form) return null;
 
-    const errors = this._formValidationService.getFormErrors(this.form);
+    const errors = getControlErrors(this.form);
     return errors;
   }
 }
