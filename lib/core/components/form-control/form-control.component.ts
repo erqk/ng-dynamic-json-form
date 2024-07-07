@@ -26,7 +26,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { combineLatest, debounceTime, startWith, tap } from 'rxjs';
-import { FormControlConfig } from '../../models';
+import { FormControlConfig, FormControlType } from '../../models';
 import {
   FormReadyStateService,
   GlobalVariableService,
@@ -340,16 +340,20 @@ export class FormControlComponent
     }
   }
 
-  private get _inputType(): string {
-    const defaultInput = !this.data?.inputMask ? 'text' : 'textMask';
+  private get _inputType(): FormControlType {
+    if (this.data?.inputMask) {
+      return 'textMask';
+    }
 
     // Fallback to text input if `type` is not specified.
-    if (!this.data?.type) return defaultInput;
+    if (!this.data?.type) {
+      return 'text';
+    }
 
-    switch (this.data?.type) {
+    switch (this.data.type) {
       case 'number':
       case 'text':
-        return defaultInput;
+        return 'text';
 
       default:
         return this.data.type;
