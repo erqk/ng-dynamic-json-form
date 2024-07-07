@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
+  ImaskValuePatchDirective,
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
@@ -17,6 +18,7 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
     ReactiveFormsModule,
     InputTextModule,
     IMaskDirective,
+    ImaskValuePatchDirective,
     PropsBindingDirective,
   ],
   templateUrl: './ui-primeng-input-mask.component.html',

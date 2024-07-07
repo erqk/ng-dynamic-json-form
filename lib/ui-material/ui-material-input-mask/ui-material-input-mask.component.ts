@@ -5,6 +5,7 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import { IMaskDirective } from 'angular-imask';
 import {
   CustomControlComponent,
+  ImaskValuePatchDirective,
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
@@ -17,6 +18,7 @@ import {
     ReactiveFormsModule,
     MatInputModule,
     IMaskDirective,
+    ImaskValuePatchDirective,
     PropsBindingDirective,
   ],
   templateUrl: './ui-material-input-mask.component.html',
