@@ -1,6 +1,7 @@
 import { AbstractControl, isFormArray, isFormGroup } from '@angular/forms';
 
-export function markFormPristine(control: AbstractControl): void {
+export function markFormPristine(control: AbstractControl | undefined): void {
+  if (!control) return;
   if (!control.pristine) control.markAsPristine();
 
   if (isFormGroup(control)) {
