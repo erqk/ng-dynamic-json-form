@@ -1,4 +1,18 @@
-# 8.0.6 (2024-07-04)
+# 8.1.1 (2024-07-07)
+
+[003ef2f]: https://github.com/erqk/ng-dynamic-json-form/commit/003ef2fa9617feeaa4b1a00775c51dc5a709ab43
+[11d287e]: https://github.com/erqk/ng-dynamic-json-form/commit/11d287e10258e7ebe16eac704a37b98805d5a0d7
+[8e80900]: https://github.com/erqk/ng-dynamic-json-form/commit/8e809006b42674eba421204cc2547c51dfda3845
+[c1c35a3]: https://github.com/erqk/ng-dynamic-json-form/commit/c1c35a34ee94e679a80ca2e2d32cc365b67a54fa
+
+| Commit    | Type     | Description                                                        |
+| --------- | -------- | ------------------------------------------------------------------ |
+| [003ef2f] | fix      | Input mask should retain the type of the value if it is number.    |
+| [8e80900] | fix      | The AbstractControl is not pristine before any user interaction.   |
+| [c1c35a3] | fix      | Emit only `formGet` event if `configs` is not empty and no errors. |
+| [11d287e] | refactor | Refactor `_inputType()` in FormControlComponent.                   |
+
+# 8.1.0 (2024-07-04)
 
 [dcd1ee2]: https://github.com/erqk/ng-dynamic-json-form/commit/dcd1ee26356bbbcce69383206a03c95d7da5d60e
 [e4edbe9]: https://github.com/erqk/ng-dynamic-json-form/commit/e4edbe929c47577bdbf75ec4b6fc1865c8091a7a
