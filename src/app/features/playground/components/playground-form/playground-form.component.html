@@ -4,5 +4,6 @@
   [hideErrorMessage]="hideErrorMessage"
   [formControl]="control"
   [optionsSources]="optionsSources"
+  (formGet)="onFormGet($event)"
   (optionsLoaded)="onOptionsLoaded()"
 ></ng-dynamic-json-form>

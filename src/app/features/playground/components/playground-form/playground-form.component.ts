@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import {
   CustomComponents,
   FormControlConfig,
@@ -37,5 +37,9 @@ export class PlaygroundFormComponent {
 
   onOptionsLoaded(): void {
     console.log('Options loaded');
+  }
+
+  onFormGet(e: UntypedFormGroup): void {
+    console.log(e);
   }
 }

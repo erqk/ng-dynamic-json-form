@@ -341,20 +341,19 @@ export class NgDynamicJsonFormComponent
   }
 
   private _buildForm(): void {
+    this._reset();
+
     if (!this.configs) return;
 
-    this._reset();
-    this.configValidationErrors = [];
-
-    const validationResult = this._configValidationService.validateAndGetConfig(
+    const result = this._configValidationService.validateAndGetConfig(
       this.configs
     );
 
-    this.configGet = validationResult.configs ?? [];
-    this.configValidationErrors = validationResult.errors ?? [];
+    this.configGet = result.configs ?? [];
+    this.configValidationErrors = result.errors ?? [];
     this._allowFormDirty = false;
 
-    if (!validationResult.errors?.length) {
+    if (!!this.configGet.length && !result.errors?.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
@@ -376,13 +375,11 @@ export class NgDynamicJsonFormComponent
     if (!this.form) return;
 
     const host = this._el.nativeElement;
-    const event$ = (name: string) => fromEvent(host, name, { passive: true });
-
     const conditions$ = this._formConditionsService.listenConditions$();
+    const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
-      debounceTime(0),
       tap(() => this._onFormValueChanges())
     );
 
@@ -397,7 +394,9 @@ export class NgDynamicJsonFormComponent
       event$('keydown')
     ).pipe(
       take(1),
-      tap(() => (this._allowFormDirty = true))
+      tap(() => {
+        this._allowFormDirty = true;
+      })
     );
 
     merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
@@ -409,24 +408,27 @@ export class NgDynamicJsonFormComponent
     this._reset$.next();
     this._optionsDataService.cancelAllRequest();
     this._formReadyStateService.resetState();
+    this._controlDirective?.control.markAsUntouched();
+    this._controlDirective?.form.markAsUntouched();
+    this.configValidationErrors = [];
   }
 
   private _onFormValueChanges(): void {
-    if (!this._allowFormDirty) {
-      // The FormControl of ControlValueAccessor
-      const formControl = this._controlDirective?.form;
-      formControl?.markAsPristine();
-      this.form && markFormPristine(this.form);
-    }
-
     // No ControlValueAccessor found, update the form errors manually
     if (!this._controlDirective) {
       this.form?.setErrors(this._formErrors);
     }
-
     // Call only if using ControlValueAccessor, to update the control value
-    if (this._controlDirective) {
+    else {
       this._onChange(this.form?.value);
+    }
+
+    // If the form is not touched yet, keep marking it as pristine,
+    // after the _onChange() is called
+    if (!this._allowFormDirty) {
+      this._controlDirective?.form.markAsPristine();
+      this._controlDirective?.control.markAsPristine();
+      markFormPristine(this.form);
     }
   }
 

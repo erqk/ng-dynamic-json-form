@@ -9,8 +9,7 @@ export class ConfigMappingService {
     const { formControlName, type, props, inputMask, children = [] } = config;
 
     config.formControlName = this._getFormControlName(formControlName);
-    config.value = config.value ?? this._getFallbackValue(config.value, type);
-    config.value = this._getCorrectedValue(config);
+    config.value = config.value ?? this._getFallbackValue(config);
 
     if (props) {
       config.props = Object.keys(props).reduce((acc, key) => {
@@ -33,26 +32,14 @@ export class ConfigMappingService {
     return config;
   }
 
-  private _getCorrectedValue(item: FormControlConfig): any {
-    if (item.value === null || item.value === undefined) {
-      return item.value;
-    }
-
-    if (item.inputMask && typeof item.value !== 'string') {
-      return `${item.value}`;
-    }
-
-    return item.value;
-  }
-
-  private _getFallbackValue(value: any, type: FormControlConfig['type']): any {
-    switch (type) {
+  private _getFallbackValue(item: FormControlConfig): any {
+    switch (item.type) {
       case 'checkbox':
       case 'switch':
         return false;
 
       default:
-        return value;
+        return item.value;
     }
   }
 

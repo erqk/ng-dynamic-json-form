@@ -1,6 +1,7 @@
 <ng-container *ngIf="data">
   <input
     type="text"
+    imaskValuePatch
     [ngClass]="{ disabled: control.disabled }"
     [imask]="data.inputMask"
     [propsBinding]="[
