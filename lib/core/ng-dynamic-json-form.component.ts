@@ -345,15 +345,15 @@ export class NgDynamicJsonFormComponent
 
     if (!this.configs) return;
 
-    const validationResult = this._configValidationService.validateAndGetConfig(
+    const result = this._configValidationService.validateAndGetConfig(
       this.configs
     );
 
-    this.configGet = validationResult.configs ?? [];
-    this.configValidationErrors = validationResult.errors ?? [];
+    this.configGet = result.configs ?? [];
+    this.configValidationErrors = result.errors ?? [];
     this._allowFormDirty = false;
 
-    if (!validationResult.errors?.length) {
+    if (!!this.configGet.length && !result.errors?.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
