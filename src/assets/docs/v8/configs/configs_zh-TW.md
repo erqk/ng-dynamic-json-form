@@ -70,7 +70,7 @@ export interface FormControlConfig {
 
 #### readonly
 
-將此控制器設為只讀，禁止寫入任何值。此控制器的元件會自動加入 `readonly` 的 class。
+欄位的父層將會加入 `readonly` 的 class。可用於禁止使用者去更改此欄位的值。
 
 #### type
 
