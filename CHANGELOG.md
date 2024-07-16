@@ -1,3 +1,11 @@
+# 8.1.2 (2024-07-16)
+
+[28c6ef4]: https://github.com/erqk/ng-dynamic-json-form/commit/28c6ef47c3d7eda63085721f2b1ee54626d571f5
+
+| Commit    | Type | Description                                                                 |
+| --------- | ---- | --------------------------------------------------------------------------- |
+| [28c6ef4] | fix  | Allow programmatically read and write value when `readonly` is set to true. |
+
 # 8.1.1 (2024-07-07)
 
 [003ef2f]: https://github.com/erqk/ng-dynamic-json-form/commit/003ef2fa9617feeaa4b1a00775c51dc5a709ab43
