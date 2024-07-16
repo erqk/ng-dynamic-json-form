@@ -70,7 +70,7 @@ See [Options](../../v8/options/options_en.md).
 
 #### readonly
 
-Set this control as readonly, disallow writting of value to it. A `readonly` class will be added to the host element.
+A `readonly` class will be added to the host element. Can use to disable user to interact with this input.
 
 #### type
 

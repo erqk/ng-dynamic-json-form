@@ -183,11 +183,8 @@ export class FormControlComponent
 
     componentRef.instance.data = this.data;
     componentRef.instance.writeValue(this._pendingValue);
-
-    if (!this.data?.readonly) {
-      componentRef.instance.registerOnChange(this._onChange);
-      componentRef.instance.registerOnTouched(this._onTouched);
-    }
+    componentRef.instance.registerOnChange(this._onChange);
+    componentRef.instance.registerOnTouched(this._onTouched);
 
     this._controlComponent = componentRef.instance;
     this._setControlErrors();
