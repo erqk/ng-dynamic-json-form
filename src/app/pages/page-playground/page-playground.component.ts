@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,16 +9,17 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { AngularSplitModule, IOutputData } from 'angular-split';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
 import {
-  Observable,
   combineLatest,
   concatAll,
   debounceTime,
   map,
+  Observable,
   share,
   tap,
   toArray,
@@ -59,8 +60,9 @@ import { VersionService } from 'src/app/features/version/version.service';
   templateUrl: './page-playground.component.html',
   styleUrls: ['./page-playground.component.scss'],
 })
-export class PagePlaygroundComponent {
+export class PagePlaygroundComponent implements OnInit {
   private _http = inject(HttpClient);
+  private _title = inject(Title);
   private _layoutService = inject(LayoutService);
   private _langService = inject(LanguageService);
   private _templateDataService = inject(PlaygroundTemplateDataService);
@@ -143,6 +145,12 @@ export class PagePlaygroundComponent {
       );
     })
   );
+
+  ngOnInit(): void {
+    this._langService.i18nContent$
+      .pipe(tap((x) => this._title.setTitle(x['MENU']['PLAYGROUND'])))
+      .subscribe();
+  }
 
   onTemplateEdit(value: boolean): void {
     this.showEditor = value;
