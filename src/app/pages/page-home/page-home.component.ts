@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
@@ -9,6 +9,7 @@ import { DocFormViewerComponent } from 'src/app/features/doc/components/doc-form
 import { UiLoadingIndicatorComponent } from 'src/app/features/ui-loading-indicator/ui-loading-indicator.component';
 import { LanguageService } from '../../features/language/language-data.service';
 import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-content-wrapper.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-page-home',
@@ -25,11 +26,15 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
   templateUrl: './page-home.component.html',
   styleUrls: ['./page-home.component.scss'],
 })
-export class PageHomeComponent {
+export class PageHomeComponent implements OnInit {
+  private _title = inject(Title);
   private _langService = inject(LanguageService);
-  private _layoutService = inject(LayoutService);
 
   lang$ = this._langService.language$;
   i18nContent$ = this._langService.i18nContent$;
   features$ = this.i18nContent$.pipe(map((x) => x['FEATURES']));
+
+  ngOnInit(): void {
+    this._title.setTitle('NgDynamicJsonForm');
+  }
 }
