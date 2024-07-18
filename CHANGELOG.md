@@ -1,3 +1,11 @@
+# 8.2.0 (2024-07-18)
+
+[3c0d30b]: https://github.com/erqk/ng-dynamic-json-form/commit/3c0d30bbdd5865c4bc9f199828d1a4bf05ac768f
+
+| Commit    | Type | Description                                |
+| --------- | ---- | ------------------------------------------ |
+| [3c0d30b] | feat | Support extra properties for `OptionItem`. |
+
 # 8.1.2 (2024-07-16)
 
 [28c6ef4]: https://github.com/erqk/ng-dynamic-json-form/commit/28c6ef47c3d7eda63085721f2b1ee54626d571f5
