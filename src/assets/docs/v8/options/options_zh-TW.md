@@ -20,7 +20,7 @@
 }
 ```
 
-每個 `OptionItem` 都只有 `label` and `value`。
+> 每個 `OptionItem` 通常由 `label` 和 `value` 組成，但需要加入其他的 properties 也沒問題。
 
 ## 從 API 取得動態選項
 
@@ -672,6 +672,7 @@ export interface FormControlOptions {
 export interface OptionItem {
   label: string;
   value?: any;
+  [key: string]: any;
 }
 ```
 

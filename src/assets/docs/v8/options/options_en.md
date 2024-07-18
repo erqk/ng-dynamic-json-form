@@ -20,7 +20,7 @@ To give static options, provide `OptionItem[]` to `options.data` .
 }
 ```
 
-Each of the `OptionItem` consists of only `label` and `value`.
+> Each of the `OptionItem` usually consists of only `label` and `value`. But other custom properties are also suppported.
 
 ## Dynamic options from API endpoint
 
@@ -671,6 +671,7 @@ The styles to add to the container of the options.
 export interface OptionItem {
   label: string;
   value?: any;
+  [key: string]: any;
 }
 ```
 
