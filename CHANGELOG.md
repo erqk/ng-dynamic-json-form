@@ -1,3 +1,15 @@
+# 8.2.1 (2024-07-25)
+
+[1111b7e]: https://github.com/erqk/ng-dynamic-json-form/commit/1111b7e95cc0e423078f0ca181a72908b3ec2ed0
+[452d092]: https://github.com/erqk/ng-dynamic-json-form/commit/452d09242d2c60bfd8909f5cf41ea6483c02847f
+[4b424c9]: https://github.com/erqk/ng-dynamic-json-form/commit/4b424c93d401bd289177341553cdf0e946892d42
+
+| Commit    | Type | Description                                                                                   |
+| --------- | ---- | --------------------------------------------------------------------------------------------- |
+| [1111b7e] | fix  | Checkbox `containerStyles` should able to overwrite the flex-direction specified in `layout`. |
+| [452d092] | fix  | Parse the string value to number before compare, to get correct validation errors.            |
+| [4b424c9] | fix  | PropsBindingDirective: Filter out all the null/undefined value before object destructuring.   |
+
 # 8.2.0 (2024-07-18)
 
 [3c0d30b]: https://github.com/erqk/ng-dynamic-json-form/commit/3c0d30bbdd5865c4bc9f199828d1a4bf05ac768f
