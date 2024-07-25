@@ -4,7 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 
@@ -24,11 +24,19 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
         key: 'p-checkbox',
         token: Checkbox,
       },
-    ])
+    ]),
   ],
   templateUrl: './ui-primeng-checkbox.component.html',
   styles: [],
 })
 export class UiPrimengCheckboxComponent extends CustomControlComponent {
   override control = new FormControl<any | any[]>('');
+
+  get groupButtonsStyles(): string {
+    return `
+      flex-direction: ${this.data?.options?.layout ?? 'row'};
+      align-items: flex-start;
+      ${this.data?.options?.containerStyles ?? ''}
+    `.replace(/\s{2,}/g, '');
+  }
 }

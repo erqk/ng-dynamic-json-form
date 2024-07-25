@@ -67,4 +67,12 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
 
     this.control?.setValue(newValue);
   }
+
+  get groupButtonsStyles(): string {
+    return `
+      flex-direction: ${this.data?.options?.layout ?? 'row'};
+      align-items: flex-start;
+      ${this.data?.options?.containerStyles ?? ''}
+    `.replace(/\s{2,}/g, '');
+  }
 }
