@@ -126,10 +126,18 @@ export class FormValidationService {
 
         const targetKey = valueKey[x.name as ValidatorsEnum] ?? '';
         const requiredValue = controlErrors[key][targetKey];
+
+        // If the value is string and can be parsed, then convert to number,
+        // otherwise the value will be mismatched with the value in the `controlErrors`.
+        const validatorValue =
+          typeof x.value !== 'number' && !isNaN(x.value)
+            ? parseInt(x.value)
+            : x.value;
+
         const requiredValueMatch =
           requiredValue && x.name === 'pattern'
-            ? requiredValue.includes(x.value)
-            : requiredValue === x.value;
+            ? requiredValue.includes(validatorValue)
+            : requiredValue === validatorValue;
 
         return requiredValueMatch && key === errorKey;
       });

@@ -1,11 +1,8 @@
 <ng-container *ngIf="data">
   <div
     class="group-buttons"
-    [style]="data.options?.containerStyles"
+    [style]="groupButtonsStyles"
     [ngClass]="[data.options?.containerClass ?? '']"
-    [ngStyle]="{
-      'flex-direction': data.options?.layout
-    }"
   >
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.data?.length === 1">

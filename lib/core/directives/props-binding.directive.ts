@@ -36,13 +36,21 @@ export class PropsBindingDirective {
   }
 
   private _bindProperties(): void {
-    if (!this.propsBinding?.length) {
+    const propsBinding = (this.propsBinding ?? []).filter((x) => {
+      return (
+        Boolean(x) &&
+        typeof x.props === 'object' &&
+        Object.keys(x.props).length > 0
+      );
+    });
+
+    if (!propsBinding.length) {
       return;
     }
 
     const host = this._el.nativeElement;
 
-    for (const item of this.propsBinding) {
+    for (const item of propsBinding) {
       const { props, key, omit = [] } = item;
       const providerToken = this._injectionTokens?.find(
         (x) => x.key === key
