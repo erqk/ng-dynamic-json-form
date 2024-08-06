@@ -28,6 +28,10 @@ import {
         key: 'mat-input',
         token: MatInput,
       },
+      {
+        key: 'imask',
+        token: IMaskDirective,
+      },
     ]),
   ],
   styles: [],

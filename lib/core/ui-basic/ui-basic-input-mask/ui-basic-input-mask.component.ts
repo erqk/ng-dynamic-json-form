@@ -7,6 +7,7 @@ import {
   ImaskValuePatchDirective,
   PropsBindingDirective,
 } from '../../directives';
+import { providePropsBinding } from '../../providers/props-binding.provider';
 @Component({
   selector: 'ui-basic-input-mask',
   standalone: true,
@@ -16,6 +17,14 @@ import {
     IMaskDirective,
     ImaskValuePatchDirective,
     PropsBindingDirective,
+  ],
+  providers: [
+    providePropsBinding([
+      {
+        key: 'imask',
+        token: IMaskDirective,
+      },
+    ]),
   ],
   templateUrl: './ui-basic-input-mask.component.html',
   styles: [],
