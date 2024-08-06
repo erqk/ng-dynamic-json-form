@@ -1,3 +1,11 @@
+# 8.2.2 (2024-08-06)
+
+[32a14cf]: https://github.com/erqk/ng-dynamic-json-form/commit/32a14cfbf2d1195968b22f201b38f2ac1c53aa68
+
+| Commit    | Type | Description                         |
+| --------- | ---- | ----------------------------------- |
+| [32a14cf] | fix  | Props binding for `IMaskDirective`. |
+
 # 8.2.1 (2024-07-25)
 
 [1111b7e]: https://github.com/erqk/ng-dynamic-json-form/commit/1111b7e95cc0e423078f0ca181a72908b3ec2ed0
