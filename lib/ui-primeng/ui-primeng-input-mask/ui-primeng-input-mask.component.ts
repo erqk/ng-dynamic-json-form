@@ -28,6 +28,10 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
         key: 'p-input-text',
         token: InputText,
       },
+      {
+        key: 'imask',
+        token: IMaskDirective,
+      },
     ]),
   ],
   styles: [],
