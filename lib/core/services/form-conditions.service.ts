@@ -171,9 +171,9 @@ export class FormConditionsService {
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
-        // Must escape the "." character so that querySelector will work correctly
+        // Use `CSS.escape()` to escape all the invalid characters.
         const element = this._globalVariableService.hostElement?.querySelector(
-          `#${controlPath.replaceAll('.', '\\.')}`
+          `#${CSS.escape(controlPath)}`
         );
 
         subscriber.next(!element ? null : (element as HTMLElement));
