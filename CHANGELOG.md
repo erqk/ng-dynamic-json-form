@@ -1,3 +1,11 @@
+# 8.2.3 (2024-08-10)
+
+[b30179a]: https://github.com/erqk/ng-dynamic-json-form/commit/b30179acac30f2df794793391c03e92b6bf0d866
+
+| Commit    | Type | Description                                          |
+| --------- | ---- | ---------------------------------------------------- |
+| [b30179a] | fix  | Use `CSS.escape()` to escape all invalid charactersw. |
+
 # 8.2.2 (2024-08-06)
 
 [32a14cf]: https://github.com/erqk/ng-dynamic-json-form/commit/32a14cfbf2d1195968b22f201b38f2ac1c53aa68
