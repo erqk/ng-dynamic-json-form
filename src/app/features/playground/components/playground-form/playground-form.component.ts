@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormControl, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  UntypedFormGroup,
+} from '@angular/forms';
 import {
   CustomComponents,
   FormControlConfig,
@@ -10,6 +14,7 @@ import {
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
+import { textareaMaxLength } from 'src/app/example/validators/textarea-max-length.validator';
 
 @Component({
   selector: 'app-playground-form',
@@ -19,6 +24,7 @@ import { firstUppercaseValidator } from 'src/app/example/validators/first-upperc
     provideNgDynamicJsonForm({
       customValidators: {
         firstUppercase: firstUppercaseValidator,
+        textareaMaxLength,
       },
       // labelComponent: CustomFormTitleComponent,
       loadingComponent: CustomLoadingComponent,
