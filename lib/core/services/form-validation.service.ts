@@ -25,16 +25,17 @@ const builtInValidators = (
   value?: any
 ): {
   [key in ValidatorsEnum]?: ValidatorFn;
-} => ({
-  [ValidatorsEnum.required]: Validators.required,
-  [ValidatorsEnum.requiredTrue]: Validators.requiredTrue,
-  [ValidatorsEnum.email]: emailValidator,
-  [ValidatorsEnum.pattern]: Validators.pattern(value),
-  [ValidatorsEnum.min]: Validators.min(value),
-  [ValidatorsEnum.max]: Validators.max(value),
-  [ValidatorsEnum.minLength]: Validators.minLength(value),
-  [ValidatorsEnum.maxLength]: Validators.maxLength(value),
-});
+} =>
+  ({
+    [ValidatorsEnum.required]: Validators.required,
+    [ValidatorsEnum.requiredTrue]: Validators.requiredTrue,
+    [ValidatorsEnum.email]: emailValidator,
+    [ValidatorsEnum.pattern]: Validators.pattern(value),
+    [ValidatorsEnum.min]: Validators.min(value),
+    [ValidatorsEnum.max]: Validators.max(value),
+    [ValidatorsEnum.minLength]: Validators.minLength(value),
+    [ValidatorsEnum.maxLength]: Validators.maxLength(value),
+  } as const);
 
 @Injectable()
 export class FormValidationService {
@@ -57,36 +58,32 @@ export class FormValidationService {
   }
 
   getValidators(input: ValidatorConfig[]): ValidatorFn[] {
+    const customValidators = this._globalVariableService.customValidators;
+    const getCustomValidator = (config: ValidatorConfig) => {
+      const { name, value } = config;
+      const validator = customValidators?.[name];
+
+      if (!validator) {
+        return null;
+      }
+
+      if (value === null || value === undefined) {
+        return validator;
+      }
+
+      return validator(value) as ValidatorFn;
+    };
+
     return input.map((item) => {
-      const { name, value } = item;
-      const _value = () => {
-        switch (name) {
-          case ValidatorsEnum.pattern:
-            return value instanceof RegExp
-              ? value
-              : new RegExp(value, item.flags);
+      const { name } = item;
+      const value = this._getValidatorValue(item);
+      const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
+      const customValidator = getCustomValidator(item);
 
-          case ValidatorsEnum.min:
-          case ValidatorsEnum.max:
-          case ValidatorsEnum.minLength:
-          case ValidatorsEnum.maxLength:
-            try {
-              return typeof value !== 'number' ? parseFloat(value) : value;
-            } catch {
-              break;
-            }
+      const result =
+        builtInValidator ?? customValidator ?? Validators.nullValidator;
 
-          default:
-            return value;
-        }
-      };
-
-      const validator =
-        builtInValidators(_value())[name as ValidatorsEnum] ??
-        this._globalVariableService.customValidators?.[name] ??
-        Validators.nullValidator;
-
-      return validator;
+      return result;
     });
   }
 
@@ -104,11 +101,38 @@ export class FormValidationService {
     controlValue: any,
     validatorConfigs: ValidatorConfig[]
   ): string[] {
-    if (!controlErrors) return [];
+    if (!controlErrors) {
+      return [];
+    }
 
+    const errorMessage = (error: any) => {
+      return typeof error === 'string' ? error : JSON.stringify(error);
+    };
+
+    return Object.keys(controlErrors).reduce((acc, key) => {
+      const error = controlErrors[key];
+      const config = this._getConfigFromErrorKey(
+        { [key]: error },
+        validatorConfigs
+      );
+
+      const customMessage = config?.message?.replace(
+        /{{value}}/g,
+        controlValue || ''
+      );
+
+      acc.push(customMessage || errorMessage(error));
+      return acc;
+    }, [] as string[]);
+  }
+
+  private _getConfigFromErrorKey(
+    error: { [key: string]: any },
+    configs: ValidatorConfig[]
+  ): ValidatorConfig | undefined {
     // The key mapping of the `ValidationErrors` with the `ValidatorConfig`,
     // to let us get the correct message by using `name` of `ValidatorConfig`.
-    const valueKey: { [key in ValidatorsEnum]?: string } = {
+    const valueKeyMapping: { [key in ValidatorsEnum]?: string } = {
       pattern: 'requiredPattern',
       min: 'min',
       max: 'max',
@@ -116,42 +140,53 @@ export class FormValidationService {
       maxLength: 'requiredLength',
     };
 
-    return Object.keys(controlErrors).reduce((acc, key) => {
-      const config = validatorConfigs.find((x) => {
-        const errorKey = x.name.toLowerCase();
+    const getValidatorValue = (v: any) => {
+      return typeof v !== 'number' && !isNaN(v) ? parseFloat(v) : v;
+    };
 
-        if (x.value === undefined) {
-          return key === errorKey;
+    const [errorKey, errorValue] = Object.entries(error)[0];
+    const result = configs.find((item) => {
+      const { name, value } = item;
+
+      if (errorKey !== name.toLowerCase()) {
+        return false;
+      }
+
+      if (value === undefined) {
+        return true;
+      }
+
+      const targetKey = valueKeyMapping[name as ValidatorsEnum] ?? '';
+      const requiredValue = errorValue[targetKey];
+      const validatorValue = getValidatorValue(value);
+
+      return requiredValue && name === 'pattern'
+        ? requiredValue.includes(validatorValue)
+        : requiredValue === validatorValue;
+    });
+
+    return result;
+  }
+
+  private _getValidatorValue(validatorConfig: ValidatorConfig) {
+    const { name, value, flags } = validatorConfig;
+
+    switch (name) {
+      case ValidatorsEnum.pattern:
+        return value instanceof RegExp ? value : new RegExp(value, flags);
+
+      case ValidatorsEnum.min:
+      case ValidatorsEnum.max:
+      case ValidatorsEnum.minLength:
+      case ValidatorsEnum.maxLength:
+        try {
+          return typeof value !== 'number' ? parseFloat(value) : value;
+        } catch {
+          break;
         }
 
-        const targetKey = valueKey[x.name as ValidatorsEnum] ?? '';
-        const requiredValue = controlErrors[key][targetKey];
-
-        // If the value is string and can be parsed, then convert to number,
-        // otherwise the value will be mismatched with the value in the `controlErrors`.
-        const validatorValue =
-          typeof x.value !== 'number' && !isNaN(x.value)
-            ? parseInt(x.value)
-            : x.value;
-
-        const requiredValueMatch =
-          requiredValue && x.name === 'pattern'
-            ? requiredValue.includes(validatorValue)
-            : requiredValue === validatorValue;
-
-        return requiredValueMatch && key === errorKey;
-      });
-
-      const error = controlErrors[key];
-      const errorStringified =
-        typeof error === 'string' ? error : JSON.stringify(error);
-      const customMessage = config?.message?.replace(
-        /{{value}}/g,
-        controlValue || ''
-      );
-
-      acc.push(customMessage || errorStringified);
-      return acc;
-    }, [] as string[]);
+      default:
+        return value;
+    }
   }
 }
