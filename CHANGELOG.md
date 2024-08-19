@@ -1,9 +1,17 @@
+# 8.2.4 (2024-08-15)
+
+[6d7c9c9]: https://github.com/erqk/ng-dynamic-json-form/commit/6d7c9c9a3b197ae98c7e93e022acdba273045e02
+
+| Commit    | Type | Description                               |
+| --------- | ---- | ----------------------------------------- |
+| [6d7c9c9] | fix  | The comparator is compare the same thing. |
+
 # 8.2.3 (2024-08-10)
 
 [b30179a]: https://github.com/erqk/ng-dynamic-json-form/commit/b30179acac30f2df794793391c03e92b6bf0d866
 
-| Commit    | Type | Description                                          |
-| --------- | ---- | ---------------------------------------------------- |
+| Commit    | Type | Description                                           |
+| --------- | ---- | ----------------------------------------------------- |
 | [b30179a] | fix  | Use `CSS.escape()` to escape all invalid charactersw. |
 
 # 8.2.2 (2024-08-06)
