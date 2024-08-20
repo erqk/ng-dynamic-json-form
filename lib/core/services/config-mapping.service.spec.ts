@@ -13,12 +13,19 @@ beforeAll(() => {
 
 describe('Set fallback value depends on type', () => {
   it('Checkbox value should becomes false when it is undefined', () => {
-    const result = service['_getFallbackValue'](undefined, 'checkbox');
+    const result = service['_getFallbackValue']({
+      formControlName: 'test',
+      type: 'checkbox',
+    });
     expect(result).toBe(false);
   });
 
   it('Switch value should becomes false when it is undefined', () => {
-    const result = service['_getFallbackValue'](null, 'switch');
+    const result = service['_getFallbackValue']({
+      formControlName: 'test',
+      type: 'switch',
+      value: null,
+    });
     expect(result).toBe(false);
   });
 });
