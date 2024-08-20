@@ -97,6 +97,10 @@ export class FormConditionsService {
       (x) => x === actionDisabled || x === actionHidden
     );
 
+    if (!actions.length) {
+      return;
+    }
+
     const toggleDisabled = (disabled: boolean) => {
       disabled ? control.disable() : control.enable();
     };
@@ -176,9 +180,13 @@ export class FormConditionsService {
     control: AbstractControl
   ): void {
     const definedActions = Object.values(ConditionsActionEnum);
-    const customActions = Object.keys(conditions).filter((x) => {
-      !definedActions.includes(x as ConditionsActionEnum);
-    });
+    const customActions = Object.keys(conditions).filter(
+      (x) => !definedActions.includes(x as ConditionsActionEnum)
+    );
+
+    if (!customActions.length) {
+      return;
+    }
 
     for (const action of customActions) {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
