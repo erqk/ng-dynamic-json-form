@@ -57,7 +57,7 @@
     "@types/node": "^14.18.63",
     "autoprefixer": "^10.4.16",
     "jest": "^29.7.0",
-    "jest-preset-angular": "^14.0.4",
+    "jest-preset-angular": "^14.2.2",
     "ng-packagr": "^16.2.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
