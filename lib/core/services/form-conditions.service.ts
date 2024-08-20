@@ -2,7 +2,7 @@ import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
-  debounceTime,
+  distinctUntilChanged,
   filter,
   from,
   mergeMap,
@@ -11,6 +11,7 @@ import {
   tap,
 } from 'rxjs';
 import {
+  Conditions,
   ConditionsActionEnum,
   ConditionsGroup,
   ConditionsStatementTupple,
@@ -29,7 +30,13 @@ export class FormConditionsService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
-  private _pauseEvent = false;
+  private _lastExecutedAction: {
+    [controlPath: string]: {
+      validatorConfigs?: ValidatorConfig[];
+      disabled?: boolean;
+      hidden?: boolean;
+    };
+  } = {};
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -48,11 +55,14 @@ export class FormConditionsService {
       .filter(Boolean) as AbstractControl[];
 
     const configsWithConditions = this._configsWithConditions(configs);
+    const valueChanges$ = (c: AbstractControl) =>
+      c.valueChanges.pipe(
+        startWith(c.value),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      );
 
     return from(controls).pipe(
-      mergeMap((x) => x.valueChanges.pipe(startWith(x.value))),
-      filter(() => !this._pauseEvent),
-      debounceTime(0),
+      mergeMap((x) => valueChanges$(x)),
       tap(() => this._onConditionsMet(configsWithConditions))
     );
   }
@@ -69,111 +79,159 @@ export class FormConditionsService {
 
       const config = data[key];
       const conditions = config.conditions!;
-      const actions = Object.keys(conditions) as ConditionsActionEnum[];
 
-      for (const action of actions) {
-        const bool = this._evaluateConditionsStatement(conditions[action]!);
-        if (bool === undefined) return;
-
-        const isPredefinedAction =
-          Object.values(ConditionsActionEnum).includes(action);
-        const toggleState = new RegExp(/^control\.[a-zA-Z]{1,}$/).test(action);
-        const toggleValidators = new RegExp(/^validator\.[a-zA-z]{1,}$/).test(
-          action
-        );
-
-        if (isPredefinedAction) {
-          if (toggleState) {
-            this._toggleControlState({
-              action,
-              bool,
-              control,
-              controlPath: key,
-            });
-          }
-
-          if (toggleValidators) {
-            this._toggleValidators({
-              action,
-              bool,
-              control,
-              validatorConfigs: config.validators ?? [],
-            });
-          }
-        } else if (bool) {
-          const functions =
-            this._globalVariableService.conditionsActionFuntions;
-
-          if (!functions) return;
-          if (!functions[action]) return;
-          if (typeof functions[action] !== 'function') return;
-
-          functions[action](control);
-        }
-      }
+      this._executeCustomActions(conditions, control);
+      this._toggleValidators(config, control, key);
+      this._toggleControlStates(conditions, control, key);
     }
   }
 
-  private _toggleControlState(data: {
-    action: ConditionsActionEnum;
-    bool: boolean;
-    control: AbstractControl;
-    controlPath: string;
-  }): void {
-    const { action, bool, control, controlPath } = data;
+  private _toggleControlStates(
+    conditions: Conditions,
+    control: AbstractControl,
+    controlPath: string
+  ): void {
+    const actionDisabled = ConditionsActionEnum['control.disabled'];
+    const actionHidden = ConditionsActionEnum['control.hidden'];
+    const actions = Object.keys(conditions).filter(
+      (x) => x === actionDisabled || x === actionHidden
+    );
+
+    if (!actions.length) {
+      return;
+    }
+
     const toggleDisabled = (disabled: boolean) => {
-      this._pauseEvent = true;
       disabled ? control.disable() : control.enable();
-      this._pauseEvent = false;
     };
 
-    switch (action) {
-      case ConditionsActionEnum['control.disabled']:
-        toggleDisabled(bool);
-        break;
+    const disableControl = (bool: boolean) => {
+      const noChange = this._getLastAction(controlPath, 'disabled') === bool;
+      if (noChange) return;
 
-      case ConditionsActionEnum['control.hidden']:
-        toggleDisabled(bool);
+      this._setLastAction(controlPath, 'disabled', bool);
+      toggleDisabled(bool);
+    };
 
-        this._getTargetEl$(controlPath)
-          .pipe(
-            filter(Boolean),
-            tap((x) => {
-              this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
-            })
-          )
-          .subscribe();
-        break;
+    const hideControl = (bool: boolean) => {
+      const noChange = this._getLastAction(controlPath, 'hidden') === bool;
+      if (noChange) return;
+
+      this._setLastAction(controlPath, 'hidden', bool);
+      this._getTargetEl$(controlPath)
+        .pipe(
+          filter(Boolean),
+          tap((x) => {
+            toggleDisabled(bool);
+            this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
+          })
+        )
+        .subscribe();
+    };
+
+    for (const action of actions) {
+      const bool = this._evaluateConditionsStatement(conditions[action]!);
+      if (bool === undefined) return;
+      if (action === actionDisabled) disableControl(bool);
+      if (action === actionHidden) hideControl(bool);
     }
   }
 
-  private _toggleValidators(data: {
-    action: ConditionsActionEnum;
-    bool: boolean;
-    control: AbstractControl;
-    validatorConfigs: ValidatorConfig[];
-  }): void {
-    const { action, bool, control, validatorConfigs } = data;
-    const _validatorConfigs = bool
-      ? validatorConfigs
-      : validatorConfigs.filter(
-          (x) => x.name !== action.replace('validator.', '')
-        );
+  private _toggleValidators(
+    config: FormControlConfig,
+    control: AbstractControl,
+    controlPath: string
+  ): void {
+    const { conditions = {}, validators = [] } = config;
+    const actions = Object.keys(conditions).filter((x) =>
+      new RegExp(/^validator\.[a-zA-z]{1,}$/).test(x)
+    );
 
-    const validators =
-      this._formValidationService.getValidators(_validatorConfigs);
+    if (!actions.length) {
+      return;
+    }
 
-    control.setValidators(validators);
-    control.updateValueAndValidity();
+    const validatorConfigs = validators.filter((x) => {
+      const actionName = `validator.${x.name ?? ''}` as ConditionsActionEnum;
+      const target = actions.includes(actionName);
+
+      return !target
+        ? false
+        : this._evaluateConditionsStatement(conditions[actionName]!);
+    });
+
+    const prevConfigs = this._getLastAction(controlPath, 'validatorConfigs');
+    const noChange =
+      JSON.stringify(prevConfigs) === JSON.stringify(validatorConfigs);
+
+    if (!noChange) {
+      const resultValidators =
+        this._formValidationService.getValidators(validatorConfigs);
+
+      control.setValidators(resultValidators);
+      control.updateValueAndValidity();
+
+      this._setLastAction(controlPath, 'validatorConfigs', validatorConfigs);
+    }
+  }
+
+  private _executeCustomActions(
+    conditions: Conditions,
+    control: AbstractControl
+  ): void {
+    const definedActions = Object.values(ConditionsActionEnum);
+    const customActions = Object.keys(conditions).filter(
+      (x) => !definedActions.includes(x as ConditionsActionEnum)
+    );
+
+    if (!customActions.length) {
+      return;
+    }
+
+    for (const action of customActions) {
+      const bool = this._evaluateConditionsStatement(conditions[action]!);
+      if (!bool) return;
+
+      const functions = this._globalVariableService.conditionsActionFuntions;
+
+      if (!functions) return;
+      if (!functions[action]) return;
+      if (typeof functions[action] !== 'function') return;
+
+      functions[action](control);
+    }
+  }
+
+  private _setLastAction(
+    key: string,
+    type: keyof (typeof this._lastExecutedAction)[''],
+    value: boolean | ValidatorConfig[]
+  ): void {
+    const target = this._lastExecutedAction[key];
+
+    if (!target) {
+      Object.assign(this._lastExecutedAction, { [key]: { [type]: value } });
+      return;
+    }
+
+    Object.assign(target, { [type]: value });
+  }
+
+  private _getLastAction(
+    key: string,
+    type: keyof (typeof this._lastExecutedAction)['']
+  ): boolean | ValidatorConfig[] | undefined {
+    const target = this._lastExecutedAction[key];
+    return !target ? undefined : target[type];
   }
 
   /**Get the target element by using `id`(full control path) on each `div` inside current NgDynamicJsonForm instance */
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
-        // Must escape the "." character so that querySelector will work correctly
+        // Use `CSS.escape()` to escape all the invalid characters.
         const element = this._globalVariableService.hostElement?.querySelector(
-          `#${controlPath.replaceAll('.', '\\.')}`
+          `#${CSS.escape(controlPath)}`
         );
 
         subscriber.next(!element ? null : (element as HTMLElement));

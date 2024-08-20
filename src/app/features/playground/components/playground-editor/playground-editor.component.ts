@@ -4,18 +4,20 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   Output,
   SimpleChanges,
-  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  debounceTime,
   distinctUntilChanged,
   fromEvent,
   map,
   merge,
+  Subject,
+  take,
+  takeUntil,
   tap,
   timer,
 } from 'rxjs';
@@ -34,6 +36,7 @@ export class PlaygroundEditorComponent {
   private _destroyRef = inject(DestroyRef);
   private _el = inject(ElementRef);
   private _themeService = inject(ThemeService);
+  private _cancelWriteValue$ = new Subject<void>();
 
   @Input() data: Content | null = null;
   @Input() mainMenuBar = true;
@@ -47,8 +50,15 @@ export class PlaygroundEditorComponent {
     const { data } = simpleChanges;
 
     if (data && this.jsonEditor) {
+      this._cancelWriteValue$.next();
       try {
-        this.jsonEditor.set(data.currentValue);
+        timer(100)
+          .pipe(
+            take(1),
+            tap(() => this.jsonEditor?.set(data.currentValue)),
+            takeUntil(this._cancelWriteValue$)
+          )
+          .subscribe();
       } catch (err) {
         console.error(err);
       }

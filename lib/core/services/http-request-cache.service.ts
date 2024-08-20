@@ -72,7 +72,7 @@ export class HttpRequestCacheService {
   }: RequestParams): RequestResponse | undefined {
     const result = this._requests.find((x) => {
       if (method === 'POST' && body) {
-        const sameBody = JSON.stringify(x.body) === JSON.stringify(x.body);
+        const sameBody = JSON.stringify(body) === JSON.stringify(x.body);
         return x.src === src && sameBody;
       }
 
