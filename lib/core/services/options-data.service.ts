@@ -229,13 +229,14 @@ export class OptionsDataService {
 
     const form = this._globalVariableService.rootForm;
     const result = Object.keys(triggerBody).reduce((acc, key) => {
-      const paths = getControlAndValuePath(triggerBody[key]);
-      const value = getValueInObject(
-        form?.get(paths.controlPath)?.value,
-        paths.valuePath
+      const { controlPath, valuePath } = getControlAndValuePath(
+        triggerBody[key]
       );
 
-      acc[key] = value;
+      const control = form?.get(controlPath);
+      const value = getValueInObject(control?.value, valuePath);
+
+      acc[key] = !control ? triggerBody[key] : value;
       return acc;
     }, {} as any);
 
