@@ -1,3 +1,19 @@
+# 8.2.7 (2024-09-01)
+
+[2818671]: https://github.com/erqk/ng-dynamic-json-form/commit/28186714b910aeda7e852e736e824b5efc69c620
+
+| Commit    | Type  | Description                            |
+| --------- | ----- | -------------------------------------- |
+| [2818671] | chore | Support form rendering in server side. |
+
+# 8.2.6 (2024-08-28)
+
+[09faf63]: https://github.com/erqk/ng-dynamic-json-form/commit/09faf63326dcf3727f14cb431065adfbe3947e0e
+
+| Commit    | Type | Description                                         |
+| --------- | ---- | --------------------------------------------------- |
+| [09faf63] | fix  | Retain trigger's body value if no control is found. |
+
 # 8.2.5 (2024-08-20)
 
 [802c219]: https://github.com/erqk/ng-dynamic-json-form/commit/802c2190f4ea5a09a15fdafd6c2c3e4df11eb3a8

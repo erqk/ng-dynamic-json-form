@@ -57,34 +57,43 @@ export class FormValidationService {
     );
   }
 
-  getValidators(input: ValidatorConfig[]): ValidatorFn[] {
-    const customValidators = this._globalVariableService.customValidators;
-    const getCustomValidator = (config: ValidatorConfig) => {
-      const { name, value } = config;
-      const validator = customValidators?.[name];
+  getValidators(input: ValidatorConfig[] | undefined): ValidatorFn[] | null {
+    if (!input || !input.length) {
+      return null;
+    }
 
-      if (!validator) {
-        return null;
-      }
+    // Remove duplicates
+    const filteredConfigs = [
+      ...new Map(input.map((v) => [v.name, v])).values(),
+    ];
 
-      if (value === null || value === undefined) {
-        return validator;
-      }
-
-      return validator(value) as ValidatorFn;
-    };
-
-    return input.map((item) => {
+    return filteredConfigs.map((item) => {
       const { name } = item;
       const value = this._getValidatorValue(item);
       const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
-      const customValidator = getCustomValidator(item);
+      const customValidator = this._getCustomValidator(item);
 
       const result =
         builtInValidator ?? customValidator ?? Validators.nullValidator;
 
       return result;
     });
+  }
+
+  private _getCustomValidator(config: ValidatorConfig): ValidatorFn | null {
+    const customValidators = this._globalVariableService.customValidators;
+    const { name, value } = config;
+    const validator = customValidators?.[name];
+
+    if (!validator) {
+      return null;
+    }
+
+    if (value === null || value === undefined || `${value}`.trim() === '') {
+      return validator;
+    }
+
+    return validator(value) as ValidatorFn;
   }
 
   /**Get the error messages of the control
