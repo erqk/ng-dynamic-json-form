@@ -1,3 +1,11 @@
+# 8.2.8 (2024-09-01)
+
+[49c821a]: https://github.com/erqk/ng-dynamic-json-form/commit/49c821a36d73e12d25090e801decb36da20fd153
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [49c821a] | fix  | Remove `window` to prevent error on server side. |
+
 # 8.2.7 (2024-09-01)
 
 [2818671]: https://github.com/erqk/ng-dynamic-json-form/commit/28186714b910aeda7e852e736e824b5efc69c620
