@@ -24,7 +24,7 @@ export class UiBasicSelectComponent extends CustomControlComponent {
 
   override writeValue(obj: any): void {
     const value = this._controlValueService.getOptionsValue('stringified', obj);
-    requestAnimationFrame(() => this.control.setValue(value));
+    this.control.setValue(value);
   }
 
   override registerOnChange(fn: any): void {

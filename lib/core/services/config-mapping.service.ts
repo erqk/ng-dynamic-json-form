@@ -5,8 +5,8 @@ import { FormControlConfig } from '../models';
 @Injectable()
 export class ConfigMappingService {
   getCorrectedConfig(input: FormControlConfig): FormControlConfig {
-    const config = window.structuredClone(input) as FormControlConfig;
-    const { formControlName, type, props, inputMask, children = [] } = config;
+    const config = structuredClone(input) as FormControlConfig;
+    const { formControlName, props, inputMask, children = [] } = config;
 
     config.formControlName = this._getFormControlName(formControlName);
     config.value = config.value ?? this._getFallbackValue(config);

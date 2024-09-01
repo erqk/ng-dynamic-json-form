@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -9,7 +9,6 @@ import {
   Injector,
   Input,
   Output,
-  PLATFORM_ID,
   SimpleChanges,
   TemplateRef,
   Type,
@@ -32,7 +31,6 @@ import {
 import {
   Observable,
   Subject,
-  debounceTime,
   filter,
   fromEvent,
   merge,
@@ -117,7 +115,6 @@ export class NgDynamicJsonFormComponent
     optional: true,
   });
   private _cd = inject(ChangeDetectorRef);
-  private _platformId = inject(PLATFORM_ID);
   private _el = inject(ElementRef);
   private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
@@ -238,10 +235,6 @@ export class NgDynamicJsonFormComponent
   }
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (isPlatformServer(this._platformId)) {
-      return;
-    }
-
     const { configs, hideErrorMessage } = simpleChanges;
 
     if (hideErrorMessage) {
@@ -256,10 +249,6 @@ export class NgDynamicJsonFormComponent
   }
 
   ngOnInit(): void {
-    if (isPlatformServer(this._platformId)) {
-      return;
-    }
-
     this._setupVariables();
     this._getControlDirective();
     this._buildForm();

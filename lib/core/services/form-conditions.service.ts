@@ -227,6 +227,10 @@ export class FormConditionsService {
 
   /**Get the target element by using `id`(full control path) on each `div` inside current NgDynamicJsonForm instance */
   private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
+    if (typeof window === 'undefined') {
+      return of(null);
+    }
+
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
         // Use `CSS.escape()` to escape all the invalid characters.
