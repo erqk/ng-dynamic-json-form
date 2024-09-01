@@ -7,27 +7,16 @@ import { ValidatorConfig } from './validator-config.interface';
 
 export interface FormControlConfig {
   formControlName: string;
-
-  /**Action to do on this control when condition is met. e.g. Change visibility or toggle validators */
+  
   conditions?: Conditions;
 
-  /**Provide to make this control as a FormGroup, cannot use with `formArray` */
+  /**Provide to make this control as a `FormGroup` */
   children?: FormControlConfig[];
 
   description?: string;
 
-  /**The properties to bind to the target element or `Directive`. Example:
-   *  @example
-   *  <textarea
-   *    [rows]="extra.rows"
-   *    [cols]="extra.cols"
-   *    ...
-   *  ></textarea>
-   *
-   * @example
-   * <p-calendar
-   *    [appendTo]="extra.appendTo"
-   * ></p-calendar>
+  /**
+   * The properties to bind to the target element or `Directive`
    */
   props?: any;
 
@@ -40,15 +29,9 @@ export interface FormControlConfig {
 
   inputMask?: FactoryArg;
 
-  /**A list of data, use with the following input type:
-   * - `checkbox`
-   * - `dropdown`
-   * - `radio`
-   * - ...custom component type
-   */
   options?: FormControlOptions;
 
-  /**Set this input to readonly, and will add a class `readonly` for styling */
+  /**Set this input to readonly, and will add a class `readonly` to the host element of this control */
   readonly?: boolean;
 
   type?: FormControlType;
