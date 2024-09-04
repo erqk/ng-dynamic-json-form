@@ -1,3 +1,11 @@
+# 8.2.9 (2024-09-04)
+
+[cef1418]: https://github.com/erqk/ng-dynamic-json-form/commit/cef1418cde33a53436675179dac2d004ec023bb4
+
+| Commit    | Type | Description                                |
+| --------- | ---- | ------------------------------------------ |
+| [cef1418] | fix  | Hidden condition failed to work correctly. |
+
 # 8.2.8 (2024-09-01)
 
 [49c821a]: https://github.com/erqk/ng-dynamic-json-form/commit/49c821a36d73e12d25090e801decb36da20fd153
