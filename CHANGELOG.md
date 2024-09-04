@@ -1,3 +1,11 @@
+# 8.2.10 (2024-09-04)
+
+[dccb9be]: https://github.com/erqk/ng-dynamic-json-form/commit/dccb9beb3fd8420006778de72535e38ee4498d83
+
+| Commit    | Type | Description                        |
+| --------- | ---- | ---------------------------------- |
+| [dccb9be] | fix  | Don't disable control when hidden. |
+
 # 8.2.9 (2024-09-04)
 
 [cef1418]: https://github.com/erqk/ng-dynamic-json-form/commit/cef1418cde33a53436675179dac2d004ec023bb4
