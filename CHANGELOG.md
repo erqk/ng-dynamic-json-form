@@ -1,3 +1,35 @@
+# 8.2.11 (2024-09-04)
+
+[c76892c]: https://github.com/erqk/ng-dynamic-json-form/commit/c76892c29b570ee2e545cb6409b3f6a10a329cb6
+
+| Commit    | Type | Description                                   |
+| --------- | ---- | --------------------------------------------- |
+| [c76892c] | fix  | Control is not disabled as expected on start. |
+
+# 8.2.10 (2024-09-04)
+
+[dccb9be]: https://github.com/erqk/ng-dynamic-json-form/commit/dccb9beb3fd8420006778de72535e38ee4498d83
+
+| Commit    | Type | Description                        |
+| --------- | ---- | ---------------------------------- |
+| [dccb9be] | fix  | Don't disable control when hidden. |
+
+# 8.2.9 (2024-09-04)
+
+[cef1418]: https://github.com/erqk/ng-dynamic-json-form/commit/cef1418cde33a53436675179dac2d004ec023bb4
+
+| Commit    | Type | Description                                |
+| --------- | ---- | ------------------------------------------ |
+| [cef1418] | fix  | Hidden condition failed to work correctly. |
+
+# 8.2.8 (2024-09-01)
+
+[49c821a]: https://github.com/erqk/ng-dynamic-json-form/commit/49c821a36d73e12d25090e801decb36da20fd153
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [49c821a] | fix  | Remove `window` to prevent error on server side. |
+
 # 8.2.7 (2024-09-01)
 
 [2818671]: https://github.com/erqk/ng-dynamic-json-form/commit/28186714b910aeda7e852e736e824b5efc69c620

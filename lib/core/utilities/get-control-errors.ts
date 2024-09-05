@@ -27,10 +27,7 @@ export function getControlErrors(
   }
 
   if (isFormGroup(control)) {
-    const _parentErrors = parentErrors
-      ? window.structuredClone(parentErrors)
-      : null;
-
+    const _parentErrors = parentErrors ? structuredClone(parentErrors) : null;
     const result = Object.keys(control.controls).reduce((acc, key) => {
       const err = getControlErrors(control.controls[key], _parentErrors);
       return err ? { ...acc, [key]: err } : acc;

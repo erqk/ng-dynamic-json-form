@@ -34,7 +34,6 @@ export class FormConditionsService {
     [controlPath: string]: {
       validatorConfigs?: ValidatorConfig[];
       disabled?: boolean;
-      hidden?: boolean;
     };
   } = {};
 
@@ -110,19 +109,14 @@ export class FormConditionsService {
       if (noChange) return;
 
       this._setLastAction(controlPath, 'disabled', bool);
-      toggleDisabled(bool);
+      setTimeout(() => toggleDisabled(bool));
     };
 
     const hideControl = (bool: boolean) => {
-      const noChange = this._getLastAction(controlPath, 'hidden') === bool;
-      if (noChange) return;
-
-      this._setLastAction(controlPath, 'hidden', bool);
       this._getTargetEl$(controlPath)
         .pipe(
           filter(Boolean),
           tap((x) => {
-            toggleDisabled(bool);
             this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
           })
         )
