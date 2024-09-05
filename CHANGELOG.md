@@ -1,3 +1,11 @@
+# 8.2.11 (2024-09-04)
+
+[c76892c]: https://github.com/erqk/ng-dynamic-json-form/commit/c76892c29b570ee2e545cb6409b3f6a10a329cb6
+
+| Commit    | Type | Description                                   |
+| --------- | ---- | --------------------------------------------- |
+| [c76892c] | fix  | Control is not disabled as expected on start. |
+
 # 8.2.10 (2024-09-04)
 
 [dccb9be]: https://github.com/erqk/ng-dynamic-json-form/commit/dccb9beb3fd8420006778de72535e38ee4498d83
