@@ -109,7 +109,7 @@ export class FormConditionsService {
       if (noChange) return;
 
       this._setLastAction(controlPath, 'disabled', bool);
-      toggleDisabled(bool);
+      setTimeout(() => toggleDisabled(bool));
     };
 
     const hideControl = (bool: boolean) => {
