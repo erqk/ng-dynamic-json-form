@@ -1,4 +1,12 @@
-# 8.2.11 (2024-09-04)
+# 8.2.11 (2024-09-05)
+
+[3826045]: https://github.com/erqk/ng-dynamic-json-form/commit/38260452503450be1e2f2e72864cb49860aef3e4
+
+| Commit    | Type | Description                         |
+| --------- | ---- | ----------------------------------- |
+| [3826045] | fix  | Sometimes the conditions will fail. |
+
+# 8.2.11 (2024-09-05)
 
 [c76892c]: https://github.com/erqk/ng-dynamic-json-form/commit/c76892c29b570ee2e545cb6409b3f6a10a329cb6
 
