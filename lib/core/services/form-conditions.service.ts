@@ -97,10 +97,14 @@ export class FormConditionsService {
     }
 
     const disableControl = (disabled: boolean) => {
+      if (control.disabled && disabled) return;
+      if (!control.disabled && !disabled) return;
+
       disabled ? control.disable() : control.enable();
     };
 
     const hideControl = (bool: boolean) => {
+      disableControl(bool);
       this._getTargetEl$(controlPath)
         .pipe(
           filter(Boolean),
