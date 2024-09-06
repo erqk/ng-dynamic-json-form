@@ -1,4 +1,12 @@
-# 8.2.11 (2024-09-05)
+# 8.2.13 (2024-09-06)
+
+[b9734a3]: https://github.com/erqk/ng-dynamic-json-form/commit/b9734a318c0ecffad0a5d7c3fff921f53f7a15e8
+
+| Commit    | Type | Description                           |
+| --------- | ---- | ------------------------------------- |
+| [b9734a3] | fix  | Disable the control when it's hidden. |
+
+# 8.2.12 (2024-09-05)
 
 [3826045]: https://github.com/erqk/ng-dynamic-json-form/commit/38260452503450be1e2f2e72864cb49860aef3e4
 
