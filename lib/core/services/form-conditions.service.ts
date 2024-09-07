@@ -2,6 +2,7 @@ import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
+  debounceTime,
   distinctUntilChanged,
   filter,
   from,
@@ -30,12 +31,6 @@ export class FormConditionsService {
   private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
-  private _lastExecutedAction: {
-    [controlPath: string]: {
-      validatorConfigs?: ValidatorConfig[];
-      disabled?: boolean;
-    };
-  } = {};
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
@@ -57,7 +52,8 @@ export class FormConditionsService {
     const valueChanges$ = (c: AbstractControl) =>
       c.valueChanges.pipe(
         startWith(c.value),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        debounceTime(0)
       );
 
     return from(controls).pipe(
@@ -80,7 +76,7 @@ export class FormConditionsService {
       const conditions = config.conditions!;
 
       this._executeCustomActions(conditions, control);
-      this._toggleValidators(config, control, key);
+      this._toggleValidators(config, control);
       this._toggleControlStates(conditions, control, key);
     }
   }
@@ -100,19 +96,15 @@ export class FormConditionsService {
       return;
     }
 
-    const toggleDisabled = (disabled: boolean) => {
+    const disableControl = (disabled: boolean) => {
+      if (control.disabled && disabled) return;
+      if (!control.disabled && !disabled) return;
+
       disabled ? control.disable() : control.enable();
     };
 
-    const disableControl = (bool: boolean) => {
-      const noChange = this._getLastAction(controlPath, 'disabled') === bool;
-      if (noChange) return;
-
-      this._setLastAction(controlPath, 'disabled', bool);
-      setTimeout(() => toggleDisabled(bool));
-    };
-
     const hideControl = (bool: boolean) => {
+      disableControl(bool);
       this._getTargetEl$(controlPath)
         .pipe(
           filter(Boolean),
@@ -133,8 +125,7 @@ export class FormConditionsService {
 
   private _toggleValidators(
     config: FormControlConfig,
-    control: AbstractControl,
-    controlPath: string
+    control: AbstractControl
   ): void {
     const { conditions = {}, validators = [] } = config;
     const actions = Object.keys(conditions).filter((x) =>
@@ -154,19 +145,11 @@ export class FormConditionsService {
         : this._evaluateConditionsStatement(conditions[actionName]!);
     });
 
-    const prevConfigs = this._getLastAction(controlPath, 'validatorConfigs');
-    const noChange =
-      JSON.stringify(prevConfigs) === JSON.stringify(validatorConfigs);
+    const resultValidators =
+      this._formValidationService.getValidators(validatorConfigs);
 
-    if (!noChange) {
-      const resultValidators =
-        this._formValidationService.getValidators(validatorConfigs);
-
-      control.setValidators(resultValidators);
-      control.updateValueAndValidity();
-
-      this._setLastAction(controlPath, 'validatorConfigs', validatorConfigs);
-    }
+    control.setValidators(resultValidators);
+    control.updateValueAndValidity();
   }
 
   private _executeCustomActions(
@@ -194,29 +177,6 @@ export class FormConditionsService {
 
       functions[action](control);
     }
-  }
-
-  private _setLastAction(
-    key: string,
-    type: keyof (typeof this._lastExecutedAction)[''],
-    value: boolean | ValidatorConfig[]
-  ): void {
-    const target = this._lastExecutedAction[key];
-
-    if (!target) {
-      Object.assign(this._lastExecutedAction, { [key]: { [type]: value } });
-      return;
-    }
-
-    Object.assign(target, { [type]: value });
-  }
-
-  private _getLastAction(
-    key: string,
-    type: keyof (typeof this._lastExecutedAction)['']
-  ): boolean | ValidatorConfig[] | undefined {
-    const target = this._lastExecutedAction[key];
-    return !target ? undefined : target[type];
   }
 
   /**Get the target element by using `id`(full control path) on each `div` inside current NgDynamicJsonForm instance */
