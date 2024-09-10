@@ -169,7 +169,7 @@ export class FormConditionsService {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
       if (!bool) return;
 
-      const functions = this._globalVariableService.conditionsActionFuntions;
+      const functions = this._globalVariableService.conditionsActionFunctions;
 
       if (!functions) return;
       if (!functions[action]) return;

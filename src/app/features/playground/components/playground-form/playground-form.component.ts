@@ -46,6 +46,10 @@ export class PlaygroundFormComponent {
   }
 
   onFormGet(e: UntypedFormGroup): void {
-    console.log(e);
+    console.log('form get', e);
+  }
+
+  onDisplayValueGet(e: any): void {
+    console.log('displayValue get: ', e);
   }
 }

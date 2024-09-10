@@ -1,3 +1,11 @@
+# 8.3.0 (2024-09-10)
+
+[047953c]: https://github.com/erqk/ng-dynamic-json-form/commit/047953ce1c6ee6453618a1d4d72fd682115d8b14
+
+| Commit    | Type | Description                  |
+| --------- | ---- | ---------------------------- |
+| [047953c] | feat | Add output of display value. |
+
 # 8.2.13 (2024-09-06)
 
 [b9734a3]: https://github.com/erqk/ng-dynamic-json-form/commit/b9734a318c0ecffad0a5d7c3fff921f53f7a15e8

@@ -31,6 +31,8 @@ import {
 import {
   Observable,
   Subject,
+  debounceTime,
+  distinctUntilChanged,
   filter,
   fromEvent,
   merge,
@@ -51,6 +53,7 @@ import { ConfigValidationErrors } from './models/config-validation-errors.interf
 import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
+import { FormDisplayValue } from './models/form-display-value.interface';
 import { FormLayout } from './models/form-layout.interface';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './providers/ng-dynamic-json-form.provider';
@@ -60,8 +63,8 @@ import {
   ControlValueService,
   FormConditionsService,
   FormGeneratorService,
-  FormPatcherService,
   FormValidationService,
+  FormValueService,
   GlobalVariableService,
   HttpRequestCacheService,
   OptionsDataService,
@@ -91,7 +94,7 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormGeneratorService,
     FormConditionsService,
     FormValidationService,
-    FormPatcherService,
+    FormValueService,
     FormReadyStateService,
     GlobalVariableService,
     HttpRequestCacheService,
@@ -121,7 +124,7 @@ export class NgDynamicJsonFormComponent
   private _configValidationService = inject(ConfigValidationService);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formConditionsService = inject(FormConditionsService);
-  private _formPatcherService = inject(FormPatcherService);
+  private _formValueService = inject(FormValueService);
   private _formReadyStateService = inject(FormReadyStateService);
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
@@ -130,7 +133,7 @@ export class NgDynamicJsonFormComponent
   /**
    * Whether to allow the form to mark as dirty
    * @description
-   * If false, then it willl automatically set to pristine
+   * If false, then it will automatically set to pristine
    * after each value changes.
    */
   private _allowFormDirty = false;
@@ -177,7 +180,7 @@ export class NgDynamicJsonFormComponent
    * The function where its key is match will be called when conditions is met.
    * The function contains an argument which is the current `AbstractControl`.
    */
-  @Input() conditionsActionFuntions?: ConditionsActionFunctions;
+  @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
   @Input() hideErrorMessage?: boolean;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
@@ -221,6 +224,7 @@ export class NgDynamicJsonFormComponent
 
   @Output() formGet = new EventEmitter<UntypedFormGroup>();
   @Output() optionsLoaded = new EventEmitter();
+  @Output() displayValue = new EventEmitter<FormDisplayValue>();
 
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
 
@@ -267,7 +271,7 @@ export class NgDynamicJsonFormComponent
   registerOnValidatorChange?(fn: () => void): void {}
 
   writeValue(obj: any): void {
-    this._formPatcherService.patchForm(this.form, obj);
+    this._formValueService.patchForm(this.form, obj);
   }
 
   registerOnChange(fn: any): void {
@@ -318,7 +322,7 @@ export class NgDynamicJsonFormComponent
       customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
-      conditionsActionFuntions: this.conditionsActionFuntions,
+      conditionsActionFunctions: this.conditionsActionFunctions,
       optionsSources: this.optionsSources,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
@@ -369,6 +373,8 @@ export class NgDynamicJsonFormComponent
 
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
+      debounceTime(0),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       tap(() => this._onFormValueChanges())
     );
 
@@ -403,22 +409,42 @@ export class NgDynamicJsonFormComponent
   }
 
   private _onFormValueChanges(): void {
-    // No ControlValueAccessor found, update the form errors manually
-    if (!this._controlDirective) {
+    const formValue = this.form?.value;
+
+    const setErrors = () => {
+      // Update the form errors manually, if no ControlValueAccessor found,
+      if (!!this._controlDirective) return;
       this.form?.setErrors(this._formErrors);
-    }
-    // Call only if using ControlValueAccessor, to update the control value
-    else {
-      this._onChange(this.form?.value);
-    }
+    };
+
+    const updateValue = () => {
+      // Update the control value, if using ControlValueAccessor
+      if (!this._controlDirective) return;
+      this._onChange(formValue);
+    };
+
+    const updateDisplayValue = () => {
+      const displayValue = this._formValueService.getFormDisplayValue(
+        formValue,
+        this.configGet
+      );
+
+      this.displayValue.emit(displayValue);
+    };
 
     // If the form is not touched yet, keep marking it as pristine,
     // after the _onChange() is called
-    if (!this._allowFormDirty) {
+    const keepFormPristine = () => {
+      if (this._allowFormDirty) return;
       this._controlDirective?.form.markAsPristine();
       this._controlDirective?.control.markAsPristine();
       markFormPristine(this.form);
-    }
+    };
+
+    setErrors();
+    updateValue();
+    updateDisplayValue();
+    keepFormPristine();
   }
 
   private get _formErrors(): ValidationErrors | null {
