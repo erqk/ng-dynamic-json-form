@@ -17,7 +17,7 @@ export class GlobalVariableService {
 
   // =============== The variables that must be initialized ===============
   hostElement?: HTMLElement;
-  conditionsActionFuntions: NgDynamicJsonFormComponent['conditionsActionFuntions'];
+  conditionsActionFunctions: NgDynamicJsonFormComponent['conditionsActionFunctions'];
   optionsSources: NgDynamicJsonFormComponent['optionsSources'];
   uiComponents: UiComponents | undefined;
   customValidators: CustomValidators | undefined;

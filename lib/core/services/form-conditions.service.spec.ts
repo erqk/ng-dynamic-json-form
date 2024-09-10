@@ -336,7 +336,7 @@ describe('Execute custom functions', () => {
   beforeEach(() => {
     resultA = resultB = '';
     globalVariableService.rootForm = form;
-    globalVariableService.conditionsActionFuntions = {
+    globalVariableService.conditionsActionFunctions = {
       customAction1,
       customAction2,
     };

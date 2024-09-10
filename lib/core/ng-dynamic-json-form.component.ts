@@ -60,8 +60,8 @@ import {
   ControlValueService,
   FormConditionsService,
   FormGeneratorService,
-  FormValueService,
   FormValidationService,
+  FormValueService,
   GlobalVariableService,
   HttpRequestCacheService,
   OptionsDataService,
@@ -177,7 +177,7 @@ export class NgDynamicJsonFormComponent
    * The function where its key is match will be called when conditions is met.
    * The function contains an argument which is the current `AbstractControl`.
    */
-  @Input() conditionsActionFuntions?: ConditionsActionFunctions;
+  @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
   @Input() hideErrorMessage?: boolean;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
@@ -318,7 +318,7 @@ export class NgDynamicJsonFormComponent
       customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
-      conditionsActionFuntions: this.conditionsActionFuntions,
+      conditionsActionFunctions: this.conditionsActionFunctions,
       optionsSources: this.optionsSources,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
