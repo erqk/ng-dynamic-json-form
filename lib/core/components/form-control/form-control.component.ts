@@ -26,7 +26,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { combineLatest, debounceTime, startWith, tap } from 'rxjs';
-import { FormControlConfig, FormControlType } from '../../models';
+import { FormControlConfig, FormControlType, OptionItem } from '../../models';
 import {
   FormReadyStateService,
   GlobalVariableService,
@@ -209,16 +209,22 @@ export class FormControlComponent
       this._controlComponent?.writeValue(value);
     };
 
-    if (!src) {
-      if (autoSelectFirst && staticOptions.length > 0) {
-        updateControlValue(staticOptions[0]?.value);
+    const autoSelectFirstOption = (options: OptionItem[]) => {
+      if (autoSelectFirst && options.length > 0) {
+        updateControlValue(options[0].value);
       }
+    };
 
+    if (!src) {
+      autoSelectFirstOption(staticOptions);
       return;
     }
 
     this.loading = true;
     this._formReadyStateService.optionsLoading(true);
+
+    const usingTriggerOrFilter =
+      typeof src !== 'string' && (src.filter || src.trigger);
 
     const source$ =
       typeof src === 'string'
@@ -236,16 +242,12 @@ export class FormControlComponent
               ? x.concat(staticOptions)
               : staticOptions.concat(x);
 
-          const usingTriggerOrFilter =
-            typeof src !== 'string' && (src.filter || src.trigger);
-
           if (this._pendingValue) {
             updateControlValue(this._pendingValue);
             this._pendingValue = null;
-          } else if (autoSelectFirst && options.length > 0) {
-            updateControlValue(options[0].value);
-          } else if (usingTriggerOrFilter) {
-            updateControlValue(null);
+          } else {
+            if (usingTriggerOrFilter) updateControlValue(null);
+            else autoSelectFirstOption(options);
           }
 
           this._controlComponent?.onOptionsGet(options);
