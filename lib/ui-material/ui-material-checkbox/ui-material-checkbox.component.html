@@ -28,7 +28,7 @@
         <mat-checkbox
           [labelPosition]="data.options.labelPosition ?? 'after'"
           [value]="item.value | json"
-          [checked]="control.value.includes(item.value | json)"
+          [checked]="(control.value || []).includes(item.value | json)"
           [disabled]="control.disabled"
           [propsBinding]="[
             {
