@@ -15,7 +15,7 @@ import {
   Conditions,
   ConditionsActionEnum,
   ConditionsGroup,
-  ConditionsStatementTupple,
+  ConditionsStatementTuple,
   FormControlConfig,
   ValidatorConfig,
 } from '../models';
@@ -269,21 +269,21 @@ export class FormConditionsService {
       return undefined;
     }
 
-    const mapTuppleFn = (tupple: ConditionsStatementTupple) => {
-      const [left, operator, right] = tupple;
+    const mapTupleFn = (tuple: ConditionsStatementTuple) => {
+      const [left, operator, right] = tuple;
       const result = [
         this._getValueFromStatement(left),
         operator,
         this._getValueFromStatement(right),
-      ] as ConditionsStatementTupple;
+      ] as ConditionsStatementTuple;
 
       return result;
     };
 
-    return evaluateConditionsStatements(conditionsGroup, mapTuppleFn);
+    return evaluateConditionsStatements(conditionsGroup, mapTupleFn);
   }
 
-  /**Get control path using the string in the conditions statement tupple.
+  /**Get control path using the string in the conditions statement tuple.
    * - `['controlA', '===', 'text']` => Should get "controlA"
    * - `['controlA', '===', 'controlB']` => Should get "controlA", "controlB" individually
    * - `['value', '===', 'controlA,prop1']` => Should get "controlA"
@@ -300,7 +300,7 @@ export class FormConditionsService {
     return paths.controlPath;
   }
 
-  /**Get the value from the statement, either it's literaly a value or comes from a control
+  /**Get the value from the statement, either it's literally a value or comes from a control
    *
    * ```json
    * {

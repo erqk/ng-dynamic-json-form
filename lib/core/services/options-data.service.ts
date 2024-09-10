@@ -15,7 +15,7 @@ import {
   tap,
 } from 'rxjs';
 import {
-  ConditionsStatementTupple,
+  ConditionsStatementTuple,
   OptionItem,
   OptionSourceConfig,
 } from '../models';
@@ -104,12 +104,12 @@ export class OptionsDataService {
   ): Observable<OptionItem[]> {
     if (!srcConfig.filter) return of([]);
 
-    const mapTuppleFn = (
-      tupple: ConditionsStatementTupple,
+    const mapTupleFn = (
+      tuple: ConditionsStatementTuple,
       triggerValue: any,
       optionItem: OptionItem | null | undefined
-    ): ConditionsStatementTupple => {
-      const [triggerValuePath, operator, optionValuePath] = tupple;
+    ): ConditionsStatementTuple => {
+      const [triggerValuePath, operator, optionValuePath] = tuple;
       return [
         getValueInObject(triggerValue, triggerValuePath),
         operator,
@@ -125,7 +125,7 @@ export class OptionsDataService {
         options.filter((optionItem) => {
           const result = evaluateConditionsStatements(
             srcConfig.filter!.conditions!,
-            (e) => mapTuppleFn(e, value, optionItem)
+            (e) => mapTupleFn(e, value, optionItem)
           );
 
           return result;
@@ -158,7 +158,7 @@ export class OptionsDataService {
   ): Observable<any> {
     if (!triggerConfig) return EMPTY;
 
-    const { by, debounceTime: _debouceTime = 0 } = triggerConfig;
+    const { by, debounceTime: _debounceTime = 0 } = triggerConfig;
     if (!by.trim()) return EMPTY;
 
     const form = this._globalVariableService.rootForm;
@@ -174,7 +174,7 @@ export class OptionsDataService {
 
     return control.valueChanges.pipe(
       startWith(control.value),
-      debounceTime(_debouceTime),
+      debounceTime(_debounceTime),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath)))
     );
