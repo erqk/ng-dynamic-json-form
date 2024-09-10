@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormPatcherService } from './form-patcher.service';
+import { FormValueService } from './form-value.service';
 
 const formGroup = new FormGroup({
   name: new FormControl(),
@@ -8,13 +8,13 @@ const formGroup = new FormGroup({
   checkbox: new FormControl(),
 });
 
-let formPatcherService: FormPatcherService;
+let formPatcherService: FormValueService;
 beforeAll(() => {
   TestBed.configureTestingModule({
-    providers: [FormPatcherService],
+    providers: [FormValueService],
   });
 
-  formPatcherService = TestBed.inject(FormPatcherService);
+  formPatcherService = TestBed.inject(FormValueService);
 });
 
 it('Name should be "Andrew"', () => {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UntypedFormGroup, isFormControl, isFormGroup } from '@angular/forms';
 
 @Injectable()
-export class FormPatcherService {
+export class FormValueService {
   patchForm(form: UntypedFormGroup | undefined, value: any): void {
     if (!form) return;
 

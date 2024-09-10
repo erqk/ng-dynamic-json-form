@@ -60,7 +60,7 @@ import {
   ControlValueService,
   FormConditionsService,
   FormGeneratorService,
-  FormPatcherService,
+  FormValueService,
   FormValidationService,
   GlobalVariableService,
   HttpRequestCacheService,
@@ -91,7 +91,7 @@ import { markFormPristine } from './utilities/mark-form-pristine';
     FormGeneratorService,
     FormConditionsService,
     FormValidationService,
-    FormPatcherService,
+    FormValueService,
     FormReadyStateService,
     GlobalVariableService,
     HttpRequestCacheService,
@@ -121,7 +121,7 @@ export class NgDynamicJsonFormComponent
   private _configValidationService = inject(ConfigValidationService);
   private _formGeneratorService = inject(FormGeneratorService);
   private _formConditionsService = inject(FormConditionsService);
-  private _formPatcherService = inject(FormPatcherService);
+  private _formValueService = inject(FormValueService);
   private _formReadyStateService = inject(FormReadyStateService);
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
@@ -130,7 +130,7 @@ export class NgDynamicJsonFormComponent
   /**
    * Whether to allow the form to mark as dirty
    * @description
-   * If false, then it willl automatically set to pristine
+   * If false, then it will automatically set to pristine
    * after each value changes.
    */
   private _allowFormDirty = false;
@@ -267,7 +267,7 @@ export class NgDynamicJsonFormComponent
   registerOnValidatorChange?(fn: () => void): void {}
 
   writeValue(obj: any): void {
-    this._formPatcherService.patchForm(this.form, obj);
+    this._formValueService.patchForm(this.form, obj);
   }
 
   registerOnChange(fn: any): void {
