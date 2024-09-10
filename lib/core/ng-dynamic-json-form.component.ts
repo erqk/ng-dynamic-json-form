@@ -31,6 +31,8 @@ import {
 import {
   Observable,
   Subject,
+  debounceTime,
+  distinctUntilChanged,
   filter,
   fromEvent,
   merge,
@@ -51,6 +53,7 @@ import { ConfigValidationErrors } from './models/config-validation-errors.interf
 import { CustomErrorComponents } from './models/custom-error-components.type';
 import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
+import { FormDisplayValue } from './models/form-display-value.interface';
 import { FormLayout } from './models/form-layout.interface';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './providers/ng-dynamic-json-form.provider';
@@ -221,6 +224,7 @@ export class NgDynamicJsonFormComponent
 
   @Output() formGet = new EventEmitter<UntypedFormGroup>();
   @Output() optionsLoaded = new EventEmitter();
+  @Output() displayValue = new EventEmitter<FormDisplayValue>();
 
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
 
@@ -369,6 +373,8 @@ export class NgDynamicJsonFormComponent
 
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
+      debounceTime(0),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       tap(() => this._onFormValueChanges())
     );
 
@@ -403,22 +409,42 @@ export class NgDynamicJsonFormComponent
   }
 
   private _onFormValueChanges(): void {
-    // No ControlValueAccessor found, update the form errors manually
-    if (!this._controlDirective) {
+    const formValue = this.form?.value;
+
+    const setErrors = () => {
+      // Update the form errors manually, if no ControlValueAccessor found,
+      if (!!this._controlDirective) return;
       this.form?.setErrors(this._formErrors);
-    }
-    // Call only if using ControlValueAccessor, to update the control value
-    else {
-      this._onChange(this.form?.value);
-    }
+    };
+
+    const updateValue = () => {
+      // Update the control value, if using ControlValueAccessor
+      if (!this._controlDirective) return;
+      this._onChange(formValue);
+    };
+
+    const updateDisplayValue = () => {
+      const displayValue = this._formValueService.getFormDisplayValue(
+        formValue,
+        this.configGet
+      );
+
+      this.displayValue.emit(displayValue);
+    };
 
     // If the form is not touched yet, keep marking it as pristine,
     // after the _onChange() is called
-    if (!this._allowFormDirty) {
+    const keepFormPristine = () => {
+      if (this._allowFormDirty) return;
       this._controlDirective?.form.markAsPristine();
       this._controlDirective?.control.markAsPristine();
       markFormPristine(this.form);
-    }
+    };
+
+    setErrors();
+    updateValue();
+    updateDisplayValue();
+    keepFormPristine();
   }
 
   private get _formErrors(): ValidationErrors | null {
