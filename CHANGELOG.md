@@ -1,3 +1,11 @@
+# 8.3.2 (2024-09-11)
+
+[3b68200]: https://github.com/erqk/ng-dynamic-json-form/commit/3b68200e7233ba137c4f6630db072c33ef44f247
+
+| Commit    | Type        | Description                                            |
+| --------- | ----------- | ------------------------------------------------------ |
+| [3b68200] | improvement | Remove the usage of debounceTime() to cancel flickers. |
+
 # 8.3.1 (2024-09-11)
 
 [3b60da8]: https://github.com/erqk/ng-dynamic-json-form/commit/3b60da86d5cf6b6696b2f0c671f9426c1cc70c7a
