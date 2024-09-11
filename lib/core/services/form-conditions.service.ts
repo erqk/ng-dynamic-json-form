@@ -52,8 +52,8 @@ export class FormConditionsService {
     const valueChanges$ = (c: AbstractControl) =>
       c.valueChanges.pipe(
         startWith(c.value),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        debounceTime(0)
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+        // Should avoid using debounceTime() here, as it will cause flickers when toggle the visibility
       );
 
     return from(controls).pipe(
