@@ -1,3 +1,13 @@
+# 8.3.1 (2024-09-11)
+
+[3b60da8]: https://github.com/erqk/ng-dynamic-json-form/commit/3b60da86d5cf6b6696b2f0c671f9426c1cc70c7a
+[ad3c7b9]: https://github.com/erqk/ng-dynamic-json-form/commit/ad3c7b917e373f2f6610398991be131919e5ad7e
+
+| Commit    | Type | Description                      |
+| --------- | ---- | -------------------------------- |
+| [3b60da8] | fix  | Check for valid result.          |
+| [ad3c7b9] | test | Add test for OptionsDataService. |
+
 # 8.3.0 (2024-09-10)
 
 [047953c]: https://github.com/erqk/ng-dynamic-json-form/commit/047953ce1c6ee6453618a1d4d72fd682115d8b14
