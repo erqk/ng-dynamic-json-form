@@ -355,6 +355,10 @@ export class NgDynamicJsonFormComponent
 
       this._cd.detectChanges();
     }
+
+    if (!this._formReadyStateService.haveOptionsToWait(this.configGet)) {
+      this._formReadyStateService.optionsLoading(false);
+    }
   }
 
   private _getControlDirective(): void {
