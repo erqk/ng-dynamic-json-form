@@ -1,3 +1,11 @@
+# 8.3.4 (2024-09-12)
+
+[f7d10d9]: https://github.com/erqk/ng-dynamic-json-form/commit/f7d10d990f2fd5d984069f287a98aecb7a3c327c
+
+| Commit    | Type | Description                           |
+| --------- | ---- | ------------------------------------- |
+| [f7d10d9] | fix  | Fail to toggle control disable state. |
+
 # 8.3.3 (2024-09-12)
 
 [25c20ab]: https://github.com/erqk/ng-dynamic-json-form/commit/25c20ab63f61eb7cde6aac285f3c7cfcb389fa80
