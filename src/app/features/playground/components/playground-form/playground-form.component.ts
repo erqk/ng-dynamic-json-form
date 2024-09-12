@@ -48,14 +48,14 @@ export class PlaygroundFormComponent {
   }
 
   onFormGet(e: UntypedFormGroup): void {
-    if (typeof window !== 'undefined') {
-      console.log('form get', e);
-    }
+    // if (typeof window !== 'undefined') {
+    //   console.log('form get', e);
+    // }
   }
 
   onDisplayValueGet(e: any): void {
-    if (typeof window !== 'undefined') {
-      console.log('displayValue get: ', e);
-    }
+    // if (typeof window !== 'undefined') {
+    //   console.log('displayValue get: ', e);
+    // }
   }
 }
