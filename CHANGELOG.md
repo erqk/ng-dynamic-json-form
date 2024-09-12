@@ -1,3 +1,11 @@
+# 8.3.3 (2024-09-12)
+
+[25c20ab]: https://github.com/erqk/ng-dynamic-json-form/commit/25c20ab63f61eb7cde6aac285f3c7cfcb389fa80
+
+| Commit    | Type | Description                       |
+| --------- | ---- | --------------------------------- |
+| [25c20ab] | fix  | The disabled status is incorrect. |
+
 # 8.3.2 (2024-09-11)
 
 [3b68200]: https://github.com/erqk/ng-dynamic-json-form/commit/3b68200e7233ba137c4f6630db072c33ef44f247
