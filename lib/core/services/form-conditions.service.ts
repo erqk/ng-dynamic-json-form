@@ -2,7 +2,6 @@ import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
-  debounceTime,
   distinctUntilChanged,
   filter,
   from,
@@ -17,7 +16,6 @@ import {
   ConditionsGroup,
   ConditionsStatementTuple,
   FormControlConfig,
-  ValidatorConfig,
 } from '../models';
 import { evaluateConditionsStatements } from '../utilities/evaluate-conditions-statements';
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
@@ -40,7 +38,7 @@ export class FormConditionsService {
     const configs = this._globalVariableService.rootConfigs;
     const form = this._globalVariableService.rootForm;
 
-    if (!configs.length || !form) {
+    if (!configs.length || !form || typeof window === 'undefined') {
       return of(null);
     }
 
@@ -96,11 +94,14 @@ export class FormConditionsService {
       return;
     }
 
-    const disableControl = (disabled: boolean) => {
-      if (control.disabled && disabled) return;
-      if (!control.disabled && !disabled) return;
+    const disableControl = (disable: boolean) => {
+      if (disable === control.disabled) return;
 
-      disabled ? control.disable() : control.enable();
+      // Prevent weird behavior, which the control status will change after calling
+      // `disable()` or `enable()`, where the resulting status is unmatched with the conditions set.
+      window.requestAnimationFrame(() => {
+        disable ? control.disable() : control.enable();
+      });
     };
 
     const hideControl = (bool: boolean) => {
