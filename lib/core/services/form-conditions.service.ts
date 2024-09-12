@@ -95,9 +95,6 @@ export class FormConditionsService {
     }
 
     const disableControl = (disable: boolean) => {
-      if (disable && control.disabled) return;
-      if (!disable && !control.disabled) return;
-
       // Prevent weird behavior, which the control status will change after calling
       // `disable()` or `enable()`, where the resulting status is unmatched with the conditions set.
       window.requestAnimationFrame(() => {
