@@ -1,4 +1,12 @@
-# 8.3.4 (2024-09-12)
+# 8.3.6 (2024-09-12)
+
+[90585dd]: https://github.com/erqk/ng-dynamic-json-form/commit/90585dd14722b99ef332201b4ab55360d1ce2ab7
+
+| Commit    | Type | Description                                             |
+| --------- | ---- | ------------------------------------------------------- |
+| [90585dd] | fix  | @Output() optionsLoaded not fired in the correct order. |
+
+# 8.3.5 (2024-09-12)
 
 [03a4568]: https://github.com/erqk/ng-dynamic-json-form/commit/03a4568383fa69562862e229a0a7e5fc3db01a62
 
