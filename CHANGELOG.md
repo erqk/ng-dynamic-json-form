@@ -1,3 +1,11 @@
+# 8.3.7 (2024-09-13)
+
+[c1a14fa]: https://github.com/erqk/ng-dynamic-json-form/commit/c1a14fa8f26dcb9d8156c7ff28614f7d4cf8a783
+
+| Commit    | Type  | Description                                                        |
+| --------- | ----- | ------------------------------------------------------------------ |
+| [c1a14fa] | chore | Remove the usage of `debounceTime()` and `distinctUntilChanged()`. |
+
 # 8.3.6 (2024-09-12)
 
 [90585dd]: https://github.com/erqk/ng-dynamic-json-form/commit/90585dd14722b99ef332201b4ab55360d1ce2ab7
