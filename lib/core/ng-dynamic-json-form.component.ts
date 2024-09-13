@@ -31,15 +31,13 @@ import {
 import {
   Observable,
   Subject,
-  debounceTime,
-  distinctUntilChanged,
   filter,
   fromEvent,
   merge,
   startWith,
   take,
   takeUntil,
-  tap,
+  tap
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from './components/custom-form-label/custom-form-label.abstract';
@@ -377,8 +375,7 @@ export class NgDynamicJsonFormComponent
 
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
-      debounceTime(0),
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      // Avoid using debounceTime() or distinctUntilChanged() here
       tap(() => this._onFormValueChanges())
     );
 
