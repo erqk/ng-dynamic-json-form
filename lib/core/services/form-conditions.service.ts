@@ -106,8 +106,11 @@ export class FormConditionsService {
       }
 
       if (action === actionHidden) {
-        this._disableControl(control, bool);
+        // Must toggle visibility before disable
+        // Prevent incorrect behavior of child element
+        // e.g. Primeng Textarea `autoResize` will fail
         this._hideControl(controlPath, bool);
+        this._disableControl(control, bool);
       }
     }
   }
@@ -129,9 +132,7 @@ export class FormConditionsService {
       .pipe(
         filter(Boolean),
         tap((x) => {
-          setStyle(x, 'width', '0px');
-          setStyle(x, 'height', '0px');
-          setStyle(x, 'overflow', 'hidden');
+          setStyle(x, 'display', 'none');
         })
       )
       .subscribe();
