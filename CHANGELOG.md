@@ -1,3 +1,11 @@
+# 8.3.9 (2024-09-19)
+
+[b3db23e]: https://github.com/erqk/ng-dynamic-json-form/commit/b3db23ece1a93aab062ef48df1f406295aa8e34d
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [b3db23e] | fix  | Toggle control visibility before disable status. |
+
 # 8.3.8 (2024-09-19)
 
 [c1ce2bd]: https://github.com/erqk/ng-dynamic-json-form/commit/c1ce2bd16a0e662b720d1d87e03133d5e207d2d9
