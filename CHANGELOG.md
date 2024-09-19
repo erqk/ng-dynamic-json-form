@@ -1,3 +1,15 @@
+# 8.3.8 (2024-09-19)
+
+[c1ce2bd]: https://github.com/erqk/ng-dynamic-json-form/commit/c1ce2bd16a0e662b720d1d87e03133d5e207d2d9
+[c587af7]: https://github.com/erqk/ng-dynamic-json-form/commit/c587af7005bdd385bd94f1387c61ea4d180ab268
+[d0c42de]: https://github.com/erqk/ng-dynamic-json-form/commit/d0c42de84669c8facc9ecd98128ca6e2379ca26e
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [c1ce2bd] | fix  | Allow `null` or `""` value to be matched when finding `ValidatorConfig`. |
+| [c587af7] | fix  | Should use `continue` instead of `return`.                               |
+| [d0c42de] | fix  | Change the way to hide element.                                          |
+
 # 8.3.7 (2024-09-13)
 
 [c1a14fa]: https://github.com/erqk/ng-dynamic-json-form/commit/c1a14fa8f26dcb9d8156c7ff28614f7d4cf8a783
