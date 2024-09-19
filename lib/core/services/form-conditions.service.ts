@@ -94,32 +94,41 @@ export class FormConditionsService {
       return;
     }
 
-    const disableControl = (disable: boolean) => {
-      // Prevent weird behavior, which the control status will change after calling
-      // `disable()` or `enable()`, where the resulting status is unmatched with the conditions set.
-      window.requestAnimationFrame(() => {
-        disable ? control.disable() : control.enable();
-      });
-    };
-
-    const hideControl = (bool: boolean) => {
-      disableControl(bool);
-      this._getTargetEl$(controlPath)
-        .pipe(
-          filter(Boolean),
-          tap((x) => {
-            this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
-          })
-        )
-        .subscribe();
-    };
-
     for (const action of actions) {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
-      if (bool === undefined) return;
-      if (action === actionDisabled) disableControl(bool);
-      if (action === actionHidden) hideControl(bool);
+
+      if (bool === undefined) {
+        continue;
+      }
+
+      if (action === actionDisabled) {
+        this._disableControl(control, bool);
+      }
+
+      if (action === actionHidden) {
+        this._disableControl(control, bool);
+        this._hideControl(controlPath, bool);
+      }
     }
+  }
+
+  private _disableControl(control: AbstractControl, disable: boolean): void {
+    // Prevent weird behavior, which the control status will change after calling
+    // `disable()` or `enable()`, cause the resulting status unmatched with the conditions set.
+    window.requestAnimationFrame(() => {
+      disable ? control.disable() : control.enable();
+    });
+  }
+
+  private _hideControl(controlPath: string, hide: boolean): void {
+    this._getTargetEl$(controlPath)
+      .pipe(
+        filter(Boolean),
+        tap((x) => {
+          this._renderer2.setStyle(x, 'display', hide ? 'none' : null);
+        })
+      )
+      .subscribe();
   }
 
   private _toggleValidators(
@@ -166,13 +175,13 @@ export class FormConditionsService {
 
     for (const action of customActions) {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
-      if (!bool) return;
+      if (!bool) continue;
 
       const functions = this._globalVariableService.conditionsActionFunctions;
 
-      if (!functions) return;
-      if (!functions[action]) return;
-      if (typeof functions[action] !== 'function') return;
+      if (!functions) continue;
+      if (!functions[action]) continue;
+      if (typeof functions[action] !== 'function') continue;
 
       functions[action](control);
     }
