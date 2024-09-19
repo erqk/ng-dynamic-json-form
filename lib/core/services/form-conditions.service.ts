@@ -121,11 +121,17 @@ export class FormConditionsService {
   }
 
   private _hideControl(controlPath: string, hide: boolean): void {
+    const setStyle = (el: HTMLElement, name: string, value: any) => {
+      this._renderer2.setStyle(el, name, hide ? value : null);
+    };
+
     this._getTargetEl$(controlPath)
       .pipe(
         filter(Boolean),
         tap((x) => {
-          this._renderer2.setStyle(x, 'display', hide ? 'none' : null);
+          setStyle(x, 'width', '0px');
+          setStyle(x, 'height', '0px');
+          setStyle(x, 'overflow', 'hidden');
         })
       )
       .subscribe();
