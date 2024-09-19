@@ -100,7 +100,7 @@ export class FormValidationService {
    *
    * @description
    * Try to get the custom error message specified in the config first,
-   * else use the error message in the `VadliationErrors`.
+   * else use the error message in the `ValidationErrors`.
    *
    * To use custom message when using custom validator, match the key inside
    * `ValidationErrors` with the `name` inside config.
@@ -161,7 +161,7 @@ export class FormValidationService {
         return false;
       }
 
-      if (value === undefined) {
+      if (value === undefined || value === null || value === '') {
         return true;
       }
 
