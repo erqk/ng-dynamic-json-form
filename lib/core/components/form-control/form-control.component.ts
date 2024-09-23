@@ -100,6 +100,7 @@ export class FormControlComponent
 
   loading = false;
   useCustomLoading = false;
+  hostForm = this._globalVariableService.rootForm;
   hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   writeValue(obj: any): void {
@@ -182,6 +183,7 @@ export class FormControlComponent
     if (!componentRef) return;
 
     componentRef.instance.data = this.data;
+    componentRef.instance.hostForm = this._globalVariableService.rootForm;
     componentRef.instance.writeValue(this._pendingValue);
     componentRef.instance.registerOnChange(this._onChange);
     componentRef.instance.registerOnTouched(this._onTouched);
