@@ -154,6 +154,10 @@ export class AppComponent {
 
 此元件的設定。
 
+#### hostForm
+
+此 `ng-dynamic-json-form` 實體的表單 (`UntypedFormGroup`)。
+
 #### hideErrorMessage
 
 父元件的 `hideErrorMessage` 的值。可用來控制錯誤訊息的顯示。
@@ -224,8 +228,9 @@ setErrors(errors: ValidationErrors | null): void {}
 
 ng-template 可用的變數如下：
 
-| 名稱             | 類型              | 說明                               |
-| ---------------- | ----------------- | ---------------------------------- |
-| control          | AbstractControl   | 此欄位的 FormControl。             |
-| data             | FormControlConfig | 此欄位的設定。                     |
-| hideErrorMessage | boolean           | 父元件的 `hideErrorMessage` 的值。 |
+| 名稱             | 類型              | 說明                                         |
+| ---------------- | ----------------- | -------------------------------------------- |
+| control          | AbstractControl   | 此欄位的 FormControl。                       |
+| data             | FormControlConfig | 此欄位的設定。                               |
+| hostForm         | UntypedFormGroup  | 此 `ng-dynamic-json-form` 實體的 FormGroup。 |
+| hideErrorMessage | boolean           | 父元件的 `hideErrorMessage` 的值。           |
