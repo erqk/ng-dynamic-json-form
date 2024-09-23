@@ -1,3 +1,11 @@
+# 8.4.0 (2024-09-23)
+
+[129166c]: https://github.com/erqk/ng-dynamic-json-form/commit/129166c7900e41c666ad50abcca8ebfa03464d1d
+
+| Commit    | Type | Description                                                   |
+| --------- | ---- | ------------------------------------------------------------- |
+| [129166c] | feat | Add host form access to custom component and custom template. |
+
 # 8.3.9 (2024-09-19)
 
 [b3db23e]: https://github.com/erqk/ng-dynamic-json-form/commit/b3db23ece1a93aab062ef48df1f406295aa8e34d
