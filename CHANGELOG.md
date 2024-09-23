@@ -1,3 +1,89 @@
+# 8.4.0 (2024-09-23)
+
+[129166c]: https://github.com/erqk/ng-dynamic-json-form/commit/129166c7900e41c666ad50abcca8ebfa03464d1d
+
+| Commit    | Type | Description                                                   |
+| --------- | ---- | ------------------------------------------------------------- |
+| [129166c] | feat | Add host form access to custom component and custom template. |
+
+# 8.3.9 (2024-09-19)
+
+[b3db23e]: https://github.com/erqk/ng-dynamic-json-form/commit/b3db23ece1a93aab062ef48df1f406295aa8e34d
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [b3db23e] | fix  | Toggle control visibility before disable status. |
+
+# 8.3.8 (2024-09-19)
+
+[c1ce2bd]: https://github.com/erqk/ng-dynamic-json-form/commit/c1ce2bd16a0e662b720d1d87e03133d5e207d2d9
+[c587af7]: https://github.com/erqk/ng-dynamic-json-form/commit/c587af7005bdd385bd94f1387c61ea4d180ab268
+[d0c42de]: https://github.com/erqk/ng-dynamic-json-form/commit/d0c42de84669c8facc9ecd98128ca6e2379ca26e
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [c1ce2bd] | fix  | Allow `null` or `""` value to be matched when finding `ValidatorConfig`. |
+| [c587af7] | fix  | Should use `continue` instead of `return`.                               |
+| [d0c42de] | fix  | Change the way to hide element.                                          |
+
+# 8.3.7 (2024-09-13)
+
+[c1a14fa]: https://github.com/erqk/ng-dynamic-json-form/commit/c1a14fa8f26dcb9d8156c7ff28614f7d4cf8a783
+
+| Commit    | Type  | Description                                                        |
+| --------- | ----- | ------------------------------------------------------------------ |
+| [c1a14fa] | chore | Remove the usage of `debounceTime()` and `distinctUntilChanged()`. |
+
+# 8.3.6 (2024-09-12)
+
+[90585dd]: https://github.com/erqk/ng-dynamic-json-form/commit/90585dd14722b99ef332201b4ab55360d1ce2ab7
+
+| Commit    | Type | Description                                             |
+| --------- | ---- | ------------------------------------------------------- |
+| [90585dd] | fix  | @Output() optionsLoaded not fired in the correct order. |
+
+# 8.3.5 (2024-09-12)
+
+[03a4568]: https://github.com/erqk/ng-dynamic-json-form/commit/03a4568383fa69562862e229a0a7e5fc3db01a62
+
+| Commit    | Type | Description                           |
+| --------- | ---- | ------------------------------------- |
+| [03a4568] | fix  | Fail to toggle control disable state. |
+
+# 8.3.4 (2024-09-12)
+
+[f7d10d9]: https://github.com/erqk/ng-dynamic-json-form/commit/f7d10d990f2fd5d984069f287a98aecb7a3c327c
+
+| Commit    | Type | Description                           |
+| --------- | ---- | ------------------------------------- |
+| [f7d10d9] | fix  | Fail to toggle control disable state. |
+
+# 8.3.3 (2024-09-12)
+
+[25c20ab]: https://github.com/erqk/ng-dynamic-json-form/commit/25c20ab63f61eb7cde6aac285f3c7cfcb389fa80
+
+| Commit    | Type | Description                       |
+| --------- | ---- | --------------------------------- |
+| [25c20ab] | fix  | The disabled status is incorrect. |
+
+# 8.3.2 (2024-09-11)
+
+[3b68200]: https://github.com/erqk/ng-dynamic-json-form/commit/3b68200e7233ba137c4f6630db072c33ef44f247
+
+| Commit    | Type        | Description                                            |
+| --------- | ----------- | ------------------------------------------------------ |
+| [3b68200] | improvement | Remove the usage of debounceTime() to cancel flickers. |
+
+# 8.3.1 (2024-09-11)
+
+[3b60da8]: https://github.com/erqk/ng-dynamic-json-form/commit/3b60da86d5cf6b6696b2f0c671f9426c1cc70c7a
+[ad3c7b9]: https://github.com/erqk/ng-dynamic-json-form/commit/ad3c7b917e373f2f6610398991be131919e5ad7e
+
+| Commit    | Type | Description                      |
+| --------- | ---- | -------------------------------- |
+| [3b60da8] | fix  | Check for valid result.          |
+| [ad3c7b9] | test | Add test for OptionsDataService. |
+
 # 8.3.0 (2024-09-10)
 
 [047953c]: https://github.com/erqk/ng-dynamic-json-form/commit/047953ce1c6ee6453618a1d4d72fd682115d8b14

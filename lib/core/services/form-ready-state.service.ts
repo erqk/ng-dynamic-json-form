@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { FormControlConfig } from '../models';
 
 @Injectable()
 export class FormReadyStateService {
@@ -25,5 +26,17 @@ export class FormReadyStateService {
 
   resetState(): void {
     this.optionsReady$.next(false);
+  }
+
+  haveOptionsToWait(configs: FormControlConfig[]): boolean {
+    if (!configs.length) return false;
+
+    const result = configs.some((x) =>
+      !x.children?.length
+        ? Boolean(x.options) && Boolean(x.options!.src)
+        : this.haveOptionsToWait(x.children)
+    );
+
+    return result;
   }
 }

@@ -1,4 +1,4 @@
-import { ConditionsStatementTupple, ConditionsOperator } from '../models';
+import { ConditionsStatementTuple, ConditionsOperator } from '../models';
 import { evaluateBooleanOperation } from './get-boolean-operation-result';
 
 /**
@@ -85,7 +85,7 @@ function getItemIndex(array: any[], path: string): string {
     .replace('[', '')
     .replace(']', '')
     .split(',')
-    .map((x) => x.trim()) as ConditionsStatementTupple;
+    .map((x) => x.trim()) as ConditionsStatementTuple;
 
   const _key = removeQuotes(key);
   const _operator = removeQuotes(operator) as ConditionsOperator;

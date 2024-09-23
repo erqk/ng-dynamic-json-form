@@ -42,14 +42,20 @@ export class PlaygroundFormComponent {
   @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
 
   onOptionsLoaded(): void {
-    console.log('Options loaded');
+    if (typeof window !== 'undefined') {
+      console.log('Options loaded');
+    }
   }
 
   onFormGet(e: UntypedFormGroup): void {
-    console.log('form get', e);
+    // if (typeof window !== 'undefined') {
+    //   console.log('form get', e);
+    // }
   }
 
   onDisplayValueGet(e: any): void {
-    console.log('displayValue get: ', e);
+    // if (typeof window !== 'undefined') {
+    //   console.log('displayValue get: ', e);
+    // }
   }
 }

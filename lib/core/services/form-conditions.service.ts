@@ -2,7 +2,6 @@ import { Injectable, RendererFactory2, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
-  debounceTime,
   distinctUntilChanged,
   filter,
   from,
@@ -15,9 +14,8 @@ import {
   Conditions,
   ConditionsActionEnum,
   ConditionsGroup,
-  ConditionsStatementTupple,
+  ConditionsStatementTuple,
   FormControlConfig,
-  ValidatorConfig,
 } from '../models';
 import { evaluateConditionsStatements } from '../utilities/evaluate-conditions-statements';
 import { getControlAndValuePath } from '../utilities/get-control-and-value-path';
@@ -40,7 +38,7 @@ export class FormConditionsService {
     const configs = this._globalVariableService.rootConfigs;
     const form = this._globalVariableService.rootForm;
 
-    if (!configs.length || !form) {
+    if (!configs.length || !form || typeof window === 'undefined') {
       return of(null);
     }
 
@@ -52,8 +50,8 @@ export class FormConditionsService {
     const valueChanges$ = (c: AbstractControl) =>
       c.valueChanges.pipe(
         startWith(c.value),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        debounceTime(0)
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+        // Should avoid using debounceTime() here, as it will cause flickers when toggle the visibility
       );
 
     return from(controls).pipe(
@@ -96,31 +94,48 @@ export class FormConditionsService {
       return;
     }
 
-    const disableControl = (disabled: boolean) => {
-      if (control.disabled && disabled) return;
-      if (!control.disabled && !disabled) return;
-
-      disabled ? control.disable() : control.enable();
-    };
-
-    const hideControl = (bool: boolean) => {
-      disableControl(bool);
-      this._getTargetEl$(controlPath)
-        .pipe(
-          filter(Boolean),
-          tap((x) => {
-            this._renderer2.setStyle(x, 'display', bool ? 'none' : null);
-          })
-        )
-        .subscribe();
-    };
-
     for (const action of actions) {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
-      if (bool === undefined) return;
-      if (action === actionDisabled) disableControl(bool);
-      if (action === actionHidden) hideControl(bool);
+
+      if (bool === undefined) {
+        continue;
+      }
+
+      if (action === actionDisabled) {
+        this._disableControl(control, bool);
+      }
+
+      if (action === actionHidden) {
+        // Must toggle visibility before disable
+        // Prevent incorrect behavior of child element
+        // e.g. Primeng Textarea `autoResize` will fail
+        this._hideControl(controlPath, bool);
+        this._disableControl(control, bool);
+      }
     }
+  }
+
+  private _disableControl(control: AbstractControl, disable: boolean): void {
+    // Prevent weird behavior, which the control status will change after calling
+    // `disable()` or `enable()`, cause the resulting status unmatched with the conditions set.
+    window.requestAnimationFrame(() => {
+      disable ? control.disable() : control.enable();
+    });
+  }
+
+  private _hideControl(controlPath: string, hide: boolean): void {
+    const setStyle = (el: HTMLElement, name: string, value: any) => {
+      this._renderer2.setStyle(el, name, hide ? value : null);
+    };
+
+    this._getTargetEl$(controlPath)
+      .pipe(
+        filter(Boolean),
+        tap((x) => {
+          setStyle(x, 'display', 'none');
+        })
+      )
+      .subscribe();
   }
 
   private _toggleValidators(
@@ -167,13 +182,13 @@ export class FormConditionsService {
 
     for (const action of customActions) {
       const bool = this._evaluateConditionsStatement(conditions[action]!);
-      if (!bool) return;
+      if (!bool) continue;
 
       const functions = this._globalVariableService.conditionsActionFunctions;
 
-      if (!functions) return;
-      if (!functions[action]) return;
-      if (typeof functions[action] !== 'function') return;
+      if (!functions) continue;
+      if (!functions[action]) continue;
+      if (typeof functions[action] !== 'function') continue;
 
       functions[action](control);
     }
@@ -269,21 +284,21 @@ export class FormConditionsService {
       return undefined;
     }
 
-    const mapTuppleFn = (tupple: ConditionsStatementTupple) => {
-      const [left, operator, right] = tupple;
+    const mapTupleFn = (tuple: ConditionsStatementTuple) => {
+      const [left, operator, right] = tuple;
       const result = [
         this._getValueFromStatement(left),
         operator,
         this._getValueFromStatement(right),
-      ] as ConditionsStatementTupple;
+      ] as ConditionsStatementTuple;
 
       return result;
     };
 
-    return evaluateConditionsStatements(conditionsGroup, mapTuppleFn);
+    return evaluateConditionsStatements(conditionsGroup, mapTupleFn);
   }
 
-  /**Get control path using the string in the conditions statement tupple.
+  /**Get control path using the string in the conditions statement tuple.
    * - `['controlA', '===', 'text']` => Should get "controlA"
    * - `['controlA', '===', 'controlB']` => Should get "controlA", "controlB" individually
    * - `['value', '===', 'controlA,prop1']` => Should get "controlA"
@@ -300,7 +315,7 @@ export class FormConditionsService {
     return paths.controlPath;
   }
 
-  /**Get the value from the statement, either it's literaly a value or comes from a control
+  /**Get the value from the statement, either it's literally a value or comes from a control
    *
    * ```json
    * {

@@ -1,9 +1,9 @@
-import { ConditionsGroup, ConditionsStatementTupple } from '../models';
+import { ConditionsGroup, ConditionsStatementTuple } from '../models';
 import { evaluateBooleanOperation } from './get-boolean-operation-result';
 
 export function evaluateConditionsStatements(
   conditionsGroup: ConditionsGroup,
-  mapTuppleFn: (tupple: ConditionsStatementTupple) => ConditionsStatementTupple
+  mapTuppleFn: (tupple: ConditionsStatementTuple) => ConditionsStatementTuple
 ): boolean | undefined {
   if (!conditionsGroup['&&'] && !conditionsGroup['||']) {
     return undefined;
@@ -19,7 +19,7 @@ export function evaluateConditionsStatements(
 
   const statementsResult = conditionsGroupItems
     .filter((x) => Array.isArray(x))
-    .map((x) => x as ConditionsStatementTupple)
+    .map((x) => x as ConditionsStatementTuple)
     .map((x) => {
       const [left, operator, right] = mapTuppleFn(x);
       const result = evaluateBooleanOperation([left, operator, right]);

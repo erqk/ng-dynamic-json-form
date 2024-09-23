@@ -25,7 +25,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { combineLatest, debounceTime, startWith, tap } from 'rxjs';
+import { combineLatest, debounceTime, finalize, startWith, tap } from 'rxjs';
 import { FormControlConfig, FormControlType, OptionItem } from '../../models';
 import {
   FormReadyStateService,
@@ -100,6 +100,7 @@ export class FormControlComponent
 
   loading = false;
   useCustomLoading = false;
+  hostForm = this._globalVariableService.rootForm;
   hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
 
   writeValue(obj: any): void {
@@ -182,6 +183,7 @@ export class FormControlComponent
     if (!componentRef) return;
 
     componentRef.instance.data = this.data;
+    componentRef.instance.hostForm = this._globalVariableService.rootForm;
     componentRef.instance.writeValue(this._pendingValue);
     componentRef.instance.registerOnChange(this._onChange);
     componentRef.instance.registerOnTouched(this._onTouched);
@@ -193,7 +195,6 @@ export class FormControlComponent
   private _fetchOptions(): void {
     if (!this.data || !this.data.options) {
       this._pendingValue = null;
-      this._formReadyStateService.optionsLoading(false);
       return;
     }
 
@@ -220,9 +221,6 @@ export class FormControlComponent
       return;
     }
 
-    this.loading = true;
-    this._formReadyStateService.optionsLoading(true);
-
     const usingTriggerOrFilter =
       typeof src !== 'string' && (src.filter || src.trigger);
 
@@ -233,6 +231,13 @@ export class FormControlComponent
             src,
             () => (this.loading = false)
           );
+
+    const setLoading = (val: boolean) => {
+      this.loading = val;
+      this._formReadyStateService.optionsLoading(val);
+    };
+
+    setLoading(true);
 
     source$
       ?.pipe(
@@ -251,8 +256,13 @@ export class FormControlComponent
           }
 
           this._controlComponent?.onOptionsGet(options);
-          this._formReadyStateService.optionsLoading(false);
-          this.loading = false;
+
+          if (usingTriggerOrFilter) {
+            setLoading(false);
+          }
+        }),
+        finalize(() => {
+          setLoading(false);
         })
       )
       .subscribe();

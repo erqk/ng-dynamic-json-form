@@ -1,3 +1,3 @@
 import { ConditionsOperator } from './conditions-operator.type';
 
-export type ConditionsStatementTupple = [any, ConditionsOperator, any];
+export type ConditionsStatementTuple = [any, ConditionsOperator, any];

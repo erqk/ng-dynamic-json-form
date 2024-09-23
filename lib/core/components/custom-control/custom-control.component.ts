@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
+  UntypedFormGroup,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -21,6 +22,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
    * override control = new FormArray() 'or' new UntypedFormArray();
    */
   public control?: AbstractControl;
+  public hostForm?: UntypedFormGroup;
   public data?: FormControlConfig;
   public hideErrorMessage?: boolean;
 

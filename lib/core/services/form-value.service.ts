@@ -42,8 +42,12 @@ export class FormValueService {
   ): any {
     const result = structuredClone(formValue);
 
+    if (typeof result !== 'object') {
+      return result;
+    }
+
     for (const item of configs) {
-      const value = result[item.formControlName];
+      const value = result?.[item.formControlName];
 
       if (item.options) {
         const isDynamicOptions = Boolean(
@@ -81,6 +85,10 @@ export class FormValueService {
     configs: FormControlConfig[]
   ): any {
     const newResult: any = {};
+    
+    if (typeof value !== 'object') {
+      return value;
+    }
 
     for (const item of configs) {
       const _value = value[item.formControlName];

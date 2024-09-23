@@ -1,5 +1,5 @@
-import { ConditionsStatementTupple } from './conditions-statement-tupple.type';
+import { ConditionsStatementTuple } from './conditions-statement-tupple.type';
 
 export type ConditionsGroup = {
-  [key in '&&' | '||']?: (ConditionsStatementTupple | ConditionsGroup)[];
+  [key in '&&' | '||']?: (ConditionsStatementTuple | ConditionsGroup)[];
 };
