@@ -8,7 +8,7 @@ import {
   providePropsBinding,
 } from 'ng-dynamic-json-form';
 import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'ui-primeng-radio',
@@ -41,7 +41,10 @@ export class UiPrimengRadioComponent extends CustomControlComponent {
 
   override registerOnChange(fn: any): void {
     this.control.valueChanges
-      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
+      .pipe(
+        filter(() => this.userInteracted),
+        map((x) => this._controlValueService.getOptionsValue('parsed', x))
+      )
       .subscribe(fn);
   }
 }

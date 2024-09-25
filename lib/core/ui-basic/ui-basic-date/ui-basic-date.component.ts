@@ -45,6 +45,7 @@ export class UiBasicDateComponent
   override registerOnChange(fn: any): void {
     this.control.valueChanges
       .pipe(
+        filter(() => this.userInteracted),
         filter((x) => !!x.date && !!x.time),
         map((x) => {
           const { date, time } = x;
