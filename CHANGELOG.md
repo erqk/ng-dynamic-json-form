@@ -1,3 +1,11 @@
+# 8.4.3 (2024-09-25)
+
+[bc6ed14]: https://github.com/erqk/ng-dynamic-json-form/commit/bc6ed149aacd34960c2a30fac226411a5ee2438e
+
+| Commit    | Type | Description                                   |
+| --------- | ---- | --------------------------------------------- |
+| [bc6ed14] | fix  | Should call `onChange()` if control is dirty. |
+
 # 8.4.2 (2024-09-25)
 
 [650215c]: https://github.com/erqk/ng-dynamic-json-form/commit/650215c37cee4928184ff0b374501459be3fa644
