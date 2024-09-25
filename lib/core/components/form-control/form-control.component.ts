@@ -5,6 +5,7 @@ import {
   Component,
   ComponentRef,
   DestroyRef,
+  DoCheck,
   HostBinding,
   HostListener,
   Input,
@@ -58,7 +59,13 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
   styles: [':host { display: block }'],
 })
 export class FormControlComponent
-  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
+  implements
+    DoCheck,
+    OnInit,
+    AfterViewInit,
+    OnDestroy,
+    ControlValueAccessor,
+    Validator
 {
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
@@ -122,6 +129,17 @@ export class FormControlComponent
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     return this._controlComponent?.validate(control) ?? null;
+  }
+
+  // The only way to get dirty and touched state currently
+  ngDoCheck(): void {
+    if (this.control?.dirty) {
+      this._setControlDirtyOrTouched('dirty');
+    }
+
+    if (this.control?.touched) {
+      this._setControlDirtyOrTouched('touched');
+    }
   }
 
   ngOnInit(): void {
