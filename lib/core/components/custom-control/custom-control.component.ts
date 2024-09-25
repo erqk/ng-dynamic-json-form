@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -6,6 +6,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { filter } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
 import { getControlErrors } from '../../utilities/get-control-errors';
 
@@ -25,13 +26,26 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public hostForm?: UntypedFormGroup;
   public data?: FormControlConfig;
   public hideErrorMessage?: boolean;
+  public userInteracted = false;
+
+  @HostListener('click', ['$event'])
+  onClick(): void {
+    this.userInteracted = true;
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeydown(): void {
+    this.userInteracted = true;
+  }
 
   writeValue(obj: any): void {
     this.control?.patchValue(obj);
   }
 
   registerOnChange(fn: any): void {
-    this.control?.valueChanges.subscribe(fn);
+    this.control?.valueChanges
+      .pipe(filter(() => this.userInteracted))
+      .subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {

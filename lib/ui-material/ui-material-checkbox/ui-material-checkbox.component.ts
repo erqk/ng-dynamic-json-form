@@ -13,7 +13,7 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'ui-material-checkbox',
@@ -51,7 +51,10 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
 
   override registerOnChange(fn: any): void {
     this.control.valueChanges
-      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
+      .pipe(
+        filter(() => this.userInteracted),
+        map((x) => this._controlValueService.getOptionsValue('parsed', x))
+      )
       .subscribe(fn);
   }
 
