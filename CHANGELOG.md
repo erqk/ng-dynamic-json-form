@@ -1,3 +1,11 @@
+# 8.4.1 (2024-09-25)
+
+[8f87ee5]: https://github.com/erqk/ng-dynamic-json-form/commit/8f87ee508bca7b94e4c8857d56f4f58203ccf720
+
+| Commit    | Type | Description                                   |
+| --------- | ---- | --------------------------------------------- |
+| [8f87ee5] | fix  | Calling `onChange()` only if user interacted. |
+
 # 8.4.0 (2024-09-23)
 
 [129166c]: https://github.com/erqk/ng-dynamic-json-form/commit/129166c7900e41c666ad50abcca8ebfa03464d1d
