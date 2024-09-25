@@ -1,3 +1,11 @@
+# 8.4.2 (2024-09-25)
+
+[650215c]: https://github.com/erqk/ng-dynamic-json-form/commit/650215c37cee4928184ff0b374501459be3fa644
+
+| Commit    | Type | Description                                                       |
+| --------- | ---- | ----------------------------------------------------------------- |
+| [650215c] | fix  | Control dirty and touched status should sync with parent control. |
+
 # 8.4.1 (2024-09-25)
 
 [8f87ee5]: https://github.com/erqk/ng-dynamic-json-form/commit/8f87ee508bca7b94e4c8857d56f4f58203ccf720
