@@ -44,7 +44,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   registerOnChange(fn: any): void {
     this.control?.valueChanges
-      .pipe(filter(() => this.userInteracted))
+      .pipe(filter(() => this.userInteracted || !!this.control?.dirty))
       .subscribe(fn);
   }
 
