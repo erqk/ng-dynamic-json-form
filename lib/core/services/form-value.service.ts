@@ -42,7 +42,7 @@ export class FormValueService {
   ): any {
     const result = structuredClone(formValue);
 
-    if (typeof result !== 'object') {
+    if (typeof result === null || typeof result !== 'object') {
       return result;
     }
 
@@ -85,8 +85,8 @@ export class FormValueService {
     configs: FormControlConfig[]
   ): any {
     const newResult: any = {};
-    
-    if (typeof value !== 'object') {
+
+    if (value === null || typeof value !== 'object') {
       return value;
     }
 
