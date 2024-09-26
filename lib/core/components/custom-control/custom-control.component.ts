@@ -60,6 +60,8 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     return getControlErrors(this.control);
   }
 
+  markAsPristine(): void {}
+
   markAsDirty(): void {}
 
   markAsTouched(): void {}

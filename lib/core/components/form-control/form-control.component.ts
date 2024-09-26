@@ -140,6 +140,10 @@ export class FormControlComponent
     if (this.control?.touched) {
       this._setControlDirtyOrTouched('touched');
     }
+
+    if (this.control?.pristine) {
+      this._setControlPristine();
+    }
   }
 
   ngOnInit(): void {
@@ -330,6 +334,21 @@ export class FormControlComponent
     const cvaErrors = getControlErrors(this._controlComponent?.control);
     if (!this.control?.errors && cvaErrors) {
       this.control?.setErrors(cvaErrors);
+    }
+  }
+
+  private _setControlPristine(): void {
+    const control = this.control;
+    const controlComponent = this._controlComponent;
+
+    if (control) {
+      control.markAsPristine();
+    }
+
+    if (controlComponent) {
+      controlComponent.userInteracted = false;
+      controlComponent.markAsPristine();
+      controlComponent.control?.markAsPristine();
     }
   }
 

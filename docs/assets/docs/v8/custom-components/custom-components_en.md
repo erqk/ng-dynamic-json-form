@@ -184,6 +184,12 @@ onOptionsGet(data: OptionItem[]): void {
 }
 ```
 
+#### markAsPristine
+
+```ts
+markAsPristine(): void {}
+```
+
 #### markAsDirty
 
 ```ts
