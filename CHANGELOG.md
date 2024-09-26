@@ -1,3 +1,11 @@
+# 8.4.5 (2024-09-26)
+
+[7f6f030]: https://github.com/erqk/ng-dynamic-json-form/commit/7f6f030768295d0b302cd3d02680405cc41fbcd9
+
+| Commit    | Type | Description                                      |
+| --------- | ---- | ------------------------------------------------ |
+| [7f6f030] | fix  | FormGroupComponent: Check for undefined control. |
+
 # 8.4.4 (2024-09-26)
 
 [7ccd6c2]: https://github.com/erqk/ng-dynamic-json-form/commit/7ccd6c245e9d025721a28fa161b14c905ca1b032
