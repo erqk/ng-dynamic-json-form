@@ -1,3 +1,11 @@
+# 8.4.4 (2024-09-26)
+
+[7ccd6c2]: https://github.com/erqk/ng-dynamic-json-form/commit/7ccd6c245e9d025721a28fa161b14c905ca1b032
+
+| Commit    | Type | Description                                           |
+| --------- | ---- | ----------------------------------------------------- |
+| [7ccd6c2] | feat | CustomControlComponent: Enable set to pristine state. |
+
 # 8.4.3 (2024-09-25)
 
 [bc6ed14]: https://github.com/erqk/ng-dynamic-json-form/commit/bc6ed149aacd34960c2a30fac226411a5ee2438e
