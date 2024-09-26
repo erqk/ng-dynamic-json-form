@@ -1,3 +1,11 @@
+# 8.4.6 (2024-09-26)
+
+[aee026a]: https://github.com/erqk/ng-dynamic-json-form/commit/aee026a4a5c328f66c62305ec88a5f6824eea2cd
+
+| Commit    | Type | Description     |
+| --------- | ---- | --------------- |
+| [aee026a] | fix  | Nullable check. |
+
 # 8.4.5 (2024-09-26)
 
 [7f6f030]: https://github.com/erqk/ng-dynamic-json-form/commit/7f6f030768295d0b302cd3d02680405cc41fbcd9
