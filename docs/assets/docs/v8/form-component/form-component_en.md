@@ -116,6 +116,8 @@ See [Custom Loading](../../v8/custom-loading/custom-loading_en.md).
 ```tsx
 @Output() formGet = new EventEmitter<UntypedFormGroup>();
 @Output() optionsLoaded = new EventEmitter();
+@Output() displayValue = new EventEmitter<FormDisplayValue>();
+@Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 ```
 
 ### formGet
@@ -125,3 +127,30 @@ The event called after form generation complete. The generated `UntypedFormGroup
 ### optionsLoaded
 
 The event called after all of the options are loaded.
+
+### displayValue
+
+Useful if you need to get the `form.value` with either:
+
+1. The formControlName replaced with label
+2. The option's value replaced with display text
+
+```ts
+{
+  keyMapped: any;
+  keyPreserved: any;
+}
+```
+
+### updateStatusFunctions
+
+Emit all the functions needed to change form status.
+
+```ts
+{
+  setDirty: () => void;
+  setPristine: () => void;
+  setTouched: () => void;
+  setUntouched: () => void;
+}
+```

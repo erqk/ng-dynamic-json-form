@@ -162,12 +162,6 @@ export class AppComponent {
 
 父元件的 `hideErrorMessage` 的值。可用來控制錯誤訊息的顯示。
 
-#### userInteracted
-
-當 click 或 keydown 事件觸發時，才會設為 true。
-
-> 用於底層 `registerOnChange()`。若無用戶行為，不呼叫 `onChange()` 方法，避免 control 被設定為 dirty。
-
 ### Methods
 
 #### onOptionsGet
@@ -184,22 +178,28 @@ onOptionsGet(data: OptionItem[]): void {
 }
 ```
 
-#### markAsPristine
-
-```ts
-markAsPristine(): void {}
-```
-
 #### markAsDirty
 
 ```ts
 markAsDirty(): void {}
 ```
 
+#### markAsPristine
+
+```ts
+markAsPristine(): void {}
+```
+
 #### markAsTouched
 
 ```ts
 markAsTouched(): void {}
+```
+
+#### markAsUntouched
+
+```ts
+markAsUntouched(): void {}
 ```
 
 #### setErrors()

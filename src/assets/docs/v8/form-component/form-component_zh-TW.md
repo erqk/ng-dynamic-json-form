@@ -116,6 +116,8 @@ submit(): void {
 ```tsx
 @Output() formGet = new EventEmitter<UntypedFormGroup>();
 @Output() optionsLoaded = new EventEmitter();
+@Output() displayValue = new EventEmitter<FormDisplayValue>();
+@Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 ```
 
 ### formGet
@@ -125,3 +127,30 @@ submit(): void {
 ### optionsLoaded
 
 當所有選項載入完成後觸發。
+
+### displayValue
+
+可以用來取得以下任一形式的 `form.value`：
+
+1. 標題文字作為 key
+2. 選項的值替換為顯示的文字
+
+```ts
+{
+  keyMapped: any;
+  keyPreserved: any;
+}
+```
+
+### updateStatusFunctions
+
+提供所有切換表單狀態的 function。
+
+```ts
+{
+  setDirty: () => void;
+  setPristine: () => void;
+  setTouched: () => void;
+  setUntouched: () => void;
+}
+```
