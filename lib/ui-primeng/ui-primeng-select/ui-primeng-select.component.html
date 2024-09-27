@@ -9,6 +9,7 @@
         omit: ['options']
       }
     ]"
-    (onHide)="onTouched()"
+    (onChange)="onChange(control.value)"
+    (onBlur)="onTouched()"
   ></p-dropdown>
 </ng-container>

@@ -7,7 +7,7 @@
       control.disabled ? 'disabled' : ''
     ]"
   >
-    <ng-container *ngFor="let item of data.options?.data">
+    <ng-container *ngFor="let item of data.options?.data; index as i">
       <label
         class="option-button"
         [ngStyle]="{
@@ -29,7 +29,6 @@
           <!-- binary checkbox -->
           <ng-container *ngIf="data.options.data.length === 1">
             <input
-              #checkboxBinary
               type="checkbox"
               [propsBinding]="[
                 {
@@ -37,7 +36,7 @@
                   omit: ['type']
                 }
               ]"
-              [formControl]="control"
+              (change)="toggle($event)"
             />
           </ng-container>
 
@@ -51,12 +50,9 @@
                   omit: ['type']
                 }
               ]"
-              [value]="item.value | json"
-              [checked]="
-                control.value && control.value!.includes(item.value | json)
-              "
+              [checked]="isChecked(item.value)"
               [disabled]="control.disabled"
-              (change)="onCheckboxChange($event)"
+              (change)="onCheckboxChange($event, i)"
             />
           </ng-container>
         </ng-container>

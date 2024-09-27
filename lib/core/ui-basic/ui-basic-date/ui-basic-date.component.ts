@@ -7,7 +7,6 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { filter, map } from 'rxjs/operators';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
 
@@ -23,6 +22,8 @@ export class UiBasicDateComponent
   implements OnInit
 {
   private _locale = inject(LOCALE_ID);
+  private _onChange?: any;
+
   dateSettings = { min: '', max: '' };
 
   @HostBinding('class') hostClass = 'ui-basic';
@@ -43,24 +44,7 @@ export class UiBasicDateComponent
   }
 
   override registerOnChange(fn: any): void {
-    this.control.valueChanges
-      .pipe(
-        filter((x) => !!x.date && !!x.time),
-        map((x) => {
-          const { date, time } = x;
-          const _date = new Date(date!);
-
-          if (time) {
-            const [hours, minutes, seconds] = time.split(':');
-            if (hours) _date.setHours(parseInt(hours));
-            if (minutes) _date.setMinutes(parseInt(minutes));
-            if (seconds) _date.setSeconds(parseInt(seconds));
-          }
-
-          return _date;
-        })
-      )
-      .subscribe(fn);
+    this._onChange = fn;
   }
 
   ngOnInit(): void {
@@ -69,5 +53,24 @@ export class UiBasicDateComponent
       min: !min ? '' : formatDate(min, 'yyyy-MM-dd', this._locale),
       max: !max ? '' : formatDate(max, 'yyyy-MM-dd', this._locale),
     };
+  }
+
+  updateControl(): void {
+    const { date, time } = this.control.value;
+
+    if (!date) {
+      return;
+    }
+
+    const _date = new Date(date);
+
+    if (time) {
+      const [hours, minutes, seconds] = time.split(':');
+      if (hours) _date.setHours(parseInt(hours));
+      if (minutes) _date.setMinutes(parseInt(minutes));
+      if (seconds) _date.setSeconds(parseInt(seconds));
+    }
+
+    this._onChange(_date);
   }
 }

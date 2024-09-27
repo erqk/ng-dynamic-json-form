@@ -16,11 +16,10 @@
       ]"
       [formControl]="control"
       (blur)="onTouched()"
+      (change)="updateControl($event)"
     >
-      <ng-container *ngFor="let item of data.options?.data">
-        <option [value]="item.value | json">
-          {{ item.label }}
-        </option>
+      <ng-container *ngFor="let item of data.options?.data; index as i">
+        <option [value]="i">{{ item.label }}</option>
       </ng-container>
     </select>
   </div>

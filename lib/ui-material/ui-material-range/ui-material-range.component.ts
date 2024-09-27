@@ -6,7 +6,7 @@ import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import {
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -32,4 +32,9 @@ import {
 })
 export class UiMaterialRangeComponent extends CustomControlComponent {
   override control = new FormControl(0);
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

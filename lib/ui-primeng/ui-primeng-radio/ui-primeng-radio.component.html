@@ -7,7 +7,7 @@
       'flex-direction': data.options?.layout
     }"
   >
-    <ng-container *ngFor="let item of data.options?.data">
+    <ng-container *ngFor="let item of data.options?.data; index as i">
       <label
         class="option-button"
         [ngStyle]="{
@@ -26,7 +26,7 @@
         ></ng-container>
 
         <p-radioButton
-          [value]="item.value | json"
+          [value]="i"
           [formControl]="control"
           [propsBinding]="[
             {
@@ -35,6 +35,7 @@
               omit: ['value']
             }
           ]"
+          (onClick)="updateControl()"
         ></p-radioButton>
 
         <ng-container

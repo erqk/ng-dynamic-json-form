@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -25,17 +25,6 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   public hostForm?: UntypedFormGroup;
   public data?: FormControlConfig;
   public hideErrorMessage?: boolean;
-  public userInteracted = false;
-
-  @HostListener('click', ['$event'])
-  onClick(): void {
-    this.userInteracted = true;
-  }
-
-  @HostListener('keydown', ['$event'])
-  onKeydown(): void {
-    this.userInteracted = true;
-  }
 
   writeValue(obj: any): void {
     this.control?.patchValue(obj);
@@ -57,11 +46,13 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     return getControlErrors(this.control);
   }
 
-  markAsPristine(): void {}
-
   markAsDirty(): void {}
 
+  markAsPristine(): void {}
+
   markAsTouched(): void {}
+
+  markAsUntouched(): void {}
 
   setErrors(errors: ValidationErrors | null): void {}
 

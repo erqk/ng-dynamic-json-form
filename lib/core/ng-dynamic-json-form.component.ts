@@ -37,7 +37,7 @@ import {
   startWith,
   take,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from './components/custom-form-label/custom-form-label.abstract';
@@ -53,12 +53,12 @@ import { CustomLabelComponents } from './models/custom-label-components.type';
 import { CustomTemplates } from './models/custom-templates.type';
 import { FormDisplayValue } from './models/form-display-value.interface';
 import { FormLayout } from './models/form-layout.interface';
+import { FormStatusFunctions } from './models/form-status-functions.interface';
 import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './providers/ng-dynamic-json-form.provider';
 import {
   ConfigMappingService,
   ConfigValidationService,
-  ControlValueService,
   FormConditionsService,
   FormGeneratorService,
   FormValidationService,
@@ -70,7 +70,10 @@ import {
 import { FormReadyStateService } from './services/form-ready-state.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
+import { markFormDirty } from './utilities/mark-form-dirty';
 import { markFormPristine } from './utilities/mark-form-pristine';
+import { markFormTouched } from './utilities/mark-form-touched';
+import { markFormUntouched } from './utilities/mark-form-untouched';
 
 @Component({
   selector: 'ng-dynamic-json-form',
@@ -88,7 +91,6 @@ import { markFormPristine } from './utilities/mark-form-pristine';
   providers: [
     ConfigValidationService,
     ConfigMappingService,
-    ControlValueService,
     FormGeneratorService,
     FormConditionsService,
     FormValidationService,
@@ -223,6 +225,7 @@ export class NgDynamicJsonFormComponent
   @Output() formGet = new EventEmitter<UntypedFormGroup>();
   @Output() optionsLoaded = new EventEmitter();
   @Output() displayValue = new EventEmitter<FormDisplayValue>();
+  @Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
 
@@ -350,6 +353,12 @@ export class NgDynamicJsonFormComponent
       this._globalVariableService.rootConfigs = this.configGet;
       this._setupListeners();
       this.formGet.emit(this.form);
+      this.updateStatusFunctions.emit({
+        setDirty: () => this._updateFormStatus('setDirty'),
+        setPristine: () => this._updateFormStatus('setPristine'),
+        setTouched: () => this._updateFormStatus('setTouched'),
+        setUntouched: () => this._updateFormStatus('setUntouched'),
+      });
 
       this._cd.detectChanges();
     }
@@ -407,6 +416,32 @@ export class NgDynamicJsonFormComponent
     this._controlDirective?.control.markAsUntouched();
     this._controlDirective?.form.markAsUntouched();
     this.configValidationErrors = [];
+  }
+
+  private _updateFormStatus(status: keyof FormStatusFunctions): void {
+    switch (status) {
+      case 'setDirty':
+        this._allowFormDirty = true;
+        this._controlDirective?.control.markAsDirty();
+        markFormDirty(this.form);
+        break;
+
+      case 'setPristine':
+        this._allowFormDirty = false;
+        this._controlDirective?.control.markAsPristine();
+        markFormPristine(this.form);
+        break;
+
+      case 'setTouched':
+        this._controlDirective?.control.markAsTouched();
+        markFormTouched(this.form);
+        break;
+
+      case 'setUntouched':
+        this._controlDirective?.control.markAsUntouched();
+        markFormUntouched(this.form);
+        break;
+    }
   }
 
   private _onFormValueChanges(): void {

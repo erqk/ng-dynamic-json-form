@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import {
-  ControlValueService,
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding,
+  providePropsBinding
 } from 'ng-dynamic-json-form';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-material-select',
@@ -31,23 +29,35 @@ import { map } from 'rxjs';
   styles: [],
 })
 export class UiMaterialSelectComponent extends CustomControlComponent {
-  private _controlValueService = inject(ControlValueService);
-  override control = new UntypedFormControl('');
+  private _onChange?: any;
+
+  override control = new FormControl(-1);
 
   onTouched = () => {};
 
   override writeValue(obj: any): void {
-    const value = this._controlValueService.getOptionsValue('stringified', obj);
-    this.control.setValue(value);
+    const index =
+      this.data?.options?.data
+        ?.map((x) => x.value)
+        .findIndex((x) => JSON.stringify(x) === JSON.stringify(obj)) ?? -1;
+
+    this.control.setValue(index);
   }
 
   override registerOnChange(fn: any): void {
-    this.control.valueChanges
-      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
-      .subscribe(fn);
+    this._onChange = fn;
   }
 
   override registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  updateControl(): void {
+    const index = this.control.value ?? -1;
+
+    if (index > -1) {
+      const value = this.data?.options?.data?.map((x) => x.value)?.[index];
+      this._onChange(value);
+    }
   }
 }

@@ -32,7 +32,12 @@ export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
 
   onTouched = () => {};
+  onChange = (_: any) => {};
 
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  
   override registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }

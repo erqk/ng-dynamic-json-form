@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { map } from 'rxjs';
+import { Component, HostBinding } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
-import { ControlValueService } from '../../services/control-value.service';
 
 @Component({
   selector: 'ui-basic-radio',
@@ -14,19 +12,32 @@ import { ControlValueService } from '../../services/control-value.service';
   styles: [],
 })
 export class UiBasicRadioComponent extends CustomControlComponent {
-  private _controlValueService = inject(ControlValueService);
-  override control = new FormControl('');
+  private _onChange?: any;
+
+  selectedIndex = -1;
+  isDisabled = false;
 
   @HostBinding('class') hostClass = 'ui-basic';
 
   override writeValue(obj: any): void {
-    const value = this._controlValueService.getOptionsValue('stringified', obj);
-    this.control.setValue(value);
+    const index =
+      this.data?.options?.data?.findIndex(
+        (x) => JSON.stringify(x.value) === JSON.stringify(obj)
+      ) ?? -1;
+
+    this.selectedIndex = index;
   }
 
   override registerOnChange(fn: any): void {
-    this.control.valueChanges
-      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
-      .subscribe(fn);
+    this._onChange = fn;
+  }
+
+  override setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
+  }
+
+  onChange(i: number): void {
+    const value = this.data?.options?.data?.[i].value;
+    this._onChange(value);
   }
 }

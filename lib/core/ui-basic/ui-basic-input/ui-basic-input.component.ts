@@ -14,4 +14,10 @@ import { PropsBindingDirective } from '../../directives';
 export class UiBasicInputComponent extends CustomControlComponent {
   @HostBinding('class') hostClass = 'ui-basic';
   override control = new UntypedFormControl('');
+
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

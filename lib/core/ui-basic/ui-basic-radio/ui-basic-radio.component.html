@@ -4,13 +4,13 @@
     [style]="data.options?.containerStyles"
     [ngClass]="[
       data.options?.containerClass ?? '',
-      control.disabled ? 'disabled' : ''
+      isDisabled ? 'disabled' : ''
     ]"
     [ngStyle]="{
       'flex-direction': data.options?.layout,
     }"
   >
-    <ng-container *ngFor="let item of data.options?.data">
+    <ng-container *ngFor="let item of data.options?.data; index as i">
       <div class="option-button-wrapper">
         <label
           class="option-button"
@@ -32,8 +32,8 @@
                 omit: ['type', 'name']
               }
             ]"
-            [value]="item.value | json"
-            [formControl]="control"
+            [checked]="selectedIndex === i"
+            (change)="onChange(i)"
           />
           <span class="marker"></span>
 

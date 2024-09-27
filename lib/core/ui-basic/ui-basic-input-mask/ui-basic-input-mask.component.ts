@@ -32,4 +32,10 @@ import { providePropsBinding } from '../../providers/props-binding.provider';
 export class UiBasicInputMaskComponent extends CustomControlComponent {
   @HostBinding('class') hostClass = 'ui-basic';
   override control = new FormControl('');
+
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

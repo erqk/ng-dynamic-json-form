@@ -20,6 +20,7 @@
         }
       ]"
       [formControl]="control"
+      (input)="onChange(control.value)"
     />
 
     <ng-container *ngIf="data.props?.showCurrentValue">

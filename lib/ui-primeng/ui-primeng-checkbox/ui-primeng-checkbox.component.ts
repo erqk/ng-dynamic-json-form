@@ -31,6 +31,11 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 })
 export class UiPrimengCheckboxComponent extends CustomControlComponent {
   override control = new FormControl<any | any[]>('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 
   get groupButtonsStyles(): string {
     return `

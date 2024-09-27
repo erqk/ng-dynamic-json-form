@@ -39,4 +39,9 @@ import {
 })
 export class UiMaterialDateComponent extends CustomControlComponent {
   override control = new FormControl(new Date());
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

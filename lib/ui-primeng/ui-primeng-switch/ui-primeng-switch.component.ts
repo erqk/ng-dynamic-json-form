@@ -30,4 +30,9 @@ import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
 })
 export class UiPrimengSwitchComponent extends CustomControlComponent {
   override control = new FormControl(false);
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

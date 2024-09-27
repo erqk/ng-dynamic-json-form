@@ -131,18 +131,14 @@ export class FormControlComponent
     return this._controlComponent?.validate(control) ?? null;
   }
 
-  // The only way to get dirty and touched state currently
   ngDoCheck(): void {
-    if (this.control?.dirty) {
-      this._setControlDirtyOrTouched('dirty');
-    }
+    if (this.control) {
+      const { dirty, pristine, touched, untouched } = this.control;
 
-    if (this.control?.touched) {
-      this._setControlDirtyOrTouched('touched');
-    }
-
-    if (this.control?.pristine) {
-      this._setControlPristine();
+      if (dirty) this._updateControlStatus('dirty');
+      if (pristine) this._updateControlStatus('pristine');
+      if (touched) this._updateControlStatus('touched');
+      if (untouched) this._updateControlStatus('untouched');
     }
   }
 
@@ -318,7 +314,8 @@ export class FormControlComponent
           }
 
           if (hideErrors === false) {
-            this._setControlDirtyOrTouched('both');
+            this._updateControlStatus('dirty', true);
+            this._updateControlStatus('touched', true);
           }
         }),
         takeUntilDestroyed(this._destroyRef)
@@ -337,51 +334,64 @@ export class FormControlComponent
     }
   }
 
-  private _setControlPristine(): void {
-    const control = this.control;
-    const controlComponent = this._controlComponent;
-
-    if (control) {
-      control.markAsPristine();
-    }
-
-    if (controlComponent) {
-      controlComponent.userInteracted = false;
-      controlComponent.markAsPristine();
-      controlComponent.control?.markAsPristine();
-    }
-  }
-
-  private _setControlDirtyOrTouched(state: 'dirty' | 'touched' | 'both'): void {
-    if (!this.control) return;
-
+  private _updateControlStatus(
+    status: 'dirty' | 'pristine' | 'touched' | 'untouched',
+    updateSelf = false
+  ): void {
     const control = this.control;
     const controlComponent = this._controlComponent;
 
     const markAsDirty = () => {
-      control.markAsDirty();
       controlComponent?.control?.markAsDirty();
       controlComponent?.markAsDirty();
+
+      if (updateSelf) {
+        control?.markAsDirty();
+      }
+    };
+
+    const markAsPristine = () => {
+      controlComponent?.control?.markAsPristine();
+      controlComponent?.markAsPristine();
+
+      if (updateSelf) {
+        control?.markAsPristine();
+      }
     };
 
     const markAsTouched = () => {
-      control.markAsTouched();
       controlComponent?.control?.markAsTouched();
       controlComponent?.markAsTouched();
+
+      if (updateSelf) {
+        control?.markAsTouched();
+      }
     };
 
-    switch (state) {
-      case 'both':
-        markAsDirty();
-        markAsTouched();
-        break;
+    const markAsUntouched = () => {
+      controlComponent?.control?.markAsUntouched();
+      controlComponent?.markAsUntouched();
 
+      if (updateSelf) {
+        control?.markAsUntouched();
+      }
+    };
+
+    switch (status) {
       case 'dirty':
         markAsDirty();
         break;
 
+      case 'pristine':
+        markAsPristine();
+        break;
+
       case 'touched':
         markAsTouched();
+        break;
+
+      case 'untouched':
+        markAsUntouched();
         break;
     }
   }
