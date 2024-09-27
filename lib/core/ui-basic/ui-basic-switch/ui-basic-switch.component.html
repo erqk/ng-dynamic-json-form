@@ -19,7 +19,8 @@
             omit: ['type']
           }
         ]"
-        [formControl]="control"
+        [checked]="control.value === true"
+        (change)="updateControl($event)"
       />
       <span class="marker"></span>
 

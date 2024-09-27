@@ -15,7 +15,13 @@ export class UiBasicRangeComponent extends CustomControlComponent {
   override control = new FormControl(0);
   tickMarks: any[] = [];
 
+  onChange?: any;
+
   @HostBinding('class') hostClass = 'ui-basic';
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 
   ngOnInit(): void {
     this._getTickMarksCount();

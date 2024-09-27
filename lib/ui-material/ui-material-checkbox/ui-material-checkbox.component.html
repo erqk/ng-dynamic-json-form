@@ -8,7 +8,6 @@
     <ng-container *ngIf="data.options && data.options.data?.length === 1">
       <mat-checkbox
         [labelPosition]="data.options.labelPosition ?? 'after'"
-        [formControl]="control"
         [propsBinding]="[
           {
             key: 'mat-checkbox',
@@ -16,6 +15,7 @@
             omit: ['labelPosition']
           }
         ]"
+        (change)="toggle($event)"
         >{{ data.options.data?.[0]?.label }}</mat-checkbox
       >
     </ng-container>
@@ -24,11 +24,10 @@
     <ng-container
       *ngIf="data.options && data.options.data && data.options.data.length > 1"
     >
-      <ng-container *ngFor="let item of data.options.data">
+      <ng-container *ngFor="let item of data.options.data; index as i">
         <mat-checkbox
           [labelPosition]="data.options.labelPosition ?? 'after'"
-          [value]="item.value | json"
-          [checked]="(control.value || []).includes(item.value | json)"
+          [checked]="isChecked(item.value)"
           [disabled]="control.disabled"
           [propsBinding]="[
             {
@@ -37,7 +36,7 @@
               omit: ['labelPosition', 'checked', 'disabled', 'value']
             }
           ]"
-          (change)="onCheckboxChange($event)"
+          (change)="onCheckboxChange($event, i)"
           >{{ item.label }}</mat-checkbox
         >
       </ng-container>

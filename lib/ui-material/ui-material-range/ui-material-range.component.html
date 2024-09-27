@@ -7,6 +7,10 @@
       }
     ]"
   >
-    <input matSliderThumb [formControl]="control" />
+    <input
+      matSliderThumb
+      [formControl]="control"
+      (input)="onChange(control.value)"
+    />
   </mat-slider>
 </ng-container>

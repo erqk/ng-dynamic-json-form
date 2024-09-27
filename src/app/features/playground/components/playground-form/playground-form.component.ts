@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, isDevMode } from '@angular/core';
 import {
   FormControl,
   ReactiveFormsModule,
@@ -11,6 +11,7 @@ import {
   NgDynamicJsonFormComponent,
   provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
+import { FormStatusFunctions } from 'ng-dynamic-json-form/core/models/form-status-functions.interface';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
@@ -41,6 +42,34 @@ export class PlaygroundFormComponent {
   @Input() control = new FormControl();
   @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
 
+  isDev = isDevMode();
+  form?: UntypedFormGroup;
+  statusFunctions?: FormStatusFunctions;
+
+  toolbarContent = [
+    {
+      label: 'Mark form:',
+      children: [
+        {
+          label: 'dirty',
+          action: () => this.statusFunctions?.setDirty(),
+        },
+        {
+          label: 'pristine',
+          action: () => this.statusFunctions?.setPristine(),
+        },
+        {
+          label: 'touched',
+          action: () => this.statusFunctions?.setTouched(),
+        },
+        {
+          label: 'untouched',
+          action: () => this.statusFunctions?.setUntouched(),
+        },
+      ],
+    },
+  ];
+
   onOptionsLoaded(): void {
     if (typeof window !== 'undefined') {
       console.log('Options loaded');
@@ -48,6 +77,7 @@ export class PlaygroundFormComponent {
   }
 
   onFormGet(e: UntypedFormGroup): void {
+    this.form = e;
     // if (typeof window !== 'undefined') {
     //   console.log('form get', e);
     // }

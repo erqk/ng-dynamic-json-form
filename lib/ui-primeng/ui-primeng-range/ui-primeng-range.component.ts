@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -28,6 +28,27 @@ import { Slider, SliderModule } from 'primeng/slider';
   templateUrl: './ui-primeng-range.component.html',
   styles: [],
 })
-export class UiPrimengRangeComponent extends CustomControlComponent {
+export class UiPrimengRangeComponent
+  extends CustomControlComponent
+  implements AfterViewInit
+{
+  private _pendingValue = 0;
+
   override control = new FormControl(0);
+  onChange?: any;
+
+  @ViewChild(Slider) sliderRef?: Slider;
+
+  override writeValue(obj: any): void {
+    super.writeValue(obj);
+    this._pendingValue = obj;
+  }
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  ngAfterViewInit(): void {
+    this.sliderRef?.updateValue(this._pendingValue);
+  }
 }

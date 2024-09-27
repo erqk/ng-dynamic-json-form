@@ -12,6 +12,20 @@ import { PropsBindingDirective } from '../../directives';
   styles: [],
 })
 export class UiBasicSwitchComponent extends CustomControlComponent {
-  @HostBinding('class') hostClass = 'ui-basic';
+  private _onChange?: any;
+
   override control = new FormControl(false);
+
+  @HostBinding('class') hostClass = 'ui-basic';
+
+  override registerOnChange(fn: any): void {
+    this._onChange = fn;
+  }
+
+  updateControl(e: Event): void {
+    const checked = (e.target as HTMLInputElement).checked;
+
+    this.control.setValue(checked);
+    this._onChange(checked);
+  }
 }

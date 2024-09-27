@@ -32,4 +32,9 @@ import {
 })
 export class UiMaterialInputComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

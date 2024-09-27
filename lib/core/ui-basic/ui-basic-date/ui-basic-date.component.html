@@ -1,4 +1,4 @@
-<ng-container *ngIf="data" [formGroup]="control">
+<ng-container *ngIf="data">
   <div
     class="date-input"
     [ngClass]="{
@@ -15,11 +15,12 @@
           omit: ['min', 'max', 'type']
         }
       ]"
-      formControlName="date"
+      [formControl]="control.controls.date"
+      (change)="updateControl()"
     />
 
     <ng-container *ngIf="data?.props?.showTime === true">
-      <input type="time" formControlName="time" />
+      <input type="time" [formControl]="control.controls.time" />
     </ng-container>
   </div>
 </ng-container>

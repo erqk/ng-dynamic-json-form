@@ -1,6 +1,5 @@
 export * from './config-mapping.service';
 export * from './config-validation.service';
-export * from './control-value.service';
 export * from './form-conditions.service';
 export * from './form-generator.service';
 export * from './form-ready-state.service';

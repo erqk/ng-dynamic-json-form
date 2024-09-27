@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, HostBinding } from '@angular/core';
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
-import { ControlValueService } from '../../services/control-value.service';
-import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'ui-basic-checkbox',
@@ -14,42 +12,46 @@ import { filter, map } from 'rxjs';
   styles: [],
 })
 export class UiBasicCheckboxComponent extends CustomControlComponent {
-  private _controlValueService = inject(ControlValueService);
+  private _onChange?: any;
 
   @HostBinding('class') hostClass = 'ui-basic';
 
-  override control = new FormControl<any | any[]>('');
+  override control = new FormArray<FormControl>([]);
 
   override writeValue(obj: any): void {
-    const value =
-      this.data?.options?.data?.length === 1
-        ? obj
-        : this._controlValueService.getOptionsValue('stringified', obj);
+    this.control.clear();
 
-    this.control.setValue(value);
+    if (Array.isArray(obj)) {
+      obj.forEach((x) => this._addItem(x));
+    }
   }
 
   override registerOnChange(fn: any): void {
-    this.control.valueChanges
-      .pipe(
-        filter(() => this.userInteracted),
-        map((x) => this._controlValueService.getOptionsValue('parsed', x))
-      )
-      .subscribe(fn);
+    this._onChange = fn;
   }
 
-  onCheckboxChange(e: Event): void {
-    const input = e.target as HTMLInputElement;
-    const value = input.value;
-    const oldValue = Array.isArray(this.control.value)
-      ? this.control.value || []
-      : [];
-    const removeItem = !input.checked || oldValue.includes(value);
-    const newValue = removeItem
-      ? oldValue.filter((x: any) => x !== value)
-      : [...oldValue, value];
+  toggle(e: Event): void {
+    const checked = (e.target as HTMLInputElement).checked;
+    this._onChange(checked);
+  }
 
-    this.control.setValue(newValue);
+  onCheckboxChange(e: Event, index: number): void {
+    const input = e.target as HTMLInputElement;
+    const checked = input.checked;
+
+    const value = this.data?.options?.data
+      ?.map((x) => x.value)
+      .filter((val, i) => (i === index ? checked : this.isChecked(val)));
+
+    this.control.clear();
+    value?.forEach((x) => this._addItem(x));
+    this._onChange(this.control.value);
+  }
+
+  isChecked(val: any): boolean {
+    return this.control.value.some(
+      (x) => JSON.stringify(x) === JSON.stringify(val)
+    );
   }
 
   get groupButtonsStyles(): string {
@@ -58,5 +60,10 @@ export class UiBasicCheckboxComponent extends CustomControlComponent {
       align-items: flex-start;
       ${this.data?.options?.containerStyles ?? ''}
     `.replace(/\s{2,}/g, '');
+  }
+
+  private _addItem(val?: any): void {
+    const control = new FormControl(val);
+    this.control.push(control);
   }
 }

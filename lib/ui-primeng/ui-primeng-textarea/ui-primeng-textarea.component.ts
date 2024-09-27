@@ -30,4 +30,9 @@ import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
 })
 export class UiPrimengTextareaComponent extends CustomControlComponent {
   override control = new FormControl('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

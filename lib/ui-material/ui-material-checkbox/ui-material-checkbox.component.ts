@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCheckbox,
   MatCheckboxChange,
@@ -8,12 +8,10 @@ import {
 } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import {
-  ControlValueService,
   CustomControlComponent,
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'ui-material-checkbox',
@@ -37,38 +35,42 @@ import { filter, map } from 'rxjs';
   styles: [],
 })
 export class UiMaterialCheckboxComponent extends CustomControlComponent {
-  private _controlValueService = inject(ControlValueService);
-  override control = new FormControl<any | any[]>('');
+  private _onChange?: any;
+
+  override control = new FormArray<FormControl>([]);
 
   override writeValue(obj: any): void {
-    const value =
-      this.data?.options?.data?.length === 1
-        ? obj
-        : this._controlValueService.getOptionsValue('stringified', obj);
+    this.control.clear();
 
-    this.control.setValue(value);
+    if (Array.isArray(obj)) {
+      obj.forEach((x) => this._addItem(x));
+    }
   }
 
   override registerOnChange(fn: any): void {
-    this.control.valueChanges
-      .pipe(
-        filter(() => this.userInteracted),
-        map((x) => this._controlValueService.getOptionsValue('parsed', x))
-      )
-      .subscribe(fn);
+    this._onChange = fn;
   }
 
-  onCheckboxChange(e: MatCheckboxChange): void {
-    const oldValue = Array.isArray(this.control.value)
-      ? this.control.value || []
-      : [];
+  toggle(e: MatCheckboxChange): void {
+    const checked = e.checked;
+    this._onChange(checked);
+  }
 
-    const removeItem = !e.checked || oldValue.includes(e.source.value);
-    const newValue = removeItem
-      ? oldValue.filter((x: any) => x !== e.source.value)
-      : [...oldValue, e.source.value];
+  onCheckboxChange(e: MatCheckboxChange, index: number): void {
+    const checked = e.checked;
+    const value = this.data?.options?.data
+      ?.map((x) => x.value)
+      .filter((val, i) => (i === index ? checked : this.isChecked(val)));
 
-    this.control?.setValue(newValue);
+    this.control.clear();
+    value?.forEach((x) => this._addItem(x));
+    this._onChange(this.control.value);
+  }
+
+  isChecked(val: any): boolean {
+    return this.control.value.some(
+      (x) => JSON.stringify(x) === JSON.stringify(val)
+    );
   }
 
   get groupButtonsStyles(): string {
@@ -77,5 +79,10 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
       align-items: flex-start;
       ${this.data?.options?.containerStyles ?? ''}
     `.replace(/\s{2,}/g, '');
+  }
+
+  private _addItem(val?: any): void {
+    const control = new FormControl(val);
+    this.control.push(control);
   }
 }

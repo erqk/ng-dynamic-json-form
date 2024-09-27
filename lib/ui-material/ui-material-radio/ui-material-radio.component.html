@@ -18,10 +18,13 @@
         'flex-direction': data.options?.layout
       }"
     >
-      <ng-container *ngFor="let item of data.options?.data">
-        <mat-radio-button [value]="item.value | json">{{
-          item.label
-        }}</mat-radio-button>
+      <ng-container *ngFor="let item of data.options?.data; index as i">
+        <mat-radio-button
+          [value]="i"
+          [checked]="selectedIndex === i"
+          (change)="onChange(i)"
+          >{{ item.label }}</mat-radio-button
+        >
       </ng-container>
     </div>
   </mat-radio-group>

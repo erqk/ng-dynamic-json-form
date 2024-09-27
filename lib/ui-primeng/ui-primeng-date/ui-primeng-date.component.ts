@@ -30,5 +30,15 @@ import { Calendar, CalendarModule } from 'primeng/calendar';
   styles: [],
 })
 export class UiPrimengDateComponent extends CustomControlComponent {
+  private _onChange?: any;
+
   override control = new FormControl(new Date());
+
+  override registerOnChange(fn: any): void {
+    this._onChange = fn;
+  }
+
+  updateControl(): void {
+    this._onChange(this.control.value);
+  }
 }

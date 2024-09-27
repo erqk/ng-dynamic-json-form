@@ -30,4 +30,9 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
 })
 export class UiPrimengInputComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

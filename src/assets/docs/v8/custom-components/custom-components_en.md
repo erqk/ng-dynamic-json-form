@@ -162,12 +162,6 @@ The `UntypedFormGroup` of the current `ng-dynamic-json-form` instance.
 
 The `hideErrorMessage` value from root component. This is useful to control the visibility of errors.
 
-#### userInteracted
-
-Will set to true when the component receive click or keydown event.
-
-> It's use inside the underlying `registerOnChange()`. When there's no user interaction, avoid calling `onChange()` to prevent the control to be mark as dirty.
-
 ### Methods
 
 #### onOptionsGet
@@ -184,22 +178,28 @@ onOptionsGet(data: OptionItem[]): void {
 }
 ```
 
-#### markAsPristine
-
-```ts
-markAsPristine(): void {}
-```
-
 #### markAsDirty
 
 ```ts
 markAsDirty(): void {}
 ```
 
+#### markAsPristine
+
+```ts
+markAsPristine(): void {}
+```
+
 #### markAsTouched
 
 ```ts
 markAsTouched(): void {}
+```
+
+#### markAsUntouched
+
+```ts
+markAsUntouched(): void {}
 ```
 
 #### setErrors()

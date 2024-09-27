@@ -6,7 +6,7 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import {
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -35,4 +35,9 @@ import {
 })
 export class UiMaterialTextareaComponent extends CustomControlComponent {
   override control = new FormControl('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

@@ -9,6 +9,7 @@
         omit: ['labelPosition']
       }
     ]"
+    (change)="onChange(control.value)"
     >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
   >
 </ng-container>

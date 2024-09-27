@@ -9,12 +9,11 @@
           props: data.props,
         }
       ]"
-      (closed)="onTouched()"
+      (openedChange)="onTouched()"
+      (selectionChange)="updateControl()"
     >
-      <ng-container *ngFor="let item of data.options?.data">
-        <mat-option [value]="item.value | json">
-          {{ item.label }}
-        </mat-option>
+      <ng-container *ngFor="let item of data.options?.data; index as i">
+        <mat-option [value]="i">{{ item.label }}</mat-option>
       </ng-container>
     </mat-select>
   </mat-form-field>

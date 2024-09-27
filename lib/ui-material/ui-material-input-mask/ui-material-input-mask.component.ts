@@ -38,4 +38,9 @@ import {
 })
 export class UiMaterialInputMaskComponent extends CustomControlComponent {
   override control = new FormControl('');
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }

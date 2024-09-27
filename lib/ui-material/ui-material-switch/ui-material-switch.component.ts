@@ -9,7 +9,7 @@ import {
 import {
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 
 @Component({
@@ -28,11 +28,16 @@ import {
         key: 'mat-slide-toggle',
         token: MatSlideToggle,
       },
-    ])
+    ]),
   ],
   templateUrl: './ui-material-switch.component.html',
   styles: [],
 })
 export class UiMaterialSwitchComponent extends CustomControlComponent {
   override control = new FormControl(false);
+  onChange?: any;
+
+  override registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
 }
