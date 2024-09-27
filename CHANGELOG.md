@@ -1,3 +1,13 @@
+# 8.4.8 (2024-09-27)
+
+[d0b36b0]: https://github.com/erqk/ng-dynamic-json-form/commit/d0b36b0c3c2dbefe1834903cbbe0a2a1eac62338
+
+| Commit    | Type            | Description                                                            |
+| --------- | --------------- | ---------------------------------------------------------------------- |
+| [d0b36b0] | feat            | Add EventEmitter<FormStatusFunctions> to facilitate the status change. |
+| [d0b36b0] | refactor        | Re-implementation of `registerOnChange()`.                             |
+| [d0b36b0] | breaking change | Remove the `userInteracted` variable.                                  |
+
 # 8.4.7 (2024-09-27)
 
 [98beed7]: https://github.com/erqk/ng-dynamic-json-form/commit/98beed78ebfb4f87f1c7f1b307ace006b23c9fdc
