@@ -1,3 +1,11 @@
+# 8.4.7 (2024-09-27)
+
+[98beed7]: https://github.com/erqk/ng-dynamic-json-form/commit/98beed78ebfb4f87f1c7f1b307ace006b23c9fdc
+
+| Commit    | Type | Description                                                   |
+| --------- | ---- | ------------------------------------------------------------- |
+| [98beed7] | fix  | Revert using `userInteracted` to prevent onChange() callback. |
+
 # 8.4.6 (2024-09-26)
 
 [aee026a]: https://github.com/erqk/ng-dynamic-json-form/commit/aee026a4a5c328f66c62305ec88a5f6824eea2cd
