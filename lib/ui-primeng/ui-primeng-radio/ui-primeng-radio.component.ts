@@ -41,10 +41,7 @@ export class UiPrimengRadioComponent extends CustomControlComponent {
 
   override registerOnChange(fn: any): void {
     this.control.valueChanges
-      .pipe(
-        filter(() => this.userInteracted),
-        map((x) => this._controlValueService.getOptionsValue('parsed', x))
-      )
+      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
       .subscribe(fn);
   }
 }

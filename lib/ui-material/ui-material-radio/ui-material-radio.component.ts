@@ -9,7 +9,7 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { filter, map } from 'rxjs';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ui-material-radio',
@@ -43,10 +43,7 @@ export class UiMaterialRadioComponent extends CustomControlComponent {
 
   override registerOnChange(fn: any): void {
     this.control.valueChanges
-      .pipe(
-        filter(() => this.userInteracted),
-        map((x) => this._controlValueService.getOptionsValue('parsed', x))
-      )
+      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
       .subscribe(fn);
   }
 }

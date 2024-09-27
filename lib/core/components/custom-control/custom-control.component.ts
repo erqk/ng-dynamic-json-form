@@ -6,7 +6,6 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { filter } from 'rxjs';
 import { FormControlConfig, OptionItem } from '../../models';
 import { getControlErrors } from '../../utilities/get-control-errors';
 
@@ -43,9 +42,7 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
   }
 
   registerOnChange(fn: any): void {
-    this.control?.valueChanges
-      .pipe(filter(() => this.userInteracted || !!this.control?.dirty))
-      .subscribe(fn);
+    this.control?.valueChanges.subscribe(fn);
   }
 
   registerOnTouched(fn: any): void {

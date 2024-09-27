@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostBinding, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { filter, map } from 'rxjs';
+import { map } from 'rxjs';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
 import { ControlValueService } from '../../services/control-value.service';
@@ -26,10 +26,7 @@ export class UiBasicRadioComponent extends CustomControlComponent {
 
   override registerOnChange(fn: any): void {
     this.control.valueChanges
-      .pipe(
-        filter(() => this.userInteracted),
-        map((x) => this._controlValueService.getOptionsValue('parsed', x))
-      )
+      .pipe(map((x) => this._controlValueService.getOptionsValue('parsed', x)))
       .subscribe(fn);
   }
 }
