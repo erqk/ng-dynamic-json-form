@@ -35,4 +35,9 @@ export class UiPrimengTextareaComponent extends CustomControlComponent {
   override registerOnChange(fn: any): void {
     this.onChange = fn;
   }
+
+  onInput(e: Event): void {
+    const value = (e.target as HTMLInputElement).value;
+    this.onChange(value);
+  }
 }
