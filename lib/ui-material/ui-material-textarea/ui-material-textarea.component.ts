@@ -43,6 +43,8 @@ export class UiMaterialTextareaComponent extends CustomControlComponent {
 
   onInput(e: Event): void {
     const value = (e.target as HTMLInputElement).value;
+
+    this.control.setValue(value);
     this.onChange(value);
   }
 }
