@@ -1,3 +1,11 @@
+# 8.5.3 (2024-10-14)
+
+[c88a982]: https://github.com/erqk/ng-dynamic-json-form/commit/c88a982a60efefe95dc8290d4d526f82882f5efa
+
+| Commit    | Type | Description                                       |
+| --------- | ---- | ------------------------------------------------- |
+| [c88a982] | fix  | Control's value should be updated simultaneously. |
+
 # 8.5.2 (2024-10-14)
 
 [65610b6]: https://github.com/erqk/ng-dynamic-json-form/commit/65610b63f4ec1c44afc9c7c7d02ff97aaaed7583
