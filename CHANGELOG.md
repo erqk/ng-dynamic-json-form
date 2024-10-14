@@ -1,3 +1,11 @@
+# 8.5.2 (2024-10-14)
+
+[65610b6]: https://github.com/erqk/ng-dynamic-json-form/commit/65610b63f4ec1c44afc9c7c7d02ff97aaaed7583
+
+| Commit    | Type | Description                                            |
+| --------- | ---- | ------------------------------------------------------ |
+| [65610b6] | fix  | Input value is incorrect just after `composing=false`. |
+
 # 8.5.1 (2024-10-14)
 
 [7927bd3]: https://github.com/erqk/ng-dynamic-json-form/commit/7927bd33f93ceb454c731828cd0f3f49f25105a4
