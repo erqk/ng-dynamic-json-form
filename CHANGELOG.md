@@ -1,3 +1,11 @@
+# 8.5.1 (2024-10-14)
+
+[7927bd3]: https://github.com/erqk/ng-dynamic-json-form/commit/7927bd33f93ceb454c731828cd0f3f49f25105a4
+
+| Commit    | Type | Description                |
+| --------- | ---- | -------------------------- |
+| [7927bd3] | fix  | Default value of checkbox. |
+
 # 8.5.0 (2024-10-14)
 
 [aee0865]: https://github.com/erqk/ng-dynamic-json-form/commit/aee08654eb545081a88d74fbe98da91483706631
