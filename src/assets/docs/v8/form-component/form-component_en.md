@@ -124,6 +124,10 @@ See [Custom Loading](../../v8/custom-loading/custom-loading_en.md).
 
 The event called after form generation complete. The generated `UntypedFormGroup` will be emitted.
 
+### onChange
+
+The event of form value when it's changed by user.
+
 ### optionsLoaded
 
 The event called after all of the options are loaded.

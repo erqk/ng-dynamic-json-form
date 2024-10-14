@@ -223,6 +223,11 @@ export class NgDynamicJsonFormComponent
   @Input() optionsSources?: { [key: string]: Observable<OptionItem[]> };
 
   @Output() formGet = new EventEmitter<UntypedFormGroup>();
+  /**
+   * The value change event of the form, which trigger by the user
+   * (by checking click or keydown event)
+   */
+  @Output() onChange = new EventEmitter<any>();
   @Output() optionsLoaded = new EventEmitter();
   @Output() displayValue = new EventEmitter<FormDisplayValue>();
   @Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
@@ -393,15 +398,9 @@ export class NgDynamicJsonFormComponent
       tap(() => this._onTouched())
     );
 
-    const allowDirtyState$ = merge(
-      event$('focusin'),
-      event$('click'),
-      event$('keydown')
-    ).pipe(
+    const allowDirtyState$ = merge(event$('click'), event$('keydown')).pipe(
       take(1),
-      tap(() => {
-        this._allowFormDirty = true;
-      })
+      tap(() => (this._allowFormDirty = true))
     );
 
     merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
@@ -476,6 +475,10 @@ export class NgDynamicJsonFormComponent
       this._controlDirective?.control.markAsPristine();
       markFormPristine(this.form);
     };
+
+    if (this._allowFormDirty) {
+      this.onChange.emit(this.form?.value);
+    }
 
     setErrors();
     updateValue();

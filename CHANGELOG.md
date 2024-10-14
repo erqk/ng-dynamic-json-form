@@ -1,3 +1,11 @@
+# 8.5.0 (2024-10-14)
+
+[aee0865]: https://github.com/erqk/ng-dynamic-json-form/commit/aee08654eb545081a88d74fbe98da91483706631
+
+| Commit    | Type | Description                   |
+| --------- | ---- | ----------------------------- |
+| [aee0865] | feat | Add `onChange` event emitter. |
+
 # 8.4.8 (2024-09-27)
 
 [d0b36b0]: https://github.com/erqk/ng-dynamic-json-form/commit/d0b36b0c3c2dbefe1834903cbbe0a2a1eac62338
