@@ -34,7 +34,11 @@ export class ConfigMappingService {
 
   private _getFallbackValue(item: FormControlConfig): any {
     switch (item.type) {
-      case 'checkbox':
+      case 'checkbox': {
+        const isBinary = !item.options?.src && item.options?.data?.length === 1;
+        return isBinary ? false : [];
+      }
+
       case 'switch':
         return false;
 

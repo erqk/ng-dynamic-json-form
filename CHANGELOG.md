@@ -1,3 +1,27 @@
+# 8.5.3 (2024-10-14)
+
+[c88a982]: https://github.com/erqk/ng-dynamic-json-form/commit/c88a982a60efefe95dc8290d4d526f82882f5efa
+
+| Commit    | Type | Description                                       |
+| --------- | ---- | ------------------------------------------------- |
+| [c88a982] | fix  | Control's value should be updated simultaneously. |
+
+# 8.5.2 (2024-10-14)
+
+[65610b6]: https://github.com/erqk/ng-dynamic-json-form/commit/65610b63f4ec1c44afc9c7c7d02ff97aaaed7583
+
+| Commit    | Type | Description                                            |
+| --------- | ---- | ------------------------------------------------------ |
+| [65610b6] | fix  | Input value is incorrect just after `composing=false`. |
+
+# 8.5.1 (2024-10-14)
+
+[7927bd3]: https://github.com/erqk/ng-dynamic-json-form/commit/7927bd33f93ceb454c731828cd0f3f49f25105a4
+
+| Commit    | Type | Description                |
+| --------- | ---- | -------------------------- |
+| [7927bd3] | fix  | Default value of checkbox. |
+
 # 8.5.0 (2024-10-14)
 
 [aee0865]: https://github.com/erqk/ng-dynamic-json-form/commit/aee08654eb545081a88d74fbe98da91483706631
