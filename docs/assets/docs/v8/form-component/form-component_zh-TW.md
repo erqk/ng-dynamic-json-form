@@ -124,6 +124,10 @@ submit(): void {
 
 當表單生成完畢時觸發的事件，並將生成的 `UntypeFormGroup` 發送出去。
 
+### onChange
+
+用戶行為導致的表單的值變化事件。
+
 ### optionsLoaded
 
 當所有選項載入完成後觸發。
