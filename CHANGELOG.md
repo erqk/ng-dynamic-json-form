@@ -1,3 +1,13 @@
+# 8.5.5 (2024-11-06)
+
+[db46e58]: https://github.com/erqk/ng-dynamic-json-form/commit/db46e588a15408c8fbd5e9f628924ce134587930
+[1819d32]: https://github.com/erqk/ng-dynamic-json-form/commit/1819d32889d6dfe62087c05f482ed209a70f16e5
+
+| Commit    | Type | Description                                        |
+| --------- | ---- | -------------------------------------------------- |
+| [db46e58] | fix  | Form errors must be set before emitting the value. |
+| [1819d32] | fix  | Reset form after config changes.                   |
+
 # 8.5.4 (2024-11-06)
 
 [4c9dcdb]: https://github.com/erqk/ng-dynamic-json-form/commit/4c9dcdbfc7d90d964eec76c95e9f5e1ac479dbb2
