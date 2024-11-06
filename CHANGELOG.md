@@ -1,3 +1,13 @@
+# 8.5.4 (2024-11-06)
+
+[4c9dcdb]: https://github.com/erqk/ng-dynamic-json-form/commit/4c9dcdbfc7d90d964eec76c95e9f5e1ac479dbb2
+[fda07e0]: https://github.com/erqk/ng-dynamic-json-form/commit/fda07e0cab73b208b97644d4637895139d8e475e
+
+| Commit    | Type | Description                                                        |
+| --------- | ---- | ------------------------------------------------------------------ |
+| [4c9dcdb] | fix  | Toggle visibility before disable/enable control.                   |
+| [fda07e0] | fix  | Assign properties either on the component itself or the host only. |
+
 # 8.5.3 (2024-10-14)
 
 [c88a982]: https://github.com/erqk/ng-dynamic-json-form/commit/c88a982a60efefe95dc8290d4d526f82882f5efa
