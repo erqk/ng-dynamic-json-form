@@ -1,3 +1,19 @@
+# 8.5.8 (2024-11-06)
+
+[c6d0cc8]: https://github.com/erqk/ng-dynamic-json-form/commit/c6d0cc866a034105b056d13d441e8d0ba8a02d41
+[06cd9a5]: https://github.com/erqk/ng-dynamic-json-form/commit/06cd9a5931299f5471dec047053706c3e9762eb4
+[c398d25]: https://github.com/erqk/ng-dynamic-json-form/commit/c398d250f805a13718b88f7c39eade78ca87631a
+[479fca3]: https://github.com/erqk/ng-dynamic-json-form/commit/479fca3f71206a4efa8a5238c3ee7182ecd9b945
+[995f994]: https://github.com/erqk/ng-dynamic-json-form/commit/995f994852817e26add1c2a5c383e92fbef11aeb
+
+| Commit    | Type | Description                                         |
+| --------- | ---- | --------------------------------------------------- |
+| [479fca3] | fix  | Check if it is an array.                            |
+| [995f994] | fix  | Check if it is an array.                            |
+| [c398d25] | fix  | Form info now supports toggle of FormGroup and CVA. |
+| [479fca3] | fix  | Bind properties after the view is initialized.      |
+| [995f994] | fix  | Incorrect initial value of the CVA.                 |
+
 # 8.5.7 (2024-11-06)
 
 [0f4c858]: https://github.com/erqk/ng-dynamic-json-form/commit/0f4c85888ad139937298b708bcc300941daa312d
