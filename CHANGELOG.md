@@ -1,3 +1,11 @@
+# 8.5.7 (2024-11-06)
+
+[0f4c858]: https://github.com/erqk/ng-dynamic-json-form/commit/0f4c85888ad139937298b708bcc300941daa312d
+
+| Commit    | Type | Description                  |
+| --------- | ---- | ---------------------------- |
+| [0f4c858] | fix  | Maximum call stack exceeded. |
+
 # 8.5.6 (2024-11-06)
 
 [8489b0c]: https://github.com/erqk/ng-dynamic-json-form/commit/8489b0cc2ec163fb7577f7eb70d0f0c37aabf0ac
