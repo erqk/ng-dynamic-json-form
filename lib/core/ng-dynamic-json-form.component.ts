@@ -357,9 +357,6 @@ export class NgDynamicJsonFormComponent
     if (this.configGet.length > 0 && !this.configValidationErrors.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
 
-      // Set initial value of the form
-      this._controlDirective?.control.setValue(this.form.value);
-
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
 
@@ -464,20 +461,16 @@ export class NgDynamicJsonFormComponent
     const formValue = this.form?.value;
 
     const setErrors = () => {
-      // Update the form errors manually, if no ControlValueAccessor found,
-      if (!this._controlDirective) {
-        this.form?.setErrors(this._formErrors);
-      }
+      this.form?.setErrors(this._formErrors);
     };
 
     const updateValue = () => {
+      if (this._controlDirective) {
+        this._onChange(formValue);
+      }
+
       if (this._allowFormDirty) {
         this.onChange.emit(formValue);
-
-        // Update the control value, if using ControlValueAccessor
-        if (this._controlDirective) {
-          this._onChange(formValue);
-        }
       }
     };
 
@@ -490,11 +483,19 @@ export class NgDynamicJsonFormComponent
       this.displayValue.emit(displayValue);
     };
 
+    const keepFormPristine = () => {
+      if (this._allowFormDirty) return;
+
+      this._controlDirective?.control.markAsPristine();
+      markFormPristine(this.form);
+    };
+
     // `setErrors()` must be called before `updateValue()`,
     // so that the form errors is correctly set when `onChange` callback is called
     setErrors();
     updateValue();
     updateDisplayValue();
+    keepFormPristine();
   }
 
   private get _formErrors(): ValidationErrors | null {

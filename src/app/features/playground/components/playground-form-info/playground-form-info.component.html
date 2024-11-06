@@ -6,11 +6,12 @@
         'overflow-hidden beauty-scrollbar affect-child'
       ]"
     >
+      <!-- Value + States -->
       <div
         class="h-full flex flex-col p-4 rounded-md"
         style="background-color: rgba(128, 128, 128, 0.05)"
         [ngClass]="{
-          hidden: selectedTab !== 0
+          hidden: activeTab !== 0
         }"
       >
         <div class="flex-1 block text-sm overflow-auto">
@@ -18,43 +19,30 @@
         </div>
 
         <div class="flex justify-evenly gap-4 font-bold">
-          <span
-            [ngClass]="{
-              'opacity-30': !control.dirty
-            }"
-            >dirty</span
-          >
-
-          <span
-            [ngClass]="{
-              'opacity-30': !control.pristine
-            }"
-            >pristine</span
-          >
-
-          <span
-            [ngClass]="{
-              'opacity-30': !control.touched
-            }"
-            >touched</span
-          >
+          <ng-container *ngFor="let item of controlStates">
+            <span [ngClass]="{ 'opacity-30': !item.value() }">{{
+              item.label
+            }}</span>
+          </ng-container>
         </div>
       </div>
 
+      <!-- Errors -->
       <div
         class="block h-full overflow-auto text-sm p-4 rounded-md"
         style="background-color: rgba(128, 128, 128, 0.05)"
         [ngClass]="{
-          hidden: selectedTab !== 1
+          hidden: activeTab !== 1
         }"
       >
         {{ control.errors | json }}
       </div>
 
+      <!-- Patch value -->
       <div
         class="flex flex-col gap-2 h-full"
         [ngClass]="{
-          hidden: selectedTab !== 2
+          hidden: activeTab !== 2
         }"
       >
         <app-playground-editor
@@ -66,17 +54,13 @@
           (onEditing)="onEditing($event)"
         ></app-playground-editor>
 
-        <div class="flex flex-wrap gap-2 md:p-0 px-3">
-          <ng-container *ngFor="let item of editToolbar">
-            <button
-              type="button"
-              class="p-1 border border-[var(--border-color-50)] rounded-md text-sm"
-              (click)="item.action()"
-            >
-              {{ item.label }}
-            </button>
-          </ng-container>
-        </div>
+        <button
+          type="button"
+          class="p-2 border border-[var(--border-color-50)] rounded-md text-sm"
+          (click)="patchControl()"
+        >
+          patchValue()
+        </button>
       </div>
     </div>
 
@@ -89,11 +73,11 @@
             'p-2 rounded-md',
             'hover:bg-[color-mix(in_srgb,var(--primary-50)85%,var(--primary-500))]',
             'text-sm lg:text-base',
-            selectedTab === i
+            activeTab === i
               ? 'text-[var(--primary-500)] font-bold'
               : 'text-inherit'
           ]"
-          (click)="switchTab(i)"
+          (click)="switchTab(item.key)"
         >
           <ng-container *ngIf="item.icon">
             <i class="text-lg" [ngClass]="[item.icon]"></i>

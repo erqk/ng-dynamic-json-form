@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, isDevMode } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   FormControl,
   ReactiveFormsModule,
@@ -11,7 +17,6 @@ import {
   NgDynamicJsonFormComponent,
   provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
-import { FormStatusFunctions } from 'ng-dynamic-json-form/core/models/form-status-functions.interface';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
@@ -38,58 +43,15 @@ import { textareaMaxLength } from 'src/app/example/validators/textarea-max-lengt
 export class PlaygroundFormComponent {
   @Input() configs: FormControlConfig[] = [];
   @Input() customComponents?: CustomComponents;
-  @Input() hideErrorMessage?: boolean;
   @Input() control = new FormControl();
   @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
+  @Output() formGet = new EventEmitter<UntypedFormGroup>();
 
-  isDev = isDevMode();
-  form?: UntypedFormGroup;
-  statusFunctions?: FormStatusFunctions;
-
-  toolbarContent = [
-    {
-      label: 'Mark form:',
-      children: [
-        {
-          label: 'dirty',
-          action: () => this.statusFunctions?.setDirty(),
-        },
-        {
-          label: 'pristine',
-          action: () => this.statusFunctions?.setPristine(),
-        },
-        {
-          label: 'touched',
-          action: () => this.statusFunctions?.setTouched(),
-        },
-        {
-          label: 'untouched',
-          action: () => this.statusFunctions?.setUntouched(),
-        },
-      ],
-    },
-  ];
-
-  onOptionsLoaded(): void {
-    if (typeof window !== 'undefined') {
-      console.log('Options loaded');
-    }
-  }
+  // To be accessible by using @ViewChild(PlaygroundFormComponent)
+  @ViewChild(NgDynamicJsonFormComponent, { static: true })
+  formRef!: NgDynamicJsonFormComponent;
 
   onFormGet(e: UntypedFormGroup): void {
-    this.form = e;
-    // if (typeof window !== 'undefined') {
-    //   console.log('form get', e);
-    // }
-  }
-
-  onDisplayValueGet(e: any): void {
-    // if (typeof window !== 'undefined') {
-    //   console.log('displayValue get: ', e);
-    // }
-  }
-
-  onValueChange(e: any): void {
-    // console.log(e);
+    this.formGet.emit(e);
   }
 }

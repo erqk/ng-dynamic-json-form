@@ -25,9 +25,9 @@ export function evaluateBooleanOperation([left, operator, right]: [
       return left < right;
 
     case 'includes':
-      return left.includes(right);
+      return Array.isArray(left) ? left.includes(right) : false;
 
     case 'notIncludes':
-      return !left.includes(right);
+      return Array.isArray(left) ? !left.includes(right) : false;
   }
 }
