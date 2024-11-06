@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -29,6 +28,7 @@ import { CustomInputComponent } from 'src/app/example/components/custom-input/cu
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 import { LanguageService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
+import { PlaygroundFormDebuggerComponent } from 'src/app/features/playground/components/playground-form-debugger/playground-form-debugger.component';
 import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
 import { PlaygroundFormMaterialComponent } from 'src/app/features/playground/components/playground-form/playground-form-material.component';
 import { PlaygroundFormPrimengComponent } from 'src/app/features/playground/components/playground-form/playground-form-primeng.component';
@@ -54,6 +54,7 @@ import { VersionService } from 'src/app/features/version/version.service';
     PlaygroundFormInfoComponent,
     AngularSplitModule,
     PlaygroundFormComponent,
+    PlaygroundFormDebuggerComponent,
     PlaygroundFormPrimengComponent,
     PlaygroundFormMaterialComponent,
   ],
@@ -69,6 +70,9 @@ export class PagePlaygroundComponent implements OnInit {
   private _versionService = inject(VersionService);
   private _playgroundSettingsService = inject(PlaygroundSettingsService);
   private _editorDataService = inject(PlaygroundEditorDataService);
+
+  @ViewChild(PlaygroundFormComponent)
+  playgroundFormRef?: PlaygroundFormComponent;
 
   MOBILE_BREAKPOINT = 992;
 
@@ -108,8 +112,6 @@ export class PagePlaygroundComponent implements OnInit {
     this._playgroundSettingsService.formUi ||
     Object.keys(this.customUiComponents)[0];
 
-  hideErrorMessageControl = new FormControl<boolean | undefined>(undefined);
-
   optionsSources = {
     custom$: this._http.get('https://dummyjson.com/products').pipe(
       map((x) => (x as any).products),
@@ -133,11 +135,6 @@ export class PagePlaygroundComponent implements OnInit {
     this._langService.language$,
   ]).pipe(
     debounceTime(0),
-    tap(() => {
-      this.form.reset();
-      this.formControl.reset();
-      this.hideErrorMessageControl.setValue(undefined);
-    }),
     map(([key]) => {
       const examples = this._templateDataService.getExampleTemplate(key);
       const userTemplates = this._templateDataService.getUserTemplate(key);
@@ -145,6 +142,10 @@ export class PagePlaygroundComponent implements OnInit {
       return (
         userTemplates || examples || this._templateDataService.fallbackExample
       );
+    }),
+    tap(() => {
+      this.form.reset();
+      this.formControl.reset();
     })
   );
 

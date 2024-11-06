@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Content } from 'vanilla-jsoneditor';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
@@ -15,6 +15,9 @@ export class PlaygroundFormInfoComponent {
   private _editorValue?: Content;
 
   @Input() control?: AbstractControl;
+  @Input() activeTab = 0;
+
+  @Output() activeTabChange = new EventEmitter<number>();
 
   tabs = [
     {
@@ -34,25 +37,24 @@ export class PlaygroundFormInfoComponent {
     },
   ];
 
-  editToolbar = [
+  controlStates: { label: string; value: () => boolean }[] = [
     {
-      label: 'patchValue()',
-      action: () => this.patchControl(),
+      label: 'dirty',
+      value: () => this.control?.dirty ?? false,
     },
     {
-      label: 'disable()',
-      action: () => this.control?.disable(),
+      label: 'pristine',
+      value: () => this.control?.pristine ?? false,
     },
     {
-      label: 'enable()',
-      action: () => this.control?.enable(),
+      label: 'touched',
+      value: () => this.control?.touched ?? false,
     },
   ];
 
-  selectedTab = 0;
-
   switchTab(i: number): void {
-    this.selectedTab = i;
+    this.activeTab = i;
+    this.activeTabChange.emit(i);
   }
 
   onEditing(e: any): void {

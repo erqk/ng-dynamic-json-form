@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   NgDynamicJsonFormComponent,
@@ -26,6 +26,10 @@ import { PlaygroundFormComponent } from './playground-form.component';
       errorComponent: CustomErrorMessageComponent,
       uiComponents: UI_PRIMENG_COMPONENTS,
     }),
+    {
+      provide: PlaygroundFormComponent,
+      useExisting: forwardRef(() => PlaygroundFormPrimengComponent),
+    },
   ],
   templateUrl: './playground-form.component.html',
   styleUrls: ['./playground-form.component.scss'],

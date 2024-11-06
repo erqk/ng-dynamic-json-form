@@ -94,9 +94,10 @@
             ]"
             [size]="asSplitSizes[1]"
           >
-            <ng-container *ngTemplateOutlet="errorMessageToggle"></ng-container>
             <div class="flex-1 min-h-0 mt-1">
-              <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="formDebuggerTemplate"
+              ></ng-container>
             </div>
           </as-split-area>
         </as-split>
@@ -184,10 +185,6 @@
             }
           "
         ></ng-container>
-
-        <div class="mt-5">
-          <ng-container *ngTemplateOutlet="errorMessageToggle"></ng-container>
-        </div>
       </div>
 
       <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
@@ -200,7 +197,7 @@
         'mb-3 h-full overflow-hidden'
       ]"
     >
-      <ng-container *ngTemplateOutlet="formInfoTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="formDebuggerTemplate"></ng-container>
     </div>
   </div>
 </ng-container>
@@ -217,38 +214,16 @@
   </select>
 </ng-template>
 
-<ng-template #errorMessageToggle>
-  <div class="flex flex-col gap-2">
-    <label class="grid grid-cols-[auto_1fr] gap-x-3">
-      <input type="checkbox" [formControl]="hideErrorMessageControl" />
-      <span>hideErrorMessage</span>
-      <span class="marker"></span>
-    </label>
-
-    <button
-      [ngClass]="[
-        'bg-[var(--body-bg-color)]',
-        'px-3 py-2',
-        'rounded-md border border-1 border-[var(--border-color-50)]',
-        'text-sm hover:shadow'
-      ]"
-      (click)="hideErrorMessageControl.setValue(false)"
-    >
-      hideErrorMessage = false
-    </button>
-  </div>
-</ng-template>
-
 <ng-template #dynamicFormTemplate>
   <ng-container [ngSwitch]="currentUi">
     <ng-container *ngSwitchDefault>
       <app-playground-form
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [customComponents]="customComponents"
         [optionsSources]="optionsSources"
+        (formGet)="onFormGet($event)"
       ></app-playground-form>
     </ng-container>
 
@@ -256,10 +231,10 @@
       <app-playground-form-primeng
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [customComponents]="customComponents"
         [optionsSources]="optionsSources"
+        (formGet)="onFormGet($event)"
       ></app-playground-form-primeng>
     </ng-container>
 
@@ -267,18 +242,20 @@
       <app-playground-form-material
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
-        [hideErrorMessage]="hideErrorMessageControl.value ?? undefined"
         [control]="formControl"
         [customComponents]="customComponents"
         [optionsSources]="optionsSources"
+        (formGet)="onFormGet($event)"
       ></app-playground-form-material>
     </ng-container>
   </ng-container>
 </ng-template>
 
-<ng-template #formInfoTemplate>
-  <app-playground-form-info
-    class="block h-full bg-[var(--body-bg-color)]"
+<ng-template #formDebuggerTemplate>
+  <app-playground-form-debugger
+    class="block h-full"
     [control]="formControl"
-  ></app-playground-form-info>
+    [form]="form"
+    [formInstance]="playgroundFormRef?.formRef"
+  ></app-playground-form-debugger>
 </ng-template>
