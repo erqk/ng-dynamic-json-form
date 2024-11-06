@@ -1,3 +1,11 @@
+# 8.5.6 (2024-11-06)
+
+[8489b0c]: https://github.com/erqk/ng-dynamic-json-form/commit/8489b0cc2ec163fb7577f7eb70d0f0c37aabf0ac
+
+| Commit    | Type | Description                          |
+| --------- | ---- | ------------------------------------ |
+| [8489b0c] | fix  | Emit form after listeners are setup. |
+
 # 8.5.5 (2024-11-06)
 
 [db46e58]: https://github.com/erqk/ng-dynamic-json-form/commit/db46e588a15408c8fbd5e9f628924ce134587930
