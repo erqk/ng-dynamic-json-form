@@ -21,10 +21,20 @@ export class PropsBindingDirective {
   private _cd = inject(ChangeDetectorRef);
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
+  /**
+   * Must ensure the view is initialized before applying any properties binding
+   */
+  private _isViewInitialized = false;
 
   @Input() propsBinding?: { props: any; key?: string; omit?: string[] }[];
 
   ngOnChanges(): void {
+    if (!this._isViewInitialized) return;
+    this._bindProperties();
+  }
+
+  ngAfterViewInit(): void {
+    this._isViewInitialized = true;
     this._bindProperties();
   }
 
