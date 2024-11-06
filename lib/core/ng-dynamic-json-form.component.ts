@@ -29,7 +29,6 @@ import {
   Validator,
 } from '@angular/forms';
 import {
-  EMPTY,
   Observable,
   Subject,
   filter,
@@ -343,7 +342,9 @@ export class NgDynamicJsonFormComponent
   private _buildForm(): void {
     this._reset();
 
-    if (!this.configs) return;
+    if (!this.configs) {
+      return;
+    }
 
     const result = this._configValidationService.validateAndGetConfig(
       this.configs
@@ -353,7 +354,7 @@ export class NgDynamicJsonFormComponent
     this.configValidationErrors = result.errors ?? [];
     this._allowFormDirty = false;
 
-    if (!!this.configGet.length && !result.errors?.length) {
+    if (this.configGet.length > 0 && !this.configValidationErrors.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
 
       // Set initial value of the form
@@ -363,20 +364,19 @@ export class NgDynamicJsonFormComponent
       this._globalVariableService.rootConfigs = this.configGet;
 
       this._cd.detectChanges();
+      this._setupListeners();
 
-      this._setupListeners$()
-        .pipe(
-          tap(() => {
-            this.formGet.emit(this.form);
-            this.updateStatusFunctions.emit({
-              setDirty: () => this._updateFormStatus('setDirty'),
-              setPristine: () => this._updateFormStatus('setPristine'),
-              setTouched: () => this._updateFormStatus('setTouched'),
-              setUntouched: () => this._updateFormStatus('setUntouched'),
-            });
-          })
-        )
-        .subscribe();
+      if (typeof window !== 'undefined') {
+        window.setTimeout(() => {
+          this.formGet.emit(this.form);
+          this.updateStatusFunctions.emit({
+            setDirty: () => this._updateFormStatus('setDirty'),
+            setPristine: () => this._updateFormStatus('setPristine'),
+            setTouched: () => this._updateFormStatus('setTouched'),
+            setUntouched: () => this._updateFormStatus('setUntouched'),
+          });
+        });
+      }
     }
 
     if (!this._formReadyStateService.haveOptionsToWait(this.configGet)) {
@@ -391,9 +391,9 @@ export class NgDynamicJsonFormComponent
     }) as FormControlDirective;
   }
 
-  private _setupListeners$(): Observable<any> {
-    if (!this.form) {
-      return EMPTY;
+  private _setupListeners(): void {
+    if (!this.form || typeof window === 'undefined') {
+      return;
     }
 
     const host = this._el.nativeElement;
@@ -420,10 +420,9 @@ export class NgDynamicJsonFormComponent
     );
 
     this._reset$.next();
-    return merge(allowDirtyState$, onTouched$, conditions$, valueChanges$).pipe(
-      takeUntil(this._reset$),
-      takeUntilDestroyed(this._destroyRef)
-    );
+    merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
+      .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
+      .subscribe();
   }
 
   private _reset(): void {
