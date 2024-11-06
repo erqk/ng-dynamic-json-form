@@ -357,9 +357,6 @@ export class NgDynamicJsonFormComponent
     if (this.configGet.length > 0 && !this.configValidationErrors.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
 
-      // Set initial value of the form
-      this._controlDirective?.control.setValue(this.form.value);
-
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
 
@@ -471,13 +468,16 @@ export class NgDynamicJsonFormComponent
     };
 
     const updateValue = () => {
+      if (this._controlDirective) {
+        this._onChange(formValue);
+
+        if (!this._allowFormDirty) {
+          this._controlDirective.control.markAsPristine();
+        }
+      }
+
       if (this._allowFormDirty) {
         this.onChange.emit(formValue);
-
-        // Update the control value, if using ControlValueAccessor
-        if (this._controlDirective) {
-          this._onChange(formValue);
-        }
       }
     };
 
