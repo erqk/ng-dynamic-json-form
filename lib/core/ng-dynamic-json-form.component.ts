@@ -29,6 +29,7 @@ import {
   Validator,
 } from '@angular/forms';
 import {
+  EMPTY,
   Observable,
   Subject,
   filter,
@@ -361,16 +362,21 @@ export class NgDynamicJsonFormComponent
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
 
-      this._setupListeners();
-      this.formGet.emit(this.form);
-      this.updateStatusFunctions.emit({
-        setDirty: () => this._updateFormStatus('setDirty'),
-        setPristine: () => this._updateFormStatus('setPristine'),
-        setTouched: () => this._updateFormStatus('setTouched'),
-        setUntouched: () => this._updateFormStatus('setUntouched'),
-      });
-
       this._cd.detectChanges();
+
+      this._setupListeners$()
+        .pipe(
+          tap(() => {
+            this.formGet.emit(this.form);
+            this.updateStatusFunctions.emit({
+              setDirty: () => this._updateFormStatus('setDirty'),
+              setPristine: () => this._updateFormStatus('setPristine'),
+              setTouched: () => this._updateFormStatus('setTouched'),
+              setUntouched: () => this._updateFormStatus('setUntouched'),
+            });
+          })
+        )
+        .subscribe();
     }
 
     if (!this._formReadyStateService.haveOptionsToWait(this.configGet)) {
@@ -385,8 +391,10 @@ export class NgDynamicJsonFormComponent
     }) as FormControlDirective;
   }
 
-  private _setupListeners(): void {
-    if (!this.form) return;
+  private _setupListeners$(): Observable<any> {
+    if (!this.form) {
+      return EMPTY;
+    }
 
     const host = this._el.nativeElement;
     const conditions$ = this._formConditionsService.listenConditions$();
@@ -411,9 +419,11 @@ export class NgDynamicJsonFormComponent
       tap(() => (this._allowFormDirty = true))
     );
 
-    merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
-      .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
-      .subscribe();
+    this._reset$.next();
+    return merge(allowDirtyState$, onTouched$, conditions$, valueChanges$).pipe(
+      takeUntil(this._reset$),
+      takeUntilDestroyed(this._destroyRef)
+    );
   }
 
   private _reset(): void {
