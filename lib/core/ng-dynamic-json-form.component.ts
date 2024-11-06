@@ -354,8 +354,13 @@ export class NgDynamicJsonFormComponent
 
     if (!!this.configGet.length && !result.errors?.length) {
       this.form = this._formGeneratorService.generateFormGroup(this.configGet);
+
+      // Set initial value of the form
+      this._controlDirective?.control.setValue(this.form.value);
+
       this._globalVariableService.rootForm = this.form;
       this._globalVariableService.rootConfigs = this.configGet;
+
       this._setupListeners();
       this.formGet.emit(this.form);
       this.updateStatusFunctions.emit({
@@ -398,7 +403,10 @@ export class NgDynamicJsonFormComponent
       tap(() => this._onTouched())
     );
 
-    const allowDirtyState$ = merge(event$('click'), event$('keydown')).pipe(
+    const allowDirtyState$ = merge(
+      event$('pointerdown'),
+      event$('keydown')
+    ).pipe(
       take(1),
       tap(() => (this._allowFormDirty = true))
     );
@@ -448,14 +456,20 @@ export class NgDynamicJsonFormComponent
 
     const setErrors = () => {
       // Update the form errors manually, if no ControlValueAccessor found,
-      if (!!this._controlDirective) return;
-      this.form?.setErrors(this._formErrors);
+      if (!this._controlDirective) {
+        this.form?.setErrors(this._formErrors);
+      }
     };
 
     const updateValue = () => {
-      // Update the control value, if using ControlValueAccessor
-      if (!this._controlDirective) return;
-      this._onChange(formValue);
+      if (this._allowFormDirty) {
+        this.onChange.emit(formValue);
+
+        // Update the control value, if using ControlValueAccessor
+        if (this._controlDirective) {
+          this._onChange(formValue);
+        }
+      }
     };
 
     const updateDisplayValue = () => {
@@ -467,23 +481,11 @@ export class NgDynamicJsonFormComponent
       this.displayValue.emit(displayValue);
     };
 
-    // If the form is not touched yet, keep marking it as pristine,
-    // after the _onChange() is called
-    const keepFormPristine = () => {
-      if (this._allowFormDirty) return;
-      this._controlDirective?.form.markAsPristine();
-      this._controlDirective?.control.markAsPristine();
-      markFormPristine(this.form);
-    };
-
-    if (this._allowFormDirty) {
-      this.onChange.emit(this.form?.value);
-    }
-
+    // `setErrors()` must be called before `updateValue()`,
+    // so that the form errors is correctly set when `onChange` callback is called
     setErrors();
     updateValue();
     updateDisplayValue();
-    keepFormPristine();
   }
 
   private get _formErrors(): ValidationErrors | null {
