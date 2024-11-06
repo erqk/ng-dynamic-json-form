@@ -1,3 +1,39 @@
+# 8.5.7 (2024-11-06)
+
+[0f4c858]: https://github.com/erqk/ng-dynamic-json-form/commit/0f4c85888ad139937298b708bcc300941daa312d
+
+| Commit    | Type | Description                  |
+| --------- | ---- | ---------------------------- |
+| [0f4c858] | fix  | Maximum call stack exceeded. |
+
+# 8.5.6 (2024-11-06)
+
+[8489b0c]: https://github.com/erqk/ng-dynamic-json-form/commit/8489b0cc2ec163fb7577f7eb70d0f0c37aabf0ac
+
+| Commit    | Type | Description                          |
+| --------- | ---- | ------------------------------------ |
+| [8489b0c] | fix  | Emit form after listeners are setup. |
+
+# 8.5.5 (2024-11-06)
+
+[db46e58]: https://github.com/erqk/ng-dynamic-json-form/commit/db46e588a15408c8fbd5e9f628924ce134587930
+[1819d32]: https://github.com/erqk/ng-dynamic-json-form/commit/1819d32889d6dfe62087c05f482ed209a70f16e5
+
+| Commit    | Type | Description                                        |
+| --------- | ---- | -------------------------------------------------- |
+| [db46e58] | fix  | Form errors must be set before emitting the value. |
+| [1819d32] | fix  | Reset form after config changes.                   |
+
+# 8.5.4 (2024-11-06)
+
+[4c9dcdb]: https://github.com/erqk/ng-dynamic-json-form/commit/4c9dcdbfc7d90d964eec76c95e9f5e1ac479dbb2
+[fda07e0]: https://github.com/erqk/ng-dynamic-json-form/commit/fda07e0cab73b208b97644d4637895139d8e475e
+
+| Commit    | Type | Description                                                        |
+| --------- | ---- | ------------------------------------------------------------------ |
+| [4c9dcdb] | fix  | Toggle visibility before disable/enable control.                   |
+| [fda07e0] | fix  | Assign properties either on the component itself or the host only. |
+
 # 8.5.3 (2024-10-14)
 
 [c88a982]: https://github.com/erqk/ng-dynamic-json-form/commit/c88a982a60efefe95dc8290d4d526f82882f5efa

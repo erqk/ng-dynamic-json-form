@@ -25,6 +25,7 @@
   [formControl]="control"
   [optionsSources]="optionsSources"
   (formGet)="onFormGet($event)"
+  (onChange)="onValueChange($event)"
   (optionsLoaded)="onOptionsLoaded()"
   (displayValue)="onDisplayValueGet($event)"
   (updateStatusFunctions)="statusFunctions = $event"

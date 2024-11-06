@@ -21,17 +21,10 @@ export class PropsBindingDirective {
   private _cd = inject(ChangeDetectorRef);
   private _el = inject(ElementRef);
   private _renderer2 = inject(Renderer2);
-  private _isViewInitialized = false;
 
   @Input() propsBinding?: { props: any; key?: string; omit?: string[] }[];
 
   ngOnChanges(): void {
-    if (!this._isViewInitialized) return;
-    this._bindProperties();
-  }
-
-  ngAfterViewInit(): void {
-    this._isViewInitialized = true;
     this._bindProperties();
   }
 
@@ -60,19 +53,19 @@ export class PropsBindingDirective {
 
       for (const key in props) {
         const value = props[key];
-        if (value === undefined) continue;
-        if (omit.includes(key)) continue;
 
-        if (target) {
+        if (value === undefined || omit.includes(key)) {
+          continue;
+        }
+
+        if (target && Object.hasOwn(target, key)) {
           target[key] = value;
-        }
 
-        if (target && target['ngOnChanges']) {
-          const simpleChange = new SimpleChange(undefined, value, true);
-          target.ngOnChanges({ [key]: simpleChange });
-        }
-
-        if (host) {
+          if (target['ngOnChanges']) {
+            const simpleChange = new SimpleChange(undefined, value, true);
+            target.ngOnChanges({ [key]: simpleChange });
+          }
+        } else if (host) {
           this._renderer2.setAttribute(host, key, value);
           this._renderer2.setProperty(host, key, value);
         }
