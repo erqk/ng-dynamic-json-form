@@ -106,11 +106,11 @@ export class FormConditionsService {
       }
 
       if (action === actionHidden) {
-        // Must toggle visibility before disable
-        // Prevent incorrect behavior of child element
+        // Must toggle visibility before disable, to prevent incorrect behavior of child element
         // e.g. Primeng Textarea `autoResize` will fail
-        this._hideControl(controlPath, bool);
-        this._disableControl(control, bool);
+        this._hideControl$(controlPath, bool)
+          .pipe(tap(() => this._disableControl(control, bool)))
+          .subscribe();
       }
     }
   }
@@ -123,19 +123,17 @@ export class FormConditionsService {
     });
   }
 
-  private _hideControl(controlPath: string, hide: boolean): void {
+  private _hideControl$(controlPath: string, hide: boolean): Observable<any> {
     const setStyle = (el: HTMLElement, name: string, value: any) => {
       this._renderer2.setStyle(el, name, hide ? value : null);
     };
 
-    this._getTargetEl$(controlPath)
-      .pipe(
-        filter(Boolean),
-        tap((x) => {
-          setStyle(x, 'display', 'none');
-        })
-      )
-      .subscribe();
+    return this._getTargetEl$(controlPath).pipe(
+      filter(Boolean),
+      tap((x) => {
+        setStyle(x, 'display', 'none');
+      })
+    );
   }
 
   private _toggleValidators(
