@@ -134,6 +134,8 @@ export class PagePlaygroundComponent implements OnInit {
   ]).pipe(
     debounceTime(0),
     tap(() => {
+      this.form.reset();
+      this.formControl.reset();
       this.hideErrorMessageControl.setValue(undefined);
     }),
     map(([key]) => {
