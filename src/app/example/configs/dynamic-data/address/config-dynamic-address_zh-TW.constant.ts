@@ -6,5 +6,5 @@ export const CONFIG_ADDRESS_DYNAMIC_ZHTW = CONFIG_ADDRESS_DYNAMIC_EN({
   state: '州/省/縣市',
   city: '城鎮',
   detail: '詳細地址',
-  countryLabelKey: 'translations.cn'
+  countryLabelKey: 'translations.zh-CN',
 });
