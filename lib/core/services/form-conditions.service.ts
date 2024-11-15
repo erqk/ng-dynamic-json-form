@@ -248,7 +248,12 @@ export class FormConditionsService {
     return removeDuplicates;
   }
 
-  /**Get all the configs which has `conditions` set, with it's full control path as the key. */
+  /**
+   * Get all the configs which has `conditions` set.
+   *
+   * @description
+   * The `fullControlPath` is the path to the control where the conditions will have effect on it.
+   */
   private _configsWithConditions(
     configs: FormControlConfig[],
     parentControlPath?: string

@@ -23,7 +23,6 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   NgControl,
-  ReactiveFormsModule,
   UntypedFormGroup,
   ValidationErrors,
   Validator,
@@ -41,10 +40,7 @@ import {
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from './components/custom-form-label/custom-form-label.abstract';
-import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
-import { ControlLayoutDirective } from './directives/control-layout.directive';
-import { HostIdDirective } from './directives/host-id.directive';
 import { CustomComponents, FormControlConfig, OptionItem } from './models';
 import { ConditionsActionFunctions } from './models/conditions-action-functions.interface';
 import { ConfigValidationErrors } from './models/config-validation-errors.interface';
@@ -54,7 +50,6 @@ import { CustomTemplates } from './models/custom-templates.type';
 import { FormDisplayValue } from './models/form-display-value.interface';
 import { FormLayout } from './models/form-layout.interface';
 import { FormStatusFunctions } from './models/form-status-functions.interface';
-import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './providers/ng-dynamic-json-form.provider';
 import {
   ConfigMappingService,
@@ -79,15 +74,7 @@ import { markFormUntouched } from './utilities/mark-form-untouched';
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormControlComponent,
-    HostIdDirective,
-    ControlLayoutDirective,
-    FormGroupComponent,
-    IsControlRequiredPipe,
-  ],
+  imports: [CommonModule, FormGroupComponent],
   providers: [
     ConfigValidationService,
     ConfigMappingService,
@@ -177,8 +164,8 @@ export class NgDynamicJsonFormComponent
   /**
    * Functions to execute when conditions is met.
    * @description
-   * The function where its key is match will be called when conditions is met.
-   * The function contains an argument which is the current `AbstractControl`.
+   * - When there's condition met, the function with key that match will be called.
+   * - The function contains an optional argument, which is the control of where the conditions will affect to.
    */
   @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
@@ -364,6 +351,9 @@ export class NgDynamicJsonFormComponent
       this._setupListeners();
 
       if (typeof window !== 'undefined') {
+        // The form controls' state will be toggle immediately after conditions listeners are setup.
+        // It will be a problem when user calling the `disable()` or `enable()` in the `formGet` callback (race condition).
+        // Hence, we emit the event in the next tick to prevent this.
         window.setTimeout(() => {
           this.formGet.emit(this.form);
           this.updateStatusFunctions.emit({
