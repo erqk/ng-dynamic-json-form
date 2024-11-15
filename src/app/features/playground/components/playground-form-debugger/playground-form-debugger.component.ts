@@ -144,7 +144,7 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
       this.formInstance ?? {};
 
     const formGet$ = formGet.pipe(
-      tap((x) => {
+      tap(() => {
         this._logEvent('formGet');
         this._setHideErrorMessageValue(undefined);
       })
@@ -185,6 +185,18 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
     const time = new Intl.DateTimeFormat('en-US', {
       timeStyle: 'medium',
     }).format(new Date());
-    this.eventsLog.push(`${time}: ${eventName}`);
+
+    const removeOldThreshold = 20;
+    const newEvent = `${time}: ${eventName}`;
+
+    if (this.eventsLog.length > removeOldThreshold) {
+      this.eventsLog = [
+        '...',
+        ...this.eventsLog.slice((removeOldThreshold - 2) * -1),
+        newEvent,
+      ];
+    } else {
+      this.eventsLog.push(newEvent);
+    }
   }
 }
