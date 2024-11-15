@@ -5,13 +5,13 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
-  HostBinding,
   Injector,
   Input,
   Output,
   SimpleChanges,
   TemplateRef,
   Type,
+  ViewChild,
   forwardRef,
   inject,
 } from '@angular/core';
@@ -65,16 +65,15 @@ import {
 import { FormReadyStateService } from './services/form-ready-state.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
-import { markFormDirty } from './utilities/mark-form-dirty';
-import { markFormPristine } from './utilities/mark-form-pristine';
-import { markFormTouched } from './utilities/mark-form-touched';
-import { markFormUntouched } from './utilities/mark-form-untouched';
 
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
   standalone: true,
   imports: [CommonModule, FormGroupComponent],
+  host: {
+    class: 'ng-dynamic-json-form',
+  },
   providers: [
     ConfigValidationService,
     ConfigMappingService,
@@ -219,7 +218,7 @@ export class NgDynamicJsonFormComponent
   @Output() displayValue = new EventEmitter<FormDisplayValue>();
   @Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 
-  @HostBinding('class') hostClass = 'ng-dynamic-json-form';
+  @ViewChild(FormGroupComponent) formGroupRef?: FormGroupComponent;
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { configs, hideErrorMessage } = simpleChanges;
@@ -416,25 +415,19 @@ export class NgDynamicJsonFormComponent
   private _updateFormStatus(status: keyof FormStatusFunctions): void {
     switch (status) {
       case 'setDirty':
-        this._allowFormDirty = true;
-        this._controlDirective?.control.markAsDirty();
-        markFormDirty(this.form);
+        this.formGroupRef?.updateStatus('dirty');
         break;
 
       case 'setPristine':
-        this._allowFormDirty = false;
-        this._controlDirective?.control.markAsPristine();
-        markFormPristine(this.form);
+        this.formGroupRef?.updateStatus('pristine');
         break;
 
       case 'setTouched':
-        this._controlDirective?.control.markAsTouched();
-        markFormTouched(this.form);
+        this.formGroupRef?.updateStatus('touched');
         break;
 
       case 'setUntouched':
-        this._controlDirective?.control.markAsUntouched();
-        markFormUntouched(this.form);
+        this.formGroupRef?.updateStatus('untouched');
         break;
     }
   }
@@ -467,9 +460,7 @@ export class NgDynamicJsonFormComponent
 
     const keepFormPristine = () => {
       if (this._allowFormDirty) return;
-
-      this._controlDirective?.control.markAsPristine();
-      markFormPristine(this.form);
+      this._updateFormStatus('setPristine');
     };
 
     // `setErrors()` must be called before `updateValue()`,
