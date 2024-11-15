@@ -1,3 +1,13 @@
+# 8.5.9 (2024-11-15)
+
+[78f28a0]: https://github.com/erqk/ng-dynamic-json-form/commit/78f28a0942c70398349645bf3aa394ba2afa393b
+[f78fb21]: https://github.com/erqk/ng-dynamic-json-form/commit/f78fb21059ce270544a9b4f3c30d4a6d6fd2c7a6
+
+| Commit    | Type | Description                                                                               |
+| --------- | ---- | ----------------------------------------------------------------------------------------- |
+| [78f28a0] | fix  | `optionsLoaded` event should always emit after `formGet`.                                 |
+| [f78fb21] | fix  | Form status keep going to pristine after `updateStatusFunctions.setPristine()` is called. |
+
 # 8.5.8 (2024-11-06)
 
 [c6d0cc8]: https://github.com/erqk/ng-dynamic-json-form/commit/c6d0cc866a034105b056d13d441e8d0ba8a02d41

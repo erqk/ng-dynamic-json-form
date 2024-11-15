@@ -21,7 +21,7 @@ export const CONFIG_ADDRESS_DYNAMIC_EN = (translation?: {
         },
         options: {
           src: {
-            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json',
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries.json',
             method: 'GET',
             mapData: {
               labelKey: translation?.['countryLabelKey'] ?? 'name',
@@ -48,7 +48,7 @@ export const CONFIG_ADDRESS_DYNAMIC_EN = (translation?: {
         },
         options: {
           src: {
-            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json',
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/states.json',
             method: 'GET',
             mapData: {
               labelKey: 'name',
@@ -73,7 +73,7 @@ export const CONFIG_ADDRESS_DYNAMIC_EN = (translation?: {
         },
         options: {
           src: {
-            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/cities.json',
+            url: 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/cities.json',
             method: 'GET',
             mapData: {
               labelKey: 'name',

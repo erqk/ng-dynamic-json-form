@@ -1,11 +1,137 @@
-<div class="flex flex-col w-full h-full">
-  <div>
-    <div class="flex flex-col gap-3 mb-5">
-      <ng-container *ngFor="let item of debuggerTools">
-        <div>
-          <div class="text-sm">{{ item.label }}</div>
-          <div class="flex gap-2">
-            <ng-container *ngFor="let button of item.children">
+<div class="p-2">
+  <div class="grid grid-cols-2 gap-2">
+    <ng-container *ngFor="let item of controlTypes">
+      <button
+        class="p-1 text-sm rounded-sm"
+        [ngClass]="{
+          'bg-transparent': activeControlType !== item,
+          'bg-gray-500/20 font-bold': activeControlType === item
+        }"
+        (click)="setActiveInfoType(item)"
+      >
+        {{ item }}
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="flex flex-col gap-3 whitespace-pre-wrap break-all overflow-auto">
+  <!-- Value -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('value') }"
+  >
+    <div class="section-title">
+      <span (click)="setActiveSection('value')">Value</span>
+
+      <ng-container *ngIf="editingForm">
+        <button (click)="toggleFormEdit()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </ng-container>
+
+      <button (click)="toggleFormEdit(true)">
+        <i
+          [ngClass]="{
+            'bi bi-pencil': !editingForm,
+            'bi bi-check2': editingForm
+          }"
+        ></i>
+      </button>
+    </div>
+
+    <div class="section-body">
+      <div class="overflow-hidden">
+        <div
+          [ngClass]="{
+            hidden: editingForm
+          }"
+        >
+          <div class="code">
+            {{ activeControl?.value | json }}
+          </div>
+        </div>
+
+        <app-playground-editor
+          [ngClass]="{
+            hidden: !editingForm
+          }"
+          [data]="{ json: activeControl?.value }"
+          [mainMenuBar]="false"
+          [navigationBar]="false"
+          [statusBar]="false"
+          (onEditing)="editingFormValue = $event"
+        ></app-playground-editor>
+      </div>
+    </div>
+  </div>
+
+  <!-- Errors -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('errors') }"
+  >
+    <div class="section-title">
+      <span (click)="setActiveSection('errors')">Errors</span>
+
+      <ng-container *ngIf="activeControl?.errors">
+        <i class="bi bi-exclamation-triangle text-red-600"></i>
+      </ng-container>
+    </div>
+
+    <div class="section-body">
+      <div class="overflow-hidden">
+        <div class="flex flex-col gap-3">
+          <div
+            class="code overflow-auto"
+            [ngClass]="{
+              hidden: editingForm
+            }"
+          >
+            {{ activeControl?.errors | json }}
+          </div>
+
+          <div
+            class="flex flex-wrap items-center gap-1 bg-gray-400/10 rounded-md px-3 py-2 text-sm"
+          >
+            <span class="">hideErrorMessage =</span>
+            <ng-container *ngFor="let button of hideErrorMessageActions">
+              <button
+                class="p-1 bg-gray-400/30 rounded-md"
+                (click)="button.action()"
+              >
+                {{ button.label }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('status') }"
+  >
+    <div class="section-title">
+      <span (click)="setActiveSection('status')">Status</span>
+
+      <div class="flex gap-3 break-keep">
+        <ng-container *ngFor="let item of controlStatus">
+          <span [ngClass]="{ 'opacity-40': !item.value() }">{{
+            item.label
+          }}</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div class="overflow-hidden">
+        <div class="flex flex-col gap-1 text-sm">
+          <span>Update status functions</span>
+          <div class="flex flex-wrap gap-2">
+            <ng-container *ngFor="let button of statusActions">
               <button
                 class="px-2 py-1 bg-gray-400/20 rounded-md"
                 (click)="button.action()"
@@ -15,38 +141,36 @@
             </ng-container>
           </div>
         </div>
-      </ng-container>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-2">
-    <ng-container *ngFor="let item of infoTypes">
-      <button
-        class="p-1 border-b-4 text-gray-500"
-        [ngClass]="{
-          'border-transparent': activeInfoType !== item,
-          'border-[var(--border-color-50)]': activeInfoType === item
-        }"
-        (click)="setActiveInfoType(item)"
-      >
-        {{ item }}
+  <!-- Events -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('events') }"
+  >
+    <div class="section-title">
+      <span (click)="setActiveSection('events')">Events</span>
+      <button type="button" (click)="eventsLog = []">
+        <i class="bi bi-trash"></i>
       </button>
-    </ng-container>
-  </div>
+    </div>
 
-  <div class="relative z-0 flex-1">
-    <app-playground-form-info
-      class="absolute z-1 block w-full h-full bg-[var(--body-bg-color)]"
-      [ngClass]="{ hidden: activeInfoType !== 'FormGroup' }"
-      [control]="form"
-      [(activeTab)]="formInfoActiveTab"
-    ></app-playground-form-info>
+    <div class="section-body">
+      <div class="overflow-hidden">
+        <div>
+          <div class="code">
+            <ng-container *ngFor="let item of eventsLog">
+              <div>{{ item }}</div>
+            </ng-container>
 
-    <app-playground-form-info
-      class="absolute z-1 block w-full h-full bg-[var(--body-bg-color)]"
-      [ngClass]="{ hidden: activeInfoType !== 'CVA' }"
-      [control]="control"
-      [(activeTab)]="formInfoActiveTab"
-    ></app-playground-form-info>
+            <ng-container *ngIf="!eventsLog.length">
+              <span>--</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

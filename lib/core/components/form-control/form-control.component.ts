@@ -5,7 +5,6 @@ import {
   Component,
   ComponentRef,
   DestroyRef,
-  DoCheck,
   HostBinding,
   HostListener,
   Input,
@@ -36,13 +35,12 @@ import {
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
 import { getControlErrors } from '../../utilities/get-control-errors';
-import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.component';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 
 @Component({
   selector: 'form-control',
   standalone: true,
-  imports: [CommonModule, ContentWrapperComponent],
+  imports: [CommonModule],
   templateUrl: './form-control.component.html',
   providers: [
     {
@@ -59,13 +57,7 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
   styles: [':host { display: block }'],
 })
 export class FormControlComponent
-  implements
-    DoCheck,
-    OnInit,
-    AfterViewInit,
-    OnDestroy,
-    ControlValueAccessor,
-    Validator
+  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
 {
   private _cd = inject(ChangeDetectorRef);
   private _destroyRef = inject(DestroyRef);
@@ -131,17 +123,6 @@ export class FormControlComponent
     return this._controlComponent?.validate(control) ?? null;
   }
 
-  ngDoCheck(): void {
-    if (this.control) {
-      const { dirty, pristine, touched, untouched } = this.control;
-
-      if (dirty) this._updateControlStatus('dirty');
-      if (pristine) this._updateControlStatus('pristine');
-      if (touched) this._updateControlStatus('touched');
-      if (untouched) this._updateControlStatus('untouched');
-    }
-  }
-
   ngOnInit(): void {
     this.useCustomLoading =
       Boolean(this.loadingComponent) || Boolean(this.loadingTemplate);
@@ -157,6 +138,68 @@ export class FormControlComponent
   ngOnDestroy(): void {
     this.control = undefined;
     this.data = undefined;
+  }
+
+  updateControlStatus(
+    status: 'dirty' | 'pristine' | 'touched' | 'untouched',
+    updateSelf = false
+  ): void {
+    const control = this.control;
+    const controlComponent = this._controlComponent;
+
+    const markAsDirty = () => {
+      controlComponent?.control?.markAsDirty();
+      controlComponent?.markAsDirty();
+
+      if (updateSelf) {
+        control?.markAsDirty();
+      }
+    };
+
+    const markAsPristine = () => {
+      controlComponent?.control?.markAsPristine();
+      controlComponent?.markAsPristine();
+
+      if (updateSelf) {
+        control?.markAsPristine();
+      }
+    };
+
+    const markAsTouched = () => {
+      controlComponent?.control?.markAsTouched();
+      controlComponent?.markAsTouched();
+
+      if (updateSelf) {
+        control?.markAsTouched();
+      }
+    };
+
+    const markAsUntouched = () => {
+      controlComponent?.control?.markAsUntouched();
+      controlComponent?.markAsUntouched();
+
+      if (updateSelf) {
+        control?.markAsUntouched();
+      }
+    };
+
+    switch (status) {
+      case 'dirty':
+        markAsDirty();
+        break;
+
+      case 'pristine':
+        markAsPristine();
+        break;
+
+      case 'touched':
+        markAsTouched();
+        break;
+
+      case 'untouched':
+        markAsUntouched();
+        break;
+    }
   }
 
   get showErrors(): boolean {
@@ -314,8 +357,8 @@ export class FormControlComponent
           }
 
           if (hideErrors === false) {
-            this._updateControlStatus('dirty', true);
-            this._updateControlStatus('touched', true);
+            this.updateControlStatus('dirty', true);
+            this.updateControlStatus('touched', true);
           }
         }),
         takeUntilDestroyed(this._destroyRef)
@@ -331,68 +374,6 @@ export class FormControlComponent
     const cvaErrors = getControlErrors(this._controlComponent?.control);
     if (!this.control?.errors && cvaErrors) {
       this.control?.setErrors(cvaErrors);
-    }
-  }
-
-  private _updateControlStatus(
-    status: 'dirty' | 'pristine' | 'touched' | 'untouched',
-    updateSelf = false
-  ): void {
-    const control = this.control;
-    const controlComponent = this._controlComponent;
-
-    const markAsDirty = () => {
-      controlComponent?.control?.markAsDirty();
-      controlComponent?.markAsDirty();
-
-      if (updateSelf) {
-        control?.markAsDirty();
-      }
-    };
-
-    const markAsPristine = () => {
-      controlComponent?.control?.markAsPristine();
-      controlComponent?.markAsPristine();
-
-      if (updateSelf) {
-        control?.markAsPristine();
-      }
-    };
-
-    const markAsTouched = () => {
-      controlComponent?.control?.markAsTouched();
-      controlComponent?.markAsTouched();
-
-      if (updateSelf) {
-        control?.markAsTouched();
-      }
-    };
-
-    const markAsUntouched = () => {
-      controlComponent?.control?.markAsUntouched();
-      controlComponent?.markAsUntouched();
-
-      if (updateSelf) {
-        control?.markAsUntouched();
-      }
-    };
-
-    switch (status) {
-      case 'dirty':
-        markAsDirty();
-        break;
-
-      case 'pristine':
-        markAsPristine();
-        break;
-
-      case 'touched':
-        markAsTouched();
-        break;
-
-      case 'untouched':
-        markAsUntouched();
-        break;
     }
   }
 

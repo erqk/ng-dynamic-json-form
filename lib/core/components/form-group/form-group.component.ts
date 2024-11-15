@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input, inject } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  Input,
+  QueryList,
+  ViewChildren,
+  inject,
+} from '@angular/core';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { HostIdDirective } from '../../directives/host-id.directive';
@@ -35,5 +42,16 @@ export class FormGroupComponent {
 
   @HostBinding('class') hostClass = 'grid-container form-group-container';
 
+  @ViewChildren(FormGroupComponent)
+  formGroupRefs?: QueryList<FormGroupComponent>;
+
+  @ViewChildren(FormControlComponent)
+  formControlRefs?: QueryList<FormControlComponent>;
+
   customComponents = this._globalVariableService.customComponents;
+
+  updateStatus(status: 'dirty' | 'pristine' | 'touched' | 'untouched'): void {
+    this.formControlRefs?.forEach((x) => x.updateControlStatus(status, true));
+    this.formGroupRefs?.forEach((x) => x.updateStatus(status));
+  }
 }

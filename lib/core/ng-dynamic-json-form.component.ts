@@ -5,13 +5,13 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
-  HostBinding,
   Injector,
   Input,
   Output,
   SimpleChanges,
   TemplateRef,
   Type,
+  ViewChild,
   forwardRef,
   inject,
 } from '@angular/core';
@@ -23,7 +23,6 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   NgControl,
-  ReactiveFormsModule,
   UntypedFormGroup,
   ValidationErrors,
   Validator,
@@ -41,10 +40,7 @@ import {
 } from 'rxjs';
 import { CustomErrorMessage } from './components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from './components/custom-form-label/custom-form-label.abstract';
-import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
-import { ControlLayoutDirective } from './directives/control-layout.directive';
-import { HostIdDirective } from './directives/host-id.directive';
 import { CustomComponents, FormControlConfig, OptionItem } from './models';
 import { ConditionsActionFunctions } from './models/conditions-action-functions.interface';
 import { ConfigValidationErrors } from './models/config-validation-errors.interface';
@@ -54,7 +50,6 @@ import { CustomTemplates } from './models/custom-templates.type';
 import { FormDisplayValue } from './models/form-display-value.interface';
 import { FormLayout } from './models/form-layout.interface';
 import { FormStatusFunctions } from './models/form-status-functions.interface';
-import { IsControlRequiredPipe } from './pipes/is-control-required.pipe';
 import { NG_DYNAMIC_JSON_FORM_CONFIG } from './providers/ng-dynamic-json-form.provider';
 import {
   ConfigMappingService,
@@ -70,24 +65,15 @@ import {
 import { FormReadyStateService } from './services/form-ready-state.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
-import { markFormDirty } from './utilities/mark-form-dirty';
-import { markFormPristine } from './utilities/mark-form-pristine';
-import { markFormTouched } from './utilities/mark-form-touched';
-import { markFormUntouched } from './utilities/mark-form-untouched';
 
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormControlComponent,
-    HostIdDirective,
-    ControlLayoutDirective,
-    FormGroupComponent,
-    IsControlRequiredPipe,
-  ],
+  imports: [CommonModule, FormGroupComponent],
+  host: {
+    class: 'ng-dynamic-json-form',
+  },
   providers: [
     ConfigValidationService,
     ConfigMappingService,
@@ -177,8 +163,8 @@ export class NgDynamicJsonFormComponent
   /**
    * Functions to execute when conditions is met.
    * @description
-   * The function where its key is match will be called when conditions is met.
-   * The function contains an argument which is the current `AbstractControl`.
+   * - When there's condition met, the function with key that match will be called.
+   * - The function contains an optional argument, which is the control of where the conditions will affect to.
    */
   @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
@@ -228,21 +214,11 @@ export class NgDynamicJsonFormComponent
    * (by checking click or keydown event)
    */
   @Output() onChange = new EventEmitter<any>();
-  @Output() optionsLoaded = new EventEmitter();
+  @Output() optionsLoaded = new EventEmitter<void>();
   @Output() displayValue = new EventEmitter<FormDisplayValue>();
   @Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 
-  @HostBinding('class') hostClass = 'ng-dynamic-json-form';
-
-  constructor() {
-    this._formReadyStateService.optionsReady$
-      .pipe(
-        filter(Boolean),
-        tap(() => this.optionsLoaded.emit()),
-        takeUntilDestroyed()
-      )
-      .subscribe();
-  }
+  @ViewChild(FormGroupComponent) formGroupRef?: FormGroupComponent;
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { configs, hideErrorMessage } = simpleChanges;
@@ -364,6 +340,9 @@ export class NgDynamicJsonFormComponent
       this._setupListeners();
 
       if (typeof window !== 'undefined') {
+        // The form controls' state will be toggle immediately after conditions listeners are setup.
+        // It will be a problem when user calling the `disable()` or `enable()` in the `formGet` callback (race condition).
+        // Hence, we emit the event in the next tick to prevent this.
         window.setTimeout(() => {
           this.formGet.emit(this.form);
           this.updateStatusFunctions.emit({
@@ -372,6 +351,8 @@ export class NgDynamicJsonFormComponent
             setTouched: () => this._updateFormStatus('setTouched'),
             setUntouched: () => this._updateFormStatus('setUntouched'),
           });
+
+          this._checkOptionsLoaded();
         });
       }
     }
@@ -434,25 +415,19 @@ export class NgDynamicJsonFormComponent
   private _updateFormStatus(status: keyof FormStatusFunctions): void {
     switch (status) {
       case 'setDirty':
-        this._allowFormDirty = true;
-        this._controlDirective?.control.markAsDirty();
-        markFormDirty(this.form);
+        this.formGroupRef?.updateStatus('dirty');
         break;
 
       case 'setPristine':
-        this._allowFormDirty = false;
-        this._controlDirective?.control.markAsPristine();
-        markFormPristine(this.form);
+        this.formGroupRef?.updateStatus('pristine');
         break;
 
       case 'setTouched':
-        this._controlDirective?.control.markAsTouched();
-        markFormTouched(this.form);
+        this.formGroupRef?.updateStatus('touched');
         break;
 
       case 'setUntouched':
-        this._controlDirective?.control.markAsUntouched();
-        markFormUntouched(this.form);
+        this.formGroupRef?.updateStatus('untouched');
         break;
     }
   }
@@ -485,9 +460,7 @@ export class NgDynamicJsonFormComponent
 
     const keepFormPristine = () => {
       if (this._allowFormDirty) return;
-
-      this._controlDirective?.control.markAsPristine();
-      markFormPristine(this.form);
+      this._updateFormStatus('setPristine');
     };
 
     // `setErrors()` must be called before `updateValue()`,
@@ -496,6 +469,24 @@ export class NgDynamicJsonFormComponent
     updateValue();
     updateDisplayValue();
     keepFormPristine();
+  }
+
+  private _checkOptionsLoaded(): void {
+    const ready$ = this._formReadyStateService.optionsReady$;
+
+    if (ready$.value) {
+      this.optionsLoaded.emit();
+      return;
+    }
+
+    ready$
+      .pipe(
+        filter(Boolean),
+        take(1),
+        tap(() => this.optionsLoaded.emit()),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe();
   }
 
   private get _formErrors(): ValidationErrors | null {
