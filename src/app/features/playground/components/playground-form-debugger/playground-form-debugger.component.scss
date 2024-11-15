@@ -2,7 +2,7 @@
 }
 
 .section-container {
-  @apply border border-t-0 border-gray-500/60;
+  @apply border border-t-0 border-[var(--border-color-50)];
 
   &:last-child {
     @apply mb-8;
@@ -10,7 +10,7 @@
 
   &.active {
     .section-title {
-      @apply border-b  border-gray-500/60;
+      @apply border-b  border-[var(--border-color-50)];
 
       button {
         @apply inline-flex;
@@ -24,7 +24,7 @@
 
   .section-title {
     @apply sticky top-0 flex justify-between items-center gap-2;
-    @apply px-3 py-1 border-t border-gray-500/60;
+    @apply px-3 py-1 border-t border-[var(--border-color-50)];
     @apply cursor-pointer;
 
     background-color: var(--body-bg-color);

@@ -85,7 +85,7 @@
             </div>
           </as-split-area>
 
-          <!-- Form info -->
+          <!-- Form debugger -->
           <as-split-area
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
@@ -190,11 +190,11 @@
       <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
     </div>
 
-    <!-- Form info -->
+    <!-- Form debugger -->
     <div
       [ngClass]="[
         mobileTabSelected === 2 ? 'block' : 'hidden',
-        'mb-3 h-full overflow-hidden'
+        'mb-3 h-full px-3 overflow-hidden'
       ]"
     >
       <ng-container *ngTemplateOutlet="formDebuggerTemplate"></ng-container>
