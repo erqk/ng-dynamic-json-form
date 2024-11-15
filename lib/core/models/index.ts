@@ -2,7 +2,7 @@ export * from './conditions-action-functions.interface';
 export * from './conditions-action.enum';
 export * from './conditions-group.type';
 export * from './conditions-operator.type';
-export * from './conditions-statement-tupple.type';
+export * from './conditions-statement-tuple.type';
 export * from './conditions.type';
 export * from './config-validation-errors.interface';
 export * from './custom-components.type';
