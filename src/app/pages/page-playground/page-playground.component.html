@@ -90,7 +90,7 @@
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
               '!h-[calc(100dvh-var(--header-height))]',
-              'flex flex-col p-4 pt-1'
+              'flex flex-col p-4 pb-0 pt-1'
             ]"
             [size]="asSplitSizes[1]"
           >
@@ -253,7 +253,6 @@
 
 <ng-template #formDebuggerTemplate>
   <app-playground-form-debugger
-    class="block h-full"
     [control]="formControl"
     [form]="form"
     [formInstance]="playgroundFormRef?.formRef"

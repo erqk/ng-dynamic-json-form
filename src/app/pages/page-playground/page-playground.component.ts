@@ -25,11 +25,9 @@ import {
 } from 'rxjs';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { CustomInputComponent } from 'src/app/example/components/custom-input/custom-input.component';
-import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 import { LanguageService } from 'src/app/features/language/language-data.service';
 import { PlaygroundEditorComponent } from 'src/app/features/playground/components/playground-editor/playground-editor.component';
 import { PlaygroundFormDebuggerComponent } from 'src/app/features/playground/components/playground-form-debugger/playground-form-debugger.component';
-import { PlaygroundFormInfoComponent } from 'src/app/features/playground/components/playground-form-info/playground-form-info.component';
 import { PlaygroundFormMaterialComponent } from 'src/app/features/playground/components/playground-form/playground-form-material.component';
 import { PlaygroundFormPrimengComponent } from 'src/app/features/playground/components/playground-form/playground-form-primeng.component';
 import { PlaygroundFormComponent } from 'src/app/features/playground/components/playground-form/playground-form.component';
@@ -48,10 +46,8 @@ import { VersionService } from 'src/app/features/version/version.service';
     FormsModule,
     ReactiveFormsModule,
     UiContentWrapperComponent,
-    HeaderTabBarComponent,
     PlaygroundEditorComponent,
     PlaygroundTemplateListComponent,
-    PlaygroundFormInfoComponent,
     AngularSplitModule,
     PlaygroundFormComponent,
     PlaygroundFormDebuggerComponent,
