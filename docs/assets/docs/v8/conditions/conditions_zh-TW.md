@@ -113,7 +113,7 @@ if (controlB.value !== "bar") {...}
 
 <doc-code name="TS">
 
-```tsx
+```jsx
 configs = [
   {
     ...
@@ -129,15 +129,16 @@ configs = [
 ];
 
 customActions = {
-  doA: () => this._actionA,
-  doB: () => this._actionB
+  doA: () => this._actionA(),
+  doB: (c?: AbstractControl) => this._actionB(c)
 }
 
 private _actionA(): void {
   ...
 }
 
-private _actionB(): void {
+// 此 control 是條件達成後，會對其進行操作的 control。
+private _actionB(c?: AbstractControl): void {
   ...
 }
 ```

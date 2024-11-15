@@ -113,7 +113,7 @@ Provide `conditionsActionFuntions` with key and function pairs. When the conditi
 
 <doc-code name="TS">
 
-```tsx
+```jsx
 configs = [
   {
     ...
@@ -129,15 +129,16 @@ configs = [
 ];
 
 customActions = {
-  doA: () => this._actionA,
-  doB: () => this._actionB
+  doA: () => this._actionA(),
+  doB: (c?: AbstractControl) => this._actionB(c)
 }
 
 private _actionA(): void {
   ...
 }
 
-private _actionB(): void {
+// The control is the control where the `conditions` have effect on.
+private _actionB(c?: AbstractControl): void {
   ...
 }
 ```
