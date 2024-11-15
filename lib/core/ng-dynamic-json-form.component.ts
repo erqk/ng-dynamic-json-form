@@ -215,21 +215,11 @@ export class NgDynamicJsonFormComponent
    * (by checking click or keydown event)
    */
   @Output() onChange = new EventEmitter<any>();
-  @Output() optionsLoaded = new EventEmitter();
+  @Output() optionsLoaded = new EventEmitter<void>();
   @Output() displayValue = new EventEmitter<FormDisplayValue>();
   @Output() updateStatusFunctions = new EventEmitter<FormStatusFunctions>();
 
   @HostBinding('class') hostClass = 'ng-dynamic-json-form';
-
-  constructor() {
-    this._formReadyStateService.optionsReady$
-      .pipe(
-        filter(Boolean),
-        tap(() => this.optionsLoaded.emit()),
-        takeUntilDestroyed()
-      )
-      .subscribe();
-  }
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { configs, hideErrorMessage } = simpleChanges;
@@ -362,6 +352,8 @@ export class NgDynamicJsonFormComponent
             setTouched: () => this._updateFormStatus('setTouched'),
             setUntouched: () => this._updateFormStatus('setUntouched'),
           });
+
+          this._checkOptionsLoaded();
         });
       }
     }
@@ -486,6 +478,24 @@ export class NgDynamicJsonFormComponent
     updateValue();
     updateDisplayValue();
     keepFormPristine();
+  }
+
+  private _checkOptionsLoaded(): void {
+    const ready$ = this._formReadyStateService.optionsReady$;
+
+    if (ready$.value) {
+      this.optionsLoaded.emit();
+      return;
+    }
+
+    ready$
+      .pipe(
+        filter(Boolean),
+        take(1),
+        tap(() => this.optionsLoaded.emit()),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe();
   }
 
   private get _formErrors(): ValidationErrors | null {
