@@ -23,7 +23,7 @@
   }
 
   .section-title {
-    @apply sticky top-0 flex justify-between items-center gap-2;
+    @apply sticky top-0 z-10 flex justify-between items-center gap-2;
     @apply px-3 py-1 border-t border-[var(--border-color-50)];
     @apply cursor-pointer;
 
