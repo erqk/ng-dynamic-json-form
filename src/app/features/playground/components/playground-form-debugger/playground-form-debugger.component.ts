@@ -62,19 +62,31 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
   statusActions: { label: string; action: Function }[] = [
     {
       label: 'setDirty()',
-      action: () => this.statusFunctions?.setDirty(),
+      action: () => {
+        this.control?.markAsDirty();
+        this.statusFunctions?.setDirty();
+      },
     },
     {
       label: 'setPristine()',
-      action: () => this.statusFunctions?.setPristine(),
+      action: () => {
+        this.control?.markAsPristine();
+        this.statusFunctions?.setPristine();
+      },
     },
     {
       label: 'setTouched()',
-      action: () => this.statusFunctions?.setTouched(),
+      action: () => {
+        this.control?.markAsTouched();
+        this.statusFunctions?.setTouched();
+      },
     },
     {
       label: 'setUntouched()',
-      action: () => this.statusFunctions?.setUntouched(),
+      action: () => {
+        this.control?.markAsUntouched();
+        this.statusFunctions?.setUntouched();
+      },
     },
   ];
 
