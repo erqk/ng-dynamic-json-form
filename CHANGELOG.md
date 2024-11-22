@@ -1,3 +1,11 @@
+# 8.5.10 (2024-11-22)
+
+[df18456]: https://github.com/erqk/ng-dynamic-json-form/commit/df184563cd7880c5ab5acc3a95916285ac5c4ed3
+
+| Commit    | Type | Description                                  |
+| --------- | ---- | -------------------------------------------- |
+| [df18456] | fix  | Control directive should also keep pristine. |
+
 # 8.5.9 (2024-11-15)
 
 [78f28a0]: https://github.com/erqk/ng-dynamic-json-form/commit/78f28a0942c70398349645bf3aa394ba2afa393b
