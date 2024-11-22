@@ -461,6 +461,7 @@ export class NgDynamicJsonFormComponent
     const keepFormPristine = () => {
       if (this._allowFormDirty) return;
       this._updateFormStatus('setPristine');
+      this._controlDirective?.control.markAsPristine();
     };
 
     // `setErrors()` must be called before `updateValue()`,
