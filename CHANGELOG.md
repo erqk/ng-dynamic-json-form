@@ -1,3 +1,11 @@
+# 8.5.11 (2024-12-03)
+
+[e920f2e]: https://github.com/erqk/ng-dynamic-json-form/commit/e920f2ed1f9646d4fbfdf347f569323e60447391
+
+| Commit    | Type | Description                                                          |
+| --------- | ---- | -------------------------------------------------------------------- |
+| [e920f2e] | fix  | Add options loading state on valueChanges, change order of callback. |
+
 # 8.5.10 (2024-11-22)
 
 [df18456]: https://github.com/erqk/ng-dynamic-json-form/commit/df184563cd7880c5ab5acc3a95916285ac5c4ed3

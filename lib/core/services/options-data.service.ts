@@ -32,6 +32,10 @@ export class OptionsDataService {
   private _httpRequestCacheService = inject(HttpRequestCacheService);
   private _cancelAll$ = new Subject<void>();
 
+  /**
+   * @param srcConfig @see OptionSourceConfig
+   * @param valueChangesCallback The callback after `valueChanges` is called
+   */
   getOptions$(
     srcConfig: OptionSourceConfig,
     valueChangesCallback: () => void
@@ -41,12 +45,17 @@ export class OptionsDataService {
     }
 
     const event$ = () => {
+      const valueChanges$ = this._onTriggerControlChanges$(
+        srcConfig.filter || srcConfig.trigger,
+        valueChangesCallback
+      );
+
       if (srcConfig.filter) {
-        return this._getOptionsByFilter$(srcConfig);
+        return this._getOptionsByFilter$(srcConfig, valueChanges$);
       }
 
       if (srcConfig.trigger) {
-        return this._getOptionsOnTrigger$(srcConfig, valueChangesCallback);
+        return this._getOptionsOnTrigger$(srcConfig, valueChanges$);
       }
 
       return this._getOptions$(srcConfig);
@@ -100,7 +109,8 @@ export class OptionsDataService {
   }
 
   private _getOptionsByFilter$(
-    srcConfig: OptionSourceConfig
+    srcConfig: OptionSourceConfig,
+    valueChanges$: Observable<any>
   ): Observable<OptionItem[]> {
     if (!srcConfig.filter) return of([]);
 
@@ -118,9 +128,7 @@ export class OptionsDataService {
     };
 
     const filterOptions$ = this._getOptions$(srcConfig).pipe(
-      switchMap((x) =>
-        combineLatest([of(x), this._onTriggerControlChanges$(srcConfig.filter)])
-      ),
+      switchMap((x) => combineLatest([of(x), valueChanges$])),
       map(([options, value]) =>
         options.filter((optionItem) => {
           const result = evaluateConditionsStatements(
@@ -138,13 +146,12 @@ export class OptionsDataService {
 
   private _getOptionsOnTrigger$(
     srcConfig: OptionSourceConfig,
-    valueChangesCallback: () => void
+    valueChanges$: Observable<any>
   ): Observable<OptionItem[]> {
     if (!srcConfig.trigger) return of([]);
 
-    return this._onTriggerControlChanges$(srcConfig.trigger).pipe(
+    return valueChanges$.pipe(
       switchMap((x) => {
-        valueChangesCallback();
         const emptyValue = x === undefined || x === null || x === '';
         return emptyValue ? of([]) : this._getOptions$(srcConfig);
       }),
@@ -154,7 +161,8 @@ export class OptionsDataService {
 
   /**The `valueChanges` of trigger control */
   private _onTriggerControlChanges$(
-    triggerConfig: OptionSourceConfig['trigger'] | OptionSourceConfig['filter']
+    triggerConfig: OptionSourceConfig['trigger'] | OptionSourceConfig['filter'],
+    valueChangesCallback?: () => void
   ): Observable<any> {
     if (!triggerConfig) return EMPTY;
 
@@ -174,8 +182,9 @@ export class OptionsDataService {
 
     return control.valueChanges.pipe(
       startWith(control.value),
-      debounceTime(_debounceTime),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      tap(() => valueChangesCallback && valueChangesCallback()),
+      debounceTime(_debounceTime),
       map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath)))
     );
   }
