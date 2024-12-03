@@ -271,32 +271,28 @@ export class FormControlComponent
       this._controlComponent?.writeValue(value);
     };
 
-    const autoSelectFirstOption = (options: OptionItem[]) => {
-      if (autoSelectFirst && options.length > 0) {
-        updateControlValue(options[0].value);
-      }
+    const selectFirst = (options: OptionItem[]) => {
+      if (!autoSelectFirst || !options.length) return;
+      updateControlValue(options[0].value);
     };
-
-    if (!src) {
-      autoSelectFirstOption(staticOptions);
-      return;
-    }
-
-    const usingTriggerOrFilter =
-      typeof src !== 'string' && (src.filter || src.trigger);
-
-    const source$ =
-      typeof src === 'string'
-        ? this._globalVariableService.optionsSources?.[src]
-        : this._optionsDataService.getOptions$(
-            src,
-            () => (this.loading = false)
-          );
 
     const setLoading = (val: boolean) => {
       this.loading = val;
       this._formReadyStateService.optionsLoading(val);
     };
+
+    if (!src) {
+      selectFirst(staticOptions);
+      return;
+    }
+
+    const source$ =
+      typeof src === 'string'
+        ? this._globalVariableService.optionsSources?.[src]
+        : this._optionsDataService.getOptions$(src, () => {
+            setLoading(true);
+            updateControlValue(null);
+          });
 
     setLoading(true);
 
@@ -312,19 +308,13 @@ export class FormControlComponent
             updateControlValue(this._pendingValue);
             this._pendingValue = null;
           } else {
-            if (usingTriggerOrFilter) updateControlValue(null);
-            else autoSelectFirstOption(options);
+            selectFirst(options);
           }
 
-          this._controlComponent?.onOptionsGet(options);
-
-          if (usingTriggerOrFilter) {
-            setLoading(false);
-          }
-        }),
-        finalize(() => {
           setLoading(false);
-        })
+          this._controlComponent?.onOptionsGet(options);
+        }),
+        finalize(() => setLoading(false))
       )
       .subscribe();
   }
