@@ -49,19 +49,22 @@
       [ngTemplateOutletContext]="{ data: config }"
     ></ng-container>
 
-    <error-message
-      [control]="control"
-      [validators]="config.validators"
-      [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
-      [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
-      [controlLayout]="{
-        type: 'error',
-        layout: config.layout
-      }"
-      [ngClass]="{
-        hidden: !showErrors
-      }"
-    ></error-message>
+    <!-- Validation message -->
+    <ng-container *ngIf="renderErrorSection">
+      <error-message
+        [control]="control"
+        [validators]="config.validators"
+        [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
+        [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
+        [controlLayout]="{
+          type: 'error',
+          layout: config.layout
+        }"
+        [ngClass]="{
+          hidden: hideErrors
+        }"
+      ></error-message>
+    </ng-container>
   </div>
 </ng-container>
 

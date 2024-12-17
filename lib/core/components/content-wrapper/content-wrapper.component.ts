@@ -34,22 +34,30 @@ export class ContentWrapperComponent {
   errorTemplates = this._globalVariableService.errorTemplates;
   errorComponentDefault = this._globalVariableService.errorComponentDefault;
   errorTemplateDefault = this._globalVariableService.errorTemplateDefault;
+
   labelComponents = this._globalVariableService.labelComponents;
   labelTemplates = this._globalVariableService.labelTemplates;
   labelComponentDefault = this._globalVariableService.labelComponentDefault;
   labelTemplateDefault = this._globalVariableService.labelTemplateDefault;
 
-  get showErrors(): boolean {
+  get renderErrorSection(): boolean {
+    const typesToHide = this._globalVariableService.hideErrorsForTypes ?? [];
+    const type = this.config?.type ?? 'text';
+
+    return typesToHide.filter(Boolean).every((x) => x !== type);
+  }
+
+  get hideErrors(): boolean {
     const controlTouched = this.control?.touched ?? false;
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
     // Secondary condition
     if (this._globalVariableService.hideErrorMessage$.value) {
-      return false;
+      return true;
     }
 
     // Last resort
-    return (controlDirty || controlTouched) && hasErrors;
+    return (!controlDirty && !controlTouched) || !hasErrors;
   }
 }

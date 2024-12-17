@@ -1,10 +1,62 @@
 # 表單設定
 
+## Provider 設定
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
+
+export const appConfig: ApplicationConfig = {
+  ...
+  providers: [
+    provideNgDynamicJsonForm({
+      customValidators: {...},
+      uiComponents: {...},
+      labelComponent: ...,
+      loadingComponent: ...,
+      errorComponent: ...,
+      hideErrorsFor: [...],
+    }),
+  ]
+}
+```
+
+### Properties
+
+#### customValidators
+
+請參閱 [全域自訂驗證器](../../v8/validators/validators_zh-TW.md#全域自訂驗證器)
+
+#### uiComponents
+
+請參閱 [UI 元件](../../v8/ui-components/ui-components_zh-TW.md)
+
+#### labelComponent
+
+請參閱 [替換所有標題](../../v8/custom-label/custom-label_zh-TW.md#替換所有標題)
+
+#### loadingComponent
+
+請參閱 [替換所有 Loading](../../v8/custom-loading/custom-loading_zh-TW.md#替換所有-loading)
+
+#### errorComponent
+
+請參閱 [替換所有錯誤](../../v8/custom-error/custom-error_zh-TW.md#替換所有錯誤)
+
+#### hideErrorsForTypes
+
+將此列表內列出的元件 `type` 的錯誤訊息區塊隱藏。
+
+```tsx
+provideNgDynamicJsonForm({
+  ...
+  hideErrorsForTypes: ["text", "checkbox", "也可以使用自定義的 type"],
+}),
+```
+
+## FormControlConfig
+
 生成表單的設定。
-
-## API
-
-### FormControlConfig
 
 ```tsx
 export interface FormControlConfig {
@@ -24,6 +76,8 @@ export interface FormControlConfig {
   validators?: ValidatorConfig[];
 }
 ```
+
+### Properties
 
 #### formControlName
 

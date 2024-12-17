@@ -271,9 +271,10 @@ export class NgDynamicJsonFormComponent
   private _setupVariables(): void {
     const {
       customValidators,
-      labelComponent,
       errorComponent,
+      labelComponent,
       loadingComponent,
+      hideErrorsForTypes,
       uiComponents,
     } = this._providerConfig ?? {};
 
@@ -300,11 +301,12 @@ export class NgDynamicJsonFormComponent
       ...errors,
       ...labels,
       ...loading,
-      hostElement: this._el.nativeElement,
       customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
       conditionsActionFunctions: this.conditionsActionFunctions,
+      hostElement: this._el.nativeElement,
+      hideErrorsForTypes,
       optionsSources: this.optionsSources,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
