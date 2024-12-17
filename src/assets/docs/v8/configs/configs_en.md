@@ -1,10 +1,62 @@
 # Configs
 
+## Provider config
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
+
+export const appConfig: ApplicationConfig = {
+  ...
+  providers: [
+    provideNgDynamicJsonForm({
+      customValidators: {...},
+      uiComponents: {...},
+      labelComponent: ...,
+      loadingComponent: ...,
+      errorComponent: ...,
+      hideErrorsFor: [...],
+    }),
+  ]
+}
+```
+
+### Properties
+
+#### customValidators
+
+See [Provide custom validators globally](../../v8/validators/validators_en.md#provide-custom-validators-globally)
+
+#### uiComponents
+
+See [UI components](../../v8/ui-components/ui-components_en.md)
+
+#### labelComponent
+
+See [Overwrite all the labels](../../v8/custom-label/custom-label_en.md#overwrite-all-the-labels)
+
+#### loadingComponent
+
+See [Overwrite all the loadings](../../v8/custom-loading/custom-loading_en.md#overwrite-all-the-loadings)
+
+#### errorComponent
+
+See [Overwrite all the errors](../../v8/custom-error/custom-error_en.md#overwrite-all-the-errors)
+
+#### hideErrorsForTypes
+
+Hide the error message section of the control where its `type` is included in the list.
+
+```tsx
+provideNgDynamicJsonForm({
+  ...
+  hideErrorsForTypes: ["text", "checkbox", "customTypeToHide"],
+}),
+```
+
+## FormControlConfig
+
 The configuration to generate form.
-
-## API
-
-### FormControlConfig
 
 ```tsx
 export interface FormControlConfig {
@@ -24,6 +76,8 @@ export interface FormControlConfig {
   validators?: ValidatorConfig[];
 }
 ```
+
+### Properties
 
 #### formControlName
 

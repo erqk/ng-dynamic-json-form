@@ -14,7 +14,6 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
 import { tap } from 'rxjs';
-import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
 import { FormValidationService } from '../../services/form-validation.service';
 import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
@@ -22,7 +21,7 @@ import { CustomErrorMessage } from '../custom-error-message/custom-error-message
 @Component({
   selector: 'error-message',
   standalone: true,
-  imports: [CommonModule, ControlLayoutDirective],
+  imports: [CommonModule],
   templateUrl: './error-message.component.html',
 })
 export class ErrorMessageComponent implements AfterViewInit {

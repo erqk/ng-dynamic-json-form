@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FormControlConfig, UiComponents } from '../models';
 import { CustomValidators } from '../models/custom-validators.type';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
+import { FormConfig } from '../providers/ng-dynamic-json-form.provider';
 interface GlobalVariables
   extends Omit<
     GlobalVariableService,
@@ -39,6 +40,9 @@ export class GlobalVariableService {
   labelComponentDefault: NgDynamicJsonFormComponent['labelComponentDefault'];
   loadingComponent: NgDynamicJsonFormComponent['loadingComponent'];
   loadingTemplate: NgDynamicJsonFormComponent['loadingTemplate'];
+
+  // Hide error message
+  hideErrorsForTypes: FormConfig['hideErrorsForTypes'];
   // ======================================================================
 
   setup(variables: GlobalVariables): void {

@@ -1,11 +1,11 @@
 import { InjectionToken, Provider, Type } from '@angular/core';
 import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
-import { CustomValidators, UiComponents } from '../models';
+import { CustomValidators, FormControlType, UiComponents } from '../models';
 
-interface FormConfig {
+export interface FormConfig {
   /**
-   * User defined custom valiators. Use `name` as the key to map target ValidatorFn.
+   * User defined custom validators. Use `name` as the key to map target ValidatorFn.
    *
    * @example
    * // Config
@@ -56,6 +56,10 @@ interface FormConfig {
    * Custom component for all errors in this form
    */
   errorComponent?: Type<CustomErrorMessage>;
+  /**
+   * Hide the error message for specific type of UI components
+   */
+  hideErrorsForTypes?: FormControlType[];
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(
