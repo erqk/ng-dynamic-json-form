@@ -1,3 +1,11 @@
+# 8.6.0 (2024-12-17)
+
+[7ccfb3d]: https://github.com/erqk/ng-dynamic-json-form/commit/7ccfb3d3c1df9a2d185a19e241b8be5f2f8296bc
+
+| Commit    | Type | Description                                                          |
+| --------- | ---- | -------------------------------------------------------------------- |
+| [7ccfb3d] | fix  | Add option to hide the error section for the specific control types. |
+
 # 8.5.11 (2024-12-03)
 
 [e920f2e]: https://github.com/erqk/ng-dynamic-json-form/commit/e920f2ed1f9646d4fbfdf347f569323e60447391
