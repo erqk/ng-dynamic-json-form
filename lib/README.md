@@ -1,5 +1,5 @@
-<img src="https://erqk.github.io/ng-dynamic-json-form/assets/logo.svg
-" style="display:block; width: 8rem; margin:auto;">
+<img src="https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/refs/heads/main/src/assets/logo.svg
+" width=135>
 
 # NgDynamicJsonForm
 
