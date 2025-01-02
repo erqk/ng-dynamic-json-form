@@ -1,3 +1,11 @@
+# 8.6.1 (2025-01-02)
+
+[28e5e5a]: https://github.com/erqk/ng-dynamic-json-form/commit/28e5e5ae591e180de56c410348b90ffd4ab054d8
+
+| Commit    | Type | Description                                     |
+| --------- | ---- | ----------------------------------------------- |
+| [28e5e5a] | fix  | The logic to check key existence in the object. |
+
 # 8.6.0 (2024-12-17)
 
 [7ccfb3d]: https://github.com/erqk/ng-dynamic-json-form/commit/7ccfb3d3c1df9a2d185a19e241b8be5f2f8296bc
