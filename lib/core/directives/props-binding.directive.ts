@@ -68,7 +68,7 @@ export class PropsBindingDirective {
           continue;
         }
 
-        if (target && Object.hasOwn(target, key)) {
+        if (target && (Object.hasOwn(target, key) || key in target)) {
           target[key] = value;
 
           if (target['ngOnChanges']) {
