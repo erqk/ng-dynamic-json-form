@@ -50,7 +50,8 @@ The available `NAME` are listed as below.
 
 #### Custom validator
 
-- `validators.` + `name`
+- `validator.` + `name`
+- `asyncValidator.` + `name`
 
 #### Custom action
 

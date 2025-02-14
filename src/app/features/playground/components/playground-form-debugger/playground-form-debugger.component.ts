@@ -43,7 +43,7 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
 
   eventsLog: string[] = [];
 
-  controlStatus: { label: string; value: () => boolean }[] = [
+  controlStates: { label: string; value: () => boolean }[] = [
     {
       label: 'dirty',
       value: () => this.activeControl?.dirty ?? false,

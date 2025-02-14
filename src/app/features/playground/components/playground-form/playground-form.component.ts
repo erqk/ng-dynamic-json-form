@@ -20,7 +20,8 @@ import {
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
-import { textareaMaxLength } from 'src/app/example/validators/textarea-max-length.validator';
+import { letterStartsWithAValidator } from 'src/app/example/validators/letter-starts-with-a.async.validator';
+import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-max-length.validator';
 
 @Component({
   selector: 'app-playground-form',
@@ -30,7 +31,10 @@ import { textareaMaxLength } from 'src/app/example/validators/textarea-max-lengt
     provideNgDynamicJsonForm({
       customValidators: {
         firstUppercase: firstUppercaseValidator,
-        textareaMaxLength,
+        textareaMaxLength: textareaMaxLengthValidator,
+      },
+      customAsyncValidators: {
+        letterStartsWithA: letterStartsWithAValidator,
       },
       // labelComponent: CustomFormTitleComponent,
       loadingComponent: CustomLoadingComponent,

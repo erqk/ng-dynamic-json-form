@@ -109,16 +109,16 @@
     </div>
   </div>
 
-  <!-- Status -->
+  <!-- State -->
   <div
     class="section-container"
-    [ngClass]="{ active: activeSections.includes('status') }"
+    [ngClass]="{ active: activeSections.includes('state') }"
   >
     <div class="section-title">
-      <span (click)="setActiveSection('status')">Status</span>
+      <span (click)="setActiveSection('state')">State</span>
 
       <div class="flex gap-3 break-keep">
-        <ng-container *ngFor="let item of controlStatus">
+        <ng-container *ngFor="let item of controlStates">
           <span [ngClass]="{ 'opacity-40': !item.value() }">{{
             item.label
           }}</span>
@@ -142,6 +142,18 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('status') }"
+  >
+    <div class="section-title">
+      <span (click)="setActiveSection('status')">Status</span>
+      <span class="text-right">{{ activeControl?.status }}</span>
+      <span>{{ activeControl?.invalid }}</span>
     </div>
   </div>
 
