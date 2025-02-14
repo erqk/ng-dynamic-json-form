@@ -53,7 +53,9 @@
     <ng-container *ngIf="renderErrorSection">
       <error-message
         [control]="control"
-        [validators]="config.validators"
+        [validators]="
+          (config.validators ?? []).concat(config.asyncValidators ?? [])
+        "
         [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
         [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
         [controlLayout]="{
