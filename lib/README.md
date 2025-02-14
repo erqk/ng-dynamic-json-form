@@ -1,6 +1,3 @@
-<img src="https://raw.githubusercontent.com/erqk/ng-dynamic-json-form/refs/heads/main/src/assets/logo.svg
-" width=135>
-
 # NgDynamicJsonForm
 
 <a href="https://codeclimate.com/github/erqk/ng-dynamic-json-form/maintainability"><img src="https://api.codeclimate.com/v1/badges/822fd579fde353c1fa47/maintainability" /></a>
