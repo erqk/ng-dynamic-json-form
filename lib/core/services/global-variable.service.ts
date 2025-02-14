@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FormControlConfig, UiComponents } from '../models';
+import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { CustomValidators } from '../models/custom-validators.type';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
 import { FormConfig } from '../providers/ng-dynamic-json-form.provider';
@@ -21,6 +22,7 @@ export class GlobalVariableService {
   conditionsActionFunctions: NgDynamicJsonFormComponent['conditionsActionFunctions'];
   optionsSources: NgDynamicJsonFormComponent['optionsSources'];
   uiComponents: UiComponents | undefined;
+  customAsyncValidators: CustomAsyncValidators | undefined;
   customValidators: CustomValidators | undefined;
   customComponents: NgDynamicJsonFormComponent['customComponents'];
   customTemplates: NgDynamicJsonFormComponent['customTemplates'];

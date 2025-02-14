@@ -15,8 +15,7 @@ import {
  * }
  */
 export function getControlErrors(
-  control: AbstractControl | undefined,
-  parentErrors?: ValidationErrors | null
+  control: AbstractControl | undefined
 ): ValidationErrors | null {
   if (!control) {
     return null;
@@ -27,9 +26,10 @@ export function getControlErrors(
   }
 
   if (isFormGroup(control)) {
-    const _parentErrors = parentErrors ? structuredClone(parentErrors) : null;
     const result = Object.keys(control.controls).reduce((acc, key) => {
-      const err = getControlErrors(control.controls[key], _parentErrors);
+      const childControl = control.controls[key];
+      const err = getControlErrors(childControl);
+
       return err ? { ...acc, [key]: err } : acc;
     }, {});
 
