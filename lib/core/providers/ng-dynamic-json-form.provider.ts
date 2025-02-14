@@ -2,6 +2,7 @@ import { InjectionToken, Provider, Type } from '@angular/core';
 import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
 import { CustomValidators, FormControlType, UiComponents } from '../models';
+import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 
 export interface FormConfig {
   /**
@@ -30,6 +31,30 @@ export interface FormConfig {
    * ></ng-dynamic-json-form>
    */
   customValidators?: CustomValidators;
+  /**
+   * User defined custom async validators. Similar to custom validators.
+   *
+   * @example
+   * // Config
+   * {
+   *    ...
+   *    "asyncValidators": [
+   *      ...
+   *    ]
+   * }
+   *
+   * // TS
+   * asyncValidators = {
+   *    ...
+   * }
+   *
+   * // HTML
+   * <ng-dynamic-json-form
+   *  [configs]="..."
+   *  [customAsyncValidators]="validators"
+   * ></ng-dynamic-json-form>
+   */
+  customAsyncValidators?: CustomAsyncValidators;
   /**
    * If the key is matched with `type` in the config, then the corresponding component will be used.
    *

@@ -50,7 +50,8 @@
 
 #### 自訂驗證器
 
-- `validators.` + `name`
+- `validator.` + `name`
+- `asyncValidator.` + `name`
 
 #### 自訂動作
 

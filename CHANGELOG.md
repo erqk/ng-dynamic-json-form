@@ -1,3 +1,13 @@
+# 8.7.0 (2025-02-14)
+
+[f18d93a]: https://github.com/erqk/ng-dynamic-json-form/commit/f18d93ad179b4ed8c42e151d7f19a3401514d3e0
+[b1b924e]: https://github.com/erqk/ng-dynamic-json-form/commit/b1b924e27b5fb12c67bb9cb53046d387eec57cc9
+
+| Commit    | Type | Description                                                            |
+| --------- | ---- | ---------------------------------------------------------------------- |
+| [f18d93a] | feat | Add support for async validators.                                      |
+| [b1b924e] | fix  | Error message not showing when only async validators is in the config. |
+
 # 8.6.1 (2025-01-02)
 
 [28e5e5a]: https://github.com/erqk/ng-dynamic-json-form/commit/28e5e5ae591e180de56c410348b90ffd4ab054d8

@@ -4,6 +4,43 @@ All the Angular’s built-in validators are supported.
 
 > The `email` validator is not using `Validators.email` but using `Validators.pattern`: `/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/`
 
+## Validator config
+
+<doc-code>
+
+```json
+{
+  ...
+  "validators": [
+    {
+      "name": "...",
+      "value": "...",
+      "message": "..."
+    }
+  ],
+  "asyncValidators": [
+    // Same with "validators"
+    ...
+  ]
+}
+```
+
+### Properties
+
+#### name
+
+Name of the validator.
+
+#### value
+
+For the validator which needs value to validate like `min`, `max`.
+
+#### message
+
+Custom message to display for Angular's built-in validators.
+
+<doc-code>
+
 ## Add validator to control
 
 To add validators to the control, simply provide the `validators` .
@@ -50,50 +87,11 @@ Some of the validators like `min`, `max` requires value to validate, provide the
 
 ## Custom validators
 
-To use custom validators, set the `name` with value that match with the key inside `customValidators`.
+To use custom validators, add them to the `customValidators` in `provideNgDynamicJsonForm()` provider. Then, set the name in the validator config to match with the key in `customValidators` provider.
 
 <doc-tab>
-<doc-code name="Config">
 
-```json
-{
-	...
-	"validators": [
-		{
-			"name": "firstUppercase"
-		}
-	]
-}
-```
-
-</doc-code>
-<doc-code name="TS">
-
-```ts
-...
-@Component({...})
-export class YourComponent {
-  validators = {
-    firstUppercase: firstUppercaseValidator,
-  };
-}
-```
-
-</doc-code>
-<doc-code name="HTML">
-
-```html
-<ng-dynamic-json-form ... [customValidators]="validators"></ng-dynamic-json-form>
-```
-
-</doc-code>
-</doc-tab>
-
-### Provide custom validators globally
-
-The custom validators can be provided in the providers, by using `provideNgDynamicJsonForm()` , to make it becomes available globally.
-
-<doc-code>
+<doc-code name="app.config.ts">
 
 ```ts
 import { ApplicationConfig } from '@angular/core';
@@ -112,3 +110,63 @@ export const appConfig: ApplicationConfig = {
 ```
 
 </doc-code>
+
+<doc-code name="JSON">
+
+```json
+{
+	...
+	"validators": [
+		{
+			"name": "firstUppercase"
+		}
+	]
+}
+```
+
+</doc-code>
+
+</doc-tab>
+
+## Async validators
+
+The way to use async validators is same with [Custom validators](#custom-validators).
+
+<doc-tab>
+
+<doc-code name="app.config.ts">
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideNgDynamicJsonForm } from 'ng-dynamic-json-form';
+
+export const appConfig: ApplicationConfig = {
+  ...
+  providers: [
+    provideNgDynamicJsonForm({
+      customAsyncValidators: {
+        firstUppercase: firstUppercaseValidator,
+      }
+    }),
+  ]
+}
+```
+
+</doc-code>
+
+<doc-code name="JSON">
+
+```json
+{
+	...
+	"asyncValidators": [
+		{
+			"name": "firstUppercase"
+		}
+	]
+}
+```
+
+</doc-code>
+
+</doc-tab>

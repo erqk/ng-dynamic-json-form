@@ -3,6 +3,10 @@ import { CONFIG_BASIC_ZHTW } from 'src/app/example/configs/basic/form-config-bas
 import { CONFIGS_INDEX } from 'src/app/example/configs/configs.index';
 import { FORM_CONFIG_FIRST_UPPERCASE_EN } from 'src/app/example/configs/custom-validators/first-uppercase/form-config-first-uppercase_en.constant';
 import { FORM_CONFIG_FIRST_UPPERCASE_ZHTW } from 'src/app/example/configs/custom-validators/first-uppercase/form-config-first-uppercase_zh-TW.constant';
+import { FORM_CONFIG_LETTER_STARTS_WITH_A_EN } from 'src/app/example/configs/custom-validators/letter-starts-with-a/form-config-letter-starts-with-a_en.constant';
+import { FORM_CONFIG_LETTER_STARTS_WITH_A_ZHTW } from 'src/app/example/configs/custom-validators/letter-starts-with-a/form-config-letter-starts-with-a_zh-TW.constant';
+import { FORM_CONFIG_TEXTAREA_MAX_LENGTH_EN } from 'src/app/example/configs/custom-validators/textarea-maxlength/form-config-textarea-maxlength_en.constant';
+import { FORM_CONFIG_TEXTAREA_MAX_LENGTH_ZHTW } from 'src/app/example/configs/custom-validators/textarea-maxlength/form-config-textarea-maxlength_zh-TW.constant';
 import { CONFIG_ADDRESS_DYNAMIC_EN } from 'src/app/example/configs/dynamic-data/address/config-dynamic-address_en.constant';
 import { CONFIG_ADDRESS_DYNAMIC_ZHTW } from 'src/app/example/configs/dynamic-data/address/config-dynamic-address_zh-TW.constant';
 import { CONFIG_DYNAMIC_MULTI_SOURCE_EN } from 'src/app/example/configs/dynamic-data/multi-source/config-dynamic-multi-source_en.constant';
@@ -52,6 +56,30 @@ export const PLAYGROUND_CONFIGS: {
     'zh-TW': {
       label: '自訂驗證器 (首字母大寫)',
       config: FORM_CONFIG_FIRST_UPPERCASE_ZHTW,
+      isExample: true,
+    },
+  },
+  'custom-validator-textarea-maxLength': {
+    en: {
+      label: 'Custom validator (Textarea max length)',
+      config: FORM_CONFIG_TEXTAREA_MAX_LENGTH_EN,
+      isExample: true,
+    },
+    'zh-TW': {
+      label: '自訂驗證器 (Textarea 最大長度)',
+      config: FORM_CONFIG_TEXTAREA_MAX_LENGTH_ZHTW,
+      isExample: true,
+    },
+  },
+  'custom-validator-letter-starts-with-A': {
+    en: {
+      label: 'Custom async validator (Letter starts with A)',
+      config: FORM_CONFIG_LETTER_STARTS_WITH_A_EN,
+      isExample: true,
+    },
+    'zh-TW': {
+      label: '自訂 async 驗證器 (A 字母開頭)',
+      config: FORM_CONFIG_LETTER_STARTS_WITH_A_ZHTW,
       isExample: true,
     },
   },

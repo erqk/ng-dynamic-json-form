@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function textareaMaxLength(maxLength: number): ValidatorFn {
+export function textareaMaxLengthValidator(maxLength: number): ValidatorFn {
   return (c: AbstractControl): ValidationErrors | null => {
     const value = c.value;
     if (typeof value !== 'string' || !value) {

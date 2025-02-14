@@ -7,7 +7,9 @@ import { ValidatorConfig } from './validator-config.interface';
 
 export interface FormControlConfig {
   formControlName: string;
-  
+
+  asyncValidators?: ValidatorConfig[];
+
   conditions?: Conditions;
 
   /**Provide to make this control as a `FormGroup` */
@@ -38,6 +40,5 @@ export interface FormControlConfig {
 
   value?: any;
 
-  /**Validators to add to this form control */
   validators?: ValidatorConfig[];
 }

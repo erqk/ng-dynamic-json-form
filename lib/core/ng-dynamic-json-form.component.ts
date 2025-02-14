@@ -17,10 +17,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  AbstractControl,
   ControlValueAccessor,
   FormControlDirective,
-  NG_VALIDATORS,
+  NG_ASYNC_VALIDATORS,
   NG_VALUE_ACCESSOR,
   NgControl,
   UntypedFormGroup,
@@ -32,7 +31,9 @@ import {
   Subject,
   filter,
   fromEvent,
+  map,
   merge,
+  of,
   startWith,
   take,
   takeUntil,
@@ -91,7 +92,7 @@ import { getControlErrors } from './utilities/get-control-errors';
       multi: true,
     },
     {
-      provide: NG_VALIDATORS,
+      provide: NG_ASYNC_VALIDATORS,
       useExisting: forwardRef(() => NgDynamicJsonFormComponent),
       multi: true,
     },
@@ -246,8 +247,16 @@ export class NgDynamicJsonFormComponent
     this._optionsDataService.onDestroy();
   }
 
-  validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._formErrors;
+  validate(): Observable<ValidationErrors | null> {
+    if (!this.form || this.form.valid) {
+      return of(null);
+    }
+
+    return this.form.statusChanges.pipe(
+      filter((x) => x !== 'PENDING'),
+      take(1),
+      map(() => this._formErrors)
+    );
   }
 
   registerOnValidatorChange?(fn: () => void): void {}
@@ -270,6 +279,7 @@ export class NgDynamicJsonFormComponent
 
   private _setupVariables(): void {
     const {
+      customAsyncValidators,
       customValidators,
       errorComponent,
       labelComponent,
@@ -301,6 +311,7 @@ export class NgDynamicJsonFormComponent
       ...errors,
       ...labels,
       ...loading,
+      customAsyncValidators,
       customValidators,
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
@@ -380,10 +391,25 @@ export class NgDynamicJsonFormComponent
     const conditions$ = this._formConditionsService.listenConditions$();
     const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
+    // Avoid using `debounceTime()` or `distinctUntilChanged()` here
     const valueChanges$ = this.form.valueChanges.pipe(
       startWith(this.form.value),
-      // Avoid using debounceTime() or distinctUntilChanged() here
-      tap(() => this._onFormValueChanges())
+      tap(() => {
+        // `setErrors()` must be called first, so that the form errors is correctly set when `onChange` callback is called
+        this.form?.setErrors(this._formErrors);
+        this._handleFormStatusChange();
+      })
+    );
+
+    // Avoid using `debounceTime()` or `distinctUntilChanged()` here
+    const statusChanges$ = this.form.statusChanges.pipe(
+      startWith(this.form.status),
+      tap(() => {
+        // setErrors() again after statusChanges, after the re-validation of errors if there are any async validators.
+        this.form?.setErrors(this._formErrors, {
+          emitEvent: false, // prevent maximum call stack exceeded
+        });
+      })
     );
 
     const onTouched$ = event$('focusout').pipe(
@@ -400,7 +426,13 @@ export class NgDynamicJsonFormComponent
     );
 
     this._reset$.next();
-    merge(allowDirtyState$, onTouched$, conditions$, valueChanges$)
+    merge(
+      allowDirtyState$,
+      conditions$,
+      onTouched$,
+      statusChanges$,
+      valueChanges$
+    )
       .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
@@ -434,12 +466,8 @@ export class NgDynamicJsonFormComponent
     }
   }
 
-  private _onFormValueChanges(): void {
+  private _handleFormStatusChange(): void {
     const formValue = this.form?.value;
-
-    const setErrors = () => {
-      this.form?.setErrors(this._formErrors);
-    };
 
     const updateValue = () => {
       if (this._controlDirective) {
@@ -466,9 +494,6 @@ export class NgDynamicJsonFormComponent
       this._controlDirective?.control.markAsPristine();
     };
 
-    // `setErrors()` must be called before `updateValue()`,
-    // so that the form errors is correctly set when `onChange` callback is called
-    setErrors();
     updateValue();
     updateDisplayValue();
     keepFormPristine();

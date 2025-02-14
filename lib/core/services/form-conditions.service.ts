@@ -141,27 +141,62 @@ export class FormConditionsService {
     control: AbstractControl
   ): void {
     const { conditions = {}, validators = [] } = config;
-    const actions = Object.keys(conditions).filter((x) =>
-      new RegExp(/^validator\.[a-zA-z]{1,}$/).test(x)
-    );
+    const actionPrefix = {
+      asyncValidator: 'asyncValidator',
+      validator: 'validator',
+    };
 
-    if (!actions.length) {
+    if (!validators.length) {
       return;
     }
 
-    const validatorConfigs = validators.filter((x) => {
-      const actionName = `validator.${x.name ?? ''}` as ConditionsActionEnum;
-      const target = actions.includes(actionName);
+    const getActions = (async: boolean) => {
+      return Object.keys(conditions).filter((x) => {
+        const prefix = async
+          ? actionPrefix.asyncValidator
+          : actionPrefix.validator;
 
-      return !target
-        ? false
-        : this._evaluateConditionsStatement(conditions[actionName]!);
-    });
+        // Get the actions that starts with "validator.xxx" or "asyncValidator.xxx" only
+        const regExp = new RegExp(`^${prefix}\.[a-zA-z]{1,}$`);
 
-    const resultValidators =
-      this._formValidationService.getValidators(validatorConfigs);
+        return regExp.test(x);
+      });
+    };
 
-    control.setValidators(resultValidators);
+    const getValidatorConfigs = (async: boolean) => {
+      const actions = getActions(async);
+      const validatorConfigs = validators.filter((x) => {
+        const prefix = async
+          ? actionPrefix.asyncValidator
+          : actionPrefix.validator;
+        const actionName = `${prefix}.${x.name ?? ''}` as ConditionsActionEnum;
+        const target = actions.includes(actionName);
+
+        return !target
+          ? false
+          : this._evaluateConditionsStatement(conditions[actionName]!);
+      });
+
+      return validatorConfigs;
+    };
+
+    const toggleValidators = () => {
+      const configs = getValidatorConfigs(false);
+      const validators = this._formValidationService.getValidators(configs);
+
+      control.setValidators(validators);
+    };
+
+    const toggleAsyncValidators = () => {
+      const configs = getValidatorConfigs(true);
+      const validators =
+        this._formValidationService.getAsyncValidators(configs);
+
+      control.setAsyncValidators(validators);
+    };
+
+    toggleValidators();
+    toggleAsyncValidators();
     control.updateValueAndValidity();
   }
 
@@ -301,10 +336,20 @@ export class FormConditionsService {
     return evaluateConditionsStatements(conditionsGroup, mapTupleFn);
   }
 
-  /**Get control path using the string in the conditions statement tuple.
-   * - `['controlA', '===', 'text']` => Should get "controlA"
-   * - `['controlA', '===', 'controlB']` => Should get "controlA", "controlB" individually
-   * - `['value', '===', 'controlA,prop1']` => Should get "controlA"
+  /**
+   * Get control path using the string in the conditions statement tuple.
+   *
+   * ```js
+   * form = new FormGroup{
+   *  controlA: new FormControl(),
+   *  controlB: new FormControl(),
+   * }
+   * ```
+   *
+   * - "controlA" => Should get "controlA"
+   * - "controlB" => Should get "controlB"
+   * - "controlA,prop1" => Should get "controlA"
+   * - "controlC" => undefined
    */
   private _getControlPathFromStatement(input: any): string | undefined {
     const form = this._globalVariableService.rootForm;
@@ -320,15 +365,15 @@ export class FormConditionsService {
 
   /**Get the value from the statement, either it's literally a value or comes from a control
    *
-   * ```json
-   * {
+   * ```js
+   * formValue = {
    *   controlA: 'textValue',
    *   controlB: false
    * }
    * ```
    *
-   * - [controlA, "===", "value"] => ["textValue", "===", "value"]
-   * - [false, "===", "controlB"] => [false, "===", false]
+   * - "controlA" => "textValue"
+   * - "controlB" => false
    */
   private _getValueFromStatement(input: any): any {
     const form = this._globalVariableService.rootForm;
