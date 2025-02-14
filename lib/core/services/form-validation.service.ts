@@ -121,8 +121,10 @@ export class FormValidationService {
    * Try to get the custom error message specified in the config first,
    * else use the error message in the `ValidationErrors`.
    *
-   * To use custom message when using custom validator, match the key inside
-   * `ValidationErrors` with the `name` inside config.
+   * When using custom validator, the custom message most likely will not working,
+   * it's because we are using the key in the errors to find the config message.
+   * Since user can define the error object, it becomes very difficult to match the config name
+   * with the keys in the error object.
    */
   private _getErrorMessages(
     controlErrors: ValidationErrors | null,
@@ -173,6 +175,7 @@ export class FormValidationService {
     };
 
     const [errorKey, errorValue] = Object.entries(error)[0];
+
     const result = configs.find((item) => {
       const { name, value } = item;
 
