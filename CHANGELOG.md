@@ -1,3 +1,11 @@
+# 8.7.1 (2025-02-19)
+
+[2f66a65]: https://github.com/erqk/ng-dynamic-json-form/commit/2f66a65a5c1441eefa1fb6addd7193fe2b237d19
+
+| Commit    | Type | Description                                             |
+| --------- | ---- | ------------------------------------------------------- |
+| [2f66a65] | fix  | ImaskValuePatchDirective: Return null if value is NaN . |
+
 # 8.7.0 (2025-02-14)
 
 [f18d93a]: https://github.com/erqk/ng-dynamic-json-form/commit/f18d93ad179b4ed8c42e151d7f19a3401514d3e0
