@@ -146,14 +146,10 @@
   </div>
 
   <!-- Status -->
-  <div
-    class="section-container"
-    [ngClass]="{ active: activeSections.includes('status') }"
-  >
+  <div class="section-container">
     <div class="section-title">
       <span (click)="setActiveSection('status')">Status</span>
       <span class="text-right">{{ activeControl?.status }}</span>
-      <span>{{ activeControl?.invalid }}</span>
     </div>
   </div>
 
