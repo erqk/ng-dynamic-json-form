@@ -25,7 +25,16 @@ export class FormGeneratorService {
 
       control.setValidators(validators);
       control.setAsyncValidators(asyncValidators);
+
       formGroup.addControl(item.formControlName, control);
+
+      // Runs the validation manually after async validators are initialized,
+      // to prevent the initial status stuck at "PENDING".
+      if (asyncValidators.length > 0) {
+        Promise.resolve().then(() => {
+          control.updateValueAndValidity();
+        });
+      }
     }
 
     return formGroup;

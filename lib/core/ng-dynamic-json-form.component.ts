@@ -27,6 +27,7 @@ import {
   Validator,
 } from '@angular/forms';
 import {
+  EMPTY,
   Observable,
   Subject,
   filter,
@@ -115,7 +116,7 @@ export class NgDynamicJsonFormComponent
   private _formReadyStateService = inject(FormReadyStateService);
   private _globalVariableService = inject(GlobalVariableService);
   private _optionsDataService = inject(OptionsDataService);
-  private _reset$ = new Subject<void>();
+
   private _controlDirective: FormControlDirective | null = null;
   /**
    * Whether to allow the form to mark as dirty
@@ -125,6 +126,8 @@ export class NgDynamicJsonFormComponent
    */
   private _allowFormDirty = false;
   private _globalVariablesInitialized = false;
+  private _reset$ = new Subject<void>();
+  private _validationCount = 0;
 
   private _onTouched = () => {};
   private _onChange = (_: any) => {};
@@ -253,6 +256,7 @@ export class NgDynamicJsonFormComponent
     }
 
     return this.form.statusChanges.pipe(
+      startWith(this.form.status),
       filter((x) => x !== 'PENDING'),
       take(1),
       map(() => this._formErrors)
@@ -391,21 +395,14 @@ export class NgDynamicJsonFormComponent
     const conditions$ = this._formConditionsService.listenConditions$();
     const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
-    // Avoid using `debounceTime()` or `distinctUntilChanged()` here
-    const valueChanges$ = this.form.valueChanges.pipe(
-      startWith(this.form.value),
-      tap(() => {
-        // `setErrors()` must be called first, so that the form errors is correctly set when `onChange` callback is called
-        this.form?.setErrors(this._formErrors);
-        this._handleFormStatusChange();
-      })
-    );
+    const valueChanges$ = this._formValueChanges$();
 
     // Avoid using `debounceTime()` or `distinctUntilChanged()` here
     const statusChanges$ = this.form.statusChanges.pipe(
       startWith(this.form.status),
       tap(() => {
-        // setErrors() again after statusChanges, after the re-validation of errors if there are any async validators.
+        // setErrors() again after statusChanges, to get the correct errors after
+        // the re-validation if there are any async validators.
         this.form?.setErrors(this._formErrors, {
           emitEvent: false, // prevent maximum call stack exceeded
         });
@@ -466,22 +463,27 @@ export class NgDynamicJsonFormComponent
     }
   }
 
-  private _handleFormStatusChange(): void {
-    const formValue = this.form?.value;
+  private _formValueChanges$(): Observable<any> {
+    const form = this.form;
+    if (!form) {
+      return EMPTY;
+    }
 
     const updateValue = () => {
+      const value = form.value;
+
       if (this._controlDirective) {
-        this._onChange(formValue);
+        this._onChange(value);
       }
 
       if (this._allowFormDirty) {
-        this.onChange.emit(formValue);
+        this.onChange.emit(value);
       }
     };
 
     const updateDisplayValue = () => {
       const displayValue = this._formValueService.getFormDisplayValue(
-        formValue,
+        form.value,
         this.configGet
       );
 
@@ -494,9 +496,18 @@ export class NgDynamicJsonFormComponent
       this._controlDirective?.control.markAsPristine();
     };
 
-    updateValue();
-    updateDisplayValue();
-    keepFormPristine();
+    // Avoid using `debounceTime()` or `distinctUntilChanged()` here
+    return form.valueChanges.pipe(
+      startWith(form.value),
+      tap(() => {
+        //`setErrors()` must be called first, so that the form errors
+        // is correctly set when `onChange` callback is called
+        form.setErrors(this._formErrors);
+        updateValue();
+        updateDisplayValue();
+        keepFormPristine();
+      })
+    );
   }
 
   private _checkOptionsLoaded(): void {
