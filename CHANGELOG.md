@@ -1,10 +1,18 @@
+# 8.7.2 (2025-02-20)
+
+[17d03f6]: https://github.com/erqk/ng-dynamic-json-form/commit/17d03f63a6fa4568a37c8bfed0df75455e3042b1
+
+| Commit    | Type | Description                         |
+| --------- | ---- | ----------------------------------- |
+| [17d03f6] | fix  | Form validation incorrect behavior. |
+
 # 8.7.1 (2025-02-19)
 
 [2f66a65]: https://github.com/erqk/ng-dynamic-json-form/commit/2f66a65a5c1441eefa1fb6addd7193fe2b237d19
 
-| Commit    | Type | Description                                             |
-| --------- | ---- | ------------------------------------------------------- |
-| [2f66a65] | fix  | ImaskValuePatchDirective: Return null if value is NaN . |
+| Commit    | Type | Description                                            |
+| --------- | ---- | ------------------------------------------------------ |
+| [2f66a65] | fix  | ImaskValuePatchDirective: Return null if value is NaN. |
 
 # 8.7.0 (2025-02-14)
 

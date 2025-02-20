@@ -51,17 +51,17 @@ export class FormValidationService {
       return EMPTY;
     }
 
-    return control.statusChanges.pipe(
-      startWith(control.status),
+    return control.valueChanges.pipe(
+      startWith(control.value),
       map(() =>
         this._getErrorMessages(control.errors, control.value, validators)
       )
     );
   }
 
-  getValidators(input: ValidatorConfig[] | undefined): ValidatorFn[] | null {
+  getValidators(input: ValidatorConfig[] | undefined): ValidatorFn[] {
     if (!input || !input.length) {
-      return null;
+      return [];
     }
 
     // Remove duplicates
@@ -70,8 +70,7 @@ export class FormValidationService {
     ];
 
     const customValidators = this._globalVariableService.customValidators;
-
-    return filteredConfigs.map((item) => {
+    const validatorFns = filteredConfigs.map((item) => {
       const { name } = item;
       const value = this._getValidatorValue(item);
       const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
@@ -80,18 +79,17 @@ export class FormValidationService {
         customValidators?.[name]
       ) as ValidatorFn | null;
 
-      const result =
-        builtInValidator ?? customValidator ?? Validators.nullValidator;
+      const result = builtInValidator ?? customValidator;
 
       return result;
     });
+
+    return validatorFns.filter(Boolean) as ValidatorFn[];
   }
 
-  getAsyncValidators(
-    input: ValidatorConfig[] | undefined
-  ): AsyncValidatorFn[] | null {
+  getAsyncValidators(input: ValidatorConfig[] | undefined): AsyncValidatorFn[] {
     if (!input || !input.length) {
-      return null;
+      return [];
     }
 
     // Remove duplicates
@@ -102,17 +100,12 @@ export class FormValidationService {
     const customAsyncValidators =
       this._globalVariableService.customAsyncValidators;
 
-    const result = filteredConfigs
-      .map((item) => {
-        const validatorFn = customAsyncValidators?.[item.name];
-        return this._getValidatorFn(
-          item,
-          validatorFn
-        ) as AsyncValidatorFn | null;
-      })
-      .filter(Boolean);
+    const validatorFns = filteredConfigs.map((item) => {
+      const validatorFn = customAsyncValidators?.[item.name];
+      return this._getValidatorFn(item, validatorFn) as AsyncValidatorFn | null;
+    });
 
-    return result as AsyncValidatorFn[];
+    return validatorFns.filter(Boolean) as AsyncValidatorFn[];
   }
 
   /**Get the error messages of the control
@@ -221,6 +214,13 @@ export class FormValidationService {
     }
   }
 
+  /**
+   * Get validatorFn from either validatorFn or factory function that return a validatorFn.
+   * If it's a factory function, return the validatorFn instead.
+   *
+   * @param validatorConfig
+   * @param validatorFn
+   */
   private _getValidatorFn(
     validatorConfig: ValidatorConfig,
     validatorFn:
