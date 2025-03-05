@@ -31,9 +31,7 @@ export class FormGeneratorService {
       // Runs the validation manually after async validators are initialized,
       // to prevent the initial status stuck at "PENDING".
       if (asyncValidators.length > 0) {
-        Promise.resolve().then(() => {
-          control.updateValueAndValidity();
-        });
+        queueMicrotask(() => control.updateValueAndValidity());
       }
     }
 
