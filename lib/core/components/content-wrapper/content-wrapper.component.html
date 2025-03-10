@@ -40,15 +40,6 @@
 
     <ng-content></ng-content>
 
-    <!-- Description (after) -->
-    <ng-container
-      *ngIf="
-        config.description && config.layout?.descriptionPosition === 'after'
-      "
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{ data: config }"
-    ></ng-container>
-
     <!-- Validation message -->
     <ng-container *ngIf="renderErrorSection">
       <error-message
@@ -67,6 +58,15 @@
         }"
       ></error-message>
     </ng-container>
+
+    <!-- Description (after) -->
+    <ng-container
+      *ngIf="
+        config.description && config.layout?.descriptionPosition === 'after'
+      "
+      [ngTemplateOutlet]="descriptionTemplate"
+      [ngTemplateOutletContext]="{ data: config }"
+    ></ng-container>
   </div>
 </ng-container>
 
@@ -74,6 +74,9 @@
 <ng-template #descriptionTemplate let-data="data">
   <span
     class="form-description"
+    [ngClass]="{
+      'position-after': data.layout?.descriptionPosition === 'after'
+    }"
     [controlLayout]="{
       type: 'description',
       layout: data.layout
