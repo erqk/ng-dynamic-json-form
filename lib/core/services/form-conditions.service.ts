@@ -56,11 +56,11 @@ export class FormConditionsService {
 
     return from(controls).pipe(
       mergeMap((x) => valueChanges$(x)),
-      tap(() => this._onConditionsMet(configsWithConditions))
+      tap(() => this._handleValueChanges(configsWithConditions))
     );
   }
 
-  private _onConditionsMet(data: {
+  private _handleValueChanges(data: {
     [fullControlPath: string]: FormControlConfig;
   }): void {
     const form = this._globalVariableService.rootForm;
@@ -116,11 +116,8 @@ export class FormConditionsService {
   }
 
   private _disableControl(control: AbstractControl, disable: boolean): void {
-    // Prevent weird behavior, which the control status will change after calling
-    // `disable()` or `enable()`, cause the resulting status unmatched with the conditions set.
-    window.requestAnimationFrame(() => {
-      disable ? control.disable() : control.enable();
-    });
+    disable ? control.disable() : control.enable();
+    this._globalVariableService.rootForm?.updateValueAndValidity();
   }
 
   private _hideControl$(controlPath: string, hide: boolean): Observable<any> {
@@ -163,41 +160,45 @@ export class FormConditionsService {
       });
     };
 
-    const getValidatorConfigs = (async: boolean) => {
+    const getConditionValidatorConfigs = (async: boolean) => {
       const actions = getActions(async);
-      const validatorConfigs = validators.filter((x) => {
+      const result = validators.filter((x) => {
         const prefix = async
           ? actionPrefix.asyncValidator
           : actionPrefix.validator;
         const actionName = `${prefix}.${x.name ?? ''}` as ConditionsActionEnum;
         const target = actions.includes(actionName);
 
-        return !target
-          ? false
-          : this._evaluateConditionsStatement(conditions[actionName]!);
+        if (target) {
+          return this._evaluateConditionsStatement(conditions[actionName]!);
+        }
+
+        return true;
       });
 
-      return validatorConfigs;
+      return result;
     };
 
     const toggleValidators = () => {
-      const configs = getValidatorConfigs(false);
-      const validators = this._formValidationService.getValidators(configs);
+      const validatorConfigs = getConditionValidatorConfigs(false);
+      const validatorFns =
+        this._formValidationService.getValidators(validatorConfigs);
 
-      control.setValidators(validators);
+      control.setValidators(validatorFns);
     };
 
     const toggleAsyncValidators = () => {
-      const configs = getValidatorConfigs(true);
-      const validators =
-        this._formValidationService.getAsyncValidators(configs);
+      const validatorConfigs = getConditionValidatorConfigs(true);
+      const validatorFns =
+        this._formValidationService.getAsyncValidators(validatorConfigs);
 
-      control.setAsyncValidators(validators);
+      control.setAsyncValidators(validatorFns);
     };
 
     toggleValidators();
     toggleAsyncValidators();
     control.updateValueAndValidity();
+    this._globalVariableService.rootForm?.updateValueAndValidity();
   }
 
   private _executeCustomActions(

@@ -51,8 +51,8 @@ export class FormValidationService {
       return EMPTY;
     }
 
-    return control.valueChanges.pipe(
-      startWith(control.value),
+    return control.statusChanges.pipe(
+      startWith(control.status),
       map(() =>
         this._getErrorMessages(control.errors, control.value, validators)
       )
