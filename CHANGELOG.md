@@ -1,3 +1,18 @@
+# 8.7.3 (2025-03-10)
+
+[6229bdd]: https://github.com/erqk/ng-dynamic-json-form/commit/6229bdd4ddab5f9afbc21ad52932299b539d1ded
+[8108b29]: https://github.com/erqk/ng-dynamic-json-form/commit/8108b29825d036134208b013ec9caecd688d9930
+[7ee59f6]: https://github.com/erqk/ng-dynamic-json-form/commit/7ee59f66f9820e085dba9225337d51806b0f418d
+
+| Commit    | Type | Description                                                                                 |
+| --------- | ---- | ------------------------------------------------------------------------------------------- |
+| [6229bdd] | fix  | Fail to get validation message on async validator.                                          |
+| [8108b29] | fix  | When no validator action is set in "conditions", don't filter the current validator config. |
+
+BREAKING CHANGE
+
+- [7ee59f6] For description position set as "after", place it below the validation message section.
+
 # 8.7.2 (2025-02-20)
 
 [17d03f6]: https://github.com/erqk/ng-dynamic-json-form/commit/17d03f63a6fa4568a37c8bfed0df75455e3042b1
