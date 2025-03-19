@@ -79,7 +79,7 @@ export class FormValidationService {
         customValidators?.[name]
       ) as ValidatorFn | null;
 
-      const result = builtInValidator ?? customValidator;
+      const result = customValidator ?? builtInValidator;
 
       return result;
     });
