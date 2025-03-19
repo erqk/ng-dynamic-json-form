@@ -8,57 +8,67 @@ export interface FormConfig {
   /**
    * User defined custom validators. Use `name` as the key to map target ValidatorFn.
    *
-   * @example
-   * // Config
+   * Config:
+   * ```json
    * {
    *    ...
    *    "validators": [
    *      { "name": "firstUppercase" }
    *    ]
    * }
+   * ```
    *
-   * // TS
+   * TS:
+   * ```ts
    * validators = {
    *    firstUppercase: firstUppercaseValidator,
    *    url: urlValidator,
    *    ...
    * }
+   * ```
    *
-   * // HTML
+   * HTML:
+   * ```html
    * <ng-dynamic-json-form
    *  [configs]="..."
    *  [customValidators]="validators"
    * ></ng-dynamic-json-form>
+   * ```
    */
   customValidators?: CustomValidators;
   /**
    * User defined custom async validators. Similar to custom validators.
    *
-   * @example
-   * // Config
+   * Config:
+   * ```json
    * {
    *    ...
    *    "asyncValidators": [
    *      ...
    *    ]
    * }
+   * ```
    *
-   * // TS
+   * TS:
+   * ```ts
    * asyncValidators = {
    *    ...
    * }
+   * ```
    *
-   * // HTML
+   * HTML:
+   * ```html
    * <ng-dynamic-json-form
    *  [configs]="..."
    *  [customAsyncValidators]="validators"
    * ></ng-dynamic-json-form>
+   * ```
    */
   customAsyncValidators?: CustomAsyncValidators;
   /**
    * If the key is matched with `type` in the config, then the corresponding component will be used.
    *
-   * @example
+   * ```ts
    * config = {
    *  ...
    *  type: "file"
@@ -67,8 +77,13 @@ export interface FormConfig {
    * uiComponents = {
    *  file: InputFileComponent
    * }
+   * ```
    */
   uiComponents?: UiComponents;
+  /**
+   * Default validation message to use for the specific validator in the entire form.
+   */
+  validationMessages?: { [validatorName: string]: string };
   /**
    * Custom component for all labels in this form
    */

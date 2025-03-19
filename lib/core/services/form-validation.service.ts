@@ -139,12 +139,16 @@ export class FormValidationService {
         validatorConfigs
       );
 
-      const customMessage = config?.message?.replace(
-        /{{value}}/g,
-        controlValue || ''
-      );
+      const configMessage = config?.message;
+      const defaultMessage =
+        this._globalVariableService.validationMessages?.[config?.name ?? ''];
+
+      const customMessage = (configMessage || defaultMessage)
+        ?.replace(/{{value}}/g, controlValue || '')
+        .replace(/{{validatorValue}}/g, config?.value);
 
       acc.push(customMessage || errorMessage(error));
+
       return acc;
     }, [] as string[]);
   }

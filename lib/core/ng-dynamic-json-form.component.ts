@@ -283,13 +283,11 @@ export class NgDynamicJsonFormComponent
 
   private _setupVariables(): void {
     const {
-      customAsyncValidators,
-      customValidators,
       errorComponent,
       labelComponent,
       loadingComponent,
-      hideErrorsForTypes,
       uiComponents,
+      ...rest
     } = this._providerConfig ?? {};
 
     const errors = {
@@ -315,18 +313,19 @@ export class NgDynamicJsonFormComponent
       ...errors,
       ...labels,
       ...loading,
-      customAsyncValidators,
-      customValidators,
-      customComponents: this.customComponents,
-      customTemplates: this.customTemplates,
-      conditionsActionFunctions: this.conditionsActionFunctions,
-      hostElement: this._el.nativeElement,
-      hideErrorsForTypes,
-      optionsSources: this.optionsSources,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
         ...uiComponents,
       },
+      customComponents: this.customComponents,
+      customTemplates: this.customTemplates,
+      conditionsActionFunctions: this.conditionsActionFunctions,
+      hostElement: this._el.nativeElement,
+      optionsSources: this.optionsSources,
+      customAsyncValidators: rest.customAsyncValidators,
+      customValidators: rest.customValidators,
+      hideErrorsForTypes: rest.hideErrorsForTypes,
+      validationMessages: rest.validationMessages,
     });
 
     this._globalVariablesInitialized = true;

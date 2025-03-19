@@ -45,6 +45,9 @@ export class GlobalVariableService {
 
   // Hide error message
   hideErrorsForTypes: FormConfig['hideErrorsForTypes'];
+
+  // Global validation messages
+  validationMessages: FormConfig['validationMessages'];
   // ======================================================================
 
   setup(variables: GlobalVariables): void {
