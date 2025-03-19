@@ -37,9 +37,56 @@ For the validator which needs value to validate like `min`, `max`.
 
 #### message
 
-Custom message to display for Angular's built-in validators.
+Custom validation message for **Angular's built-in validators**. The placeholders available are:
 
-<doc-code>
+- `{{value}}`
+- `{{validatorValue}}`
+
+## Validation message
+
+We can set the custom validation message for Angular's built-in validators via `message` property.
+
+### Display control's value
+
+```json
+validators: [
+  {
+    "name": "email",
+    "message": "The current email format: "{{value}}" is invalid."
+  },
+]
+```
+
+> Result: The current email format: "123.com" is invalid.
+
+### Display validator value
+
+```json
+validators: [
+  {
+    "name": "max",
+    "value": 100,
+    "message": "The value must not exceeds {{validatorValue}}!"
+  }
+]
+```
+
+> Result: The value must not exceeds 100!
+
+### Default validation message
+
+If `message` is not provided, then the default message set in the `validationMessages` will be used.
+
+```ts
+providers: [
+  provideNgDynamicJsonForm({
+      validationMessages: {
+        required: 'This field is required.',
+        min: 'The value must exceeds {{value}}!'
+      }
+  }),
+],
+```
 
 ## Add validator to control
 
