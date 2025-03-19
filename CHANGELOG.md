@@ -1,3 +1,11 @@
+# 8.7.4 (2025-03-19)
+
+[3ae737e]: https://github.com/erqk/ng-dynamic-json-form/commit/3ae737ef228442b51e1a817d0d7b3433a6cccc1c
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [3ae737e] | fix  | Use custom validator first if present. |
+
 # 8.7.3 (2025-03-10)
 
 [6229bdd]: https://github.com/erqk/ng-dynamic-json-form/commit/6229bdd4ddab5f9afbc21ad52932299b539d1ded
