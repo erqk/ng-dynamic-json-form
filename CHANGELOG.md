@@ -1,3 +1,11 @@
+# 8.7.5 (2025-03-19)
+
+[fcaba90]: https://github.com/erqk/ng-dynamic-json-form/commit/fcaba90f7366c0f8bc3791dbc13a1214b9043f50
+
+| Commit    | Type | Description                                 |
+| --------- | ---- | ------------------------------------------- |
+| [fcaba90] | feat | Add support for global validation messages. |
+
 # 8.7.4 (2025-03-19)
 
 [3ae737e]: https://github.com/erqk/ng-dynamic-json-form/commit/3ae737ef228442b51e1a817d0d7b3433a6cccc1c
