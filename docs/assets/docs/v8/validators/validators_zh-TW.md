@@ -39,7 +39,56 @@
 
 #### message
 
-針對 Angular 的內建驗證器，設定自訂訊息。
+針對 **Angular 的內建驗證器**，設定自訂訊息。以下的 placeholder 可提供使用：
+
+- `{{value}}`
+- `{{validatorValue}}`
+
+## 驗證器訊息
+
+針對 Angular 內件的驗證器，我們可以通過 `message` 設定自訂訊息。
+
+### 顯示當前輸入的值
+
+```json
+validators: [
+  {
+    "name": "email",
+    "message": "輸入的 Email: "{{value}}" 格式不正確。"
+  },
+]
+```
+
+> 結果: 輸入的 Email: 123.com 格式不正確。
+
+### 顯示驗證器設定的值
+
+```json
+validators: [
+  {
+    "name": "max",
+    "value": 100,
+    "message": "不可大於 {{validatorValue}}!"
+  }
+]
+```
+
+> 結果: 不可大於 100!
+
+### 預設訊息
+
+若無設定 `message`，則使用 `validationMessages` 內的預設訊息。
+
+```ts
+providers: [
+  provideNgDynamicJsonForm({
+      validationMessages: {
+        required: '此欄位必填。',
+        min: '必須大於 {{value}}!'
+      }
+  }),
+],
+```
 
 ## 加入驗證器
 
