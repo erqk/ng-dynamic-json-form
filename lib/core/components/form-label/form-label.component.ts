@@ -11,7 +11,7 @@ import {
   Type,
   ViewChild,
   ViewContainerRef,
-  inject
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
@@ -25,6 +25,9 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
   imports: [CommonModule],
   templateUrl: './form-label.component.html',
   styleUrls: ['./form-label.component.scss'],
+  host: {
+    class: 'form-label',
+  },
 })
 export class FormLabelComponent {
   private _renderer2 = inject(Renderer2);
@@ -47,7 +50,6 @@ export class FormLabelComponent {
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor?: ViewContainerRef;
 
-  @HostBinding('class') hostClass = 'form-label';
   @HostBinding('style.display') get styleDisplay() {
     if (!this.label) return null;
     if (this.customComponent) return null;

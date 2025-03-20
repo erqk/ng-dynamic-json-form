@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -10,11 +10,12 @@ import { PropsBindingDirective } from '../../directives';
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-select.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicSelectComponent extends CustomControlComponent {
   override control = new FormControl(-1);
-
-  @HostBinding('class') hostClass = 'ui-basic';
 
   onTouched = () => {};
   onChange = (_: any) => {};

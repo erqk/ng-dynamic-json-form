@@ -1,8 +1,8 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, DestroyRef, HostBinding, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Subject, fromEvent, merge, takeUntil, tap } from 'rxjs';
+import { Subject, fromEvent, takeUntil, tap } from 'rxjs';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
 import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
@@ -54,6 +54,9 @@ import { NavigatorService } from '../../services/navigator.service';
     </ng-template>
   `,
   styleUrls: ['./navigator-title.component.scss'],
+  host: {
+    class: 'beauty-scrollbar',
+  },
 })
 export class NavigatorTitleComponent {
   private _destroyRef = inject(DestroyRef);
@@ -67,8 +70,6 @@ export class NavigatorTitleComponent {
 
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
-
-  @HostBinding('class') hostClass = 'beauty-scrollbar';
 
   constructor() {
     this._navigatorService.titles$

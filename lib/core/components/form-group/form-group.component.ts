@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  HostBinding,
   Input,
   QueryList,
   ViewChildren,
@@ -30,6 +29,9 @@ import { FormControlComponent } from '../form-control/form-control.component';
     ControlTypeByConfigPipe,
   ],
   templateUrl: './form-group.component.html',
+  host: {
+    class: 'grid-container form-group-container',
+  },
 })
 export class FormGroupComponent {
   private _globalVariableService = inject(GlobalVariableService);
@@ -39,8 +41,6 @@ export class FormGroupComponent {
   @Input() parentForm = new UntypedFormGroup({});
   @Input() hostLayout?: FormLayout;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
-
-  @HostBinding('class') hostClass = 'grid-container form-group-container';
 
   @ViewChildren(FormGroupComponent)
   formGroupRefs?: QueryList<FormGroupComponent>;

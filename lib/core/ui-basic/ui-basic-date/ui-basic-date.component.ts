@@ -1,11 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import {
-  Component,
-  HostBinding,
-  LOCALE_ID,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { Component, LOCALE_ID, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -16,6 +10,9 @@ import { PropsBindingDirective } from '../../directives';
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-date.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicDateComponent
   extends CustomControlComponent
@@ -25,8 +22,6 @@ export class UiBasicDateComponent
   private _onChange?: any;
 
   dateSettings = { min: '', max: '' };
-
-  @HostBinding('class') hostClass = 'ui-basic';
 
   override control = new FormGroup({
     date: new FormControl(''),

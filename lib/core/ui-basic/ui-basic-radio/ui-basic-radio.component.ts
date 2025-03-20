@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -10,14 +10,15 @@ import { PropsBindingDirective } from '../../directives';
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-radio.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicRadioComponent extends CustomControlComponent {
   private _onChange?: any;
 
   selectedIndex = -1;
   isDisabled = false;
-
-  @HostBinding('class') hostClass = 'ui-basic';
 
   override writeValue(obj: any): void {
     const index =

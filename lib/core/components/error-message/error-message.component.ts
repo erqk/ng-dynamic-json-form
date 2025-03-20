@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   Component,
   DestroyRef,
-  HostBinding,
   Input,
   TemplateRef,
   Type,
@@ -23,6 +22,9 @@ import { CustomErrorMessage } from '../custom-error-message/custom-error-message
   standalone: true,
   imports: [CommonModule],
   templateUrl: './error-message.component.html',
+  host: {
+    class: 'error-message',
+  },
 })
 export class ErrorMessageComponent implements AfterViewInit {
   private _internal_destroyRef = inject(DestroyRef);
@@ -36,8 +38,6 @@ export class ErrorMessageComponent implements AfterViewInit {
 
   @ViewChild('componentAnchor', { read: ViewContainerRef })
   componentAnchor!: ViewContainerRef;
-
-  @HostBinding('class') hostClass = 'error-message';
 
   errorMessages: string[] = [];
 
