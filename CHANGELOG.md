@@ -1,3 +1,11 @@
+# 8.7.7 (2025-03-20)
+
+[0561fd3]: https://github.com/erqk/ng-dynamic-json-form/commit/0561fd30c46885a9e6a9742178f246c7cd8c6f85
+
+| Commit    | Type | Description               |
+| --------- | ---- | ------------------------- |
+| [0561fd3] | fix  | Add position-after class. |
+
 # 8.7.6 (2025-03-20)
 
 [3fbf20c]: https://github.com/erqk/ng-dynamic-json-form/commit/3fbf20cf57c0f69c2a868792a48f52de0460cb0b
