@@ -77,7 +77,8 @@
   <span
     class="form-description"
     [ngClass]="{
-      'position-after': data.layout?.descriptionPosition === 'after'
+      'position-after':
+        (data.layout?.descriptionPosition ?? descriptionPosition) === 'after'
     }"
     [controlLayout]="{
       type: 'description',
