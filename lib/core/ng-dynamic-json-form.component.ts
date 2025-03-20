@@ -173,6 +173,7 @@ export class NgDynamicJsonFormComponent
   @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
+  @Input() descriptionPosition?: FormLayout['descriptionPosition'];
   @Input() rootClass?: string;
   @Input() rootStyles?: string;
   @Input() hideErrorMessage?: boolean;
@@ -322,6 +323,7 @@ export class NgDynamicJsonFormComponent
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
       conditionsActionFunctions: this.conditionsActionFunctions,
+      descriptionPosition: this.descriptionPosition,
       hostElement: this._el.nativeElement,
       optionsSources: this.optionsSources,
       customAsyncValidators: rest.customAsyncValidators,

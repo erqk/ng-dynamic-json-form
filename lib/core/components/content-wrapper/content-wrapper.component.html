@@ -32,7 +32,8 @@
     <!-- Description (before) -->
     <ng-container
       *ngIf="
-        config.description && config.layout?.descriptionPosition !== 'after'
+        config.description &&
+        (config.layout?.descriptionPosition ?? descriptionPosition) !== 'after'
       "
       [ngTemplateOutlet]="descriptionTemplate"
       [ngTemplateOutletContext]="{ data: config }"
@@ -62,7 +63,8 @@
     <!-- Description (after) -->
     <ng-container
       *ngIf="
-        config.description && config.layout?.descriptionPosition === 'after'
+        config.description &&
+        (config.layout?.descriptionPosition ?? descriptionPosition) === 'after'
       "
       [ngTemplateOutlet]="descriptionTemplate"
       [ngTemplateOutletContext]="{ data: config }"

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { FormLayout } from 'ng-dynamic-json-form';
 import { BehaviorSubject } from 'rxjs';
 import { FormControlConfig, UiComponents } from '../models';
 import { CustomAsyncValidators } from '../models/custom-async-validators.type';
@@ -13,6 +14,7 @@ interface GlobalVariables
   > {}
 @Injectable()
 export class GlobalVariableService {
+  descriptionPosition?: FormLayout['descriptionPosition'];
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;

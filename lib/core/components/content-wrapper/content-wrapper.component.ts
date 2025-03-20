@@ -28,7 +28,8 @@ export class ContentWrapperComponent {
   @Input() config?: FormControlConfig;
   @Input() control?: AbstractControl;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
-  @Input() controlLayoutDisabled = false;
+
+  descriptionPosition = this._globalVariableService.descriptionPosition;
 
   errorComponents = this._globalVariableService.errorComponents;
   errorTemplates = this._globalVariableService.errorTemplates;
