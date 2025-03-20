@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { FormLayout } from 'ng-dynamic-json-form';
 import { BehaviorSubject } from 'rxjs';
-import { FormControlConfig, UiComponents } from '../models';
+import { FormControlConfig, FormLayout, UiComponents } from '../models';
 import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { CustomValidators } from '../models/custom-validators.type';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
