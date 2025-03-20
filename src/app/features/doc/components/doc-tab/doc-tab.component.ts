@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Renderer2, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 
 @Component({
   selector: 'app-doc-tab',
@@ -10,7 +10,6 @@ import { Component, ElementRef, Renderer2, inject } from '@angular/core';
 })
 export class DocTabComponent {
   private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
   private _resizeObserver?: ResizeObserver;
 
   children: HTMLElement[] = [];
@@ -52,7 +51,6 @@ export class DocTabComponent {
   }
 
   private _listenChildrenMutation(): void {
-
     const resizeCallback: ResizeObserverCallback = () => {
       this._updateContainerHeight();
     };
@@ -65,17 +63,13 @@ export class DocTabComponent {
 
   private _updateContainerHeight(): void {
     const hostEl = this._el.nativeElement as HTMLElement;
-    const contentEl = hostEl.querySelector('.content');
+    const contentEl = hostEl.querySelector('.content') as HTMLElement | null;
     const selectedTab = this.children.find(
       (x) => x.getAttribute('name') === this.activeTab
     );
 
     if (!selectedTab) return;
 
-    this._renderer2.setStyle(
-      contentEl,
-      'height',
-      selectedTab.scrollHeight + 'px'
-    );
+    contentEl?.style.setProperty('height', selectedTab.scrollHeight + 'px');
   }
 }

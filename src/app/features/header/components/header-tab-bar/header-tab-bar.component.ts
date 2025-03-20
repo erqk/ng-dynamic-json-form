@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  inject,
   Input,
-  Renderer2,
   SimpleChanges,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { Subject, filter, takeUntil, tap } from 'rxjs';
+import { filter, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'header-tab-bar',
@@ -17,18 +17,15 @@ import { Subject, filter, takeUntil, tap } from 'rxjs';
   styleUrls: ['./header-tab-bar.component.scss'],
 })
 export class HeaderTabBarComponent {
+  private _el = inject(ElementRef);
+  private _router = inject(Router);
+
   @Input() links: {
     route: string;
     label: string;
   }[] = [];
 
   private _onDestroy$ = new Subject();
-
-  constructor(
-    private _router: Router,
-    private _el: ElementRef,
-    private _renderer2: Renderer2
-  ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { links } = simpleChanges;
@@ -72,7 +69,7 @@ export class HeaderTabBarComponent {
       }
 
       if (!activeTab) {
-        this._renderer2.setStyle(indicator, 'opacity', '0');
+        indicator.style.setProperty('opacity', '0');
         return;
       }
 
@@ -94,9 +91,9 @@ export class HeaderTabBarComponent {
         block: 'nearest',
       });
 
-      this._renderer2.setStyle(indicator, 'opacity', '1');
-      this._renderer2.setStyle(indicator, 'left', `${left + leftOffset}px`);
-      this._renderer2.setStyle(indicator, 'width', `${indicatorWidth}px`);
+      indicator.style.setProperty('opacity', '1');
+      indicator.style.setProperty('left', `${left + leftOffset}px`);
+      indicator.style.setProperty('width', `${indicatorWidth}px`);
     });
   }
 }

@@ -3,7 +3,6 @@ import {
   ElementRef,
   HostListener,
   Input,
-  Renderer2,
   inject,
 } from '@angular/core';
 
@@ -13,8 +12,6 @@ import {
 })
 export class TextareaAutHeightDirective {
   private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
-
   private _hostEl?: HTMLElement;
 
   @Input() autoResize = true;
@@ -27,7 +24,7 @@ export class TextareaAutHeightDirective {
     this._hostEl = this._el.nativeElement as HTMLElement;
     if (!this._hostEl) return;
 
-    this._renderer2.setStyle(this._hostEl, 'resize', 'none');
+    this._hostEl.style.setProperty('resize', 'none');
     this._setHeight();
   }
 
@@ -43,9 +40,8 @@ export class TextareaAutHeightDirective {
       parseFloat(window.getComputedStyle(this._hostEl).borderWidth)
     );
 
-    this._renderer2.removeStyle(this._hostEl, 'height');
-    this._renderer2.setStyle(
-      this._hostEl,
+    this._hostEl.style.removeProperty('height');
+    this._hostEl.style.setProperty(
       'height',
       `${this._hostEl.scrollHeight + borderWidth * 2}px`
     );

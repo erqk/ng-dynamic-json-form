@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, skip, takeUntil, tap } from 'rxjs';
-import { ThemeService } from '../../services/theme.service';
 import { THEME_LIST } from '../../constants/themes.constant';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-theme-switcher',
@@ -13,7 +13,6 @@ import { THEME_LIST } from '../../constants/themes.constant';
   styles: [],
 })
 export class ThemeSwitcherComponent {
-  private _renderer2 = inject(Renderer2);
   private _themeService = inject(ThemeService);
   private readonly _onDestroy$ = new Subject<void>();
 
@@ -44,7 +43,8 @@ export class ThemeSwitcherComponent {
     if (!nextTheme) return;
 
     this.currentTheme = nextTheme;
-    this._renderer2.setAttribute(html, 'class', nextTheme.key);
+
+    html?.setAttribute('class', nextTheme.key);
     this._themeService.theme$.next(nextTheme.key);
     this._themeService.savedTheme = nextTheme.key;
 

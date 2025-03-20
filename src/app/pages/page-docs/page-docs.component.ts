@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, DestroyRef, Renderer2, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,6 @@ import { NavigatorIndexComponent } from 'src/app/features/navigator/components/n
 import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
 import { NavigatorService } from 'src/app/features/navigator/services/navigator.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
-import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
 @Component({
   selector: 'app-page-docs',
@@ -34,7 +33,6 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
     UiContentWrapperComponent,
     DocsRouterLinkDirective,
     NavigatorIndexComponent,
-    VersionSelectorComponent,
     NavigatorTitleComponent,
   ],
   templateUrl: './page-docs.component.html',
@@ -47,7 +45,6 @@ export class PageDocsComponent {
   private _router = inject(Router);
   private _title = inject(Title);
   private _viewportScroller = inject(ViewportScroller);
-  private _renderer2 = inject(Renderer2);
   private _docLoaderService = inject(DocsLoaderService);
   private _navigatorService = inject(NavigatorService);
   private _markdownService = inject(MarkdownService);
@@ -96,11 +93,8 @@ export class PageDocsComponent {
   }
 
   setSmoothScroll(value: boolean): void {
-    this._renderer2.setStyle(
-      document.querySelector('html'),
-      'scroll-behavior',
-      value ? 'smooth' : null
-    );
+    const html = document.querySelector('html') as HTMLElement;
+    html.style.scrollBehavior = value ? 'smooth' : '';
   }
 
   private _getDefaultPath$(): Observable<any> {
@@ -118,7 +112,7 @@ export class PageDocsComponent {
           const currentRoute = this._router.url;
           const { selectedLanguage, languageFromUrl } = this._langService;
           const newRoute = currentRoute.replace(
-            `_${languageFromUrl}.md` ?? '',
+            !languageFromUrl ? '' : `_${languageFromUrl}.md`,
             `_${selectedLanguage}.md`
           );
 

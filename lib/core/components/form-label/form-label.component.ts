@@ -5,7 +5,6 @@ import {
   HostBinding,
   HostListener,
   Input,
-  Renderer2,
   SimpleChanges,
   TemplateRef,
   Type,
@@ -30,7 +29,6 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
   },
 })
 export class FormLabelComponent {
-  private _renderer2 = inject(Renderer2);
   private _destroyRef = inject(DestroyRef);
   private _viewInitialized = false;
   private _collapsibleElCssText = '';
@@ -144,8 +142,7 @@ export class FormLabelComponent {
     }).pipe(
       filter(() => this.expand),
       tap(() => {
-        this._renderer2.removeStyle(this.collapsibleEl, 'height');
-        this._renderer2.removeStyle(this.collapsibleEl, 'overflow');
+        this.collapsibleEl?.classList.remove(...['height', 'overflow']);
       })
     );
 
@@ -166,7 +163,7 @@ export class FormLabelComponent {
     }
 
     this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
-    this._renderer2.addClass(this.collapsibleEl, 'collapsible-container');
+    this.collapsibleEl.classList.add('collapsible-container');
     this._listenTransition();
 
     if (!this.expand) {
@@ -179,11 +176,11 @@ export class FormLabelComponent {
 
     stylesToRemove.forEach((style) => {
       if (!this._collapsibleElCssText.includes(style)) return;
-      this._renderer2.removeStyle(this.collapsibleEl, style);
+      this.collapsibleEl?.style.removeProperty(style);
     });
 
-    this._renderer2.setStyle(this.collapsibleEl, 'overflow', 'hidden');
-    this._renderer2.setStyle(this.collapsibleEl, 'height', '0px');
+    this.collapsibleEl?.style.setProperty('overflow', 'hidden');
+    this.collapsibleEl?.style.setProperty('height', '0px');
   }
 
   private _setExpandStyle(): void {
@@ -192,14 +189,12 @@ export class FormLabelComponent {
       : this.collapsibleEl.scrollHeight + 1;
 
     // Set existing styles from collapsible element first
-    this._renderer2.setProperty(
-      this.collapsibleEl,
-      'style',
-      this._collapsibleElCssText || null
-    );
+    if (this._collapsibleElCssText) {
+      this.collapsibleEl?.setAttribute('style', this._collapsibleElCssText);
+    }
 
     // Then set height later to overwrite height style
-    this._renderer2.setStyle(this.collapsibleEl, 'height', `${height}px`);
+    this.collapsibleEl?.style.setProperty('height', `${height}px`);
   }
 
   private get _collapsible(): boolean {

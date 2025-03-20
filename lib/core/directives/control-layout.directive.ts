@@ -1,19 +1,13 @@
-import {
-  Directive,
-  ElementRef,
-  Input,
-  OnChanges,
-  Renderer2,
-  inject,
-} from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, inject } from '@angular/core';
 import { FormControlConfig } from '../models';
+import { getClassListFromString } from '../utilities/get-class-list-from-string';
+import { getStyleListFromString } from '../utilities/get-style-list-from-string';
 
 @Directive({
   selector: '[controlLayout]',
   standalone: true,
 })
 export class ControlLayoutDirective implements OnChanges {
-  private _renderer2 = inject(Renderer2);
   private _el = inject(ElementRef);
 
   @Input() controlLayout?: {
@@ -37,25 +31,16 @@ export class ControlLayoutDirective implements OnChanges {
     const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
 
     if (classNames.length > 0) {
-      classNames
-        .split(/\s{1,}/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .forEach((name) => {
-          this._renderer2.addClass(hostEl, name);
-        });
+      hostEl.classList.add(...getClassListFromString(classNames));
     }
 
     if (styles.length > 0) {
-      const styleProperties = styles
-        .split(';')
-        .map((x) => x.trim())
-        .filter(Boolean);
+      const styleList = getStyleListFromString(styles);
 
-      styleProperties.forEach((style) => {
-        const [name, value] = style.split(':').map((x) => x.trim());
+      for (const item of styleList) {
+        const [name, value] = item.split(':').map((x) => x.trim());
         hostEl.style.setProperty(name, value);
-      });
+      }
     }
   }
 }

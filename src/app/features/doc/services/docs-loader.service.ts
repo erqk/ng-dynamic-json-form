@@ -1,11 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  Injectable,
-  RendererFactory2,
-  TransferState,
-  inject,
-  makeStateKey,
-} from '@angular/core';
+import { Injectable, TransferState, inject, makeStateKey } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
@@ -22,7 +16,6 @@ import { VersionService } from '../../version/version.service';
   providedIn: 'root',
 })
 export class DocsLoaderService {
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _http = inject(HttpClient);
   private _transferState = inject(TransferState);
   private _versionService = inject(VersionService);
@@ -138,8 +131,7 @@ export class DocsLoaderService {
 
         tableWrapper.classList.add('table-wrapper');
         tableWrapper.appendChild(tableCloned);
-        this._renderer2.appendChild(tableWrapper, tableCloned);
-        this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
+        table.parentElement?.insertBefore(tableWrapper, table);
         table.remove();
       }
     });
