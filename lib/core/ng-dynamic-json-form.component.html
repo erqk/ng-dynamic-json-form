@@ -18,8 +18,10 @@
 
 <ng-container *ngIf="form">
   <form-group
-    [parentForm]="form"
     [configs]="configGet"
     [collapsibleState]="collapsibleState"
+    [parentForm]="form"
+    [rootClass]="rootClass"
+    [rootStyles]="rootStyles"
   ></form-group>
 </ng-container>

@@ -172,8 +172,10 @@ export class NgDynamicJsonFormComponent
    */
   @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
-  @Input() hideErrorMessage?: boolean;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
+  @Input() rootClass?: string;
+  @Input() rootStyles?: string;
+  @Input() hideErrorMessage?: boolean;
 
   // Custom error components/templates
   @Input() errorComponents?: CustomErrorComponents;
