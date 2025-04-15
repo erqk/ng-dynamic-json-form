@@ -54,6 +54,10 @@ provideNgDynamicJsonForm({
 }),
 ```
 
+#### showErrorsOnTouched
+
+是否在控制器狀態為 `touched` 後，顯示欄位錯誤訊息。預設為 `true`。
+
 ## FormControlConfig
 
 生成表單的設定。
