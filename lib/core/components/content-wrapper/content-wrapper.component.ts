@@ -30,6 +30,8 @@ export class ContentWrapperComponent {
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
 
   descriptionPosition = this._globalVariableService.descriptionPosition;
+  hideErrors$ = this._globalVariableService.hideErrorMessage$;
+  showErrorsOnTouched = this._globalVariableService.showErrorsOnTouched;
 
   errorComponents = this._globalVariableService.errorComponents;
   errorTemplates = this._globalVariableService.errorTemplates;
@@ -41,24 +43,30 @@ export class ContentWrapperComponent {
   labelComponentDefault = this._globalVariableService.labelComponentDefault;
   labelTemplateDefault = this._globalVariableService.labelTemplateDefault;
 
-  get renderErrorSection(): boolean {
+  renderErrorSection = (() => {
     const typesToHide = this._globalVariableService.hideErrorsForTypes ?? [];
     const type = this.config?.type ?? 'text';
 
     return typesToHide.filter(Boolean).every((x) => x !== type);
-  }
+  })();
 
-  get hideErrors(): boolean {
+  get showErrors(): boolean {
     const controlTouched = this.control?.touched ?? false;
     const controlDirty = this.control?.dirty ?? false;
     const hasErrors = !!this.control?.errors;
 
-    // Secondary condition
-    if (this._globalVariableService.hideErrorMessage$.value) {
+    if (!hasErrors) {
+      return false;
+    }
+
+    if (this.hideErrors$.value === false) {
       return true;
     }
 
-    // Last resort
-    return (!controlDirty && !controlTouched) || !hasErrors;
+    if (this.showErrorsOnTouched) {
+      return controlTouched || controlDirty;
+    }
+
+    return controlDirty;
   }
 }

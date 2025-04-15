@@ -17,6 +17,7 @@ export class GlobalVariableService {
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
+  showErrorsOnTouched = true;
 
   // =============== The variables that must be initialized ===============
   hostElement?: HTMLElement;

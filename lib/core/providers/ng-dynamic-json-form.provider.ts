@@ -100,6 +100,7 @@ export interface FormConfig {
    * Hide the error message for specific type of UI components
    */
   hideErrorsForTypes?: FormControlType[];
+  showErrorsOnTouched?: boolean;
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(
