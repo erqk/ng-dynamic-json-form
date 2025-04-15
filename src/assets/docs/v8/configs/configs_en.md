@@ -54,6 +54,10 @@ provideNgDynamicJsonForm({
 }),
 ```
 
+#### showErrorsOnTouched
+
+Show errors when the control is `touched`. Default is true.
+
 ## FormControlConfig
 
 The configuration to generate form.
