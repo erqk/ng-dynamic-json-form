@@ -1,3 +1,11 @@
+# 8.8.0 (2025-04-15)
+
+[88ab17a]: https://github.com/erqk/ng-dynamic-json-form/commit/88ab17ac1de175540d54ab5de629cd7358207570
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [88ab17a] | feat | Add control to show errors on touched. |
+
 # 8.7.7 (2025-03-20)
 
 [0561fd3]: https://github.com/erqk/ng-dynamic-json-form/commit/0561fd30c46885a9e6a9742178f246c7cd8c6f85
