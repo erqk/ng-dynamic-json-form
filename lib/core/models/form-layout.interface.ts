@@ -16,8 +16,8 @@ export interface FormLayout {
 
   /**Put description before or after input */
   descriptionPosition?: 'before' | 'after';
-  
-  /**Set to true to take control of how to display label */
+
+  /**Set to true to take control of label display on your own */
   hideLabel?: boolean;
 
   /**Enable expand/collapse of content. The default state will be determined by value provided */

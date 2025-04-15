@@ -7,8 +7,11 @@
 @Input() customComponents?: CustomComponents;
 @Input() customTemplates?: CustomTemplates;
 @Input() conditionsActionFuntions?: ConditionsActionFunctions;
-@Input() hideErrorMessage?: boolean;
 @Input() collapsibleState?: FormLayout['contentCollapsible'];
+@Input() descriptionPosition?: FormLayout['descriptionPosition'];
+@Input() rootClass?: string;
+@Input() rootStyles?: string;
+@Input() hideErrorMessage?: boolean;
 @Input() errorComponents?: CustomErrorComponents;
 @Input() errorComponentDefault?: Type<CustomErrorMessage>;
 @Input() errorTemplates?: CustomTemplates;
@@ -33,6 +36,18 @@
 ### conditionsActionFuntions
 
 請參閱 [執行自訂動作](../../v8/conditions/conditions_zh-TW.md#執行自訂動作)。
+
+### collapsibleState
+
+控制所有展開、收合的狀態。
+
+### descriptionPosition
+
+設定所有說明欄位的預設位置。
+
+### rootClass, rootStyes
+
+父層表單容器的 class 和 styles。
 
 ### hideErrorMessage
 
@@ -77,10 +92,6 @@ submit(): void {
 </doc-tab>
 
 > 為了觸發 change detection，`hideErrors` 一開始為 undefined，在點擊送出按鈕之後再賦值。
-
-### collapsibleState
-
-控制所有展開、收合的狀態。
 
 ### optionsSources
 

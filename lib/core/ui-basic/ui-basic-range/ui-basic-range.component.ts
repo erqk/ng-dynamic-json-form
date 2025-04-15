@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -10,14 +10,15 @@ import { PropsBindingDirective } from '../../directives';
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-range.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicRangeComponent extends CustomControlComponent {
   override control = new FormControl(0);
   tickMarks: any[] = [];
 
   onChange?: any;
-
-  @HostBinding('class') hostClass = 'ui-basic';
 
   override registerOnChange(fn: any): void {
     this.onChange = fn;

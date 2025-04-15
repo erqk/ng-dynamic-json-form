@@ -4,7 +4,6 @@ import {
   ElementRef,
   Injector,
   Input,
-  Renderer2,
   SimpleChange,
   inject,
 } from '@angular/core';
@@ -20,7 +19,6 @@ export class PropsBindingDirective {
   private _injector = inject(Injector);
   private _cd = inject(ChangeDetectorRef);
   private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
   /**
    * Must ensure the view is initialized before applying any properties binding
    */
@@ -51,7 +49,7 @@ export class PropsBindingDirective {
       return;
     }
 
-    const host = this._el.nativeElement;
+    const host = this._el.nativeElement as HTMLElement | undefined;
 
     for (const item of propsBinding) {
       const { props, key, omit = [] } = item;
@@ -76,8 +74,8 @@ export class PropsBindingDirective {
             target.ngOnChanges({ [key]: simpleChange });
           }
         } else if (host) {
-          this._renderer2.setAttribute(host, key, value);
-          this._renderer2.setProperty(host, key, value);
+          host.style.setProperty(key, value);
+          host.setAttribute(key, value);
         }
       }
     }

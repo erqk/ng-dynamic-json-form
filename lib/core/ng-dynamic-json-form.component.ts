@@ -172,8 +172,11 @@ export class NgDynamicJsonFormComponent
    */
   @Input() conditionsActionFunctions?: ConditionsActionFunctions;
 
-  @Input() hideErrorMessage?: boolean;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
+  @Input() descriptionPosition?: FormLayout['descriptionPosition'];
+  @Input() rootClass?: string;
+  @Input() rootStyles?: string;
+  @Input() hideErrorMessage?: boolean;
 
   // Custom error components/templates
   @Input() errorComponents?: CustomErrorComponents;
@@ -287,7 +290,7 @@ export class NgDynamicJsonFormComponent
       labelComponent,
       loadingComponent,
       uiComponents,
-      ...rest
+      ...providerProps
     } = this._providerConfig ?? {};
 
     const errors = {
@@ -320,12 +323,14 @@ export class NgDynamicJsonFormComponent
       customComponents: this.customComponents,
       customTemplates: this.customTemplates,
       conditionsActionFunctions: this.conditionsActionFunctions,
+      descriptionPosition: this.descriptionPosition,
       hostElement: this._el.nativeElement,
       optionsSources: this.optionsSources,
-      customAsyncValidators: rest.customAsyncValidators,
-      customValidators: rest.customValidators,
-      hideErrorsForTypes: rest.hideErrorsForTypes,
-      validationMessages: rest.validationMessages,
+      customAsyncValidators: providerProps.customAsyncValidators,
+      customValidators: providerProps.customValidators,
+      hideErrorsForTypes: providerProps.hideErrorsForTypes,
+      showErrorsOnTouched: providerProps.showErrorsOnTouched ?? true,
+      validationMessages: providerProps.validationMessages,
     });
 
     this._globalVariablesInitialized = true;

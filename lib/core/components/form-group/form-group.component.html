@@ -9,17 +9,17 @@
           [config]="item"
           [control]="targetControl"
           [collapsibleState]="collapsibleState"
-          [hostId]="{
-          parentId,
-          controlName: item.formControlName,
-        }"
-          [ngClass]="{
-          'form-control-container': (item | controlTypeByConfig) === 'FormControl',
-          readonly: item.readonly,
-        }"
           [controlLayout]="{
             type: 'host',
             layout: item.layout
+          }"
+          [hostId]="{
+            parentId,
+            controlName: item.formControlName,
+          }"
+          [ngClass]="{
+            'form-control-container': (item | controlTypeByConfig) === 'FormControl',
+            readonly: item.readonly,
           }"
         >
           <!-- FormControl -->

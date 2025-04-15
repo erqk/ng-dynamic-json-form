@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -10,11 +10,12 @@ import { PropsBindingDirective } from '../../directives';
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-checkbox.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicCheckboxComponent extends CustomControlComponent {
   private _onChange?: any;
-
-  @HostBinding('class') hostClass = 'ui-basic';
 
   override control = new FormArray<FormControl>([]);
 

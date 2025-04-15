@@ -1,3 +1,33 @@
+# 8.8.0 (2025-04-15)
+
+[88ab17a]: https://github.com/erqk/ng-dynamic-json-form/commit/88ab17ac1de175540d54ab5de629cd7358207570
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [88ab17a] | feat | Add control to show errors on touched. |
+
+# 8.7.7 (2025-03-20)
+
+[0561fd3]: https://github.com/erqk/ng-dynamic-json-form/commit/0561fd30c46885a9e6a9742178f246c7cd8c6f85
+
+| Commit    | Type | Description               |
+| --------- | ---- | ------------------------- |
+| [0561fd3] | fix  | Add position-after class. |
+
+# 8.7.6 (2025-03-20)
+
+[3fbf20c]: https://github.com/erqk/ng-dynamic-json-form/commit/3fbf20cf57c0f69c2a868792a48f52de0460cb0b
+[af5e5ac]: https://github.com/erqk/ng-dynamic-json-form/commit/af5e5acd61e5716fdddd6f777fa12785ac9fa5fc
+[f69d732]: https://github.com/erqk/ng-dynamic-json-form/commit/f69d732e3d84342d2c3beb022e535d5d4448d904
+[a08535c]: https://github.com/erqk/ng-dynamic-json-form/commit/a08535cc1e1829bfeabd192bedcf9176273d1e7e
+
+| Commit    | Type     | Description                                       |
+| --------- | -------- | ------------------------------------------------- |
+| [3fbf20c] | feat     | Add support for root class and root styles.       |
+| [af5e5ac] | feat     | Enable setting for description position globally. |
+| [f69d732] | refactor | Use host attribute to add host class.             |
+| [a08535c] | refactor | Remove Renderer2 usages.                          |
+
 # 8.7.5 (2025-03-19)
 
 [fcaba90]: https://github.com/erqk/ng-dynamic-json-form/commit/fcaba90f7366c0f8bc3791dbc13a1214b9043f50

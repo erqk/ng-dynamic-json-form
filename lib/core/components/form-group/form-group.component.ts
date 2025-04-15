@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  HostBinding,
+  ElementRef,
   Input,
+  OnChanges,
   QueryList,
+  SimpleChanges,
   ViewChildren,
   inject,
 } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { getClassListFromString } from '../../../core/utilities/get-class-list-from-string';
+import { getStyleListFromString } from '../../../core/utilities/get-style-list-from-string';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { HostIdDirective } from '../../directives/host-id.directive';
 import { FormControlConfig } from '../../models';
@@ -30,17 +34,20 @@ import { FormControlComponent } from '../form-control/form-control.component';
     ControlTypeByConfigPipe,
   ],
   templateUrl: './form-group.component.html',
+  host: {
+    class: 'grid-container form-group-container',
+  },
 })
-export class FormGroupComponent {
+export class FormGroupComponent implements OnChanges {
+  private _el = inject(ElementRef);
   private _globalVariableService = inject(GlobalVariableService);
 
   @Input() configs?: FormControlConfig[];
+  @Input() collapsibleState?: FormLayout['contentCollapsible'];
   @Input() parentId?: string;
   @Input() parentForm = new UntypedFormGroup({});
-  @Input() hostLayout?: FormLayout;
-  @Input() collapsibleState?: FormLayout['contentCollapsible'];
-
-  @HostBinding('class') hostClass = 'grid-container form-group-container';
+  @Input() rootClass?: string;
+  @Input() rootStyles?: string;
 
   @ViewChildren(FormGroupComponent)
   formGroupRefs?: QueryList<FormGroupComponent>;
@@ -49,6 +56,25 @@ export class FormGroupComponent {
   formControlRefs?: QueryList<FormControlComponent>;
 
   customComponents = this._globalVariableService.customComponents;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const host = this._el.nativeElement as HTMLElement;
+    const { rootClass, rootStyles } = changes;
+
+    if (rootClass) {
+      const classList = getClassListFromString(rootClass.currentValue);
+      host.classList.add(...classList);
+    }
+
+    if (rootStyles) {
+      const styleList = getStyleListFromString(rootStyles.currentValue);
+
+      for (const item of styleList) {
+        const [name, value] = item.split(':');
+        host.style.setProperty(name, value);
+      }
+    }
+  }
 
   updateStatus(status: 'dirty' | 'pristine' | 'touched' | 'untouched'): void {
     this.formControlRefs?.forEach((x) => x.updateControlStatus(status, true));

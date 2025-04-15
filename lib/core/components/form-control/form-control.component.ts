@@ -5,7 +5,6 @@ import {
   Component,
   ComponentRef,
   DestroyRef,
-  HostBinding,
   HostListener,
   Input,
   OnDestroy,
@@ -55,6 +54,9 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
     },
   ],
   styles: [':host { display: block }'],
+  host: {
+    class: 'form-control',
+  },
 })
 export class FormControlComponent
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
@@ -79,8 +81,6 @@ export class FormControlComponent
 
   @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
   inputComponentAnchor!: ViewContainerRef;
-
-  @HostBinding('class') hostClass = 'form-control';
 
   @HostListener('focusout', ['$event'])
   onFocusOut(): void {

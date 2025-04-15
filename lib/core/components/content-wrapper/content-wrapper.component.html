@@ -32,7 +32,8 @@
     <!-- Description (before) -->
     <ng-container
       *ngIf="
-        config.description && config.layout?.descriptionPosition !== 'after'
+        config.description &&
+        (config.layout?.descriptionPosition ?? descriptionPosition) !== 'after'
       "
       [ngTemplateOutlet]="descriptionTemplate"
       [ngTemplateOutletContext]="{ data: config }"
@@ -54,7 +55,7 @@
           layout: config.layout
         }"
         [ngClass]="{
-          hidden: hideErrors
+          hidden: !showErrors
         }"
       ></error-message>
     </ng-container>
@@ -62,7 +63,8 @@
     <!-- Description (after) -->
     <ng-container
       *ngIf="
-        config.description && config.layout?.descriptionPosition === 'after'
+        config.description &&
+        (config.layout?.descriptionPosition ?? descriptionPosition) === 'after'
       "
       [ngTemplateOutlet]="descriptionTemplate"
       [ngTemplateOutletContext]="{ data: config }"
@@ -75,7 +77,8 @@
   <span
     class="form-description"
     [ngClass]="{
-      'position-after': data.layout?.descriptionPosition === 'after'
+      'position-after':
+        (data.layout?.descriptionPosition ?? descriptionPosition) === 'after'
     }"
     [controlLayout]="{
       type: 'description',

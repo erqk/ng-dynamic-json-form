@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { FormControlConfig, UiComponents } from '../models';
+import { FormControlConfig, FormLayout, UiComponents } from '../models';
 import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { CustomValidators } from '../models/custom-validators.type';
 import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
@@ -13,9 +13,11 @@ interface GlobalVariables
   > {}
 @Injectable()
 export class GlobalVariableService {
+  descriptionPosition?: FormLayout['descriptionPosition'];
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
+  showErrorsOnTouched = true;
 
   // =============== The variables that must be initialized ===============
   hostElement?: HTMLElement;

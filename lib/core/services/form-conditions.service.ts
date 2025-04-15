@@ -1,4 +1,4 @@
-import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
@@ -25,8 +25,6 @@ import { GlobalVariableService } from './global-variable.service';
 
 @Injectable()
 export class FormConditionsService {
-  /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
   private _globalVariableService = inject(GlobalVariableService);
   private _formValidationService = inject(FormValidationService);
 
@@ -122,7 +120,11 @@ export class FormConditionsService {
 
   private _hideControl$(controlPath: string, hide: boolean): Observable<any> {
     const setStyle = (el: HTMLElement, name: string, value: any) => {
-      this._renderer2.setStyle(el, name, hide ? value : null);
+      if (hide) {
+        el.style.setProperty(name, value);
+      } else {
+        el.style.removeProperty(name);
+      }
     };
 
     return this._getTargetEl$(controlPath).pipe(
