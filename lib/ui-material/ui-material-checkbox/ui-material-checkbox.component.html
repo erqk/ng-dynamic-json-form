@@ -7,6 +7,8 @@
     <!-- binary checkbox -->
     <ng-container *ngIf="data.options && data.options.data?.length === 1">
       <mat-checkbox
+        [checked]="!control.value.length ? false : control.value[0]"
+        [disabled]="control.disabled"
         [labelPosition]="data.options.labelPosition ?? 'after'"
         [propsBinding]="[
           {
