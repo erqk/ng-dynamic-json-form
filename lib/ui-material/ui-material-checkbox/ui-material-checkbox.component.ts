@@ -44,6 +44,8 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
 
     if (Array.isArray(obj)) {
       obj.forEach((x) => this._addItem(x));
+    } else {
+      this._addItem(obj);
     }
   }
 

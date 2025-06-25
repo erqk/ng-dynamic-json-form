@@ -36,6 +36,8 @@
                   omit: ['type']
                 }
               ]"
+              [checked]="!control.value.length ? false : control.value[0]"
+              [disabled]="control.disabled"
               (change)="toggle($event)"
             />
           </ng-container>

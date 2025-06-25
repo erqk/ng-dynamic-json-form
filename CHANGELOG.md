@@ -1,3 +1,11 @@
+# 8.8.1 (2025-06-25)
+
+[9c2577d]: https://github.com/erqk/ng-dynamic-json-form/commit/9c2577d93a7dffb4a559d7c72be6d174c8c0e2d4
+
+| Commit    | Type | Description                                                               |
+| --------- | ---- | ------------------------------------------------------------------------- |
+| [9c2577d] | fix  | Basic checkbox and Material checkbox not working properly in binary mode. |
+
 # 8.8.0 (2025-04-15)
 
 [88ab17a]: https://github.com/erqk/ng-dynamic-json-form/commit/88ab17ac1de175540d54ab5de629cd7358207570
