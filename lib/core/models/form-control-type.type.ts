@@ -9,4 +9,5 @@ export type FormControlType =
   | 'switch'
   | 'text'
   | 'textarea'
+  | 'textMask'
   | (string & {});
