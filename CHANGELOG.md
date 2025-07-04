@@ -1,3 +1,11 @@
+# 8.8.3 (2025-07-04)
+
+[e6b7c04]: https://github.com/erqk/ng-dynamic-json-form/commit/e6b7c049c36d21d010506e10e5840e09bb86d6f3
+
+| Commit    | Type | Description          |
+| --------- | ---- | -------------------- |
+| [e6b7c04] | fix  | Add 'textMask' type. |
+
 # 8.8.2 (2025-07-04)
 
 [2f8c5aa]: https://github.com/erqk/ng-dynamic-json-form/commit/2f8c5aa01170f05f9b5a40ebce69051bdf153328
