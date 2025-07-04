@@ -35,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: ⚙️ Run prerender pipeline
-        run: npm run prerender:full
+        run: npm run build:docs
 
       - name: ⚙️ Configure GitHub Pages
         uses: actions/configure-pages@v5
