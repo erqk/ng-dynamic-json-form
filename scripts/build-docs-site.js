@@ -3,7 +3,7 @@ const waitOn = require("wait-on");
 const os = require("os");
 
 const PORT = 4201;
-const SERVER_URL = `http://localhost:${PORT}`;
+const SERVER_URL = `tcp:localhost:${PORT}`;
 
 function run(command, args = [], options = {}) {
   return new Promise((resolve, reject) => {
@@ -42,18 +42,20 @@ function killByPid(pid) {
 }
 
 async function main() {
+  let serverProc;
+
   try {
     console.log("🔧 Step 1: Building library...");
     await run("npm", ["run", "build:lib"]);
 
     console.log("🚀 Step 2: Starting dev server...");
-    const serverProc = spawn("npm", ["run", "start"], {
+    serverProc = spawn("npm", ["run", "start"], {
       stdio: "inherit",
       shell: true,
     });
 
     console.log("⏳ Step 3: Waiting for server to be ready...");
-    await waitOn({ resources: [SERVER_URL], timeout: 15000 });
+    await waitOn({ resources: [SERVER_URL], timeout: 60000 });
 
     console.log("📄 Step 4: Running prerender...");
     await run("npm", ["run", "prerender"]);
