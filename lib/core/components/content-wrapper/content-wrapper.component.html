@@ -1,6 +1,6 @@
 <ng-container *ngIf="config && control">
   <!-- Label -->
-  <ng-container *ngIf="config.label">
+  <ng-container *ngIf="!config.layout?.hideLabel && config.label">
     <form-label
       [label]="config.label"
       [layout]="config.layout"
