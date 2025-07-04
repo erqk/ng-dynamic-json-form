@@ -1,3 +1,11 @@
+# 8.8.2 (2025-07-04)
+
+[2f8c5aa]: https://github.com/erqk/ng-dynamic-json-form/commit/2f8c5aa01170f05f9b5a40ebce69051bdf153328
+
+| Commit    | Type | Description                      |
+| --------- | ---- | -------------------------------- |
+| [2f8c5aa] | fix  | `layout.hideLabel` fail to work. |
+
 # 8.8.1 (2025-06-25)
 
 [9c2577d]: https://github.com/erqk/ng-dynamic-json-form/commit/9c2577d93a7dffb4a559d7c72be6d174c8c0e2d4
