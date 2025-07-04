@@ -7,13 +7,14 @@
     "watch:lib": "ng build ng-dynamic-json-form --watch",
     "build:lib": "ng build ng-dynamic-json-form",
     "build:docs": "ng build --base-href /ng-dynamic-json-form/",
+    "build:docs-for-publish": "node scripts/build-docs-site.js",
+    "build:config-schema": "node ./schema/config-schema-code-builder.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "build:config-schema": "node ./schema/config-schema-code-builder.js",
     "dev:ssr": "ng run docs:serve-ssr --port 4201",
     "serve:ssr": "node dist/docs/server/main.js",
     "build:ssr": "ng build && ng run docs:server",
-    "prerender:get-routes": "node ./get-routes.js",
+    "prerender:get-routes": "node scripts/get-prerender-routes.js",
     "prerender:dev": "npm run prerender:get-routes && ng run docs:prerender-dev --no-guess-routes --routes-file routes.txt",
     "prerender": "npm run prerender:get-routes && ng run docs:prerender --no-guess-routes --routes-file routes.txt"
   },
@@ -61,6 +62,7 @@
     "ng-packagr": "^16.2.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
-    "typescript": "~5.0.4"
+    "typescript": "~5.0.4",
+    "wait-on": "^8.0.3"
   }
 }
