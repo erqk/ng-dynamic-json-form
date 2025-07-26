@@ -1,11 +1,11 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div
     class="group-buttons"
     [style]="groupButtonsStyles"
     [ngClass]="[data.options?.containerClass ?? '']"
-  >
+    >
     <!-- binary checkbox -->
-    <ng-container *ngIf="data.options && data.options.data?.length === 1">
+    @if (data.options && data.options.data?.length === 1) {
       <mat-checkbox
         [checked]="!control.value.length ? false : control.value[0]"
         [disabled]="control.disabled"
@@ -17,16 +17,13 @@
             omit: ['labelPosition']
           }
         ]"
-        (change)="toggle($event)"
-        >{{ data.options.data?.[0]?.label }}</mat-checkbox
+      (change)="toggle($event)"
+      >{{ data.options.data?.[0]?.label }}</mat-checkbox
       >
-    </ng-container>
-
+    }
     <!-- muli-select checkbox -->
-    <ng-container
-      *ngIf="data.options && data.options.data && data.options.data.length > 1"
-    >
-      <ng-container *ngFor="let item of data.options.data; index as i">
+    @if (data.options && data.options.data && data.options.data.length > 1) {
+      @for (item of data.options.data; track item; let i = $index) {
         <mat-checkbox
           [labelPosition]="data.options.labelPosition ?? 'after'"
           [checked]="isChecked(item.value)"
@@ -38,10 +35,10 @@
               omit: ['labelPosition', 'checked', 'disabled', 'value']
             }
           ]"
-          (change)="onCheckboxChange($event, i)"
-          >{{ item.label }}</mat-checkbox
+        (change)="onCheckboxChange($event, i)"
+        >{{ item.label }}</mat-checkbox
         >
-      </ng-container>
-    </ng-container>
+      }
+    }
   </div>
-</ng-container>
+}

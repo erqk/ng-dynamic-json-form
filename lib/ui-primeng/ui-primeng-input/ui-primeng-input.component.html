@@ -1,4 +1,4 @@
-<ng-container *ngIf="control && data">
+@if (control && data) {
   <input
     pInputText
     [type]="data.type ?? 'text'"
@@ -10,6 +10,6 @@
         omit: ['type']
       }
     ]"
-    (input)="onInput($event)"
+  (input)="onInput($event)"
   />
-</ng-container>
+}

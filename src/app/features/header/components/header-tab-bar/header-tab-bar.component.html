@@ -3,8 +3,8 @@
     'relative z-0 flex gap-2',
     'overflow-x-auto overflow-y-hidden hidden-scrollbar'
   ]"
->
-  <ng-container *ngFor="let item of links">
+  >
+  @for (item of links; track item) {
     <a
       [ngClass]="[
         'inline-flex',
@@ -16,8 +16,8 @@
       [routerLink]="'/' + item.route"
       [routerLinkActive]="'active'"
       >{{ item.label }}</a
-    >
-  </ng-container>
+      >
+    }
 
-  <span class="indicator"></span>
-</div>
+    <span class="indicator"></span>
+  </div>

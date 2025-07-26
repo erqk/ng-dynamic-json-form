@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
@@ -11,11 +11,10 @@ import {
 @Component({
     selector: 'ui-material-select',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatSelectModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

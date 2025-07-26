@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -11,11 +11,10 @@ import { Slider, SliderModule } from 'primeng/slider';
 @Component({
     selector: 'ui-primeng-range',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        SliderModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    SliderModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

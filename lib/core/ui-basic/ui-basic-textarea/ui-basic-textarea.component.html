@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <textarea
     textareaAutoHeight
     [ngClass]="{ disabled: control.disabled }"
@@ -8,7 +8,7 @@
         props: data.props
       }
     ]"
-    [formControl]="control"
-    (input)="onInput($event)"
-  ></textarea>
-</ng-container>
+  [formControl]="control"
+  (input)="onInput($event)"
+></textarea>
+}

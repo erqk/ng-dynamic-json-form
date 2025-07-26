@@ -12,13 +12,13 @@ import { NavigatorService } from '../../services/navigator.service';
     selector: 'app-navigator-title',
     imports: [CommonModule, UiContentWrapperComponent],
     template: `
-    <ng-container *ngFor="let item of links">
+    @for (item of links; track item) {
       <ng-container
         [ngTemplateOutlet]="buttonTemplate"
         [ngTemplateOutletContext]="{ item, level: 1 }"
       ></ng-container>
-    </ng-container>
-
+    }
+    
     <ng-template #buttonTemplate let-item="item" let-level="level">
       <button
         [ngClass]="{
@@ -26,32 +26,33 @@ import { NavigatorService } from '../../services/navigator.service';
           child: level > 1
         }"
         (click)="onLinkClick($event, item)"
-      >
+        >
         {{ item.label }}
       </button>
-
-      <ng-container *ngIf="item.children?.length">
+    
+      @if (item.children?.length) {
         <div
           class="sub-titles"
           [ngClass]="{
             active:
               item.children?.length && currentActiveId[level - 1] === item.id
           }"
-        >
+          >
           <div class="flex flex-col overflow-hidden">
-            <ng-container
-              *ngFor="let child of item.children"
-              [ngTemplateOutlet]="buttonTemplate"
+            @for (child of item.children; track child) {
+              <ng-container
+                [ngTemplateOutlet]="buttonTemplate"
               [ngTemplateOutletContext]="{
                 item: child,
                 level: level + 1
               }"
-            ></ng-container>
+              ></ng-container>
+            }
           </div>
         </div>
-      </ng-container>
+      }
     </ng-template>
-  `,
+    `,
     styleUrls: ['./navigator-title.component.scss'],
     host: {
         class: 'beauty-scrollbar',

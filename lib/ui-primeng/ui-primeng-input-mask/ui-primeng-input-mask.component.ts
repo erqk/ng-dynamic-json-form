@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IMaskDirective } from 'angular-imask';
@@ -13,13 +13,12 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
 @Component({
     selector: 'ui-primeng-input-mask',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        IMaskDirective,
-        ImaskValuePatchDirective,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    InputTextModule,
+    IMaskDirective,
+    ImaskValuePatchDirective,
+    PropsBindingDirective
+],
     templateUrl: './ui-primeng-input-mask.component.html',
     providers: [
         providePropsBinding([

@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <mat-slider
     [propsBinding]="[
       {
@@ -7,10 +7,10 @@
       }
     ]"
   >
-    <input
-      matSliderThumb
-      [formControl]="control"
-      (input)="onChange(control.value)"
+  <input
+    matSliderThumb
+    [formControl]="control"
+    (input)="onChange(control.value)"
     />
   </mat-slider>
-</ng-container>
+}

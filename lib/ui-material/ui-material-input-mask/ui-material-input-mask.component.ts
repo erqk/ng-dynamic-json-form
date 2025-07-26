@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
@@ -13,13 +13,12 @@ import {
 @Component({
     selector: 'ui-material-input-mask',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        IMaskDirective,
-        ImaskValuePatchDirective,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatInputModule,
+    IMaskDirective,
+    ImaskValuePatchDirective,
+    PropsBindingDirective
+],
     templateUrl: './ui-material-input-mask.component.html',
     providers: [
         providePropsBinding([

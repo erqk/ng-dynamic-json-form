@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ElementRef, Input, inject } from '@angular/core';
 
 @Component({
     selector: 'app-doc-code',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './doc-code.component.html',
     styleUrls: ['./doc-code.component.scss']
 })

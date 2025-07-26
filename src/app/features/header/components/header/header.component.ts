@@ -26,17 +26,17 @@ import { Subject, fromEvent } from 'rxjs';
         showBackground ? 'show-background' : '',
         openSettings ? 'full-background' : ''
       ]"
-    >
-      <ng-container *ngIf="links$ | async as links">
+      >
+      @if (links$ | async; as links) {
         <app-header-desktop [links]="links"></app-header-desktop>
         <app-header-mobile
           [links]="links"
           [openSettings]="openSettings"
           (settingsOpened)="openSettings = $event"
         ></app-header-mobile>
-      </ng-container>
+      }
     </div>
-  `,
+    `,
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {

@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-custom-loading',
-    imports: [CommonModule],
+    imports: [],
     template: ` <span class="loader mx-4 my-2"></span> `,
     styles: [
         `

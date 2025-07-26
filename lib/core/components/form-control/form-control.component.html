@@ -1,11 +1,11 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div
     class="input-container"
     [ngClass]="{
       disabled: !useCustomLoading && loading,
       hidden: useCustomLoading && loading
     }"
-  >
+    >
     <!-- Input template -->
     <ng-container
       [ngTemplateOutlet]="customTemplates?.[data.formControlName] ?? null"
@@ -16,16 +16,13 @@
         hideErrorMessage: hideErrorMessage$.value
       }"
     ></ng-container>
-
     <!-- Input component -->
     <ng-container #inputComponentAnchor></ng-container>
   </div>
-
   <div class="loading-container" [ngClass]="{ hidden: !loading }">
     <!-- Loading component -->
     <ng-container *ngComponentOutlet="loadingComponent ?? null"></ng-container>
-
     <!-- Loading template -->
     <ng-container [ngTemplateOutlet]="loadingTemplate ?? null"> </ng-container>
   </div>
-</ng-container>
+}

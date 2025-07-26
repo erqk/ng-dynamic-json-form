@@ -1,10 +1,10 @@
 <div class="flex bg-gray-700/10 backdrop-blur-sm">
-  <ng-container *ngIf="tabs.length === 1">
+  @if (tabs.length === 1) {
     <span class="p-3 px-5 pb-2">{{ tabs[0] }}</span>
-  </ng-container>
+  }
 
-  <ng-container *ngIf="tabs.length > 1">
-    <ng-container *ngFor="let item of tabs">
+  @if (tabs.length > 1) {
+    @for (item of tabs; track item) {
       <button
         class="p-3 px-5 pb-2 border-b-2 duration-200"
         [ngClass]="{
@@ -13,11 +13,11 @@
           'opacity-60': item !== activeTab
         }"
         (click)="toggleTab(item)"
-      >
+        >
         {{ item }}
       </button>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </div>
 
 <div class="content relative z-0 duration-300">

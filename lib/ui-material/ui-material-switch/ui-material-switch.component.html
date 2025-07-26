@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <mat-slide-toggle
     [labelPosition]="data.options?.labelPosition ?? 'after'"
     [formControl]="control"
@@ -9,7 +9,7 @@
         omit: ['labelPosition']
       }
     ]"
-    (change)="onChange(control.value)"
-    >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
+  (change)="onChange(control.value)"
+  >{{ data.options?.data?.[0]?.label }}</mat-slide-toggle
   >
-</ng-container>
+}

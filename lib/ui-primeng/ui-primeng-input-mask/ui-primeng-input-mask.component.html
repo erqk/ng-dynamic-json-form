@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <input
     type="text"
     pInputText
@@ -16,6 +16,6 @@
         props: data.props,
       }
     ]"
-    (complete)="onChange(control.value)"
+  (complete)="onChange(control.value)"
   />
-</ng-container>
+}

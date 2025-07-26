@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div class="range-input">
     <p-slider
       [formControl]="control"
@@ -8,7 +8,7 @@
           props: data.props
         }
       ]"
-      (onChange)="onChange(control.value)"
-    ></p-slider>
-  </div>
-</ng-container>
+    (onChange)="onChange(control.value)"
+  ></p-slider>
+</div>
+}

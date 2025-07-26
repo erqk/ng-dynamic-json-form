@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
@@ -6,26 +5,21 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { Select, SelectModule } from 'primeng/select';
 
 @Component({
-    selector: 'ui-primeng-select',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        PropsBindingDirective,
-    ],
-    providers: [
-        providePropsBinding([
-            {
-                key: 'p-dropdown',
-                token: Dropdown,
-            },
-        ]),
-    ],
-    templateUrl: './ui-primeng-select.component.html',
-    styles: []
+  selector: 'ui-primeng-select',
+  imports: [ReactiveFormsModule, SelectModule, PropsBindingDirective],
+  providers: [
+    providePropsBinding([
+      {
+        key: 'p-selects',
+        token: Select,
+      },
+    ]),
+  ],
+  templateUrl: './ui-primeng-select.component.html',
+  styles: [],
 })
 export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
@@ -36,7 +30,7 @@ export class UiPrimengSelectComponent extends CustomControlComponent {
   override registerOnChange(fn: any): void {
     this.onChange = fn;
   }
-  
+
   override registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }

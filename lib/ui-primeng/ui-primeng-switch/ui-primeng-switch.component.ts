@@ -6,26 +6,26 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitch, ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-    selector: 'ui-primeng-switch',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputSwitchModule,
-        PropsBindingDirective,
-    ],
-    providers: [
-        providePropsBinding([
-            {
-                key: 'p-input-switch',
-                token: InputSwitch,
-            },
-        ]),
-    ],
-    templateUrl: './ui-primeng-switch.component.html',
-    styles: []
+  selector: 'ui-primeng-switch',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PropsBindingDirective,
+    ToggleSwitchModule,
+  ],
+  providers: [
+    providePropsBinding([
+      {
+        key: 'p-toggle-switch',
+        token: ToggleSwitch,
+      },
+    ]),
+  ],
+  templateUrl: './ui-primeng-switch.component.html',
+  styles: [],
 })
 export class UiPrimengSwitchComponent extends CustomControlComponent {
   override control = new FormControl(false);

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
@@ -10,14 +10,13 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
 @Component({
     selector: 'app-header-desktop',
     imports: [
-        CommonModule,
-        RouterModule,
-        UiContentWrapperComponent,
-        HeaderTabBarComponent,
-        ThemeSwitcherComponent,
-        LanguageSelectorComponent,
-        VersionSelectorComponent,
-    ],
+    RouterModule,
+    UiContentWrapperComponent,
+    HeaderTabBarComponent,
+    ThemeSwitcherComponent,
+    LanguageSelectorComponent,
+    VersionSelectorComponent
+],
     templateUrl: './header-desktop.component.html',
     styleUrls: ['./header-desktop.component.scss']
 })

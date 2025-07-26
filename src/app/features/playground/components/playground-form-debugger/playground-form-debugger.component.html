@@ -1,6 +1,6 @@
 <div class="p-2">
   <div class="grid grid-cols-2 gap-2">
-    <ng-container *ngFor="let item of controlTypes">
+    @for (item of controlTypes; track item) {
       <button
         class="p-1 text-sm rounded-sm"
         [ngClass]="{
@@ -8,10 +8,10 @@
           'bg-gray-500/20 font-bold': activeControlType === item
         }"
         (click)="setActiveInfoType(item)"
-      >
+        >
         {{ item }}
       </button>
-    </ng-container>
+    }
   </div>
 </div>
 
@@ -20,15 +20,15 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('value') }"
-  >
+    >
     <div class="section-title">
       <span (click)="setActiveSection('value')">Value</span>
 
-      <ng-container *ngIf="editingForm">
+      @if (editingForm) {
         <button (click)="toggleFormEdit()">
           <i class="bi bi-x-lg"></i>
         </button>
-      </ng-container>
+      }
 
       <button (click)="toggleFormEdit(true)">
         <i
@@ -46,7 +46,7 @@
           [ngClass]="{
             hidden: editingForm
           }"
-        >
+          >
           <div class="code">
             {{ activeControl?.value | json }}
           </div>
@@ -70,13 +70,13 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('errors') }"
-  >
+    >
     <div class="section-title">
       <span (click)="setActiveSection('errors')">Errors</span>
 
-      <ng-container *ngIf="activeControl?.errors">
+      @if (activeControl?.errors) {
         <i class="bi bi-exclamation-triangle text-red-600"></i>
-      </ng-container>
+      }
     </div>
 
     <div class="section-body">
@@ -87,22 +87,22 @@
             [ngClass]="{
               hidden: editingForm
             }"
-          >
+            >
             {{ activeControl?.errors | json }}
           </div>
 
           <div
             class="flex flex-wrap items-center gap-1 bg-gray-400/10 rounded-md px-3 py-2 text-sm"
-          >
+            >
             <span class="">hideErrorMessage =</span>
-            <ng-container *ngFor="let button of hideErrorMessageActions">
+            @for (button of hideErrorMessageActions; track button) {
               <button
                 class="p-1 bg-gray-400/30 rounded-md"
                 (click)="button.action()"
-              >
+                >
                 {{ button.label }}
               </button>
-            </ng-container>
+            }
           </div>
         </div>
       </div>
@@ -113,16 +113,16 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('state') }"
-  >
+    >
     <div class="section-title">
       <span (click)="setActiveSection('state')">State</span>
 
       <div class="flex gap-3 break-keep">
-        <ng-container *ngFor="let item of controlStates">
+        @for (item of controlStates; track item) {
           <span [ngClass]="{ 'opacity-40': !item.value() }">{{
             item.label
           }}</span>
-        </ng-container>
+        }
       </div>
     </div>
 
@@ -131,14 +131,14 @@
         <div class="flex flex-col gap-1 text-sm">
           <span>Update status functions</span>
           <div class="flex flex-wrap gap-2">
-            <ng-container *ngFor="let button of statusActions">
+            @for (button of statusActions; track button) {
               <button
                 class="px-2 py-1 bg-gray-400/20 rounded-md"
                 (click)="button.action()"
-              >
+                >
                 {{ button.label }}
               </button>
-            </ng-container>
+            }
           </div>
         </div>
       </div>
@@ -157,7 +157,7 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('events') }"
-  >
+    >
     <div class="section-title">
       <span (click)="setActiveSection('events')">Events</span>
       <button type="button" (click)="eventsLog = []">
@@ -169,13 +169,13 @@
       <div class="overflow-hidden">
         <div>
           <div class="code">
-            <ng-container *ngFor="let item of eventsLog">
+            @for (item of eventsLog; track item) {
               <div>{{ item }}</div>
-            </ng-container>
+            }
 
-            <ng-container *ngIf="!eventsLog.length">
+            @if (!eventsLog.length) {
               <span>--</span>
-            </ng-container>
+            }
           </div>
         </div>
       </div>

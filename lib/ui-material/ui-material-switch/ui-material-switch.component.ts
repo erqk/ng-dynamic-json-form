@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -15,12 +15,11 @@ import {
 @Component({
     selector: 'ui-material-switch',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatSlideToggleModule,
-        MatInputModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

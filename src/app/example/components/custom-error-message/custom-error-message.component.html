@@ -1,6 +1,6 @@
-<ng-container *ngFor="let item of errorMessages">
+@for (item of errorMessages; track item) {
   <div class="flex items-start gap-2 text-rose-600 text-sm">
     <i class="bi bi-exclamation-triangle"></i>
     <span>{{ item }}</span>
   </div>
-</ng-container>
+}

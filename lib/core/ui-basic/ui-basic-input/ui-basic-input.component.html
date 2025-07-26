@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <input
     [ngClass]="{ disabled: control.disabled }"
     [attr.type]="data.type ?? 'text'"
@@ -8,7 +8,7 @@
         omit: ['type']
       }
     ]"
-    [formControl]="control"
-    (input)="onInput($event)"
+  [formControl]="control"
+  (input)="onInput($event)"
   />
-</ng-container>
+}

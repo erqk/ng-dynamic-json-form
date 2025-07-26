@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -25,7 +25,7 @@ import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-
 
 @Component({
     selector: 'app-playground-form',
-    imports: [CommonModule, ReactiveFormsModule, NgDynamicJsonFormComponent],
+    imports: [ReactiveFormsModule, NgDynamicJsonFormComponent],
     providers: [
         provideNgDynamicJsonForm({
             customValidators: {

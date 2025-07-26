@@ -1,6 +1,6 @@
-<ng-container *ngIf="config && control">
+@if (config && control) {
   <!-- Label -->
-  <ng-container *ngIf="!config.layout?.hideLabel && config.label">
+  @if (!config.layout?.hideLabel && config.label) {
     <form-label
       [label]="config.label"
       [layout]="config.layout"
@@ -20,29 +20,27 @@
             : (control | isControlRequired)
       }"
     ></form-label>
-  </ng-container>
-
+  }
   <div
     #collapsibleEl
     [controlLayout]="{
       type: 'content',
       layout: config.layout
     }"
-  >
+    >
     <!-- Description (before) -->
-    <ng-container
-      *ngIf="
-        config.description &&
-        (config.layout?.descriptionPosition ?? descriptionPosition) !== 'after'
-      "
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{ data: config }"
-    ></ng-container>
-
+    @if (
+      config.description &&
+      (config.layout?.descriptionPosition ?? descriptionPosition) !== 'after'
+      ) {
+      <ng-container
+        [ngTemplateOutlet]="descriptionTemplate"
+        [ngTemplateOutletContext]="{ data: config }"
+      ></ng-container>
+    }
     <ng-content></ng-content>
-
     <!-- Validation message -->
-    <ng-container *ngIf="renderErrorSection">
+    @if (renderErrorSection) {
       <error-message
         [control]="control"
         [validators]="
@@ -58,19 +56,19 @@
           hidden: !showErrors
         }"
       ></error-message>
-    </ng-container>
-
+    }
     <!-- Description (after) -->
-    <ng-container
-      *ngIf="
-        config.description &&
-        (config.layout?.descriptionPosition ?? descriptionPosition) === 'after'
-      "
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{ data: config }"
-    ></ng-container>
+    @if (
+      config.description &&
+      (config.layout?.descriptionPosition ?? descriptionPosition) === 'after'
+      ) {
+      <ng-container
+        [ngTemplateOutlet]="descriptionTemplate"
+        [ngTemplateOutletContext]="{ data: config }"
+      ></ng-container>
+    }
   </div>
-</ng-container>
+}
 
 <!-- Description template -->
 <ng-template #descriptionTemplate let-data="data">
@@ -85,5 +83,5 @@
       layout: data.layout
     }"
     >{{ data.description }}</span
-  >
-</ng-template>
+    >
+  </ng-template>

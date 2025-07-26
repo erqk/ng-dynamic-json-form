@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -17,14 +17,13 @@ import {
 @Component({
     selector: 'ui-material-date',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatNativeDateModule,
-        MatInputModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

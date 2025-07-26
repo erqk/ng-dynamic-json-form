@@ -1,13 +1,13 @@
-<ng-container *ngIf="data">
-  <textarea
-    pInputTextarea
-    [formControl]="control"
-    [propsBinding]="[
-      {
-        key: 'p-input-textarea',
-        props: data.props
-      }
-    ]"
-    (input)="onInput($event)"
-  ></textarea>
-</ng-container>
+@if (data) {
+<textarea
+  pTextarea
+  [formControl]="control"
+  [propsBinding]="[
+    {
+      key: 'p-textarea',
+      props: data.props
+    }
+  ]"
+  (input)="onInput($event)"
+></textarea>
+}

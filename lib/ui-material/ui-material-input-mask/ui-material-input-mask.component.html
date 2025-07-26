@@ -1,7 +1,6 @@
-<ng-container *ngIf="data">
+@if (data) {
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
-
     <input
       matInput
       type="text"
@@ -19,7 +18,7 @@
           props: data.props,
         }
       ]"
-      (complete)="onChange(control.value)"
+    (complete)="onChange(control.value)"
     />
   </mat-form-field>
-</ng-container>
+}

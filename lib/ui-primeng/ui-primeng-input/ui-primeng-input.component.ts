@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
@@ -11,11 +11,10 @@ import { InputText, InputTextModule } from 'primeng/inputtext';
 @Component({
     selector: 'ui-primeng-input',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    InputTextModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

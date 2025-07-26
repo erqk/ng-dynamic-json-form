@@ -1,16 +1,16 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div
     class="option-button-wrapper"
     [ngClass]="{
       disabled: control.disabled
     }"
-  >
+    >
     <label class="option-button switch-button">
-      <ng-container
-        *ngIf="data.options?.labelPosition === 'before'"
-        [ngTemplateOutlet]="labelTemplate"
-      ></ng-container>
-
+      @if (data.options?.labelPosition === 'before') {
+        <ng-container
+          [ngTemplateOutlet]="labelTemplate"
+        ></ng-container>
+      }
       <input
         type="checkbox"
         [propsBinding]="[
@@ -19,21 +19,22 @@
             omit: ['type']
           }
         ]"
-        [checked]="control.value === true"
-        (change)="updateControl($event)"
+      [checked]="control.value === true"
+      (change)="updateControl($event)"
       />
       <span class="marker"></span>
-
-      <ng-container
-        *ngIf="data.options?.labelPosition !== 'before'"
-        [ngTemplateOutlet]="labelTemplate"
-      ></ng-container>
+      @if (data.options?.labelPosition !== 'before') {
+        <ng-container
+          [ngTemplateOutlet]="labelTemplate"
+        ></ng-container>
+      }
     </label>
   </div>
-
   <ng-template #labelTemplate>
-    <span *ngIf="data.options?.data?.[0]?.label">{{
-      data.options?.data?.[0]?.label
-    }}</span>
+    @if (data.options?.data?.[0]?.label) {
+      <span>{{
+        data.options?.data?.[0]?.label
+      }}</span>
+    }
   </ng-template>
-</ng-container>
+}

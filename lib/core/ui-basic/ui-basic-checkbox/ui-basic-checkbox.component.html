@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div
     class="group-buttons"
     [style]="groupButtonsStyles"
@@ -6,15 +6,15 @@
       data.options?.containerClass ?? '',
       control.disabled ? 'disabled' : ''
     ]"
-  >
-    <ng-container *ngFor="let item of data.options?.data; index as i">
+    >
+    @for (item of data.options?.data; track item; let i = $index) {
       <label
         class="option-button"
         [ngStyle]="{
           'justify-content':
             data.options?.labelPosition === 'before' ? 'space-between' : null
         }"
-      >
+        >
         <ng-container
           *ngTemplateOutlet="
             labelTemplate;
@@ -23,45 +23,41 @@
               isBefore: true
             }
           "
-        ></ng-container>
-
-        <ng-container *ngIf="data.options && data.options.data">
-          <!-- binary checkbox -->
-          <ng-container *ngIf="data.options.data.length === 1">
-            <input
-              type="checkbox"
+      ></ng-container>
+      @if (data.options && data.options.data) {
+        <!-- binary checkbox -->
+        @if (data.options.data.length === 1) {
+          <input
+            type="checkbox"
               [propsBinding]="[
                 {
                   props: data.props,
                   omit: ['type']
                 }
               ]"
-              [checked]="!control.value.length ? false : control.value[0]"
-              [disabled]="control.disabled"
-              (change)="toggle($event)"
-            />
-          </ng-container>
-
-          <!-- multi-select checkbox -->
-          <ng-container *ngIf="data.options.data.length > 1">
-            <input
-              type="checkbox"
+          [checked]="!control.value.length ? false : control.value[0]"
+          [disabled]="control.disabled"
+          (change)="toggle($event)"
+          />
+        }
+        <!-- multi-select checkbox -->
+        @if (data.options.data.length > 1) {
+          <input
+            type="checkbox"
               [propsBinding]="[
                 {
                   props: data.props,
                   omit: ['type']
                 }
               ]"
-              [checked]="isChecked(item.value)"
-              [disabled]="control.disabled"
-              (change)="onCheckboxChange($event, i)"
-            />
-          </ng-container>
-        </ng-container>
-
-        <span class="marker"></span>
-
-        <ng-container
+          [checked]="isChecked(item.value)"
+          [disabled]="control.disabled"
+          (change)="onCheckboxChange($event, i)"
+          />
+        }
+      }
+      <span class="marker"></span>
+      <ng-container
           *ngTemplateOutlet="
             labelTemplate;
             context: {
@@ -69,16 +65,13 @@
               isBefore: false
             }
           "
-        ></ng-container>
-      </label>
-    </ng-container>
-  </div>
-
-  <ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
-    <ng-container
-      *ngIf="(data.options?.labelPosition === 'before') === isBefore"
-    >
-      <span>{{ label }}</span>
-    </ng-container>
-  </ng-template>
-</ng-container>
+    ></ng-container>
+  </label>
+}
+</div>
+<ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
+  @if ((data.options?.labelPosition === 'before') === isBefore) {
+    <span>{{ label }}</span>
+  }
+</ng-template>
+}

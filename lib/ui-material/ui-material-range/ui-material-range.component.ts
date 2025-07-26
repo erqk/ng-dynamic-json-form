@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -12,12 +12,11 @@ import {
 @Component({
     selector: 'ui-material-range',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatSliderModule,
-        MatInputModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatSliderModule,
+    MatInputModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

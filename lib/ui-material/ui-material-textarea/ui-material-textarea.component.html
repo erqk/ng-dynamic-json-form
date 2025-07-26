@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <mat-form-field class="example-full-width">
     <mat-label>{{ data.label }}</mat-label>
     <textarea
@@ -15,7 +15,7 @@
           props: data.props
         }
       ]"
-      (input)="onInput($event)"
-    ></textarea>
-  </mat-form-field>
-</ng-container>
+    (input)="onInput($event)"
+  ></textarea>
+</mat-form-field>
+}

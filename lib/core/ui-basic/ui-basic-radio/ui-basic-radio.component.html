@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data) {
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
@@ -9,8 +9,8 @@
     [ngStyle]="{
       'flex-direction': data.options?.layout,
     }"
-  >
-    <ng-container *ngFor="let item of data.options?.data; index as i">
+    >
+    @for (item of data.options?.data; track item; let i = $index) {
       <div class="option-button-wrapper">
         <label
           class="option-button"
@@ -18,11 +18,12 @@
             'justify-content':
               data.options?.labelPosition === 'before' ? 'space-between' : null
           }"
-        >
-          <span *ngIf="data.options?.labelPosition === 'before'">{{
-            item.label
-          }}</span>
-
+          >
+          @if (data.options?.labelPosition === 'before') {
+            <span>{{
+              item.label
+            }}</span>
+          }
           <input
             type="radio"
             [name]="data.formControlName"
@@ -32,16 +33,17 @@
                 omit: ['type', 'name']
               }
             ]"
-            [checked]="selectedIndex === i"
-            (change)="onChange(i)"
+          [checked]="selectedIndex === i"
+          (change)="onChange(i)"
           />
           <span class="marker"></span>
-
-          <span *ngIf="data.options?.labelPosition !== 'before'">{{
-            item.label
-          }}</span>
+          @if (data.options?.labelPosition !== 'before') {
+            <span>{{
+              item.label
+            }}</span>
+          }
         </label>
       </div>
-    </ng-container>
+    }
   </div>
-</ng-container>
+}

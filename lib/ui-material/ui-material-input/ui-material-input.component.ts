@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,12 +12,11 @@ import {
 @Component({
     selector: 'ui-material-input',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatButtonModule,
-        PropsBindingDirective,
-    ],
+    ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule,
+    PropsBindingDirective
+],
     providers: [
         providePropsBinding([
             {

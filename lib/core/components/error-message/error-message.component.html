@@ -9,8 +9,8 @@
 ></ng-container>
 
 <!-- Default error message component -->
-<ng-container *ngIf="!customComponent && !customTemplate">
-  <ng-container *ngFor="let error of errorMessages">
+@if (!customComponent && !customTemplate) {
+  @for (error of errorMessages; track error) {
     <div>{{ error }}</div>
-  </ng-container>
-</ng-container>
+  }
+}

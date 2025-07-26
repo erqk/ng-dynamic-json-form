@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, HostBinding, Input } from '@angular/core';
 import { FADE_UP_ANIMATION } from '../../animations/fade-up.animation';
 
 @Component({
     selector: 'ui-content-wrapper',
-    imports: [CommonModule],
+    imports: [],
     template: ` <ng-content></ng-content> `,
     animations: [FADE_UP_ANIMATION],
     styles: [

@@ -10,19 +10,21 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
-import { FormStatusFunctions } from 'ng-dynamic-json-form/core/models/form-status-functions.interface';
+import {
+  FormStatusFunctions,
+  NgDynamicJsonFormComponent,
+} from 'ng-dynamic-json-form';
 import { merge, Subject, takeUntil, tap } from 'rxjs';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
 
 @Component({
-    selector: 'app-playground-form-debugger',
-    imports: [CommonModule, PlaygroundEditorComponent],
-    host: {
-        class: 'flex flex-col w-full h-full beauty-scrollbar affect-child',
-    },
-    templateUrl: './playground-form-debugger.component.html',
-    styleUrls: ['./playground-form-debugger.component.scss']
+  selector: 'app-playground-form-debugger',
+  imports: [CommonModule, PlaygroundEditorComponent],
+  host: {
+    class: 'flex flex-col w-full h-full beauty-scrollbar affect-child',
+  },
+  templateUrl: './playground-form-debugger.component.html',
+  styleUrls: ['./playground-form-debugger.component.scss'],
 })
 export class PlaygroundFormDebuggerComponent implements OnChanges {
   private destroyRef = inject(DestroyRef);
