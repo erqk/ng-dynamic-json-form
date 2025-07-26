@@ -30,16 +30,15 @@ import { LanguageService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    HeaderComponent,
-    UiLoadingIndicatorComponent,
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        HeaderComponent,
+        UiLoadingIndicatorComponent,
+    ],
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   private cd = inject(ChangeDetectorRef);

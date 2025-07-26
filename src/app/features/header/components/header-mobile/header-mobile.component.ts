@@ -9,19 +9,18 @@ import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
 @Component({
-  selector: 'app-header-mobile',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    NavigatorTitleComponent,
-    HeaderTabBarComponent,
-    ThemeSwitcherComponent,
-    LanguageSelectorComponent,
-    VersionSelectorComponent,
-  ],
-  templateUrl: './header-mobile.component.html',
-  styleUrls: ['./header-mobile.component.scss'],
+    selector: 'app-header-mobile',
+    imports: [
+        CommonModule,
+        RouterModule,
+        NavigatorTitleComponent,
+        HeaderTabBarComponent,
+        ThemeSwitcherComponent,
+        LanguageSelectorComponent,
+        VersionSelectorComponent,
+    ],
+    templateUrl: './header-mobile.component.html',
+    styleUrls: ['./header-mobile.component.scss']
 })
 export class HeaderMobileComponent {
   private layoutService = inject(LayoutService);

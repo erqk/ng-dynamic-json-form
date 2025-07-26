@@ -39,23 +39,22 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
 import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
-  selector: 'app-page-playground',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    UiContentWrapperComponent,
-    PlaygroundEditorComponent,
-    PlaygroundTemplateListComponent,
-    AngularSplitModule,
-    PlaygroundFormComponent,
-    PlaygroundFormDebuggerComponent,
-    PlaygroundFormPrimengComponent,
-    PlaygroundFormMaterialComponent,
-  ],
-  templateUrl: './page-playground.component.html',
-  styleUrls: ['./page-playground.component.scss'],
+    selector: 'app-page-playground',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        UiContentWrapperComponent,
+        PlaygroundEditorComponent,
+        PlaygroundTemplateListComponent,
+        AngularSplitModule,
+        PlaygroundFormComponent,
+        PlaygroundFormDebuggerComponent,
+        PlaygroundFormPrimengComponent,
+        PlaygroundFormMaterialComponent,
+    ],
+    templateUrl: './page-playground.component.html',
+    styleUrls: ['./page-playground.component.scss']
 })
 export class PagePlaygroundComponent implements OnInit {
   private http = inject(HttpClient);

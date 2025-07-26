@@ -1,5 +1,9 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   PreloadAllModules,
@@ -10,7 +14,6 @@ import {
 import { appRoutes } from './app.routes';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
 import { LanguageService } from './features/language/language-data.service';
-import { VersionService } from './features/version/version.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,13 +27,9 @@ export const appConfig: ApplicationConfig = {
       }),
       withPreloading(PreloadAllModules)
     ),
-    {
-      provide: APP_INITIALIZER,
-      deps: [LanguageService, VersionService],
-      multi: true,
-      useFactory: (lang: LanguageService) => () => {
-        return lang.loadLanguageData$();
-      },
-    },
+    provideAppInitializer(() => {
+      const langService = inject(LanguageService);
+      return langService.loadLanguageData$();
+    }),
   ],
 };

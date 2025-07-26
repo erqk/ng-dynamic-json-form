@@ -10,25 +10,24 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-radio',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatRadioModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-radio-group',
-        token: MatRadioGroup,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-radio.component.html',
-  styles: [],
+    selector: 'ui-material-radio',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatRadioModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-radio-group',
+                token: MatRadioGroup,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-radio.component.html',
+    styles: []
 })
 export class UiMaterialRadioComponent extends CustomControlComponent {
   private _onChange?: any;

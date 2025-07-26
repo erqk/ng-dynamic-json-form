@@ -9,24 +9,23 @@ import {
 import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
-  selector: 'ui-primeng-radio',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RadioButtonModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-radio-button',
-        token: RadioButton,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-radio.component.html',
-  styles: [],
+    selector: 'ui-primeng-radio',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RadioButtonModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-radio-button',
+                token: RadioButton,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-radio.component.html',
+    styles: []
 })
 export class UiPrimengRadioComponent extends CustomControlComponent {
   private _onChange?: any;

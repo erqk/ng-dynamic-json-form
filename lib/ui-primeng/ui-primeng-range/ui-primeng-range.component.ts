@@ -9,24 +9,23 @@ import {
 import { Slider, SliderModule } from 'primeng/slider';
 
 @Component({
-  selector: 'ui-primeng-range',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SliderModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-slider',
-        token: Slider,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-range.component.html',
-  styles: [],
+    selector: 'ui-primeng-range',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SliderModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-slider',
+                token: Slider,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-range.component.html',
+    styles: []
 })
 export class UiPrimengRangeComponent
   extends CustomControlComponent

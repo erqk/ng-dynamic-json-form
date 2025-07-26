@@ -3,10 +3,9 @@ import { Component, inject } from '@angular/core';
 import { VersionService } from './version.service';
 
 @Component({
-  selector: 'version-selector',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'version-selector',
+    imports: [CommonModule],
+    template: `
     <!-- <select [value]="currentVersion" (change)="changeVersion($event)">
       <ng-container *ngFor="let item of versions">
         <option value="{{ item }}">{{ item }}</option>
@@ -18,7 +17,7 @@ import { VersionService } from './version.service';
       }}</span>
     </ng-container>
   `,
-  styles: [],
+    styles: []
 })
 export class VersionSelectorComponent {
   private versionService = inject(VersionService);

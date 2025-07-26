@@ -9,24 +9,23 @@ import {
 import { InputText, InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'ui-primeng-input',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-input-text',
-        token: InputText,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-input.component.html',
-  styles: [],
+    selector: 'ui-primeng-input',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-input-text',
+                token: InputText,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-input.component.html',
+    styles: []
 })
 export class UiPrimengInputComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');

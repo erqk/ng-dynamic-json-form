@@ -12,10 +12,9 @@ import {
 } from 'rxjs';
 
 @Component({
-  selector: 'ui-loading-indicator',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'ui-loading-indicator',
+    imports: [CommonModule],
+    template: `
     <div
       class="loading-bar"
       [ngClass]="{start}"
@@ -24,7 +23,7 @@ import {
       }"
     ></div>
   `,
-  styleUrls: ['./ui-loading-indicator.component.scss'],
+    styleUrls: ['./ui-loading-indicator.component.scss']
 })
 export class UiLoadingIndicatorComponent {
   private step = 0;

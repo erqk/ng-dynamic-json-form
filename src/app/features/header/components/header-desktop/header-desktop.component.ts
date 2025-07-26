@@ -8,19 +8,18 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
 
 @Component({
-  selector: 'app-header-desktop',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    UiContentWrapperComponent,
-    HeaderTabBarComponent,
-    ThemeSwitcherComponent,
-    LanguageSelectorComponent,
-    VersionSelectorComponent,
-  ],
-  templateUrl: './header-desktop.component.html',
-  styleUrls: ['./header-desktop.component.scss'],
+    selector: 'app-header-desktop',
+    imports: [
+        CommonModule,
+        RouterModule,
+        UiContentWrapperComponent,
+        HeaderTabBarComponent,
+        ThemeSwitcherComponent,
+        LanguageSelectorComponent,
+        VersionSelectorComponent,
+    ],
+    templateUrl: './header-desktop.component.html',
+    styleUrls: ['./header-desktop.component.scss']
 })
 export class HeaderDesktopComponent {
   @Input() links: { route: string; label: string }[] = [];

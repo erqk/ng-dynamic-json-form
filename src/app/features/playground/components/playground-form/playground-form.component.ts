@@ -24,25 +24,24 @@ import { letterStartsWithAValidator } from 'src/app/example/validators/letter-st
 import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-max-length.validator';
 
 @Component({
-  selector: 'app-playground-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgDynamicJsonFormComponent],
-  providers: [
-    provideNgDynamicJsonForm({
-      customValidators: {
-        firstUppercase: firstUppercaseValidator,
-        textareaMaxLength: textareaMaxLengthValidator,
-      },
-      customAsyncValidators: {
-        letterStartsWithA: letterStartsWithAValidator,
-      },
-      // labelComponent: CustomFormTitleComponent,
-      loadingComponent: CustomLoadingComponent,
-      errorComponent: CustomErrorMessageComponent,
-    }),
-  ],
-  templateUrl: './playground-form.component.html',
-  styleUrls: ['./playground-form.component.scss'],
+    selector: 'app-playground-form',
+    imports: [CommonModule, ReactiveFormsModule, NgDynamicJsonFormComponent],
+    providers: [
+        provideNgDynamicJsonForm({
+            customValidators: {
+                firstUppercase: firstUppercaseValidator,
+                textareaMaxLength: textareaMaxLengthValidator,
+            },
+            customAsyncValidators: {
+                letterStartsWithA: letterStartsWithAValidator,
+            },
+            // labelComponent: CustomFormTitleComponent,
+            loadingComponent: CustomLoadingComponent,
+            errorComponent: CustomErrorMessageComponent,
+        }),
+    ],
+    templateUrl: './playground-form.component.html',
+    styleUrls: ['./playground-form.component.scss']
 })
 export class PlaygroundFormComponent {
   @Input() configs: FormControlConfig[] = [];

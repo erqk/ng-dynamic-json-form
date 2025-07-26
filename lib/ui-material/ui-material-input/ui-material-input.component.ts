@@ -10,25 +10,24 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-input',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-input',
-        token: MatInput,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-input.component.html',
-  styles: [],
+    selector: 'ui-material-input',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatButtonModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-input',
+                token: MatInput,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-input.component.html',
+    styles: []
 })
 export class UiMaterialInputComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');

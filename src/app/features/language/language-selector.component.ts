@@ -5,10 +5,9 @@ import { LanguageService } from './language-data.service';
 import { LanguageType } from './language.type';
 
 @Component({
-  selector: 'app-language-selector',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-language-selector',
+    imports: [CommonModule],
+    template: `
     <select
       class="doc-form-element !px-4"
       (change)="onLanguageSelect($event)"
@@ -18,7 +17,7 @@ import { LanguageType } from './language.type';
       <option value="zh-TW">中文</option>
     </select>
   `,
-  styles: [],
+    styles: []
 })
 export class LanguageSelectorComponent {
   private langService = inject(LanguageService);

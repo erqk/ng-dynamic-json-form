@@ -9,24 +9,23 @@ import {
 import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
-  selector: 'ui-primeng-textarea',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-input-textarea',
-        token: InputTextarea,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-textarea.component.html',
-  styles: [],
+    selector: 'ui-primeng-textarea',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-input-textarea',
+                token: InputTextarea,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-textarea.component.html',
+    styles: []
 })
 export class UiPrimengTextareaComponent extends CustomControlComponent {
   override control = new FormControl('');

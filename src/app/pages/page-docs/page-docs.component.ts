@@ -26,18 +26,17 @@ import { NavigatorService } from 'src/app/features/navigator/services/navigator.
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
-  selector: 'app-page-docs',
-  standalone: true,
-  imports: [
-    CommonModule,
-    UiContentWrapperComponent,
-    DocsRouterLinkDirective,
-    NavigatorIndexComponent,
-    NavigatorTitleComponent,
-  ],
-  templateUrl: './page-docs.component.html',
-  styleUrls: ['./page-docs.component.scss'],
-  animations: [FADE_UP_ANIMATION],
+    selector: 'app-page-docs',
+    imports: [
+        CommonModule,
+        UiContentWrapperComponent,
+        DocsRouterLinkDirective,
+        NavigatorIndexComponent,
+        NavigatorTitleComponent,
+    ],
+    templateUrl: './page-docs.component.html',
+    styleUrls: ['./page-docs.component.scss'],
+    animations: [FADE_UP_ANIMATION]
 })
 export class PageDocsComponent {
   private destroyRef = inject(DestroyRef);

@@ -23,11 +23,10 @@ interface StyleOption {
 }
 
 @Component({
-  selector: 'app-form-style-tweaker',
-  standalone: true,
-  imports: [CommonModule, NgDynamicJsonFormComponent],
-  templateUrl: './form-style-tweaker.component.html',
-  styleUrls: ['./form-style-tweaker.component.scss'],
+    selector: 'app-form-style-tweaker',
+    imports: [CommonModule, NgDynamicJsonFormComponent],
+    templateUrl: './form-style-tweaker.component.html',
+    styleUrls: ['./form-style-tweaker.component.scss']
 })
 export class FormStyleTweakerComponent {
   private langService = inject(LanguageService);

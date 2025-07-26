@@ -5,14 +5,13 @@ import { CustomControlComponent } from '../../components/custom-control/custom-c
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
-  selector: 'ui-basic-switch',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
-  templateUrl: './ui-basic-switch.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-switch',
+    imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
+    templateUrl: './ui-basic-switch.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicSwitchComponent extends CustomControlComponent {
   private _onChange?: any;

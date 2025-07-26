@@ -18,13 +18,12 @@ import { FormValidationService } from '../../services/form-validation.service';
 import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
 
 @Component({
-  selector: 'error-message',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './error-message.component.html',
-  host: {
-    class: 'error-message',
-  },
+    selector: 'error-message',
+    imports: [CommonModule],
+    templateUrl: './error-message.component.html',
+    host: {
+        class: 'error-message',
+    }
 })
 export class ErrorMessageComponent implements AfterViewInit {
   private _internal_destroyRef = inject(DestroyRef);

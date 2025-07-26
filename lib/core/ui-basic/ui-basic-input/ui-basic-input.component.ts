@@ -5,14 +5,13 @@ import { CustomControlComponent } from '../../components/custom-control/custom-c
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
-  selector: 'ui-basic-input',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
-  templateUrl: './ui-basic-input.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-input',
+    imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
+    templateUrl: './ui-basic-input.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicInputComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');

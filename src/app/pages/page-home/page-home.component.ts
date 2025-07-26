@@ -12,19 +12,18 @@ import { UiContentWrapperComponent } from '../../features/ui-content-wrapper/ui-
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-page-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
-    UiContentWrapperComponent,
-    UiLoadingIndicatorComponent,
-    DocFormViewerComponent,
-    NgDynamicJsonFormComponent,
-  ],
-  templateUrl: './page-home.component.html',
-  styleUrls: ['./page-home.component.scss'],
+    selector: 'app-page-home',
+    imports: [
+        CommonModule,
+        RouterModule,
+        ReactiveFormsModule,
+        UiContentWrapperComponent,
+        UiLoadingIndicatorComponent,
+        DocFormViewerComponent,
+        NgDynamicJsonFormComponent,
+    ],
+    templateUrl: './page-home.component.html',
+    styleUrls: ['./page-home.component.scss']
 })
 export class PageHomeComponent implements OnInit {
   private title = inject(Title);

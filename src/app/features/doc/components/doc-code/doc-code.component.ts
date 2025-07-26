@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, inject } from '@angular/core';
 
 @Component({
-  selector: 'app-doc-code',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './doc-code.component.html',
-  styleUrls: ['./doc-code.component.scss'],
+    selector: 'app-doc-code',
+    imports: [CommonModule],
+    templateUrl: './doc-code.component.html',
+    styleUrls: ['./doc-code.component.scss']
 })
 export class DocCodeComponent {
   private el = inject(ElementRef);

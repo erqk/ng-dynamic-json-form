@@ -19,14 +19,13 @@ import { FormLayout } from '../../models/form-layout.interface';
 import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract';
 
 @Component({
-  selector: 'form-label',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './form-label.component.html',
-  styleUrls: ['./form-label.component.scss'],
-  host: {
-    class: 'form-label',
-  },
+    selector: 'form-label',
+    imports: [CommonModule],
+    templateUrl: './form-label.component.html',
+    styleUrls: ['./form-label.component.scss'],
+    host: {
+        class: 'form-label',
+    }
 })
 export class FormLabelComponent {
   private _destroyRef = inject(DestroyRef);

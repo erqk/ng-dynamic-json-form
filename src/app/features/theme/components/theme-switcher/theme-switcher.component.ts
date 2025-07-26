@@ -6,11 +6,10 @@ import { THEME_LIST } from '../../constants/themes.constant';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
-  selector: 'app-theme-switcher',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './theme-switcher.component.html',
-  styles: [],
+    selector: 'app-theme-switcher',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './theme-switcher.component.html',
+    styles: []
 })
 export class ThemeSwitcherComponent {
   private themeService = inject(ThemeService);

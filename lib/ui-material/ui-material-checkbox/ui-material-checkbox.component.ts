@@ -14,25 +14,24 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-checkbox',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCheckboxModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-checkbox',
-        token: MatCheckbox,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-checkbox.component.html',
-  styles: [],
+    selector: 'ui-material-checkbox',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCheckboxModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-checkbox',
+                token: MatCheckbox,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-checkbox.component.html',
+    styles: []
 })
 export class UiMaterialCheckboxComponent extends CustomControlComponent {
   private _onChange?: any;

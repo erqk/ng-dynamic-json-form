@@ -10,11 +10,10 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
-  selector: 'header-tab-bar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './header-tab-bar.component.html',
-  styleUrls: ['./header-tab-bar.component.scss'],
+    selector: 'header-tab-bar',
+    imports: [CommonModule, RouterModule],
+    templateUrl: './header-tab-bar.component.html',
+    styleUrls: ['./header-tab-bar.component.scss']
 })
 export class HeaderTabBarComponent {
   private el = inject(ElementRef);

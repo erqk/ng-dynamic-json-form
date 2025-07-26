@@ -9,28 +9,27 @@ import {
 } from '../../directives';
 import { providePropsBinding } from '../../providers/props-binding.provider';
 @Component({
-  selector: 'ui-basic-input-mask',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    IMaskDirective,
-    ImaskValuePatchDirective,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'imask',
-        token: IMaskDirective,
-      },
-    ]),
-  ],
-  templateUrl: './ui-basic-input-mask.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-input-mask',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        IMaskDirective,
+        ImaskValuePatchDirective,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'imask',
+                token: IMaskDirective,
+            },
+        ]),
+    ],
+    templateUrl: './ui-basic-input-mask.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicInputMaskComponent extends CustomControlComponent {
   override control = new FormControl('');

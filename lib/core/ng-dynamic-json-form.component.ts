@@ -69,35 +69,34 @@ import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
 
 @Component({
-  selector: 'ng-dynamic-json-form',
-  templateUrl: './ng-dynamic-json-form.component.html',
-  standalone: true,
-  imports: [CommonModule, FormGroupComponent],
-  host: {
-    class: 'ng-dynamic-json-form',
-  },
-  providers: [
-    ConfigValidationService,
-    ConfigMappingService,
-    FormGeneratorService,
-    FormConditionsService,
-    FormValidationService,
-    FormValueService,
-    FormReadyStateService,
-    GlobalVariableService,
-    HttpRequestCacheService,
-    OptionsDataService,
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
-      multi: true,
+    selector: 'ng-dynamic-json-form',
+    templateUrl: './ng-dynamic-json-form.component.html',
+    imports: [CommonModule, FormGroupComponent],
+    host: {
+        class: 'ng-dynamic-json-form',
     },
-    {
-      provide: NG_ASYNC_VALIDATORS,
-      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
-      multi: true,
-    },
-  ],
+    providers: [
+        ConfigValidationService,
+        ConfigMappingService,
+        FormGeneratorService,
+        FormConditionsService,
+        FormValidationService,
+        FormValueService,
+        FormReadyStateService,
+        GlobalVariableService,
+        HttpRequestCacheService,
+        OptionsDataService,
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+            multi: true,
+        },
+        {
+            provide: NG_ASYNC_VALIDATORS,
+            useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+            multi: true,
+        },
+    ]
 })
 export class NgDynamicJsonFormComponent
   implements ControlValueAccessor, Validator

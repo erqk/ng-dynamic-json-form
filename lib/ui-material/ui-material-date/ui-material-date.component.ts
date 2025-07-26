@@ -15,27 +15,26 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-date',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-input',
-        token: MatDatepickerInput,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-date.component.html',
-  styles: [],
+    selector: 'ui-material-date',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatDatepickerModule,
+        MatFormFieldModule,
+        MatNativeDateModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-input',
+                token: MatDatepickerInput,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-date.component.html',
+    styles: []
 })
 export class UiMaterialDateComponent extends CustomControlComponent {
   override control = new FormControl(new Date());

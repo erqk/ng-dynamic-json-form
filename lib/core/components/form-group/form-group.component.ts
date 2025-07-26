@@ -22,21 +22,20 @@ import { ContentWrapperComponent } from '../content-wrapper/content-wrapper.comp
 import { FormControlComponent } from '../form-control/form-control.component';
 
 @Component({
-  selector: 'form-group',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ContentWrapperComponent,
-    HostIdDirective,
-    ControlLayoutDirective,
-    FormControlComponent,
-    ControlTypeByConfigPipe,
-  ],
-  templateUrl: './form-group.component.html',
-  host: {
-    class: 'grid-container form-group-container',
-  },
+    selector: 'form-group',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        ContentWrapperComponent,
+        HostIdDirective,
+        ControlLayoutDirective,
+        FormControlComponent,
+        ControlTypeByConfigPipe,
+    ],
+    templateUrl: './form-group.component.html',
+    host: {
+        class: 'grid-container form-group-container',
+    }
 })
 export class FormGroupComponent implements OnChanges {
   private _el = inject(ElementRef);

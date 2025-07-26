@@ -5,14 +5,13 @@ import { CustomControlComponent } from '../../components/custom-control/custom-c
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
-  selector: 'ui-basic-date',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
-  templateUrl: './ui-basic-date.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-date',
+    imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
+    templateUrl: './ui-basic-date.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicDateComponent
   extends CustomControlComponent

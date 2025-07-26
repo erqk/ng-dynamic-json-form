@@ -37,26 +37,25 @@ import { getControlErrors } from '../../utilities/get-control-errors';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 
 @Component({
-  selector: 'form-control',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './form-control.component.html',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FormControlComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => FormControlComponent),
-      multi: true,
-    },
-  ],
-  styles: [':host { display: block }'],
-  host: {
-    class: 'form-control',
-  },
+    selector: 'form-control',
+    imports: [CommonModule],
+    templateUrl: './form-control.component.html',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FormControlComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => FormControlComponent),
+            multi: true,
+        },
+    ],
+    styles: [':host { display: block }'],
+    host: {
+        class: 'form-control',
+    }
 })
 export class FormControlComponent
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator

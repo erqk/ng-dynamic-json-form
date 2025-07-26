@@ -13,25 +13,24 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-switch',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-slide-toggle',
-        token: MatSlideToggle,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-switch.component.html',
-  styles: [],
+    selector: 'ui-material-switch',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-slide-toggle',
+                token: MatSlideToggle,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-switch.component.html',
+    styles: []
 })
 export class UiMaterialSwitchComponent extends CustomControlComponent {
   override control = new FormControl(false);

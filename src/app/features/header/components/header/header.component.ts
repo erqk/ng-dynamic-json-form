@@ -15,10 +15,9 @@ import { LayoutService } from 'src/app/core/services/layout.service';
 import { Subject, fromEvent } from 'rxjs';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule, HeaderDesktopComponent, HeaderMobileComponent],
-  template: `
+    selector: 'app-header',
+    imports: [CommonModule, HeaderDesktopComponent, HeaderMobileComponent],
+    template: `
     <div
       [ngClass]="[
         'header-container',
@@ -38,7 +37,7 @@ import { Subject, fromEvent } from 'rxjs';
       </ng-container>
     </div>
   `,
-  styleUrls: ['./header.component.scss'],
+    styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
   private el = inject(ElementRef);

@@ -8,11 +8,10 @@ import { PlaygroundEditorDataService } from '../../services/playground-editor-da
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
 
 @Component({
-  selector: 'app-playground-template-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './playground-template-list.component.html',
-  styleUrls: ['./playground-template-list.component.scss'],
+    selector: 'app-playground-template-list',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    templateUrl: './playground-template-list.component.html',
+    styleUrls: ['./playground-template-list.component.scss']
 })
 export class PlaygroundTemplateListComponent {
   private langService = inject(LanguageService);

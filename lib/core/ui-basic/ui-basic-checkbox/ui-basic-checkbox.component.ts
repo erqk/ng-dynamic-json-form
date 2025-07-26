@@ -5,14 +5,13 @@ import { CustomControlComponent } from '../../components/custom-control/custom-c
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
-  selector: 'ui-basic-checkbox',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
-  templateUrl: './ui-basic-checkbox.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-checkbox',
+    imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
+    templateUrl: './ui-basic-checkbox.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicCheckboxComponent extends CustomControlComponent {
   private _onChange?: any;

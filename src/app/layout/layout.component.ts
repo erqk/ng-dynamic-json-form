@@ -8,16 +8,15 @@ import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-con
 import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    UiContentWrapperComponent,
-    NavigatorTitleComponent,
-    UiLoadingIndicatorComponent,
-  ],
-  template: `
+    selector: 'app-layout',
+    imports: [
+        CommonModule,
+        RouterModule,
+        UiContentWrapperComponent,
+        NavigatorTitleComponent,
+        UiLoadingIndicatorComponent,
+    ],
+    template: `
     <ui-loading-indicator
       *ngIf="docsLoading$.value === true"
     ></ui-loading-indicator>
@@ -36,8 +35,8 @@ import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui
       </div>
     </ui-content-wrapper>
   `,
-  styleUrls: ['./layout.component.scss'],
-  animations: [FADE_UP_ANIMATION],
+    styleUrls: ['./layout.component.scss'],
+    animations: [FADE_UP_ANIMATION]
 })
 export class LayoutComponent {
   private docsLoaderService = inject(DocsLoaderService);

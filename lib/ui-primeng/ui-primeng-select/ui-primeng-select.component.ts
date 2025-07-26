@@ -9,24 +9,23 @@ import {
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 
 @Component({
-  selector: 'ui-primeng-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-dropdown',
-        token: Dropdown,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-select.component.html',
-  styles: [],
+    selector: 'ui-primeng-select',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-dropdown',
+                token: Dropdown,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-select.component.html',
+    styles: []
 })
 export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');

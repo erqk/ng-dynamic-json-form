@@ -9,11 +9,10 @@ import {
 import { CustomControlComponent } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'app-custom-input',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './custom-input.component.html',
-  styleUrls: ['./custom-input.component.scss'],
+    selector: 'app-custom-input',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './custom-input.component.html',
+    styleUrls: ['./custom-input.component.scss']
 })
 export class CustomInputComponent extends CustomControlComponent {
   override control = new FormGroup({

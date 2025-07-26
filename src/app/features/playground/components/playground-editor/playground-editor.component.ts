@@ -26,11 +26,10 @@ import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
 import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
 
 @Component({
-  selector: 'app-playground-editor',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './playground-editor.component.html',
-  styleUrls: ['./playground-editor.component.scss'],
+    selector: 'app-playground-editor',
+    imports: [CommonModule],
+    templateUrl: './playground-editor.component.html',
+    styleUrls: ['./playground-editor.component.scss']
 })
 export class PlaygroundEditorComponent {
   private destroyRef = inject(DestroyRef);

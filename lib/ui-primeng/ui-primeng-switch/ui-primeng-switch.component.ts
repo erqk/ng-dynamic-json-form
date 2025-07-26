@@ -9,24 +9,23 @@ import {
 import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
-  selector: 'ui-primeng-switch',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputSwitchModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-input-switch',
-        token: InputSwitch,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-switch.component.html',
-  styles: [],
+    selector: 'ui-primeng-switch',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        InputSwitchModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-input-switch',
+                token: InputSwitch,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-switch.component.html',
+    styles: []
 })
 export class UiPrimengSwitchComponent extends CustomControlComponent {
   override control = new FormControl(false);

@@ -9,27 +9,26 @@ import {
 import { providePropsBinding } from '../../providers/props-binding.provider';
 
 @Component({
-  selector: 'ui-basic-textarea',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TextareaAutHeightDirective,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'textarea-autoheight',
-        token: TextareaAutHeightDirective,
-      },
-    ]),
-  ],
-  templateUrl: './ui-basic-textarea.component.html',
-  styles: [],
-  host: {
-    class: 'ui-basic',
-  },
+    selector: 'ui-basic-textarea',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TextareaAutHeightDirective,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'textarea-autoheight',
+                token: TextareaAutHeightDirective,
+            },
+        ]),
+    ],
+    templateUrl: './ui-basic-textarea.component.html',
+    styles: [],
+    host: {
+        class: 'ui-basic',
+    }
 })
 export class UiBasicTextareaComponent extends CustomControlComponent {
   override control = new FormControl('');

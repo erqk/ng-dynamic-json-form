@@ -10,17 +10,16 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
-  selector: 'content-wrapper',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormLabelComponent,
-    ErrorMessageComponent,
-    ControlLayoutDirective,
-    IsControlRequiredPipe,
-  ],
-  templateUrl: './content-wrapper.component.html',
-  styles: [],
+    selector: 'content-wrapper',
+    imports: [
+        CommonModule,
+        FormLabelComponent,
+        ErrorMessageComponent,
+        ControlLayoutDirective,
+        IsControlRequiredPipe,
+    ],
+    templateUrl: './content-wrapper.component.html',
+    styles: []
 })
 export class ContentWrapperComponent {
   private _globalVariableService = inject(GlobalVariableService);

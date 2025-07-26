@@ -16,14 +16,13 @@ import { merge, Subject, takeUntil, tap } from 'rxjs';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
 
 @Component({
-  selector: 'app-playground-form-debugger',
-  standalone: true,
-  imports: [CommonModule, PlaygroundEditorComponent],
-  host: {
-    class: 'flex flex-col w-full h-full beauty-scrollbar affect-child',
-  },
-  templateUrl: './playground-form-debugger.component.html',
-  styleUrls: ['./playground-form-debugger.component.scss'],
+    selector: 'app-playground-form-debugger',
+    imports: [CommonModule, PlaygroundEditorComponent],
+    host: {
+        class: 'flex flex-col w-full h-full beauty-scrollbar affect-child',
+    },
+    templateUrl: './playground-form-debugger.component.html',
+    styleUrls: ['./playground-form-debugger.component.scss']
 })
 export class PlaygroundFormDebuggerComponent implements OnChanges {
   private destroyRef = inject(DestroyRef);

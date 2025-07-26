@@ -9,24 +9,23 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-select',
-        token: MatSelect,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-select.component.html',
-  styles: [],
+    selector: 'ui-material-select',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-select',
+                token: MatSelect,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-select.component.html',
+    styles: []
 })
 export class UiMaterialSelectComponent extends CustomControlComponent {
   private _onChange?: any;

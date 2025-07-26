@@ -15,10 +15,9 @@ import { LanguageService } from 'src/app/features/language/language-data.service
 import { MarkdownService } from 'src/app/features/markdown/markdown.service';
 
 @Component({
-  selector: 'app-navigator-index',
-  standalone: true,
-  imports: [CommonModule, DocsRouterLinkDirective],
-  templateUrl: './navigator-index.component.html',
+    selector: 'app-navigator-index',
+    imports: [CommonModule, DocsRouterLinkDirective],
+    templateUrl: './navigator-index.component.html'
 })
 export class NavigatorIndexComponent {
   private destroyRef = inject(DestroyRef);

@@ -14,28 +14,27 @@ import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-
 import { PlaygroundFormComponent } from './playground-form.component';
 
 @Component({
-  selector: 'app-playground-form-material',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgDynamicJsonFormComponent],
-  providers: [
-    provideNgDynamicJsonForm({
-      customValidators: {
-        firstUppercase: firstUppercaseValidator,
-        textareaMaxLength: textareaMaxLengthValidator,
-      },
-      customAsyncValidators: {
-        letterStartsWithA: letterStartsWithAValidator,
-      },
-      loadingComponent: CustomLoadingComponent,
-      errorComponent: CustomErrorMessageComponent,
-      uiComponents: UI_MATERIAL_COMPONENTS,
-    }),
-    {
-      provide: PlaygroundFormComponent,
-      useExisting: forwardRef(() => PlaygroundFormMaterialComponent),
-    },
-  ],
-  templateUrl: './playground-form.component.html',
-  styleUrls: ['./playground-form.component.scss'],
+    selector: 'app-playground-form-material',
+    imports: [CommonModule, ReactiveFormsModule, NgDynamicJsonFormComponent],
+    providers: [
+        provideNgDynamicJsonForm({
+            customValidators: {
+                firstUppercase: firstUppercaseValidator,
+                textareaMaxLength: textareaMaxLengthValidator,
+            },
+            customAsyncValidators: {
+                letterStartsWithA: letterStartsWithAValidator,
+            },
+            loadingComponent: CustomLoadingComponent,
+            errorComponent: CustomErrorMessageComponent,
+            uiComponents: UI_MATERIAL_COMPONENTS,
+        }),
+        {
+            provide: PlaygroundFormComponent,
+            useExisting: forwardRef(() => PlaygroundFormMaterialComponent),
+        },
+    ],
+    templateUrl: './playground-form.component.html',
+    styleUrls: ['./playground-form.component.scss']
 })
 export class PlaygroundFormMaterialComponent extends PlaygroundFormComponent {}

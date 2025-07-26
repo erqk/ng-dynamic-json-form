@@ -10,28 +10,27 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-textarea',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'cdk-textarea-autosize',
-        token: CdkTextareaAutosize,
-      },
-      {
-        key: 'mat-input',
-        token: MatInput,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-textarea.component.html',
-  styles: [],
+    selector: 'ui-material-textarea',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'cdk-textarea-autosize',
+                token: CdkTextareaAutosize,
+            },
+            {
+                key: 'mat-input',
+                token: MatInput,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-textarea.component.html',
+    styles: []
 })
 export class UiMaterialTextareaComponent extends CustomControlComponent {
   override control = new FormControl('');

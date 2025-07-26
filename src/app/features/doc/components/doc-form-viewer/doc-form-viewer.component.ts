@@ -23,22 +23,21 @@ import { firstUppercaseValidator } from 'src/app/example/validators/first-upperc
 import { PlaygroundEditorComponent } from '../../../playground/components/playground-editor/playground-editor.component';
 
 @Component({
-  selector: 'app-doc-form-viewer',
-  standalone: true,
-  imports: [
-    CommonModule,
-    PlaygroundEditorComponent,
-    NgDynamicJsonFormComponent,
-  ],
-  providers: [
-    provideNgDynamicJsonForm({
-      customValidators: {
-        firstUppercase: firstUppercaseValidator,
-      },
-    }),
-  ],
-  templateUrl: './doc-form-viewer.component.html',
-  styleUrls: ['./doc-form-viewer.component.scss'],
+    selector: 'app-doc-form-viewer',
+    imports: [
+        CommonModule,
+        PlaygroundEditorComponent,
+        NgDynamicJsonFormComponent,
+    ],
+    providers: [
+        provideNgDynamicJsonForm({
+            customValidators: {
+                firstUppercase: firstUppercaseValidator,
+            },
+        }),
+    ],
+    templateUrl: './doc-form-viewer.component.html',
+    styleUrls: ['./doc-form-viewer.component.scss']
 })
 export class DocFormViewerComponent implements OnChanges, AfterViewInit {
   private cd = inject(ChangeDetectorRef);

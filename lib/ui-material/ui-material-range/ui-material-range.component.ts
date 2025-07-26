@@ -10,25 +10,24 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-range',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatSliderModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-slider',
-        token: MatSlider,
-      },
-    ]),
-  ],
-  templateUrl: './ui-material-range.component.html',
-  styles: [],
+    selector: 'ui-material-range',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSliderModule,
+        MatInputModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-slider',
+                token: MatSlider,
+            },
+        ]),
+    ],
+    templateUrl: './ui-material-range.component.html',
+    styles: []
 })
 export class UiMaterialRangeComponent extends CustomControlComponent {
   override control = new FormControl(0);

@@ -9,10 +9,9 @@ import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interf
 import { NavigatorService } from '../../services/navigator.service';
 
 @Component({
-  selector: 'app-navigator-title',
-  standalone: true,
-  imports: [CommonModule, UiContentWrapperComponent],
-  template: `
+    selector: 'app-navigator-title',
+    imports: [CommonModule, UiContentWrapperComponent],
+    template: `
     <ng-container *ngFor="let item of links">
       <ng-container
         [ngTemplateOutlet]="buttonTemplate"
@@ -53,10 +52,10 @@ import { NavigatorService } from '../../services/navigator.service';
       </ng-container>
     </ng-template>
   `,
-  styleUrls: ['./navigator-title.component.scss'],
-  host: {
-    class: 'beauty-scrollbar',
-  },
+    styleUrls: ['./navigator-title.component.scss'],
+    host: {
+        class: 'beauty-scrollbar',
+    }
 })
 export class NavigatorTitleComponent {
   private destroyRef = inject(DestroyRef);

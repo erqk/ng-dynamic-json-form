@@ -9,25 +9,24 @@ import {
 import { Calendar, CalendarModule } from 'primeng/calendar';
 
 @Component({
-  selector: 'ui-primeng-date',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CalendarModule,
-    FormsModule,
-    PropsBindingDirective,
-  ],
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-calendar',
-        token: Calendar,
-      },
-    ]),
-  ],
-  templateUrl: './ui-primeng-date.component.html',
-  styles: [],
+    selector: 'ui-primeng-date',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        CalendarModule,
+        FormsModule,
+        PropsBindingDirective,
+    ],
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-calendar',
+                token: Calendar,
+            },
+        ]),
+    ],
+    templateUrl: './ui-primeng-date.component.html',
+    styles: []
 })
 export class UiPrimengDateComponent extends CustomControlComponent {
   private _onChange?: any;

@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject } from '@angular/core';
 
 @Component({
-  selector: 'app-doc-tab',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './doc-tab.component.html',
-  styleUrls: ['./doc-tab.component.scss'],
+    selector: 'app-doc-tab',
+    imports: [CommonModule],
+    templateUrl: './doc-tab.component.html',
+    styleUrls: ['./doc-tab.component.scss']
 })
 export class DocTabComponent {
   private el = inject(ElementRef);
