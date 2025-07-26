@@ -41,7 +41,7 @@ import { PlaygroundEditorComponent } from '../../../playground/components/playgr
   styleUrls: ['./doc-form-viewer.component.scss'],
 })
 export class DocFormViewerComponent implements OnChanges, AfterViewInit {
-  private _cd = inject(ChangeDetectorRef);
+  private cd = inject(ChangeDetectorRef);
 
   @Input() configs: string | FormControlConfig[] = [];
   @Input() configPath = '';
@@ -61,28 +61,28 @@ export class DocFormViewerComponent implements OnChanges, AfterViewInit {
     'Angular Material': UI_MATERIAL_COMPONENTS,
   };
 
-  private _editorData: any = null;
+  private editorData: any = null;
 
   ngOnChanges(changes: SimpleChanges): void {
     const { configs, configPath } = changes;
 
     if (configs) {
-      this._parseConfigs();
+      this.parseConfigs();
       this.reset();
     }
 
     if (configPath) {
-      this._loadConfigFromPath();
+      this.loadConfigFromPath();
       this.reset();
     }
   }
 
   ngAfterViewInit(): void {
-    this._getFormHeight();
+    this.getFormHeight();
   }
 
   onEditorChange(e: any): void {
-    this._editorData = e;
+    this.editorData = e;
   }
 
   onEdit(): void {
@@ -90,8 +90,8 @@ export class DocFormViewerComponent implements OnChanges, AfterViewInit {
   }
 
   onConfirm(): void {
-    if (this._editorData) {
-      this.configs = structuredClone(this._editorData);
+    if (this.editorData) {
+      this.configs = structuredClone(this.editorData);
     }
 
     this.showEditor = false;
@@ -101,13 +101,13 @@ export class DocFormViewerComponent implements OnChanges, AfterViewInit {
     const _configs = structuredClone(this.configsUntouched);
 
     this.configs = _configs;
-    this._editorData = _configs;
+    this.editorData = _configs;
 
     // reset the editor (reassign property to trigger changes)
     this.configsUntouched = [...this.configsUntouched];
   }
 
-  private _loadConfigFromPath(): void {
+  private loadConfigFromPath(): void {
     if (!this.configPath) return;
 
     const configFound = this.configPath.split('.').reduce((acc, key) => {
@@ -119,7 +119,7 @@ export class DocFormViewerComponent implements OnChanges, AfterViewInit {
     this.configsUntouched = [...result];
   }
 
-  private _parseConfigs(): void {
+  private parseConfigs(): void {
     if (!this.configs) return;
 
     if (typeof this.configs === 'string') {
@@ -131,10 +131,10 @@ export class DocFormViewerComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private _getFormHeight(): void {
+  private getFormHeight(): void {
     if (!this.formContent) return;
 
     this.formHeight = `${this.formContent.nativeElement.scrollHeight + 1}px`;
-    this._cd.detectChanges();
+    this.cd.detectChanges();
   }
 }

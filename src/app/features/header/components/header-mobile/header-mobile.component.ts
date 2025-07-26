@@ -24,7 +24,7 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
   styleUrls: ['./header-mobile.component.scss'],
 })
 export class HeaderMobileComponent {
-  private _layoutService = inject(LayoutService);
+  private layoutService = inject(LayoutService);
 
   @Input() links: { label: string; route: string }[] = [];
   @Input() openSettings = false;
@@ -35,7 +35,7 @@ export class HeaderMobileComponent {
     this.settingsOpened.emit(this.openSettings);
 
     requestAnimationFrame(() => {
-      this._layoutService.updateHeaderHeight();
+      this.layoutService.updateHeaderHeight();
     });
   }
 }

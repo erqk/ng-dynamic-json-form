@@ -8,12 +8,12 @@ import { LanguageType } from './language.type';
   providedIn: 'root',
 })
 export class LanguageService {
-  private _http = inject(HttpClient);
-  private _transferState = inject(TransferState);
-  private _location = inject(Location);
-  private _defaultLanguage: LanguageType = 'en';
-  private _language$ = new BehaviorSubject<LanguageType>(this._defaultLanguage);
-  private _cache: { lang: string; data: any }[] = [];
+  private http = inject(HttpClient);
+  private transferState = inject(TransferState);
+  private location = inject(Location);
+  private defaultLanguage: LanguageType = 'en';
+  private _language$ = new BehaviorSubject<LanguageType>(this.defaultLanguage);
+  private cache: { lang: string; data: any }[] = [];
 
   languageList: LanguageType[] = ['zh-TW', 'en'];
   i18nContent$ = new BehaviorSubject<any>({});
@@ -31,17 +31,17 @@ export class LanguageService {
     const _lang = lang ?? this.currentLanguage;
     const url = `assets/i18n/${_lang}.json`;
     const key = makeStateKey<string>(url);
-    const cacheData = this._cache.find((x) => x.lang === _lang)?.data;
+    const cacheData = this.cache.find((x) => x.lang === _lang)?.data;
 
     const source$ = () => {
-      if (this._transferState.hasKey(key)) {
-        return of(this._transferState.get(key, ''));
+      if (this.transferState.hasKey(key)) {
+        return of(this.transferState.get(key, ''));
       }
 
       if (cacheData) {
         return of(cacheData);
       }
-      return this._http.get(url, {
+      return this.http.get(url, {
         responseType: 'json',
       });
     };
@@ -51,9 +51,9 @@ export class LanguageService {
         if (!x) return;
         this.setLanguage(_lang);
         this.i18nContent$.next(x);
-        this._cache.push({ lang: _lang, data: x });
+        this.cache.push({ lang: _lang, data: x });
         this._userLanguage = _lang;
-        this._transferState.set(key, x);
+        this.transferState.set(key, x);
       })
     );
   }
@@ -63,7 +63,7 @@ export class LanguageService {
   }
 
   get languageFromUrl(): string | undefined {
-    const url = this._location.path();
+    const url = this.location.path();
     const langFromUrl = url
       .match(/_.+\.md$/)?.[0]
       .substring(1)

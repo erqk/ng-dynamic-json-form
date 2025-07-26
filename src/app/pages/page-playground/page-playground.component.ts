@@ -58,14 +58,14 @@ import { VersionService } from 'src/app/features/version/version.service';
   styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent implements OnInit {
-  private _http = inject(HttpClient);
-  private _title = inject(Title);
-  private _layoutService = inject(LayoutService);
-  private _langService = inject(LanguageService);
-  private _templateDataService = inject(PlaygroundTemplateDataService);
-  private _versionService = inject(VersionService);
-  private _playgroundSettingsService = inject(PlaygroundSettingsService);
-  private _editorDataService = inject(PlaygroundEditorDataService);
+  private http = inject(HttpClient);
+  private title = inject(Title);
+  private layoutService = inject(LayoutService);
+  private langService = inject(LanguageService);
+  private templateDataService = inject(PlaygroundTemplateDataService);
+  private versionService = inject(VersionService);
+  private playgroundSettingsService = inject(PlaygroundSettingsService);
+  private editorDataService = inject(PlaygroundEditorDataService);
 
   @ViewChild(PlaygroundFormComponent)
   playgroundFormRef?: PlaygroundFormComponent;
@@ -91,9 +91,9 @@ export class PagePlaygroundComponent implements OnInit {
   formControl = new UntypedFormControl('');
 
   showEditor = false;
-  currentVersion = this._versionService.docVersion;
+  currentVersion = this.versionService.docVersion;
   mobileTabSelected = 0;
-  asSplitSizes = this._playgroundSettingsService.asSplitSizes;
+  asSplitSizes = this.playgroundSettingsService.asSplitSizes;
 
   customUiComponents = this.uiComponents.reduce((acc, curr) => {
     acc[curr.key] = curr.value;
@@ -105,11 +105,11 @@ export class PagePlaygroundComponent implements OnInit {
   };
 
   currentUi =
-    this._playgroundSettingsService.formUi ||
+    this.playgroundSettingsService.formUi ||
     Object.keys(this.customUiComponents)[0];
 
   optionsSources = {
-    custom$: this._http.get('https://dummyjson.com/products').pipe(
+    custom$: this.http.get('https://dummyjson.com/products').pipe(
       map((x) => (x as any).products),
       concatAll(),
       map((x: any) => ({ label: x.title, value: x })),
@@ -117,26 +117,26 @@ export class PagePlaygroundComponent implements OnInit {
     ),
   };
 
-  windowSize$ = this._layoutService.windowSize$;
+  windowSize$ = this.layoutService.windowSize$;
 
-  mobileTabs$: Observable<string[]> = this._langService.i18nContent$.pipe(
+  mobileTabs$: Observable<string[]> = this.langService.i18nContent$.pipe(
     map((x) => x['PLAYGROUND']['TABS']),
     map((x) => Object.values(x))
   );
 
-  editorData$ = this._editorDataService.configEditorData$.pipe(share());
+  editorData$ = this.editorDataService.configEditorData$.pipe(share());
 
   configs$ = combineLatest([
-    this._templateDataService.currentTemplateKey$,
-    this._langService.language$,
+    this.templateDataService.currentTemplateKey$,
+    this.langService.language$,
   ]).pipe(
     debounceTime(0),
     map(([key]) => {
-      const examples = this._templateDataService.getExampleTemplate(key);
-      const userTemplates = this._templateDataService.getUserTemplate(key);
+      const examples = this.templateDataService.getExampleTemplate(key);
+      const userTemplates = this.templateDataService.getUserTemplate(key);
 
       return (
-        userTemplates || examples || this._templateDataService.fallbackExample
+        userTemplates || examples || this.templateDataService.fallbackExample
       );
     }),
     tap(() => {
@@ -146,8 +146,8 @@ export class PagePlaygroundComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this._langService.i18nContent$
-      .pipe(tap((x) => this._title.setTitle(x['MENU']['PLAYGROUND'])))
+    this.langService.i18nContent$
+      .pipe(tap((x) => this.title.setTitle(x['MENU']['PLAYGROUND'])))
       .subscribe();
   }
 
@@ -156,17 +156,17 @@ export class PagePlaygroundComponent implements OnInit {
   }
 
   onFormUiChange(e: string): void {
-    this.currentUi = this._playgroundSettingsService.formUi = e;
+    this.currentUi = this.playgroundSettingsService.formUi = e;
   }
 
   onAsSplitDragEnd(e: IOutputData): void {
-    this.asSplitSizes = this._playgroundSettingsService.asSplitSizes =
+    this.asSplitSizes = this.playgroundSettingsService.asSplitSizes =
       e.sizes.map((x) => (typeof x === 'string' ? 50 : x));
   }
 
   resetSplitSizes(): void {
-    this.asSplitSizes = this._playgroundSettingsService.asSplitSizes =
-      this._playgroundSettingsService.defaultAsSplitSizes;
+    this.asSplitSizes = this.playgroundSettingsService.asSplitSizes =
+      this.playgroundSettingsService.defaultAsSplitSizes;
   }
 
   switchMobileTab(i: number): void {
@@ -174,7 +174,7 @@ export class PagePlaygroundComponent implements OnInit {
   }
 
   onConfigEditing(e: FormControlConfig[]): void {
-    this._editorDataService.configModifiedData = e;
+    this.editorDataService.configModifiedData = e;
   }
 
   onFormGet(e: UntypedFormGroup): void {

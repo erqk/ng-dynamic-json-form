@@ -13,20 +13,20 @@ import { ThemeService } from '../../services/theme.service';
   styles: [],
 })
 export class ThemeSwitcherComponent {
-  private _themeService = inject(ThemeService);
-  private readonly _onDestroy$ = new Subject<void>();
+  private themeService = inject(ThemeService);
+  private readonly onDestroy$ = new Subject<void>();
 
-  themes = this._themeService.themes;
-  currentTheme = this._themeService.currentTheme;
+  themes = this.themeService.themes;
+  currentTheme = this.themeService.currentTheme;
 
   ngOnInit(): void {
     this.switchTheme(this.currentTheme.key);
-    this._themeService
+    this.themeService
       .prefersDark$()
       .pipe(
         skip(1),
         tap((x) => this.switchTheme(x ? 'dark' : 'light')),
-        takeUntil(this._onDestroy$)
+        takeUntil(this.onDestroy$)
       )
       .subscribe();
   }
@@ -45,12 +45,12 @@ export class ThemeSwitcherComponent {
     this.currentTheme = nextTheme;
 
     html?.setAttribute('class', nextTheme.key);
-    this._themeService.theme$.next(nextTheme.key);
-    this._themeService.savedTheme = nextTheme.key;
+    this.themeService.theme$.next(nextTheme.key);
+    this.themeService.savedTheme = nextTheme.key;
 
     for (const key in THEME_LIST) {
       const filePath = THEME_LIST[key][nextTheme.key];
-      this._themeService.setTheme(`${key}-theme`, filePath);
+      this.themeService.setTheme(`${key}-theme`, filePath);
     }
   }
 }

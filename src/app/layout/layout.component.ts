@@ -40,7 +40,7 @@ import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui
   animations: [FADE_UP_ANIMATION],
 })
 export class LayoutComponent {
-  private _docsLoaderService = inject(DocsLoaderService);
+  private docsLoaderService = inject(DocsLoaderService);
 
-  docsLoading$ = this._docsLoaderService.docLoading$;
+  docsLoading$ = this.docsLoaderService.docLoading$;
 }

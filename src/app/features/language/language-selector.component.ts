@@ -21,21 +21,21 @@ import { LanguageType } from './language.type';
   styles: [],
 })
 export class LanguageSelectorComponent {
-  private _langService = inject(LanguageService);
+  private langService = inject(LanguageService);
 
-  language$ = this._langService.language$;
+  language$ = this.langService.language$;
 
   onLanguageSelect(e: Event): void {
     const select = e.target as HTMLSelectElement;
     const language = select.value;
 
-    this._switchLanguage(language);
+    this.switchLanguage(language);
   }
 
-  private _switchLanguage(language: LanguageType): void {
-    this._langService
+  private switchLanguage(language: LanguageType): void {
+    this.langService
       .loadLanguageData$(language)
-      .pipe(tap(() => this._langService.setLanguage(language)))
+      .pipe(tap(() => this.langService.setLanguage(language)))
       .subscribe();
   }
 }

@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class VersionService {
-  private _http = inject(HttpClient);
+  private http = inject(HttpClient);
 
   readonly versions = ['v8'];
   readonly docVersion = 'v8';
@@ -14,7 +14,7 @@ export class VersionService {
   versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
 
   loadVersions$(): Observable<string[]> {
-    return this._npmPackageVersions$().pipe(
+    return this.npmPackageVersions$().pipe(
       tap((x) => {
         this.versions$.next(
           x.map((x) => ({
@@ -28,15 +28,15 @@ export class VersionService {
   }
 
   firstContentPath$(path: string): Observable<string> {
-    return this._http.get(path, { responseType: 'text' }).pipe(
+    return this.http.get(path, { responseType: 'text' }).pipe(
       map((x) => x.match(/(\.+\/){1,}.+/)?.[0]),
       map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
       catchError(() => of(''))
     );
   }
 
-  private _npmPackageVersions$(): Observable<string[]> {
-    return this._http
+  private npmPackageVersions$(): Observable<string[]> {
+    return this.http
       .get('https://registry.npmjs.org/ng-dynamic-json-form', {
         responseType: 'json',
       })

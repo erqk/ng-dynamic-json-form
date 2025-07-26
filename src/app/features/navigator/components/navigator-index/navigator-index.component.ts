@@ -21,45 +21,45 @@ import { MarkdownService } from 'src/app/features/markdown/markdown.service';
   templateUrl: './navigator-index.component.html',
 })
 export class NavigatorIndexComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _el = inject(ElementRef);
-  private _router = inject(Router);
-  private _docLoaderService = inject(DocsLoaderService);
-  private _markdownService = inject(MarkdownService);
-  private _langService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
+  private router = inject(Router);
+  private docLoaderService = inject(DocsLoaderService);
+  private markdownService = inject(MarkdownService);
+  private langService = inject(LanguageService);
 
   @Input() containerClass?: string | string[];
 
-  content$ = this._langService.language$.pipe(
+  content$ = this.langService.language$.pipe(
     debounceTime(0),
     switchMap((lang) => {
-      const _lang = this._langService.languageFromUrl ?? lang;
-      return this._docLoaderService.loadDoc$(`index_${_lang}.md`);
+      const _lang = this.langService.languageFromUrl ?? lang;
+      return this.docLoaderService.loadDoc$(`index_${_lang}.md`);
     }),
-    map((x) => this._markdownService.parse(x)),
-    tap(() => this._highlightActiveRoute())
+    map((x) => this.markdownService.parse(x)),
+    tap(() => this.highlightActiveRoute())
   );
 
   ngOnInit(): void {
-    this._onRouteChange();
+    this.onRouteChange();
   }
 
-  private _onRouteChange(): void {
-    this._router.events
+  private onRouteChange(): void {
+    this.router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap(() => this._highlightActiveRoute()),
-        takeUntilDestroyed(this._destroyRef)
+        tap(() => this.highlightActiveRoute()),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
-  private _highlightActiveRoute(): void {
+  private highlightActiveRoute(): void {
     if (typeof window === 'undefined') return;
 
     window.setTimeout(() => {
-      const host = this._el.nativeElement as HTMLElement;
-      const routeClean = this._router.url.split('?')[0].split('#')[0];
+      const host = this.el.nativeElement as HTMLElement;
+      const routeClean = this.router.url.split('?')[0].split('#')[0];
       const links = Array.from(
         host.querySelectorAll('.docs-index-container a')
       ) as HTMLAnchorElement[];

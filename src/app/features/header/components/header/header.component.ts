@@ -41,15 +41,15 @@ import { Subject, fromEvent } from 'rxjs';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  private _el = inject(ElementRef);
-  private _languageDataService = inject(LanguageService);
-  private _layoutService = inject(LayoutService);
-  private readonly _onDestroy$ = new Subject<void>();
+  private el = inject(ElementRef);
+  private languageDataService = inject(LanguageService);
+  private layoutService = inject(LayoutService);
+  private readonly onDestroy$ = new Subject<void>();
 
   showBackground = false;
   openSettings = false;
 
-  links$ = this._languageDataService.i18nContent$.pipe(
+  links$ = this.languageDataService.i18nContent$.pipe(
     filter((x) => Object.values(x).length > 0),
     map((x) => [
       {
@@ -70,7 +70,7 @@ export class HeaderComponent {
   }
 
   constructor() {
-    this._layoutService.windowSize$
+    this.layoutService.windowSize$
       .pipe(
         filter((x) => x.x >= 1024),
         tap(() => (this.openSettings = false))
@@ -79,23 +79,23 @@ export class HeaderComponent {
   }
 
   ngAfterViewInit(): void {
-    this._updateHeaderHeight();
+    this.updateHeaderHeight();
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
-  private _updateHeaderHeight(): void {
-    const host = this._el.nativeElement as HTMLElement;
+  private updateHeaderHeight(): void {
+    const host = this.el.nativeElement as HTMLElement;
     if (!host) return;
 
     fromEvent(host, 'transitionend', { passive: true })
       .pipe(
         debounceTime(0),
-        tap(() => this._layoutService.updateHeaderHeight()),
-        takeUntil(this._onDestroy$)
+        tap(() => this.layoutService.updateHeaderHeight()),
+        takeUntil(this.onDestroy$)
       )
       .subscribe();
   }

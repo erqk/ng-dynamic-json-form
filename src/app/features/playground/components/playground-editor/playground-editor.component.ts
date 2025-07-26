@@ -33,10 +33,10 @@ import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
   styleUrls: ['./playground-editor.component.scss'],
 })
 export class PlaygroundEditorComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _el = inject(ElementRef);
-  private _themeService = inject(ThemeService);
-  private _cancelWriteValue$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
+  private themeService = inject(ThemeService);
+  private cancelWriteValue$ = new Subject<void>();
 
   @Input() data: Content | null = null;
   @Input() mainMenuBar = true;
@@ -50,13 +50,13 @@ export class PlaygroundEditorComponent {
     const { data } = simpleChanges;
 
     if (data && this.jsonEditor) {
-      this._cancelWriteValue$.next();
+      this.cancelWriteValue$.next();
       try {
         timer(100)
           .pipe(
             take(1),
             tap(() => this.jsonEditor?.set(data.currentValue)),
-            takeUntil(this._cancelWriteValue$)
+            takeUntil(this.cancelWriteValue$)
           )
           .subscribe();
       } catch (err) {
@@ -71,10 +71,10 @@ export class PlaygroundEditorComponent {
     timer(200)
       .pipe(
         tap(() => {
-          this._initEditor();
-          this._darkThemeEvent();
+          this.initEditor();
+          this.darkThemeEvent();
         }),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -83,12 +83,12 @@ export class PlaygroundEditorComponent {
     this.jsonEditor?.destroy();
   }
 
-  private _initEditor(): void {
+  private initEditor(): void {
     if (typeof window === 'undefined') {
       return;
     }
 
-    const host = this._el.nativeElement as HTMLElement;
+    const host = this.el.nativeElement as HTMLElement;
     const el = host.querySelector('.json-editor') as HTMLElement;
 
     this.jsonEditor = new JSONEditor({
@@ -107,7 +107,7 @@ export class PlaygroundEditorComponent {
     });
   }
 
-  private _darkThemeEvent(): void {
+  private darkThemeEvent(): void {
     if (typeof window === 'undefined') return;
 
     let refreshTimeout = 0;
@@ -119,7 +119,7 @@ export class PlaygroundEditorComponent {
     };
 
     const setDarkTheme = (dark = false) => {
-      const host = this._el.nativeElement as HTMLElement;
+      const host = this.el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;
 
       if (dark) el.classList.add('jse-theme-dark');
@@ -137,13 +137,13 @@ export class PlaygroundEditorComponent {
       tap((x) => setDarkTheme(x))
     );
 
-    const themeDark$ = this._themeService.theme$.pipe(
+    const themeDark$ = this.themeService.theme$.pipe(
       distinctUntilChanged(),
       tap((x) => setDarkTheme(x === 'dark'))
     );
 
     merge(prefersDark$, themeDark$)
-      .pipe(takeUntilDestroyed(this._destroyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
 }

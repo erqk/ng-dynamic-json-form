@@ -21,9 +21,9 @@ import { VersionService } from './version.service';
   styles: [],
 })
 export class VersionSelectorComponent {
-  private _versionService = inject(VersionService);
+  private versionService = inject(VersionService);
 
-  versions = this._versionService.versions;
+  versions = this.versionService.versions;
 
   changeVersion(e: Event): void {
     const select = e.target as HTMLSelectElement;

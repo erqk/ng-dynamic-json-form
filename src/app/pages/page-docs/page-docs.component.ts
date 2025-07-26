@@ -40,52 +40,52 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
   animations: [FADE_UP_ANIMATION],
 })
 export class PageDocsComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _route = inject(ActivatedRoute);
-  private _router = inject(Router);
-  private _title = inject(Title);
-  private _viewportScroller = inject(ViewportScroller);
-  private _docLoaderService = inject(DocsLoaderService);
-  private _navigatorService = inject(NavigatorService);
-  private _markdownService = inject(MarkdownService);
-  private _layoutService = inject(LayoutService);
-  private _langService = inject(LanguageService);
-  private _useAnchorScrolling = false;
-  private _loadDoc$ = this._route.url.pipe(
+  private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private title = inject(Title);
+  private viewportScroller = inject(ViewportScroller);
+  private docLoaderService = inject(DocsLoaderService);
+  private navigatorService = inject(NavigatorService);
+  private markdownService = inject(MarkdownService);
+  private layoutService = inject(LayoutService);
+  private langService = inject(LanguageService);
+  private useAnchorScrolling = false;
+  private loadDoc$ = this.route.url.pipe(
     map((x) => x.map(({ path }) => path).join('/')),
-    switchMap((x) => (x === 'docs' ? this._getDefaultPath$() : of(x))),
+    switchMap((x) => (x === 'docs' ? this.getDefaultPath$() : of(x))),
     distinctUntilChanged(),
-    switchMap((x) => this._docLoaderService.loadDoc$(x)),
+    switchMap((x) => this.docLoaderService.loadDoc$(x)),
     tap((x) => {
       const title = x
         .match(/^#{1}.*/)?.[0]
         .replace('#', '')
         .trim();
 
-      this._title.setTitle(title ?? 'NgDynamicJsonForm');
+      this.title.setTitle(title ?? 'NgDynamicJsonForm');
     })
   );
 
   showMobileMenu = false;
 
-  windowSize$ = this._layoutService.windowSize$.pipe(delay(0));
+  windowSize$ = this.layoutService.windowSize$.pipe(delay(0));
 
-  content$: Observable<SafeHtml> = this._loadDoc$.pipe(
-    map((x) => this._markdownService.parse(x)),
+  content$: Observable<SafeHtml> = this.loadDoc$.pipe(
+    map((x) => this.markdownService.parse(x)),
     tap(() => {
-      this._navigatorService.getNavigatorTitles();
-      this._docLoaderService.wrapTable();
+      this.navigatorService.getNavigatorTitles();
+      this.docLoaderService.wrapTable();
       this.toggleMobileMenu(false);
-      this._scrollToContent();
+      this.scrollToContent();
     })
   );
 
   ngOnInit(): void {
-    this._reloadOnLanguageChange();
+    this.reloadOnLanguageChange();
   }
 
   ngOnDestroy(): void {
-    this._docLoaderService.clearCache();
+    this.docLoaderService.clearCache();
   }
 
   toggleMobileMenu(value?: boolean): void {
@@ -97,46 +97,46 @@ export class PageDocsComponent {
     html.style.scrollBehavior = value ? 'smooth' : '';
   }
 
-  private _getDefaultPath$(): Observable<any> {
-    return this._docLoaderService
+  private getDefaultPath$(): Observable<any> {
+    return this.docLoaderService
       .firstContentPath$()
-      .pipe(tap((x) => this._router.navigateByUrl(x, { replaceUrl: true })));
+      .pipe(tap((x) => this.router.navigateByUrl(x, { replaceUrl: true })));
   }
 
-  private _reloadOnLanguageChange(): void {
-    this._langService.language$
+  private reloadOnLanguageChange(): void {
+    this.langService.language$
       .pipe(
         tap(() => {
-          if (!this._router.url.includes('.md')) return;
+          if (!this.router.url.includes('.md')) return;
 
-          const currentRoute = this._router.url;
-          const { selectedLanguage, languageFromUrl } = this._langService;
+          const currentRoute = this.router.url;
+          const { selectedLanguage, languageFromUrl } = this.langService;
           const newRoute = currentRoute.replace(
             !languageFromUrl ? '' : `_${languageFromUrl}.md`,
             `_${selectedLanguage}.md`
           );
 
-          this._router.navigateByUrl(newRoute);
+          this.router.navigateByUrl(newRoute);
         }),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
-  private _scrollToContent(): void {
+  private scrollToContent(): void {
     if (typeof window === 'undefined') return;
 
-    const id = this._route.snapshot.fragment?.split('?')[0];
+    const id = this.route.snapshot.fragment?.split('?')[0];
 
-    this._viewportScroller.setOffset([0, getHeaderHeight() + 30]);
+    this.viewportScroller.setOffset([0, getHeaderHeight() + 30]);
 
     if (!id) {
       window.scrollTo({ top: 0 });
       return;
     }
 
-    if (!this._useAnchorScrolling) {
-      this._useAnchorScrolling = true;
+    if (!this.useAnchorScrolling) {
+      this.useAnchorScrolling = true;
 
       window.requestAnimationFrame(() => {
         const target = document.querySelector(`#${id}`);

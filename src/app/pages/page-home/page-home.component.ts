@@ -27,14 +27,14 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./page-home.component.scss'],
 })
 export class PageHomeComponent implements OnInit {
-  private _title = inject(Title);
-  private _langService = inject(LanguageService);
+  private title = inject(Title);
+  private langService = inject(LanguageService);
 
-  lang$ = this._langService.language$;
-  i18nContent$ = this._langService.i18nContent$;
+  lang$ = this.langService.language$;
+  i18nContent$ = this.langService.i18nContent$;
   features$ = this.i18nContent$.pipe(map((x) => x['FEATURES']));
 
   ngOnInit(): void {
-    this._title.setTitle('NgDynamicJsonForm');
+    this.title.setTitle('NgDynamicJsonForm');
   }
 }

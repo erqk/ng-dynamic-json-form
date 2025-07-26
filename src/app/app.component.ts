@@ -42,55 +42,55 @@ import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  private _cd = inject(ChangeDetectorRef);
-  private _injector = inject(Injector, { optional: true });
-  private _router = inject(Router);
-  private _docsLoaderService = inject(DocsLoaderService);
-  private _langService = inject(LanguageService);
-  private _layoutService = inject(LayoutService);
+  private cd = inject(ChangeDetectorRef);
+  private injector = inject(Injector, { optional: true });
+  private router = inject(Router);
+  private docsLoaderService = inject(DocsLoaderService);
+  private langService = inject(LanguageService);
+  private layoutService = inject(LayoutService);
 
   title = 'NgDynamicJsonForm';
   routeLoading = false;
   isServer = true;
 
-  headerHeight$ = this._layoutService.headerHeight$.pipe(delay(0));
-  docLoading$ = this._docsLoaderService.docLoading$.pipe(delay(0));
+  headerHeight$ = this.layoutService.headerHeight$.pipe(delay(0));
+  docLoading$ = this.docsLoaderService.docLoading$.pipe(delay(0));
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
       window.setTimeout(() => (this.isServer = false));
     }
 
-    this._loadGoogleFonts();
-    this._registerCustomElements();
-    this._routeChangeEvent$().subscribe();
+    this.loadGoogleFonts();
+    this.registerCustomElements();
+    this.routeChangeEvent$().subscribe();
   }
 
   ngAfterViewInit(): void {
     if (typeof window === 'undefined') return;
 
-    this._layoutService.updateHeaderHeight();
-    this._layoutService.updateWindowSize();
+    this.layoutService.updateHeaderHeight();
+    this.layoutService.updateWindowSize();
 
     fromEvent(window, 'resize', { passive: true })
       .pipe(
         debounceTime(50),
         tap(() => {
-          this._layoutService.updateHeaderHeight();
-          this._layoutService.updateWindowSize();
+          this.layoutService.updateHeaderHeight();
+          this.layoutService.updateWindowSize();
         })
       )
       .subscribe();
   }
 
-  private _routeChangeEvent$(): Observable<any> {
+  private routeChangeEvent$(): Observable<any> {
     if (typeof window === 'undefined') {
       return EMPTY;
     }
 
     // No need to take care of unsubscription because it is one time action
     // as this subscribe only in the root of the app.
-    return this._router.events.pipe(
+    return this.router.events.pipe(
       tap((x) => {
         if (x instanceof RouteConfigLoadStart || x instanceof NavigationStart) {
           this.routeLoading = true;
@@ -98,14 +98,14 @@ export class AppComponent {
 
         if (x instanceof RouteConfigLoadEnd || x instanceof NavigationEnd) {
           this.routeLoading = false;
-          this._langService.setCurrentLanguage();
-          this._cd.detectChanges();
+          this.langService.setCurrentLanguage();
+          this.cd.detectChanges();
         }
       })
     );
   }
 
-  private _loadGoogleFonts(): void {
+  private loadGoogleFonts(): void {
     if (typeof window === 'undefined') return;
 
     const link = document.createElement('link');
@@ -116,8 +116,8 @@ export class AppComponent {
     document.head.append(link);
   }
 
-  private _registerCustomElements(): void {
-    if (typeof window === 'undefined' || !this._injector) {
+  private registerCustomElements(): void {
+    if (typeof window === 'undefined' || !this.injector) {
       return;
     }
 
@@ -125,7 +125,7 @@ export class AppComponent {
       customElements.define(
         selector,
         createCustomElement(component, {
-          injector: this._injector!,
+          injector: this.injector!,
         })
       );
     };

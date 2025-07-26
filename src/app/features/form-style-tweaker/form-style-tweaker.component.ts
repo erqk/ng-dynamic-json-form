@@ -30,23 +30,23 @@ interface StyleOption {
   styleUrls: ['./form-style-tweaker.component.scss'],
 })
 export class FormStyleTweakerComponent {
-  private _langService = inject(LanguageService);
-  private _configEn = [
+  private langService = inject(LanguageService);
+  private configEn = [
     CONFIG_BASIC_AGE_EN,
     CONFIG_BASIC_ADDRESS_EN(),
     CONFIG_BASIC_CARDS_EN,
     CONFIG_BASIC_GENDER_EN,
   ];
 
-  private _configZhTW = [
+  private configZhTW = [
     CONFIG_BASIC_AGE_ZHTW,
     CONFIG_BASIC_ADDRESS_ZHTW,
     CONFIG_BASIC_CARDS_ZHTW,
     CONFIG_BASIC_GENDER_ZHTW,
   ];
 
-  configs$ = this._langService.language$.pipe(
-    map((x) => (x === 'en' ? this._configEn : this._configZhTW))
+  configs$ = this.langService.language$.pipe(
+    map((x) => (x === 'en' ? this.configEn : this.configZhTW))
   );
 
   styleOptions: StyleOption[] = [
@@ -183,13 +183,13 @@ export class FormStyleTweakerComponent {
 
   updateStyle(item: StyleOption, e: Event): void {
     const value = (e.target as HTMLInputElement).value;
-    this.styles[item.key] = this._getStyleValue(item, value);
+    this.styles[item.key] = this.getStyleValue(item, value);
   }
 
   resetStyles(): void {
     this.reseting = true;
     this.styles = [...this.styleOptions].reduce((acc, curr) => {
-      acc[curr.key] = this._getStyleValue(curr);
+      acc[curr.key] = this.getStyleValue(curr);
       return acc;
     }, {} as any);
 
@@ -198,7 +198,7 @@ export class FormStyleTweakerComponent {
     });
   }
 
-  private _getStyleValue(item: StyleOption, value?: string): string {
+  private getStyleValue(item: StyleOption, value?: string): string {
     const multiplier = (item.step ?? 1) >= 1 ? item.step : 1;
     const _value = value ?? `${item.value}`;
 

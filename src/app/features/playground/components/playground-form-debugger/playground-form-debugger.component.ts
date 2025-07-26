@@ -26,8 +26,8 @@ import { PlaygroundEditorComponent } from '../playground-editor/playground-edito
   styleUrls: ['./playground-form-debugger.component.scss'],
 })
 export class PlaygroundFormDebuggerComponent implements OnChanges {
-  private _destroyRef = inject(DestroyRef);
-  private _removeListeners$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
+  private removeListeners$ = new Subject<void>();
 
   @Input() control?: AbstractControl;
   @Input() form?: UntypedFormGroup;
@@ -93,15 +93,15 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
   hideErrorMessageActions: { label: string; action: Function }[] = [
     {
       label: 'true',
-      action: () => this._setHideErrorMessageValue(true),
+      action: () => this.setHideErrorMessageValue(true),
     },
     {
       label: 'false',
-      action: () => this._setHideErrorMessageValue(false),
+      action: () => this.setHideErrorMessageValue(false),
     },
     {
       label: 'undefined',
-      action: () => this._setHideErrorMessageValue(undefined),
+      action: () => this.setHideErrorMessageValue(undefined),
     },
   ];
 
@@ -109,7 +109,7 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
     const { formInstance } = changes;
 
     if (formInstance) {
-      this._onFormInstanceGet();
+      this.onFormInstanceGet();
     }
   }
 
@@ -147,7 +147,7 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
     return undefined;
   }
 
-  private _onFormInstanceGet(): void {
+  private onFormInstanceGet(): void {
     if (!this.formInstance) {
       return;
     }
@@ -157,34 +157,34 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
 
     const formGet$ = formGet.pipe(
       tap(() => {
-        this._logEvent('formGet');
-        this._setHideErrorMessageValue(undefined);
+        this.logEvent('formGet');
+        this.setHideErrorMessageValue(undefined);
       })
     );
 
     const optionsLoaded$ = optionsLoaded.pipe(
       tap(() => {
-        this._logEvent('optionsLoaded');
+        this.logEvent('optionsLoaded');
       })
     );
 
     const updateStatusFunctions$ = updateStatusFunctions.pipe(
       tap((x) => {
-        this._logEvent('updateStatusFunctions');
+        this.logEvent('updateStatusFunctions');
         this.statusFunctions = x;
       })
     );
 
-    this._removeListeners$.next();
+    this.removeListeners$.next();
     merge(formGet$, updateStatusFunctions$, optionsLoaded$)
       .pipe(
-        takeUntil(this._removeListeners$),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntil(this.removeListeners$),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
-  private _setHideErrorMessageValue(bool?: boolean): void {
+  private setHideErrorMessageValue(bool?: boolean): void {
     if (!this.formInstance) return;
 
     const prevValue = this.formInstance.hideErrorMessage;
@@ -193,7 +193,7 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
     this.formInstance.ngOnChanges({ hideErrorMessage: change });
   }
 
-  private _logEvent(eventName: string): void {
+  private logEvent(eventName: string): void {
     const time = new Intl.DateTimeFormat('en-US', {
       timeStyle: 'medium',
     }).format(new Date());

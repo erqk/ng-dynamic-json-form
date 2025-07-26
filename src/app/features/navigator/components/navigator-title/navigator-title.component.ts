@@ -59,28 +59,28 @@ import { NavigatorService } from '../../services/navigator.service';
   },
 })
 export class NavigatorTitleComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _navigatorService = inject(NavigatorService);
-  private _router = inject(Router);
-  private _location = inject(Location);
-  private _currentLinkIndex = 0;
-  private _linksFlatten: NavigatorTitleItem[] = [];
+  private destroyRef = inject(DestroyRef);
+  private navigatorService = inject(NavigatorService);
+  private router = inject(Router);
+  private location = inject(Location);
+  private currentLinkIndex = 0;
+  private linksFlatten: NavigatorTitleItem[] = [];
 
-  private _reset$ = new Subject<void>();
+  private reset$ = new Subject<void>();
 
   links: NavigatorTitleItem[] = [];
   currentActiveId = ['', ''];
 
   constructor() {
-    this._navigatorService.titles$
+    this.navigatorService.titles$
       .pipe(
         tap((x) => {
           this.links = x;
-          this._flattenLinks(x);
-          this._syncActiveIndexWithScroll();
-          this._scrollToContent(undefined, false);
-          this._setActiveIds();
-          this._syncActiveIndexWithScroll();
+          this.flattenLinks(x);
+          this.syncActiveIndexWithScroll();
+          this.scrollToContent(undefined, false);
+          this.setActiveIds();
+          this.syncActiveIndexWithScroll();
         }),
         takeUntilDestroyed()
       )
@@ -89,7 +89,7 @@ export class NavigatorTitleComponent {
 
   onLinkClick(e: Event, item: NavigatorTitleItem): void {
     const el = e.target as HTMLElement;
-    const newUrl = this._router.url.split('?')[0].split('#')[0];
+    const newUrl = this.router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
 
     el.scrollIntoView({
@@ -98,17 +98,17 @@ export class NavigatorTitleComponent {
 
     this.currentActiveId[level] = item.id;
     this.currentActiveId[level + 1] = item.children?.[0].id || '';
-    this._router.navigateByUrl(`${newUrl}#${item.id}`, {
+    this.router.navigateByUrl(`${newUrl}#${item.id}`, {
       onSameUrlNavigation: 'reload',
     });
   }
 
-  private _flattenLinks(links: NavigatorTitleItem[]): void {
-    this._linksFlatten = [];
+  private flattenLinks(links: NavigatorTitleItem[]): void {
+    this.linksFlatten = [];
 
     const flatten = (input: NavigatorTitleItem[]) => {
       for (const item of input) {
-        this._linksFlatten.push(item);
+        this.linksFlatten.push(item);
         if (!item.children) continue;
 
         flatten(item.children);
@@ -118,23 +118,23 @@ export class NavigatorTitleComponent {
     flatten(links);
   }
 
-  private _syncActiveIndexWithScroll(): void {
+  private syncActiveIndexWithScroll(): void {
     if (typeof window === 'undefined') return;
 
-    this._reset$.next();
+    this.reset$.next();
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
-        tap(() => this._highlightTitle()),
-        takeUntil(this._reset$),
-        takeUntilDestroyed(this._destroyRef)
+        tap(() => this.highlightTitle()),
+        takeUntil(this.reset$),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
-  private _setActiveIds(): void {
+  private setActiveIds(): void {
     if (typeof window === 'undefined') return;
 
-    const activeTitle = this._getActiveTitle();
+    const activeTitle = this.getActiveTitle();
     if (!activeTitle) {
       if (this._bodyScrollFraction < 0.05) {
         this.currentActiveId = [];
@@ -150,14 +150,14 @@ export class NavigatorTitleComponent {
 
     this.currentActiveId[level - 1] = parent?.id || '';
     this.currentActiveId[level] = activeTitle.id || '';
-    this._currentLinkIndex = this._linksFlatten.findIndex(
+    this.currentLinkIndex = this.linksFlatten.findIndex(
       ({ id }) => id === activeTitle!.id
     );
   }
 
-  private _getActiveTitle(): Element | undefined {
+  private getActiveTitle(): Element | undefined {
     const rect = (input: Element) => input.getBoundingClientRect();
-    const titles = this._linksFlatten
+    const titles = this.linksFlatten
       .map(({ id }) => document.querySelector(`#${id}`)!)
       .filter((x) => !!x);
 
@@ -182,10 +182,10 @@ export class NavigatorTitleComponent {
     return titles[targetIndex()];
   }
 
-  private _scrollToContent(id?: string, smoothScrolling = true): void {
+  private scrollToContent(id?: string, smoothScrolling = true): void {
     if (typeof window === 'undefined') return;
 
-    const idFromRoute = this._router.parseUrl(this._location.path())
+    const idFromRoute = this.router.parseUrl(this.location.path())
       .queryParams['id'];
 
     const targetId = id ?? idFromRoute;
@@ -201,19 +201,19 @@ export class NavigatorTitleComponent {
     scrollToTitle(target, smoothScrolling ? 'smooth' : 'auto');
   }
 
-  private _highlightTitle(): void {
+  private highlightTitle(): void {
     if (typeof window === 'undefined') return;
 
     let lastScrollPosition = 0;
     const scrollUp = window.scrollY < lastScrollPosition;
-    const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
+    const prevLinkItem = this.linksFlatten[this.currentLinkIndex - 1];
 
     if (scrollUp && !!prevLinkItem) {
       const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
       this.currentActiveId[level] = prevLinkItem.id || '';
     }
 
-    this._setActiveIds();
+    this.setActiveIds();
     lastScrollPosition = window.scrollY;
   }
 

@@ -17,53 +17,53 @@ import { filter, Subject, takeUntil, tap } from 'rxjs';
   styleUrls: ['./header-tab-bar.component.scss'],
 })
 export class HeaderTabBarComponent {
-  private _el = inject(ElementRef);
-  private _router = inject(Router);
+  private el = inject(ElementRef);
+  private router = inject(Router);
 
   @Input() links: {
     route: string;
     label: string;
   }[] = [];
 
-  private _onDestroy$ = new Subject();
+  private onDestroy$ = new Subject();
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { links } = simpleChanges;
 
-    links && this._setIndicatorStyle();
+    links && this.setIndicatorStyle();
   }
 
   ngAfterViewInit(): void {
-    this._onRouteChange();
-    this._setIndicatorStyle();
+    this.onRouteChange();
+    this.setIndicatorStyle();
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next(null);
-    this._onDestroy$.complete();
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
-  private _onRouteChange(): void {
-    this._router.events
+  private onRouteChange(): void {
+    this.router.events
       .pipe(
         filter((x) => x instanceof NavigationEnd),
-        tap(() => this._setIndicatorStyle()),
-        takeUntil(this._onDestroy$)
+        tap(() => this.setIndicatorStyle()),
+        takeUntil(this.onDestroy$)
       )
       .subscribe();
   }
 
-  private _findElement(selector: string): HTMLElement | null {
-    const host = this._el.nativeElement as HTMLElement;
+  private findElement(selector: string): HTMLElement | null {
+    const host = this.el.nativeElement as HTMLElement;
     return host.querySelector(selector);
   }
 
-  private _setIndicatorStyle(): void {
+  private setIndicatorStyle(): void {
     if (typeof window === 'undefined') return;
 
     requestAnimationFrame(() => {
-      const indicator = this._findElement('.indicator');
-      const activeTab = this._findElement('a.active');
+      const indicator = this.findElement('.indicator');
+      const activeTab = this.findElement('a.active');
       if (!indicator) {
         return;
       }
@@ -73,14 +73,14 @@ export class HeaderTabBarComponent {
         return;
       }
 
-      const containerPaddingLeft = this._findElement('.content')
+      const containerPaddingLeft = this.findElement('.content')
         ? parseFloat(
-            window.getComputedStyle(this._findElement('.content')!).paddingLeft
+            window.getComputedStyle(this.findElement('.content')!).paddingLeft
           )
         : 0;
 
       const leftStart =
-        (this._findElement('a')?.getBoundingClientRect().x || 0) -
+        (this.findElement('a')?.getBoundingClientRect().x || 0) -
         containerPaddingLeft;
       const left = activeTab.getBoundingClientRect().x - leftStart;
       const indicatorWidth = activeTab.clientWidth * 0.8;

@@ -20,50 +20,50 @@ import {
       class="loading-bar"
       [ngClass]="{start}"
       [ngStyle]="{
-        '--step-count': step
+        '--step-count': stepPercentage
       }"
     ></div>
   `,
   styleUrls: ['./ui-loading-indicator.component.scss'],
 })
 export class UiLoadingIndicatorComponent {
-  private _step = 0;
-  private _cancelTimer$ = new Subject<void>();
-  private _onDestroy$ = new Subject<void>();
+  private step = 0;
+  private cancelTimer$ = new Subject<void>();
+  private onDestroy$ = new Subject<void>();
 
   @Input() start = false;
 
-  step = '0%';
+  stepPercentage = '0%';
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { start } = simpleChanges;
     if (start) {
       if (start.currentValue === true) {
-        this._addStep();
+        this.addStep();
       } else {
-        this.step = '0%';
-        this._cancelTimer$.next();
+        this.stepPercentage = '0%';
+        this.cancelTimer$.next();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this._cancelTimer$.next();
-    this._cancelTimer$.complete();
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this.cancelTimer$.next();
+    this.cancelTimer$.complete();
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
-  private _addStep(): void {
+  private addStep(): void {
     timer(3000)
       .pipe(
         switchMap(() => interval(1000)),
         tap(() => {
-          this._step += Math.round(Math.random());
-          this.step = `${this._step}%`;
+          this.step += Math.round(Math.random());
+          this.stepPercentage = `${this.step}%`;
         }),
-        takeUntil(merge(this._onDestroy$, this._cancelTimer$)),
-        takeWhile(() => this._step < 10)
+        takeUntil(merge(this.onDestroy$, this.cancelTimer$)),
+        takeWhile(() => this.step < 10)
       )
       .subscribe();
   }
