@@ -4,21 +4,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Subject, fromEvent, takeUntil, tap } from 'rxjs';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
-import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
 import { NavigatorService } from '../../services/navigator.service';
 
 @Component({
-    selector: 'app-navigator-title',
-    imports: [CommonModule, UiContentWrapperComponent],
-    template: `
+  selector: 'app-navigator-title',
+  imports: [CommonModule],
+  template: `
     @for (item of links; track item) {
-      <ng-container
-        [ngTemplateOutlet]="buttonTemplate"
-        [ngTemplateOutletContext]="{ item, level: 1 }"
-      ></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="buttonTemplate"
+      [ngTemplateOutletContext]="{ item, level: 1 }"
+    ></ng-container>
     }
-    
+
     <ng-template #buttonTemplate let-item="item" let-level="level">
       <button
         [ngClass]="{
@@ -26,37 +25,37 @@ import { NavigatorService } from '../../services/navigator.service';
           child: level > 1
         }"
         (click)="onLinkClick($event, item)"
-        >
+      >
         {{ item.label }}
       </button>
-    
+
       @if (item.children?.length) {
-        <div
-          class="sub-titles"
-          [ngClass]="{
-            active:
-              item.children?.length && currentActiveId[level - 1] === item.id
-          }"
-          >
-          <div class="flex flex-col overflow-hidden">
-            @for (child of item.children; track child) {
-              <ng-container
-                [ngTemplateOutlet]="buttonTemplate"
-              [ngTemplateOutletContext]="{
-                item: child,
-                level: level + 1
-              }"
-              ></ng-container>
-            }
-          </div>
+      <div
+        class="sub-titles"
+        [ngClass]="{
+          active:
+            item.children?.length && currentActiveId[level - 1] === item.id
+        }"
+      >
+        <div class="flex flex-col overflow-hidden">
+          @for (child of item.children; track child) {
+          <ng-container
+            [ngTemplateOutlet]="buttonTemplate"
+            [ngTemplateOutletContext]="{
+              item: child,
+              level: level + 1
+            }"
+          ></ng-container>
+          }
         </div>
+      </div>
       }
     </ng-template>
-    `,
-    styleUrls: ['./navigator-title.component.scss'],
-    host: {
-        class: 'beauty-scrollbar',
-    }
+  `,
+  styleUrls: ['./navigator-title.component.scss'],
+  host: {
+    class: 'beauty-scrollbar',
+  },
 })
 export class NavigatorTitleComponent {
   private destroyRef = inject(DestroyRef);
@@ -185,8 +184,9 @@ export class NavigatorTitleComponent {
   private scrollToContent(id?: string, smoothScrolling = true): void {
     if (typeof window === 'undefined') return;
 
-    const idFromRoute = this.router.parseUrl(this.location.path())
-      .queryParams['id'];
+    const idFromRoute = this.router.parseUrl(this.location.path()).queryParams[
+      'id'
+    ];
 
     const targetId = id ?? idFromRoute;
 

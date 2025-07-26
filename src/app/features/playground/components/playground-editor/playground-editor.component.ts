@@ -22,14 +22,19 @@ import {
   timer,
 } from 'rxjs';
 import { ThemeService } from 'src/app/features/theme/services/theme.service';
-import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
+import {
+  Content,
+  createJSONEditor,
+  JsonEditor,
+  Mode,
+} from 'vanilla-jsoneditor';
 import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
 
 @Component({
-    selector: 'app-playground-editor',
-    imports: [CommonModule],
-    templateUrl: './playground-editor.component.html',
-    styleUrls: ['./playground-editor.component.scss']
+  selector: 'app-playground-editor',
+  imports: [CommonModule],
+  templateUrl: './playground-editor.component.html',
+  styleUrls: ['./playground-editor.component.scss'],
 })
 export class PlaygroundEditorComponent {
   private destroyRef = inject(DestroyRef);
@@ -43,7 +48,7 @@ export class PlaygroundEditorComponent {
   @Input() statusBar = true;
   @Output() onEditing = new EventEmitter<any>();
 
-  jsonEditor: JSONEditor | null = null;
+  jsonEditor: JsonEditor | null = null;
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
     const { data } = simpleChanges;
@@ -55,7 +60,7 @@ export class PlaygroundEditorComponent {
           .pipe(
             take(1),
             tap(() => this.jsonEditor?.set(data.currentValue)),
-            takeUntil(this.cancelWriteValue$)
+            takeUntil(this.cancelWriteValue$),
           )
           .subscribe();
       } catch (err) {
@@ -73,7 +78,7 @@ export class PlaygroundEditorComponent {
           this.initEditor();
           this.darkThemeEvent();
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
@@ -90,7 +95,7 @@ export class PlaygroundEditorComponent {
     const host = this.el.nativeElement as HTMLElement;
     const el = host.querySelector('.json-editor') as HTMLElement;
 
-    this.jsonEditor = new JSONEditor({
+    this.jsonEditor = createJSONEditor({
       target: el,
       props: {
         mode: Mode.text,
@@ -98,7 +103,11 @@ export class PlaygroundEditorComponent {
         mainMenuBar: this.mainMenuBar,
         navigationBar: this.navigationBar,
         statusBar: this.statusBar,
-        onChange: (content, previousContent, status) => {
+        onChange: (
+          content: Content | undefined,
+          previousContent: Content | undefined,
+          status: any,
+        ) => {
           const _content = getJsonEditorContent(content) as any;
           this.onEditing.emit(_content['json']);
         },
@@ -114,6 +123,7 @@ export class PlaygroundEditorComponent {
     const refreshEditor = () => {
       if (!this.jsonEditor) return;
       if (typeof this.jsonEditor.refresh !== 'function') return;
+
       this.jsonEditor.refresh();
     };
 
@@ -133,12 +143,12 @@ export class PlaygroundEditorComponent {
       passive: true,
     }).pipe(
       map((x) => (x as MediaQueryListEvent).matches),
-      tap((x) => setDarkTheme(x))
+      tap((x) => setDarkTheme(x)),
     );
 
     const themeDark$ = this.themeService.theme$.pipe(
       distinctUntilChanged(),
-      tap((x) => setDarkTheme(x === 'dark'))
+      tap((x) => setDarkTheme(x === 'dark')),
     );
 
     merge(prefersDark$, themeDark$)

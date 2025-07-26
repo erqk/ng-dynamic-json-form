@@ -20,17 +20,17 @@
   [ngClass]="[
     'grid',
     'duration-200',
-    openSettings ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+    openSettings ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
   ]"
 >
   <div class="overflow-hidden">
     <div
       [ngClass]="[
         'relative z-0',
-        'grid grid-cols-[1fr,auto] items-center gap-5',
+        'grid grid-cols-[1fr_auto] items-center gap-5',
         'py-4 pb-2',
         'duration-300 delay-100',
-        openSettings ? 'opacity-100' : 'opacity-0'
+        openSettings ? 'opacity-100' : 'opacity-0',
       ]"
     >
       <app-language-selector></app-language-selector>

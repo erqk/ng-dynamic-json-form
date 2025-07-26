@@ -6,10 +6,10 @@ import { THEME_LIST } from '../../constants/themes.constant';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
-    selector: 'app-theme-switcher',
-    imports: [CommonModule, FormsModule],
-    templateUrl: './theme-switcher.component.html',
-    styles: []
+  selector: 'app-theme-switcher',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './theme-switcher.component.html',
+  styles: [],
 })
 export class ThemeSwitcherComponent {
   private themeService = inject(ThemeService);
@@ -25,7 +25,7 @@ export class ThemeSwitcherComponent {
       .pipe(
         skip(1),
         tap((x) => this.switchTheme(x ? 'dark' : 'light')),
-        takeUntil(this.onDestroy$)
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }

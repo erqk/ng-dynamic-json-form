@@ -44,24 +44,15 @@
               "base": "dist/docs"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/favicon.png"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/favicon.png"],
             "styles": [
               "vanilla-jsoneditor/themes/jse-theme-dark.css",
               "bootstrap-icons/font/bootstrap-icons.min.css",
               "dist/ng-dynamic-json-form/styles/styles.scss",
               "src/styles/styles.scss"
-            ],
-            "scripts": [
-              "node_modules/marked/marked.min.js"
             ],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",

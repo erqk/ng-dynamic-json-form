@@ -1,43 +1,41 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
-import {
-  debounceTime,
-  filter,
-  map,
-  takeUntil,
-  tap,
-  windowWhen,
-} from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { LayoutService } from 'src/app/core/services/layout.service';
 import { LanguageService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
-import { LayoutService } from 'src/app/core/services/layout.service';
-import { Subject, fromEvent } from 'rxjs';
 
 @Component({
-    selector: 'app-header',
-    imports: [CommonModule, HeaderDesktopComponent, HeaderMobileComponent],
-    template: `
+  selector: 'app-header',
+  imports: [CommonModule, HeaderDesktopComponent, HeaderMobileComponent],
+  template: `
     <div
       [ngClass]="[
         'header-container',
         'p-3 px-7 lg:p-4 lg:pb-2',
         'duration-200',
         showBackground ? 'show-background' : '',
-        openSettings ? 'full-background' : ''
+        openSettings ? 'full-background' : '',
       ]"
-      >
+    >
       @if (links$ | async; as links) {
-        <app-header-desktop [links]="links"></app-header-desktop>
+        <app-header-desktop
+          class="hidden lg:block"
+          [links]="links"
+        ></app-header-desktop>
+
         <app-header-mobile
+          class="block lg:hidden"
           [links]="links"
           [openSettings]="openSettings"
           (settingsOpened)="openSettings = $event"
         ></app-header-mobile>
       }
     </div>
-    `,
-    styleUrls: ['./header.component.scss']
+  `,
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   private el = inject(ElementRef);
@@ -59,7 +57,7 @@ export class HeaderComponent {
         route: 'playground',
         label: `${x['MENU']['PLAYGROUND']}`,
       },
-    ])
+    ]),
   );
 
   @HostListener('window:scroll', ['$event'])
@@ -72,7 +70,7 @@ export class HeaderComponent {
     this.layoutService.windowSize$
       .pipe(
         filter((x) => x.x >= 1024),
-        tap(() => (this.openSettings = false))
+        tap(() => (this.openSettings = false)),
       )
       .subscribe();
   }
@@ -94,7 +92,7 @@ export class HeaderComponent {
       .pipe(
         debounceTime(0),
         tap(() => this.layoutService.updateHeaderHeight()),
-        takeUntil(this.onDestroy$)
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }

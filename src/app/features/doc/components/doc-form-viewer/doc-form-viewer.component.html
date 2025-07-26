@@ -6,6 +6,7 @@
           <i class="bi bi-arrow-repeat rotate-45"></i>
         </button>
       }
+
       <button type="button" (click)="showEditor ? onConfirm() : onEdit()">
         <i
           class="bi"
@@ -18,9 +19,9 @@
   <div
     class="content relative z-0"
     [ngStyle]="{
-      'min-height': showEditor ? minHeight : formHeight
+      'min-height': showEditor ? minHeight : formHeight,
     }"
-    >
+  >
     <div #formContent>
       <ng-dynamic-json-form
         class="block p-1"
@@ -32,7 +33,7 @@
       <app-playground-editor
         class="absolute top-0 left-0 h-full w-full duration-100"
         [ngClass]="{
-          'opacity-0 pointer-events-none': !showEditor
+          'opacity-0 pointer-events-none': !showEditor,
         }"
         [mainMenuBar]="false"
         [statusBar]="false"

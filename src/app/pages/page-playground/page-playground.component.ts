@@ -9,7 +9,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { AngularSplitModule, IOutputData } from 'angular-split';
+import { AngularSplitModule, SplitGutterInteractionEvent } from 'angular-split';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import { UI_MATERIAL_COMPONENTS } from 'ng-dynamic-json-form/ui-material';
 import { UI_PRIMENG_COMPONENTS } from 'ng-dynamic-json-form/ui-primeng';
@@ -39,22 +39,22 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
 import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
-    selector: 'app-page-playground',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        UiContentWrapperComponent,
-        PlaygroundEditorComponent,
-        PlaygroundTemplateListComponent,
-        AngularSplitModule,
-        PlaygroundFormComponent,
-        PlaygroundFormDebuggerComponent,
-        PlaygroundFormPrimengComponent,
-        PlaygroundFormMaterialComponent,
-    ],
-    templateUrl: './page-playground.component.html',
-    styleUrls: ['./page-playground.component.scss']
+  selector: 'app-page-playground',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UiContentWrapperComponent,
+    PlaygroundEditorComponent,
+    PlaygroundTemplateListComponent,
+    AngularSplitModule,
+    PlaygroundFormComponent,
+    PlaygroundFormDebuggerComponent,
+    PlaygroundFormPrimengComponent,
+    PlaygroundFormMaterialComponent,
+  ],
+  templateUrl: './page-playground.component.html',
+  styleUrls: ['./page-playground.component.scss'],
 })
 export class PagePlaygroundComponent implements OnInit {
   private http = inject(HttpClient);
@@ -158,7 +158,7 @@ export class PagePlaygroundComponent implements OnInit {
     this.currentUi = this.playgroundSettingsService.formUi = e;
   }
 
-  onAsSplitDragEnd(e: IOutputData): void {
+  onAsSplitDragEnd(e: SplitGutterInteractionEvent): void {
     this.asSplitSizes = this.playgroundSettingsService.asSplitSizes =
       e.sizes.map((x) => (typeof x === 'string' ? 50 : x));
   }

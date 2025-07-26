@@ -35,7 +35,7 @@
   }
 
   :is(p, ul) + :is(p, ul) {
-    @apply my-4;
+    margin-block: 1rem;
   }
 
   hr {
@@ -50,23 +50,27 @@
   }
 
   ul {
-    @apply list-disc pl-5;
+    list-style-type: disc;
+    padding-left: 1.25rem;
   }
 
   li + li {
-    @apply my-1;
+    margin-block: 0.25rem;
   }
 
   :is(doc-tab, doc-code, blockquote) pre {
-    @apply my-0;
+    margin-block: 0;
   }
 
   doc-tab pre {
-    @apply rounded-none;
+    border-radius: 0;
   }
 
   pre {
-    @apply max-h-full my-2 rounded-md overflow-hidden;
+    max-height: 100%;
+    margin-block: 0.5rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
   }
 
   code {

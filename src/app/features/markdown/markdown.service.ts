@@ -48,7 +48,8 @@ export class MarkdownService {
     searchValue: string | RegExp;
     replaceValue: string;
   }) {
-    return (href: string, title: string | null | undefined, text: string) => {
+    return (link: { href: string; title?: string | null; text: string }) => {
+      const { href, title, text } = link;
       const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
       const pageAnchor = href.startsWith('#');
       const externalLink = prefix && !href?.startsWith(prefix);
@@ -59,12 +60,12 @@ export class MarkdownService {
 
       if (pageAnchor) {
         return `<a title="${title || text}" routerLink
-          href="${routeClean}${href}">${text}</a>`;
+        href="${routeClean}${href}">${text}</a>`;
       }
 
       if (externalLink) {
         return `<a target="_blank" rel="noreferrer noopener"
-          title="${title || text}" href="${href}">${text}</a>`;
+        title="${title || text}" href="${href}">${text}</a>`;
       }
 
       const newHref = href
@@ -75,7 +76,7 @@ export class MarkdownService {
         );
 
       return `<a title="${title || text}" routerLink
-        href="${newHref}">${text}</a>`;
+      href="${newHref}">${text}</a>`;
     };
   }
 }
