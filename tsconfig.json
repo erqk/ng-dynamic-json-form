@@ -33,5 +33,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src/**/*.ts", "lib/**/*.ts", "lib/**/*.js"]
+  "include": ["src/**/*.ts", "lib/**/*.ts"]
 }
