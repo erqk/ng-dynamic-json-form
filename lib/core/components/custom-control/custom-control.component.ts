@@ -30,13 +30,9 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
     this.control?.patchValue(obj);
   }
 
-  registerOnChange(fn: any): void {
-    this.control?.valueChanges.subscribe(fn);
-  }
+  registerOnChange(fn: any): void {}
 
-  registerOnTouched(fn: any): void {
-    return;
-  }
+  registerOnTouched(fn: any): void {}
 
   setDisabledState(isDisabled: boolean): void {
     isDisabled ? this.control?.disable() : this.control?.enable();

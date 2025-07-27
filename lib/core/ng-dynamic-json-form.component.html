@@ -1,27 +1,27 @@
-@if (!configs) {
+@if (!configs()) {
   <div class="no-configs-error">
     <span>No configs found.</span>
   </div>
 }
 
-@if (!!configValidationErrors?.length) {
-  <div class="config-validation-error">
-    <div>NgDynamicJsonForm:</div>
-    @for (item of configValidationErrors; track item) {
-      <div style="color: var(--color-error)">{{ item.errors }}</div>
-      @if (item.config) {
-        <code>{{ item.config | json }}</code>
+@if (configValidationResult(); as result) {
+  @if (result.errors; as validationErrors) {
+    <div class="config-validation-error">
+      <div>NgDynamicJsonForm:</div>
+      @for (item of validationErrors; track $index) {
+        <div style="color: var(--color-error)">{{ item.errors }}</div>
+        @if (item.config) {
+          <code>{{ item.config | json }}</code>
+        }
       }
-    }
-  </div>
-}
-
-@if (form) {
-  <form-group
-    [configs]="configGet"
-    [collapsibleState]="collapsibleState"
-    [parentForm]="form"
-    [rootClass]="rootClass"
-    [rootStyles]="rootStyles"
-  ></form-group>
+    </div>
+  } @else if (result.configs && form()) {
+    <form-group
+      [configs]="result.configs"
+      [collapsibleState]="collapsibleState()"
+      [parentForm]="form()!"
+      [rootClass]="rootClass()"
+      [rootStyles]="rootStyles()"
+    ></form-group>
+  }
 }

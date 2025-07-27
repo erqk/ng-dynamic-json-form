@@ -1,55 +1,58 @@
-<ng-container [formGroup]="parentForm">
-  @for (item of configs; track item) {
-    @if (!item.hidden) {
-      @if (parentForm?.controls?.[item.formControlName]; as targetControl) {
-        <content-wrapper
-          style="display: block"
-          [config]="item"
-          [control]="targetControl"
-          [collapsibleState]="collapsibleState"
-          [controlLayout]="{
-            type: 'host',
-            layout: item.layout
-          }"
-          [hostId]="{
-            parentId,
-            controlName: item.formControlName,
-          }"
-          [ngClass]="{
-            'form-control-container': (item | controlTypeByConfig) === 'FormControl',
-            readonly: item.readonly,
-          }"
+@if (parentForm(); as pForm) {
+  <ng-container [formGroup]="pForm">
+    @for (item of configs(); track item.formControlName) {
+      @if (!item.hidden) {
+        @if (pForm.controls[item.formControlName]; as targetControl) {
+          <content-wrapper
+            style="display: block"
+            [config]="item"
+            [control]="targetControl"
+            [collapsibleState]="collapsibleState()"
+            [controlLayout]="{
+              type: 'host',
+              layout: item.layout,
+            }"
+            [hostId]="{
+              parentId: parentId(),
+              controlName: item.formControlName,
+            }"
+            [ngClass]="{
+              'form-control-container':
+                (item | controlTypeByConfig) === 'FormControl',
+              readonly: item.readonly,
+            }"
           >
-          <!-- FormControl -->
-          @if ((item | controlTypeByConfig) === 'FormControl') {
-            <form-control
-              [data]="item"
-              [control]="targetControl"
-              [formControlName]="item.formControlName"
-              [customComponent]="customComponents?.[item.formControlName]"
-              [controlLayout]="{
-                type: 'inputArea',
-                layout: item.layout
-              }"
-            ></form-control>
-          }
-          <!-- FormGroup -->
-          @if ((item | controlTypeByConfig) === 'FormGroup') {
-            <form-group
-              [parentId]="
-                (parentId ? parentId + '.' : '') + item.formControlName
-              "
-              [parentForm]="$any(targetControl)"
-              [configs]="item.children"
-              [collapsibleState]="collapsibleState"
-              [controlLayout]="{
-                type: 'formGroup',
-                layout: item.layout
-              }"
-            ></form-group>
-          }
-        </content-wrapper>
+            <!-- FormControl -->
+            @if ((item | controlTypeByConfig) === "FormControl") {
+              <form-control
+                [data]="item"
+                [control]="targetControl"
+                [formControlName]="item.formControlName"
+                [customComponent]="customComponents?.[item.formControlName]"
+                [controlLayout]="{
+                  type: 'inputArea',
+                  layout: item.layout,
+                }"
+              ></form-control>
+            }
+            <!-- FormGroup -->
+            @if ((item | controlTypeByConfig) === "FormGroup") {
+              <form-group
+                [parentId]="
+                  (parentId() ? parentId() + '.' : '') + item.formControlName
+                "
+                [parentForm]="$any(targetControl)"
+                [configs]="item.children"
+                [collapsibleState]="collapsibleState()"
+                [controlLayout]="{
+                  type: 'formGroup',
+                  layout: item.layout,
+                }"
+              ></form-group>
+            }
+          </content-wrapper>
+        }
       }
     }
-  }
-</ng-container>
+  </ng-container>
+}
