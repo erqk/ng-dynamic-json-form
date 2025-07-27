@@ -3,17 +3,17 @@
   <div
     class="relative z-0 flex"
     [ngStyle]="{
-      '--panel-width': '20rem'
+      '--panel-width': '20rem',
     }"
-    >
+  >
     <!-- Template list and editor -->
     <div
       [ngClass]="[
         'fixed bottom-0 w-full z-10 overflow-hidden pointer-events-none',
         'flex items-center',
-        'h-[calc(100dvh-var(--header-height))]'
+        'h-[calc(100dvh-var(--header-height))]',
       ]"
-      >
+    >
       <div
         [ngClass]="[
           'flex flex-col shrink-0 pointer-events-auto',
@@ -22,9 +22,9 @@
           'border-r border-[var(--border-color-25)]',
           'pl-[var(--gutter-auto)]',
           'bg-[var(--body-bg-color)]',
-          showEditor ? 'shadow-2xl' : ''
+          showEditor ? 'shadow-2xl' : '',
         ]"
-        >
+      >
         <div class="px-4">
           <div class="mt-3">
             <ng-container
@@ -47,7 +47,7 @@
             'max-h-[calc(100%-2rem)]',
             'rounded-r-lg shadow-lg overflow-hidden',
             'duration-300 transition-transform ease-[cubic-bezier(.11,.99,.57,1)]',
-            showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]'
+            showEditor ? 'translate-x-0' : 'translate-x-[calc(-100%-1rem)]',
           ].join(' ')
         "
         [data]="editorData$ | async"
@@ -64,18 +64,18 @@
           [gutterDblClickDuration]="300"
           (dragEnd)="onAsSplitDragEnd($event)"
           (gutterDblClick)="resetSplitSizes()"
-          >
+        >
           <as-split-area
             class="flex flex-col px-3 !overflow-hidden"
             [size]="asSplitSizes[0]"
-            >
+          >
             <!-- Form -->
             <div
               [ngClass]="[
                 'w-full h-full pb-10',
-                'overflow-auto beauty-scrollbar'
+                'overflow-auto beauty-scrollbar',
               ]"
-              >
+            >
               <ng-container
                 *ngTemplateOutlet="dynamicFormTemplate"
               ></ng-container>
@@ -86,10 +86,10 @@
             [ngClass]="[
               'sticky top-[var(--header-height)] !overflow-hidden',
               '!h-[calc(100dvh-var(--header-height))]',
-              'flex flex-col p-4 pb-0 pt-1'
+              'flex flex-col p-4 pb-0 pt-1',
             ]"
             [size]="asSplitSizes[1]"
-            >
+          >
             <div class="flex-1 min-h-0 mt-1">
               <ng-container
                 *ngTemplateOutlet="formDebuggerTemplate"
@@ -107,21 +107,21 @@
   <div
     [ngClass]="[
       'flex flex-col',
-      'h-[calc(var(--window-height)-var(--header-height))] overflow-hidden'
+      'h-[calc(var(--window-height)-var(--header-height))] overflow-hidden',
     ]"
     [ngStyle]="{
-      '--window-height.px': windowSize$.value.y
+      '--window-height.px': windowSize$.value.y,
     }"
-    >
+  >
     <!-- Tabs -->
     <div
       [ngClass]="[
         'sticky top-0 z-10',
         'grid grid-cols-[repeat(3,1fr)] gap-2',
         'border-b border-[var(--border-color-25)]',
-        'whitespace-nowrap min-h-12 overflow-auto'
+        'whitespace-nowrap min-h-12 overflow-auto',
       ]"
-      >
+    >
       @for (item of mobileTabs$ | async; track item; let i = $index) {
         <button
           type="button"
@@ -129,10 +129,10 @@
             mobileTabSelected === i
               ? 'text-[var(--primary-500)] font-bold'
               : 'text-[rgba(128,128,128,0.75)]',
-            'px-6 py-2 uppercase text-xs'
+            'px-6 py-2 uppercase text-xs',
           ]"
           (click)="switchMobileTab(i)"
-          >
+        >
           {{ item }}
         </button>
       }
@@ -141,9 +141,9 @@
     <div
       [ngClass]="[
         mobileTabSelected === 0 ? 'flex' : 'hidden',
-        'flex-1 flex-col overflow-hidden'
+        'flex-1 flex-col overflow-hidden',
       ]"
-      >
+    >
       <app-playground-editor
         class="flex-1 overflow-hidden"
         [data]="editorData$ | async"
@@ -159,38 +159,38 @@
     <div
       [ngClass]="[
         mobileTabSelected === 1 ? 'block' : 'hidden',
-        'overflow-auto'
+        'overflow-auto',
       ]"
-      >
+    >
       <!-- UI select -->
       <div
         [ngClass]="[
           'p-4',
           'border-b border-[var(--border-color-25)]',
-          'bg-[rgba(var(--text-color-rgb),0.075)]'
+          'bg-[rgba(var(--text-color-rgb),0.075)]',
         ]"
-        >
+      >
         <ng-container
           *ngTemplateOutlet="
             formUiSelectTemplate;
             context: {
-              isMobile: true
+              isMobile: true,
             }
           "
-      ></ng-container>
+        ></ng-container>
+      </div>
+      <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
     </div>
-    <ng-container *ngTemplateOutlet="dynamicFormTemplate"></ng-container>
-  </div>
-  <!-- Form debugger -->
-  <div
+    <!-- Form debugger -->
+    <div
       [ngClass]="[
         mobileTabSelected === 2 ? 'block' : 'hidden',
-        'mb-3 h-full px-3 overflow-hidden'
+        'mb-3 h-full px-3 overflow-hidden',
       ]"
     >
-    <ng-container *ngTemplateOutlet="formDebuggerTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="formDebuggerTemplate"></ng-container>
+    </div>
   </div>
-</div>
 }
 
 <ng-template #formUiSelectTemplate let-isMobile="isMobile">
@@ -198,7 +198,7 @@
     class="doc-form-element text-lg font-bold"
     [ngModel]="currentUi"
     (ngModelChange)="onFormUiChange($event)"
-    >
+  >
     @for (item of uiComponents; track item) {
       <option [ngValue]="item.key">{{ item.key }}</option>
     }
@@ -217,7 +217,7 @@
         (formGet)="onFormGet($event)"
       ></app-playground-form>
     }
-    @case ('Prime NG') {
+    @case ("Prime NG") {
       <app-playground-form-primeng
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
@@ -227,7 +227,7 @@
         (formGet)="onFormGet($event)"
       ></app-playground-form-primeng>
     }
-    @case ('Angular Material') {
+    @case ("Angular Material") {
       <app-playground-form-material
         class="flex flex-col p-5 text-sm md:text-base"
         [configs]="(configs$ | async) ?? []"
@@ -244,6 +244,6 @@
   <app-playground-form-debugger
     [control]="formControl"
     [form]="form"
-    [formInstance]="playgroundFormRef?.formRef"
+    [formInstance]="playgroundFormRef()?.formRef()"
   ></app-playground-form-debugger>
 </ng-template>

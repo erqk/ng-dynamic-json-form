@@ -1,11 +1,4 @@
-
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, input, output, viewChild } from '@angular/core';
 import {
   FormControl,
   ReactiveFormsModule,
@@ -24,35 +17,37 @@ import { letterStartsWithAValidator } from 'src/app/example/validators/letter-st
 import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-max-length.validator';
 
 @Component({
-    selector: 'app-playground-form',
-    imports: [ReactiveFormsModule, NgDynamicJsonFormComponent],
-    providers: [
-        provideNgDynamicJsonForm({
-            customValidators: {
-                firstUppercase: firstUppercaseValidator,
-                textareaMaxLength: textareaMaxLengthValidator,
-            },
-            customAsyncValidators: {
-                letterStartsWithA: letterStartsWithAValidator,
-            },
-            // labelComponent: CustomFormTitleComponent,
-            loadingComponent: CustomLoadingComponent,
-            errorComponent: CustomErrorMessageComponent,
-        }),
-    ],
-    templateUrl: './playground-form.component.html',
-    styleUrls: ['./playground-form.component.scss']
+  selector: 'app-playground-form',
+  imports: [ReactiveFormsModule, NgDynamicJsonFormComponent],
+  providers: [
+    provideNgDynamicJsonForm({
+      customValidators: {
+        firstUppercase: firstUppercaseValidator,
+        textareaMaxLength: textareaMaxLengthValidator,
+      },
+      customAsyncValidators: {
+        letterStartsWithA: letterStartsWithAValidator,
+      },
+      // labelComponent: CustomFormTitleComponent,
+      loadingComponent: CustomLoadingComponent,
+      errorComponent: CustomErrorMessageComponent,
+    }),
+  ],
+  templateUrl: './playground-form.component.html',
+  styleUrls: ['./playground-form.component.scss'],
 })
 export class PlaygroundFormComponent {
-  @Input() configs: FormControlConfig[] = [];
-  @Input() customComponents?: CustomComponents;
-  @Input() control = new FormControl();
-  @Input() optionsSources?: NgDynamicJsonFormComponent['optionsSources'];
-  @Output() formGet = new EventEmitter<UntypedFormGroup>();
+  configs = input<FormControlConfig[]>([]);
+  customComponents = input<CustomComponents>();
+  control = input<FormControl>(new FormControl());
 
-  // To be accessible by using @ViewChild(PlaygroundFormComponent)
-  @ViewChild(NgDynamicJsonFormComponent, { static: true })
-  formRef!: NgDynamicJsonFormComponent;
+  optionsSources =
+    input<ReturnType<NgDynamicJsonFormComponent['optionsSources']>>();
+
+  formGet = output<UntypedFormGroup>();
+
+  // To make the component instance accessible from parent component
+  formRef = viewChild(NgDynamicJsonFormComponent);
 
   onFormGet(e: UntypedFormGroup): void {
     this.formGet.emit(e);

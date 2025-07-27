@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, viewChild } from '@angular/core';
 import {
   FormGroup,
   FormsModule,
@@ -66,8 +66,7 @@ export class PagePlaygroundComponent implements OnInit {
   private playgroundSettingsService = inject(PlaygroundSettingsService);
   private editorDataService = inject(PlaygroundEditorDataService);
 
-  @ViewChild(PlaygroundFormComponent)
-  playgroundFormRef?: PlaygroundFormComponent;
+  playgroundFormRef = viewChild(PlaygroundFormComponent);
 
   MOBILE_BREAKPOINT = 992;
 
@@ -112,7 +111,7 @@ export class PagePlaygroundComponent implements OnInit {
       map((x) => (x as any).products),
       concatAll(),
       map((x: any) => ({ label: x.title, value: x })),
-      toArray()
+      toArray(),
     ),
   };
 
@@ -120,7 +119,7 @@ export class PagePlaygroundComponent implements OnInit {
 
   mobileTabs$: Observable<string[]> = this.langService.i18nContent$.pipe(
     map((x) => x['PLAYGROUND']['TABS']),
-    map((x) => Object.values(x))
+    map((x) => Object.values(x)),
   );
 
   editorData$ = this.editorDataService.configEditorData$.pipe(share());
@@ -141,7 +140,7 @@ export class PagePlaygroundComponent implements OnInit {
     tap(() => {
       this.form.reset();
       this.formControl.reset();
-    })
+    }),
   );
 
   ngOnInit(): void {

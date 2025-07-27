@@ -8,9 +8,11 @@ import {
   input,
   Input,
   signal,
-  SimpleChange,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  outputToObservable,
+  takeUntilDestroyed,
+} from '@angular/core/rxjs-interop';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import {
   FormStatusFunctions,
@@ -132,20 +134,22 @@ export class PlaygroundFormDebuggerComponent {
     const { formGet, optionsLoaded, updateStatusFunctions } =
       formInstance ?? {};
 
-    const formGet$ = formGet.pipe(
+    const formGet$ = outputToObservable(formGet).pipe(
       tap(() => {
         this.logEvent('formGet');
         this.setHideErrorMessageValue(undefined);
       }),
     );
 
-    const optionsLoaded$ = optionsLoaded.pipe(
+    const optionsLoaded$ = outputToObservable(optionsLoaded).pipe(
       tap(() => {
         this.logEvent('optionsLoaded');
       }),
     );
 
-    const updateStatusFunctions$ = updateStatusFunctions.pipe(
+    const updateStatusFunctions$ = outputToObservable(
+      updateStatusFunctions,
+    ).pipe(
       tap((x) => {
         this.logEvent('updateStatusFunctions');
         this.statusFunctions = x;
@@ -190,10 +194,7 @@ export class PlaygroundFormDebuggerComponent {
     }
 
     const prevValue = formInstance.hideErrorMessage;
-    const change = new SimpleChange(prevValue, bool, prevValue === undefined);
-
-    // TODO: remove the usage of ngOnChanges
-    formInstance.ngOnChanges({ hideErrorMessage: change });
+    formInstance.hideErrorMessage.set(bool);
   }
 
   private logEvent(eventName: string): void {

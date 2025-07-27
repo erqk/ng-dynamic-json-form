@@ -1,6 +1,6 @@
 <ng-dynamic-json-form
-  [configs]="configs"
-  [customComponents]="customComponents"
-  [formControl]="control"
+  [configs]="configs()"
+  [customComponents]="customComponents()"
+  [formControl]="control()"
   (formGet)="onFormGet($event)"
 ></ng-dynamic-json-form>
