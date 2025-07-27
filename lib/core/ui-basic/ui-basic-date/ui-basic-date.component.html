@@ -2,9 +2,9 @@
   <div
     class="date-input"
     [ngClass]="{
-      disabled: control.disabled
+      disabled: control.disabled,
     }"
-    >
+  >
     <input
       type="date"
       [attr.min]="dateSettings.min"
@@ -12,13 +12,13 @@
       [propsBinding]="[
         {
           props: data.props,
-          omit: ['min', 'max', 'type']
-        }
+          omit: ['min', 'max', 'type'],
+        },
       ]"
-    [formControl]="control.controls.date"
-    (change)="updateControl()"
+      [formControl]="control.controls.date"
+      (change)="updateControl()"
     />
-    @if (data?.props?.showTime === true) {
+    @if (data.props?.showTime === true) {
       <input type="time" [formControl]="control.controls.time" />
     }
   </div>
