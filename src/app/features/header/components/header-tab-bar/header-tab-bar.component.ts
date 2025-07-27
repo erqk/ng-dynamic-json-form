@@ -1,40 +1,49 @@
 import { CommonModule } from '@angular/common';
 import {
+  afterNextRender,
   Component,
+  effect,
   ElementRef,
   inject,
-  Input,
-  SimpleChanges,
+  input,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
-    selector: 'header-tab-bar',
-    imports: [CommonModule, RouterModule],
-    templateUrl: './header-tab-bar.component.html',
-    styleUrls: ['./header-tab-bar.component.scss']
+  selector: 'header-tab-bar',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './header-tab-bar.component.html',
+  styleUrls: ['./header-tab-bar.component.scss'],
 })
 export class HeaderTabBarComponent {
   private el = inject(ElementRef);
   private router = inject(Router);
 
-  @Input() links: {
-    route: string;
-    label: string;
-  }[] = [];
-
   private onDestroy$ = new Subject();
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    const { links } = simpleChanges;
+  links = input<
+    {
+      route: string;
+      label: string;
+    }[]
+  >([]);
 
-    links && this.setIndicatorStyle();
-  }
+  updateIndicator = effect(() => {
+    const links = this.links();
 
-  ngAfterViewInit(): void {
-    this.onRouteChange();
+    if (!links.length) {
+      return;
+    }
+
     this.setIndicatorStyle();
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.onRouteChange();
+      this.setIndicatorStyle();
+    });
   }
 
   ngOnDestroy(): void {
@@ -47,7 +56,7 @@ export class HeaderTabBarComponent {
       .pipe(
         filter((x) => x instanceof NavigationEnd),
         tap(() => this.setIndicatorStyle()),
-        takeUntil(this.onDestroy$)
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }
@@ -74,7 +83,7 @@ export class HeaderTabBarComponent {
 
       const containerPaddingLeft = this.findElement('.content')
         ? parseFloat(
-            window.getComputedStyle(this.findElement('.content')!).paddingLeft
+            window.getComputedStyle(this.findElement('.content')!).paddingLeft,
           )
         : 0;
 

@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject } from '@angular/core';
 
 @Component({
-    selector: 'app-doc-tab',
-    imports: [CommonModule],
-    templateUrl: './doc-tab.component.html',
-    styleUrls: ['./doc-tab.component.scss']
+  selector: 'app-doc-tab',
+  imports: [CommonModule],
+  templateUrl: './doc-tab.component.html',
+  styleUrls: ['./doc-tab.component.scss'],
 })
 export class DocTabComponent {
   private el = inject(ElementRef);
@@ -15,7 +15,7 @@ export class DocTabComponent {
   tabs: string[] = [];
   activeTab = '';
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     const host = this.el.nativeElement as HTMLElement;
     this.children = Array.from(host.querySelectorAll(':scope > .content > *'));
     this.children.forEach((x, i) => {
@@ -64,7 +64,7 @@ export class DocTabComponent {
     const hostEl = this.el.nativeElement as HTMLElement;
     const contentEl = hostEl.querySelector('.content') as HTMLElement | null;
     const selectedTab = this.children.find(
-      (x) => x.getAttribute('name') === this.activeTab
+      (x) => x.getAttribute('name') === this.activeTab,
     );
 
     if (!selectedTab) return;

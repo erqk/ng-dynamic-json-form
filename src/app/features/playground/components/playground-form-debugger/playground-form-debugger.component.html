@@ -4,11 +4,11 @@
       <button
         class="p-1 text-sm rounded-sm"
         [ngClass]="{
-          'bg-transparent': activeControlType !== item,
-          'bg-gray-500/20 font-bold': activeControlType === item
+          'bg-transparent': activeControlType() !== item,
+          'bg-gray-500/20 font-bold': activeControlType() === item,
         }"
         (click)="setActiveInfoType(item)"
-        >
+      >
         {{ item }}
       </button>
     }
@@ -20,7 +20,7 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('value') }"
-    >
+  >
     <div class="section-title">
       <span (click)="setActiveSection('value')">Value</span>
 
@@ -34,7 +34,7 @@
         <i
           [ngClass]="{
             'bi bi-pencil': !editingForm,
-            'bi bi-check2': editingForm
+            'bi bi-check2': editingForm,
           }"
         ></i>
       </button>
@@ -44,19 +44,19 @@
       <div class="overflow-hidden">
         <div
           [ngClass]="{
-            hidden: editingForm
+            hidden: editingForm,
           }"
-          >
+        >
           <div class="code">
-            {{ activeControl?.value | json }}
+            {{ activeControl()?.value | json }}
           </div>
         </div>
 
         <app-playground-editor
           [ngClass]="{
-            hidden: !editingForm
+            hidden: !editingForm,
           }"
-          [data]="{ json: activeControl?.value }"
+          [data]="{ json: activeControl()?.value }"
           [mainMenuBar]="false"
           [navigationBar]="false"
           [statusBar]="false"
@@ -70,11 +70,11 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('errors') }"
-    >
+  >
     <div class="section-title">
       <span (click)="setActiveSection('errors')">Errors</span>
 
-      @if (activeControl?.errors) {
+      @if (activeControl()?.errors) {
         <i class="bi bi-exclamation-triangle text-red-600"></i>
       }
     </div>
@@ -85,21 +85,21 @@
           <div
             class="code overflow-auto"
             [ngClass]="{
-              hidden: editingForm
+              hidden: editingForm,
             }"
-            >
-            {{ activeControl?.errors | json }}
+          >
+            {{ activeControl()?.errors | json }}
           </div>
 
           <div
             class="flex flex-wrap items-center gap-1 bg-gray-400/10 rounded-md px-3 py-2 text-sm"
-            >
+          >
             <span class="">hideErrorMessage =</span>
-            @for (button of hideErrorMessageActions; track button) {
+            @for (button of hideErrorMessageActions; track button.label) {
               <button
                 class="p-1 bg-gray-400/30 rounded-md"
                 (click)="button.action()"
-                >
+              >
                 {{ button.label }}
               </button>
             }
@@ -113,12 +113,12 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('state') }"
-    >
+  >
     <div class="section-title">
       <span (click)="setActiveSection('state')">State</span>
 
       <div class="flex gap-3 break-keep">
-        @for (item of controlStates; track item) {
+        @for (item of controlStates; track item.label) {
           <span [ngClass]="{ 'opacity-40': !item.value() }">{{
             item.label
           }}</span>
@@ -131,11 +131,11 @@
         <div class="flex flex-col gap-1 text-sm">
           <span>Update status functions</span>
           <div class="flex flex-wrap gap-2">
-            @for (button of statusActions; track button) {
+            @for (button of statusActions; track button.label) {
               <button
                 class="px-2 py-1 bg-gray-400/20 rounded-md"
                 (click)="button.action()"
-                >
+              >
                 {{ button.label }}
               </button>
             }
@@ -149,7 +149,7 @@
   <div class="section-container">
     <div class="section-title">
       <span (click)="setActiveSection('status')">Status</span>
-      <span class="text-right">{{ activeControl?.status }}</span>
+      <span class="text-right">{{ activeControl()?.status }}</span>
     </div>
   </div>
 
@@ -157,7 +157,7 @@
   <div
     class="section-container"
     [ngClass]="{ active: activeSections.includes('events') }"
-    >
+  >
     <div class="section-title">
       <span (click)="setActiveSection('events')">Events</span>
       <button type="button" (click)="eventsLog = []">
@@ -169,7 +169,7 @@
       <div class="overflow-hidden">
         <div>
           <div class="code">
-            @for (item of eventsLog; track item) {
+            @for (item of eventsLog; track $index) {
               <div>{{ item }}</div>
             }
 

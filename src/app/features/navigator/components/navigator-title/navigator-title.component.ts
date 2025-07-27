@@ -11,18 +11,18 @@ import { NavigatorService } from '../../services/navigator.service';
   selector: 'app-navigator-title',
   imports: [CommonModule],
   template: `
-    @for (item of links; track item) {
-    <ng-container
-      [ngTemplateOutlet]="buttonTemplate"
-      [ngTemplateOutletContext]="{ item, level: 1 }"
-    ></ng-container>
+    @for (item of links; track item.id) {
+      <ng-container
+        [ngTemplateOutlet]="buttonTemplate"
+        [ngTemplateOutletContext]="{ item, level: 1 }"
+      ></ng-container>
     }
 
     <ng-template #buttonTemplate let-item="item" let-level="level">
       <button
         [ngClass]="{
           active: currentActiveId[level - 1] === item.id,
-          child: level > 1
+          child: level > 1,
         }"
         (click)="onLinkClick($event, item)"
       >
@@ -30,25 +30,25 @@ import { NavigatorService } from '../../services/navigator.service';
       </button>
 
       @if (item.children?.length) {
-      <div
-        class="sub-titles"
-        [ngClass]="{
-          active:
-            item.children?.length && currentActiveId[level - 1] === item.id
-        }"
-      >
-        <div class="flex flex-col overflow-hidden">
-          @for (child of item.children; track child) {
-          <ng-container
-            [ngTemplateOutlet]="buttonTemplate"
-            [ngTemplateOutletContext]="{
-              item: child,
-              level: level + 1
-            }"
-          ></ng-container>
-          }
+        <div
+          class="sub-titles"
+          [ngClass]="{
+            active:
+              item.children?.length && currentActiveId[level - 1] === item.id,
+          }"
+        >
+          <div class="flex flex-col overflow-hidden">
+            @for (child of item.children; track child) {
+              <ng-container
+                [ngTemplateOutlet]="buttonTemplate"
+                [ngTemplateOutletContext]="{
+                  item: child,
+                  level: level + 1,
+                }"
+              ></ng-container>
+            }
+          </div>
         </div>
-      </div>
       }
     </ng-template>
   `,
@@ -81,7 +81,7 @@ export class NavigatorTitleComponent {
           this.setActiveIds();
           this.syncActiveIndexWithScroll();
         }),
-        takeUntilDestroyed()
+        takeUntilDestroyed(),
       )
       .subscribe();
   }
@@ -125,7 +125,7 @@ export class NavigatorTitleComponent {
       .pipe(
         tap(() => this.highlightTitle()),
         takeUntil(this.reset$),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
@@ -144,13 +144,13 @@ export class NavigatorTitleComponent {
 
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
     const parent = this.links.find(({ children }) =>
-      (children || []).find(({ id }) => id === activeTitle!.id)
+      (children || []).find(({ id }) => id === activeTitle!.id),
     );
 
     this.currentActiveId[level - 1] = parent?.id || '';
     this.currentActiveId[level] = activeTitle.id || '';
     this.currentLinkIndex = this.linksFlatten.findIndex(
-      ({ id }) => id === activeTitle!.id
+      ({ id }) => id === activeTitle!.id,
     );
   }
 
@@ -174,7 +174,7 @@ export class NavigatorTitleComponent {
       }
 
       return titles.findIndex(
-        (x) => rect(x).top >= 0 && rect(x).bottom < this._visibleThreshold
+        (x) => rect(x).top >= 0 && rect(x).bottom < this._visibleThreshold,
       );
     };
 
