@@ -60,19 +60,19 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
 export class FormControlComponent
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
 {
-  private _cd = inject(ChangeDetectorRef);
-  private _destroyRef = inject(DestroyRef);
-  private _globalVariableService = inject(GlobalVariableService);
-  private _formReadyStateService = inject(FormReadyStateService);
-  private _optionsDataService = inject(OptionsDataService);
+  private cd = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  private globalVariableService = inject(GlobalVariableService);
+  private formReadyStateService = inject(FormReadyStateService);
+  private optionsDataService = inject(OptionsDataService);
 
-  private _uiComponents = this._globalVariableService.uiComponents;
+  private uiComponents = this.globalVariableService.uiComponents;
 
-  private _controlComponent?: CustomControlComponent;
-  private _pendingValue: any = null;
+  private controlComponent?: CustomControlComponent;
+  private pendingValue: any = null;
 
-  private _onChange = (_: any) => {};
-  private _onTouched = () => {};
+  private onChange = (_: any) => {};
+  private onTouched = () => {};
 
   @Input() data?: FormControlConfig;
   @Input() control?: AbstractControl;
@@ -89,37 +89,37 @@ export class FormControlComponent
       return;
     }
 
-    this._onTouched();
+    this.onTouched();
   }
 
-  customTemplates = this._globalVariableService.customTemplates;
-  loadingComponent = this._globalVariableService.loadingComponent;
-  loadingTemplate = this._globalVariableService.loadingTemplate;
+  customTemplates = this.globalVariableService.customTemplates;
+  loadingComponent = this.globalVariableService.loadingComponent;
+  loadingTemplate = this.globalVariableService.loadingTemplate;
 
   loading = false;
   useCustomLoading = false;
-  hostForm = this._globalVariableService.rootForm;
-  hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
+  hostForm = this.globalVariableService.rootForm;
+  hideErrorMessage$ = this.globalVariableService.hideErrorMessage$;
 
   writeValue(obj: any): void {
-    this._pendingValue = obj;
-    this._controlComponent?.writeValue(obj);
+    this.pendingValue = obj;
+    this.controlComponent?.writeValue(obj);
   }
 
   registerOnChange(fn: (_: any) => void): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
-    this._onTouched = fn;
+    this.onTouched = fn;
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this._controlComponent?.setDisabledState(isDisabled);
+    this.controlComponent?.setDisabledState(isDisabled);
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._controlComponent?.validate(control) ?? null;
+    return this.controlComponent?.validate(control) ?? null;
   }
 
   ngOnInit(): void {
@@ -128,10 +128,10 @@ export class FormControlComponent
   }
 
   ngAfterViewInit(): void {
-    this._injectInputComponent();
-    this._fetchOptions();
-    this._errorMessageEvent();
-    this._cd.detectChanges();
+    this.injectInputComponent();
+    this.fetchOptions();
+    this.errorMessageEvent();
+    this.cd.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -144,7 +144,7 @@ export class FormControlComponent
     updateSelf = false
   ): void {
     const control = this.control;
-    const controlComponent = this._controlComponent;
+    const controlComponent = this.controlComponent;
 
     const markAsDirty = () => {
       controlComponent?.control?.markAsDirty();
@@ -213,7 +213,7 @@ export class FormControlComponent
     return (controlDirty || controlTouched) && hasErrors;
   }
 
-  private _injectComponent<T>(
+  private injectComponent<T>(
     vcr?: ViewContainerRef,
     component?: Type<T>
   ): ComponentRef<T> | null {
@@ -224,18 +224,18 @@ export class FormControlComponent
     return componentRef;
   }
 
-  private _injectInputComponent(): void {
+  private injectInputComponent(): void {
     if (this.customTemplates?.[this.data?.formControlName ?? '']) {
       return;
     }
 
     const inputComponent =
       this.customComponent ||
-      this._uiComponents?.[this._inputType] ||
+      this.uiComponents?.[this._inputType] ||
       UI_BASIC_COMPONENTS[this._inputType] ||
       UiBasicInputComponent;
 
-    const componentRef = this._injectComponent(
+    const componentRef = this.injectComponent(
       this.inputComponentAnchor,
       inputComponent
     );
@@ -243,18 +243,18 @@ export class FormControlComponent
     if (!componentRef) return;
 
     componentRef.instance.data = this.data;
-    componentRef.instance.hostForm = this._globalVariableService.rootForm;
-    componentRef.instance.writeValue(this._pendingValue);
-    componentRef.instance.registerOnChange(this._onChange);
-    componentRef.instance.registerOnTouched(this._onTouched);
+    componentRef.instance.hostForm = this.globalVariableService.rootForm;
+    componentRef.instance.writeValue(this.pendingValue);
+    componentRef.instance.registerOnChange(this.onChange);
+    componentRef.instance.registerOnTouched(this.onTouched);
 
-    this._controlComponent = componentRef.instance;
-    this._setControlErrors();
+    this.controlComponent = componentRef.instance;
+    this.setControlErrors();
   }
 
-  private _fetchOptions(): void {
+  private fetchOptions(): void {
     if (!this.data || !this.data.options) {
-      this._pendingValue = null;
+      this.pendingValue = null;
       return;
     }
 
@@ -267,7 +267,7 @@ export class FormControlComponent
 
     const updateControlValue = (value: any) => {
       this.control?.setValue(value);
-      this._controlComponent?.writeValue(value);
+      this.controlComponent?.writeValue(value);
     };
 
     const selectFirst = (options: OptionItem[]) => {
@@ -277,7 +277,7 @@ export class FormControlComponent
 
     const setLoading = (val: boolean) => {
       this.loading = val;
-      this._formReadyStateService.optionsLoading(val);
+      this.formReadyStateService.optionsLoading(val);
     };
 
     if (!src) {
@@ -287,8 +287,8 @@ export class FormControlComponent
 
     const source$ =
       typeof src === 'string'
-        ? this._globalVariableService.optionsSources?.[src]
-        : this._optionsDataService.getOptions$(src, () => {
+        ? this.globalVariableService.optionsSources?.[src]
+        : this.optionsDataService.getOptions$(src, () => {
             setLoading(true);
             updateControlValue(null);
           });
@@ -303,26 +303,26 @@ export class FormControlComponent
               ? x.concat(staticOptions)
               : staticOptions.concat(x);
 
-          if (this._pendingValue) {
-            updateControlValue(this._pendingValue);
-            this._pendingValue = null;
+          if (this.pendingValue) {
+            updateControlValue(this.pendingValue);
+            this.pendingValue = null;
           } else {
             selectFirst(options);
           }
 
           setLoading(false);
-          this._controlComponent?.onOptionsGet(options);
+          this.controlComponent?.onOptionsGet(options);
         }),
         finalize(() => setLoading(false))
       )
       .subscribe();
   }
 
-  private _errorMessageEvent(): void {
+  private errorMessageEvent(): void {
     if (!this.control) return;
 
     const control = this.control;
-    const controlComponent = this._controlComponent;
+    const controlComponent = this.controlComponent;
 
     combineLatest([
       this.hideErrorMessage$,
@@ -350,7 +350,7 @@ export class FormControlComponent
             this.updateControlStatus('touched', true);
           }
         }),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -359,8 +359,8 @@ export class FormControlComponent
    * If the CVA has errors but this control doesn't,
    * we set this control with the CVA errors
    */
-  private _setControlErrors(): void {
-    const cvaErrors = getControlErrors(this._controlComponent?.control);
+  private setControlErrors(): void {
+    const cvaErrors = getControlErrors(this.controlComponent?.control);
     if (!this.control?.errors && cvaErrors) {
       this.control?.setErrors(cvaErrors);
     }

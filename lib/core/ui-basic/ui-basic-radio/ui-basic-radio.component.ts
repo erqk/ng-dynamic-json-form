@@ -5,16 +5,16 @@ import { CustomControlComponent } from '../../components/custom-control/custom-c
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
-    selector: 'ui-basic-radio',
-    imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
-    templateUrl: './ui-basic-radio.component.html',
-    styles: [],
-    host: {
-        class: 'ui-basic',
-    }
+  selector: 'ui-basic-radio',
+  imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
+  templateUrl: './ui-basic-radio.component.html',
+  styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   selectedIndex = -1;
   isDisabled = false;
@@ -22,22 +22,22 @@ export class UiBasicRadioComponent extends CustomControlComponent {
   override writeValue(obj: any): void {
     const index =
       this.data?.options?.data?.findIndex(
-        (x) => JSON.stringify(x.value) === JSON.stringify(obj)
+        (x) => JSON.stringify(x.value) === JSON.stringify(obj),
       ) ?? -1;
 
     this.selectedIndex = index;
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   override setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
   }
 
-  onChange(i: number): void {
+  emitValue(i: number): void {
     const value = this.data?.options?.data?.[i].value;
-    this._onChange(value);
+    this.onChange(value);
   }
 }

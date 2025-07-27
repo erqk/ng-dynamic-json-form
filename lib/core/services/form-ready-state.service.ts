@@ -6,16 +6,16 @@ import { FormControlConfig } from '../models';
 export class FormReadyStateService {
   optionsReady$ = new BehaviorSubject<boolean>(false);
 
-  private _optionsLoadingCount = 0;
+  private optionsLoadingCount = 0;
 
   optionsLoading(add: boolean): void {
     if (add) {
-      this._optionsLoadingCount++;
+      this.optionsLoadingCount++;
     } else {
-      this._optionsLoadingCount--;
+      this.optionsLoadingCount--;
 
-      if (this._optionsLoadingCount <= 0) {
-        this._optionsLoadingCount = 0;
+      if (this.optionsLoadingCount <= 0) {
+        this.optionsLoadingCount = 0;
 
         if (this.optionsReady$.value !== true) {
           this.optionsReady$.next(true);

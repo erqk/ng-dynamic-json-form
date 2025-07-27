@@ -17,8 +17,8 @@ export class UiBasicDateComponent
   extends CustomControlComponent
   implements OnInit
 {
-  private _locale = inject(LOCALE_ID);
-  private _onChange?: any;
+  private locale = inject(LOCALE_ID);
+  private onChange?: any;
 
   dateSettings = { min: '', max: '' };
 
@@ -30,7 +30,7 @@ export class UiBasicDateComponent
   override writeValue(obj: any): void {
     if (!obj) return;
 
-    const dateRaw = formatDate(obj, 'yyyy-MM-dd,HH:mm:ss', this._locale);
+    const dateRaw = formatDate(obj, 'yyyy-MM-dd,HH:mm:ss', this.locale);
     this.control.patchValue({
       date: dateRaw.split(',')[0],
       time: dateRaw.split(',')[1],
@@ -38,14 +38,14 @@ export class UiBasicDateComponent
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   ngOnInit(): void {
     const { min, max } = this.data?.props ?? {};
     this.dateSettings = {
-      min: !min ? '' : formatDate(min, 'yyyy-MM-dd', this._locale),
-      max: !max ? '' : formatDate(max, 'yyyy-MM-dd', this._locale),
+      min: !min ? '' : formatDate(min, 'yyyy-MM-dd', this.locale),
+      max: !max ? '' : formatDate(max, 'yyyy-MM-dd', this.locale),
     };
   }
 
@@ -65,6 +65,6 @@ export class UiBasicDateComponent
       if (seconds) _date.setSeconds(parseInt(seconds));
     }
 
-    this._onChange(_date);
+    this.onChange(_date);
   }
 }

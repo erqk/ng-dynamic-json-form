@@ -4,25 +4,23 @@
     [style]="data.options?.containerStyles"
     [ngClass]="[
       data.options?.containerClass ?? '',
-      isDisabled ? 'disabled' : ''
+      isDisabled ? 'disabled' : '',
     ]"
     [ngStyle]="{
       'flex-direction': data.options?.layout,
     }"
-    >
+  >
     @for (item of data.options?.data; track item; let i = $index) {
       <div class="option-button-wrapper">
         <label
           class="option-button"
           [ngStyle]="{
             'justify-content':
-              data.options?.labelPosition === 'before' ? 'space-between' : null
+              data.options?.labelPosition === 'before' ? 'space-between' : null,
           }"
-          >
-          @if (data.options?.labelPosition === 'before') {
-            <span>{{
-              item.label
-            }}</span>
+        >
+          @if (data.options?.labelPosition === "before") {
+            <span>{{ item.label }}</span>
           }
           <input
             type="radio"
@@ -30,17 +28,15 @@
             [propsBinding]="[
               {
                 props: data.props,
-                omit: ['type', 'name']
-              }
+                omit: ['type', 'name'],
+              },
             ]"
-          [checked]="selectedIndex === i"
-          (change)="onChange(i)"
+            [checked]="selectedIndex === i"
+            (change)="emitValue(i)"
           />
           <span class="marker"></span>
-          @if (data.options?.labelPosition !== 'before') {
-            <span>{{
-              item.label
-            }}</span>
+          @if (data.options?.labelPosition !== "before") {
+            <span>{{ item.label }}</span>
           }
         </label>
       </div>

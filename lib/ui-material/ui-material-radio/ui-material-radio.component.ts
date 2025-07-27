@@ -10,27 +10,27 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-    selector: 'ui-material-radio',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatRadioModule,
-        MatInputModule,
-        PropsBindingDirective,
-    ],
-    providers: [
-        providePropsBinding([
-            {
-                key: 'mat-radio-group',
-                token: MatRadioGroup,
-            },
-        ]),
-    ],
-    templateUrl: './ui-material-radio.component.html',
-    styles: []
+  selector: 'ui-material-radio',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatRadioModule,
+    MatInputModule,
+    PropsBindingDirective,
+  ],
+  providers: [
+    providePropsBinding([
+      {
+        key: 'mat-radio-group',
+        token: MatRadioGroup,
+      },
+    ]),
+  ],
+  templateUrl: './ui-material-radio.component.html',
+  styles: [],
 })
 export class UiMaterialRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new UntypedFormControl('');
   selectedIndex = -1;
@@ -43,11 +43,11 @@ export class UiMaterialRadioComponent extends CustomControlComponent {
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
-  onChange(i: number): void {
+  emitValue(i: number): void {
     const value = this.data?.options?.data?.[i].value;
-    this._onChange(value);
+    this.onChange(value);
   }
 }

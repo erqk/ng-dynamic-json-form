@@ -13,7 +13,7 @@ beforeAll(() => {
 
 describe('Set fallback value depends on type', () => {
   it('Checkbox value should becomes false when it is undefined', () => {
-    const result = service['_getFallbackValue']({
+    const result = service['getFallbackValue']({
       formControlName: 'test',
       type: 'checkbox',
     });
@@ -21,7 +21,7 @@ describe('Set fallback value depends on type', () => {
   });
 
   it('Switch value should becomes false when it is undefined', () => {
-    const result = service['_getFallbackValue']({
+    const result = service['getFallbackValue']({
       formControlName: 'test',
       type: 'switch',
       value: null,
@@ -32,12 +32,12 @@ describe('Set fallback value depends on type', () => {
 
 describe('Remove unwanted characters in formControlName', () => {
   it('Should replace all spaces with "_"', () => {
-    const result = service['_getFormControlName']('aaa bbb    ccc ');
+    const result = service['getFormControlName']('aaa bbb    ccc ');
     expect(result).toBe('aaa_bbb____ccc_');
   });
 
   it('Should remove all "." and "," characters', () => {
-    const result = service['_getFormControlName']('aa,bbb..ccc');
+    const result = service['getFormControlName']('aa,bbb..ccc');
     expect(result).toBe('aabbbccc');
   });
 });

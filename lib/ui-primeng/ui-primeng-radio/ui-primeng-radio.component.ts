@@ -28,7 +28,7 @@ import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
     styles: []
 })
 export class UiPrimengRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
   override control = new FormControl(-1);
 
   override writeValue(obj: any): void {
@@ -42,7 +42,7 @@ export class UiPrimengRadioComponent extends CustomControlComponent {
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   updateControl(): void {
@@ -50,7 +50,7 @@ export class UiPrimengRadioComponent extends CustomControlComponent {
 
     if (index > -1) {
       const value = this.data?.options?.data?.[index].value;
-      this._onChange(value);
+      this.onChange(value);
     }
   }
 }

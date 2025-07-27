@@ -34,7 +34,7 @@ import {
     styles: []
 })
 export class UiMaterialCheckboxComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormArray<FormControl>([]);
 
@@ -42,19 +42,19 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
     this.control.clear();
 
     if (Array.isArray(obj)) {
-      obj.forEach((x) => this._addItem(x));
+      obj.forEach((x) => this.addItem(x));
     } else {
-      this._addItem(obj);
+      this.addItem(obj);
     }
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   toggle(e: MatCheckboxChange): void {
     const checked = e.checked;
-    this._onChange(checked);
+    this.onChange(checked);
   }
 
   onCheckboxChange(e: MatCheckboxChange, index: number): void {
@@ -64,8 +64,8 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
       .filter((val, i) => (i === index ? checked : this.isChecked(val)));
 
     this.control.clear();
-    value?.forEach((x) => this._addItem(x));
-    this._onChange(this.control.value);
+    value?.forEach((x) => this.addItem(x));
+    this.onChange(this.control.value);
   }
 
   isChecked(val: any): boolean {
@@ -82,7 +82,7 @@ export class UiMaterialCheckboxComponent extends CustomControlComponent {
     `.replace(/\s{2,}/g, '');
   }
 
-  private _addItem(val?: any): void {
+  private addItem(val?: any): void {
     const control = new FormControl(val);
     this.control.push(control);
   }

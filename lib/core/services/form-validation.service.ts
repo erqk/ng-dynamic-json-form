@@ -41,7 +41,7 @@ const builtInValidators = (
 
 @Injectable()
 export class FormValidationService {
-  private _globalVariableService = inject(GlobalVariableService);
+  private globalVariableService = inject(GlobalVariableService);
 
   getErrorMessages$(
     control: AbstractControl | null | undefined,
@@ -54,7 +54,7 @@ export class FormValidationService {
     return control.statusChanges.pipe(
       startWith(control.status),
       map(() =>
-        this._getErrorMessages(control.errors, control.value, validators)
+        this.getErrorMessages(control.errors, control.value, validators)
       )
     );
   }
@@ -69,12 +69,12 @@ export class FormValidationService {
       ...new Map(input.map((v) => [v.name, v])).values(),
     ];
 
-    const customValidators = this._globalVariableService.customValidators;
+    const customValidators = this.globalVariableService.customValidators;
     const validatorFns = filteredConfigs.map((item) => {
       const { name } = item;
-      const value = this._getValidatorValue(item);
+      const value = this.getValidatorValue(item);
       const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
-      const customValidator = this._getValidatorFn(
+      const customValidator = this.getValidatorFn(
         item,
         customValidators?.[name]
       ) as ValidatorFn | null;
@@ -98,11 +98,11 @@ export class FormValidationService {
     ];
 
     const customAsyncValidators =
-      this._globalVariableService.customAsyncValidators;
+      this.globalVariableService.customAsyncValidators;
 
     const validatorFns = filteredConfigs.map((item) => {
       const validatorFn = customAsyncValidators?.[item.name];
-      return this._getValidatorFn(item, validatorFn) as AsyncValidatorFn | null;
+      return this.getValidatorFn(item, validatorFn) as AsyncValidatorFn | null;
     });
 
     return validatorFns.filter(Boolean) as AsyncValidatorFn[];
@@ -119,7 +119,7 @@ export class FormValidationService {
    * Since user can define the error object, it becomes very difficult to match the config name
    * with the keys in the error object.
    */
-  private _getErrorMessages(
+  private getErrorMessages(
     controlErrors: ValidationErrors | null,
     controlValue: any,
     validatorConfigs: ValidatorConfig[]
@@ -134,14 +134,14 @@ export class FormValidationService {
 
     return Object.keys(controlErrors).reduce((acc, key) => {
       const error = controlErrors[key];
-      const config = this._getConfigFromErrorKey(
+      const config = this.getConfigFromErrorKey(
         { [key]: error },
         validatorConfigs
       );
 
       const configMessage = config?.message;
       const defaultMessage =
-        this._globalVariableService.validationMessages?.[config?.name ?? ''];
+        this.globalVariableService.validationMessages?.[config?.name ?? ''];
 
       const customMessage = (configMessage || defaultMessage)
         ?.replace(/{{value}}/g, controlValue || '')
@@ -153,7 +153,7 @@ export class FormValidationService {
     }, [] as string[]);
   }
 
-  private _getConfigFromErrorKey(
+  private getConfigFromErrorKey(
     error: { [key: string]: any },
     configs: ValidatorConfig[]
   ): ValidatorConfig | undefined {
@@ -196,7 +196,7 @@ export class FormValidationService {
     return result;
   }
 
-  private _getValidatorValue(validatorConfig: ValidatorConfig) {
+  private getValidatorValue(validatorConfig: ValidatorConfig) {
     const { name, value, flags } = validatorConfig;
 
     switch (name) {
@@ -225,7 +225,7 @@ export class FormValidationService {
    * @param validatorConfig
    * @param validatorFn
    */
-  private _getValidatorFn(
+  private getValidatorFn(
     validatorConfig: ValidatorConfig,
     validatorFn:
       | CustomValidators[string]

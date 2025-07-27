@@ -1,3 +1,4 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormControlConfig, OptionSourceConfig } from '../models';
 import { FormGeneratorService } from './form-generator.service';
@@ -5,7 +6,6 @@ import { FormValidationService } from './form-validation.service';
 import { GlobalVariableService } from './global-variable.service';
 import { HttpRequestCacheService } from './http-request-cache.service';
 import { OptionsDataService } from './options-data.service';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 
 let formGeneratorService: FormGeneratorService;
 let globalVariableService: GlobalVariableService;
@@ -87,8 +87,8 @@ it('should get { "other": "000", "q": "love" }', () => {
     },
   });
 
-  const result = optionsDataService['_mapBodyValue'](
-    config!.options!.src as OptionSourceConfig
+  const result = optionsDataService['mapBodyValue'](
+    config!.options!.src as OptionSourceConfig,
   );
 
   expect(result).toHaveProperty('other', '000');

@@ -9,7 +9,7 @@ import { ConfigMappingService } from './config-mapping.service';
 const validate = ConfigMainSchema as ValidateFunction;
 @Injectable()
 export class ConfigValidationService {
-  private _configMappingService = inject(ConfigMappingService);
+  private configMappingService = inject(ConfigMappingService);
 
   validateAndGetConfig(input: string | FormControlConfig[] | undefined): {
     configs: FormControlConfig[] | null;
@@ -23,7 +23,7 @@ export class ConfigValidationService {
     if (Array.isArray(input)) {
       if (!validate(input)) {
         failedResult.errors = (validate.errors || []).map((x) =>
-          this._getBeautifyErrors(x, input)
+          this.getBeautifyErrors(x, input)
         );
 
         return failedResult;
@@ -31,7 +31,7 @@ export class ConfigValidationService {
 
       const configsGet = input
         .filter(Boolean)
-        .map((x) => this._configMappingService.getCorrectedConfig(x));
+        .map((x) => this.configMappingService.getCorrectedConfig(x));
 
       return { configs: configsGet };
     }
@@ -55,7 +55,7 @@ export class ConfigValidationService {
     return failedResult;
   }
 
-  private _getBeautifyErrors(
+  private getBeautifyErrors(
     err: ErrorObject,
     configs: FormControlConfig[]
   ): ConfigValidationErrors {

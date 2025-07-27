@@ -30,7 +30,7 @@ export class UiPrimengRangeComponent
   extends CustomControlComponent
   implements AfterViewInit
 {
-  private _pendingValue = 0;
+  private pendingValue = 0;
 
   override control = new FormControl(0);
   onChange?: any;
@@ -39,7 +39,7 @@ export class UiPrimengRangeComponent
 
   override writeValue(obj: any): void {
     super.writeValue(obj);
-    this._pendingValue = obj;
+    this.pendingValue = obj;
   }
 
   override registerOnChange(fn: any): void {
@@ -47,6 +47,6 @@ export class UiPrimengRangeComponent
   }
 
   ngAfterViewInit(): void {
-    this.sliderRef?.updateValue(this._pendingValue);
+    this.sliderRef?.updateValue(this.pendingValue);
   }
 }

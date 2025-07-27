@@ -27,7 +27,7 @@ import {
     styles: []
 })
 export class UiMaterialSelectComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormControl(-1);
 
@@ -43,7 +43,7 @@ export class UiMaterialSelectComponent extends CustomControlComponent {
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   override registerOnTouched(fn: any): void {
@@ -55,7 +55,7 @@ export class UiMaterialSelectComponent extends CustomControlComponent {
 
     if (index > -1) {
       const value = this.data?.options?.data?.map((x) => x.value)?.[index];
-      this._onChange(value);
+      this.onChange(value);
     }
   }
 }

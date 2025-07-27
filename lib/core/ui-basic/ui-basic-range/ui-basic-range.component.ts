@@ -24,7 +24,7 @@ export class UiBasicRangeComponent extends CustomControlComponent {
   }
 
   ngOnInit(): void {
-    this._getTickMarksCount();
+    this.getTickMarksCount();
   }
 
   get valuePosition(): string {
@@ -34,7 +34,7 @@ export class UiBasicRangeComponent extends CustomControlComponent {
     return `${((this.control.value! - min) / (max - min)) * 100}%`;
   }
 
-  private _getTickMarksCount(): void {
+  private getTickMarksCount(): void {
     if (!this.data?.props || !this.data.props.showTickMarks) {
       return;
     }

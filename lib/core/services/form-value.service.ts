@@ -28,15 +28,15 @@ export class FormValueService {
     value: any,
     configs: FormControlConfig[]
   ): FormDisplayValue {
-    const keyPreserved = this._getKeyPreservedDisplayValue(value, configs);
+    const keyPreserved = this.getKeyPreservedDisplayValue(value, configs);
 
     return {
-      keyMapped: this._getKeyMappedFormDisplayValue(keyPreserved, configs),
+      keyMapped: this.getKeyMappedFormDisplayValue(keyPreserved, configs),
       keyPreserved,
     };
   }
 
-  private _getKeyPreservedDisplayValue(
+  private getKeyPreservedDisplayValue(
     formValue: any,
     configs: FormControlConfig[]
   ): any {
@@ -70,7 +70,7 @@ export class FormValueService {
       }
 
       if (!!item.children?.length) {
-        result[item.formControlName] = this._getKeyPreservedDisplayValue(
+        result[item.formControlName] = this.getKeyPreservedDisplayValue(
           value,
           item.children
         );
@@ -80,7 +80,7 @@ export class FormValueService {
     return result;
   }
 
-  private _getKeyMappedFormDisplayValue(
+  private getKeyMappedFormDisplayValue(
     value: any,
     configs: FormControlConfig[]
   ): any {
@@ -97,7 +97,7 @@ export class FormValueService {
       newResult[key] = _value;
 
       if (!!item.children?.length) {
-        newResult[key] = this._getKeyMappedFormDisplayValue(
+        newResult[key] = this.getKeyMappedFormDisplayValue(
           _value,
           item.children
         );

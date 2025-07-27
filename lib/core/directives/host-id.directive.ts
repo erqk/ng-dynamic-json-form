@@ -5,12 +5,12 @@ import { Directive, ElementRef, Input, inject } from '@angular/core';
   standalone: true,
 })
 export class HostIdDirective {
-  private _el = inject(ElementRef);
+  private el = inject(ElementRef);
 
   @Input() hostId?: { parentId?: string; controlName?: string };
 
   ngOnChanges(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
+    const hostEl = this.el.nativeElement as HTMLElement;
     if (!hostEl || !this._hostId) return;
 
     // Set `id` to this component so that `querySelector` can find it correctly.

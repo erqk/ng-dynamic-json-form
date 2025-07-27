@@ -38,8 +38,8 @@ import { FormControlComponent } from '../form-control/form-control.component';
     }
 })
 export class FormGroupComponent implements OnChanges {
-  private _el = inject(ElementRef);
-  private _globalVariableService = inject(GlobalVariableService);
+  private el = inject(ElementRef);
+  private globalVariableService = inject(GlobalVariableService);
 
   @Input() configs?: FormControlConfig[];
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
@@ -54,10 +54,10 @@ export class FormGroupComponent implements OnChanges {
   @ViewChildren(FormControlComponent)
   formControlRefs?: QueryList<FormControlComponent>;
 
-  customComponents = this._globalVariableService.customComponents;
+  customComponents = this.globalVariableService.customComponents;
 
   ngOnChanges(changes: SimpleChanges): void {
-    const host = this._el.nativeElement as HTMLElement;
+    const host = this.el.nativeElement as HTMLElement;
     const { rootClass, rootStyles } = changes;
 
     if (rootClass) {

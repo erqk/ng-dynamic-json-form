@@ -14,18 +14,18 @@ import { PropsBindingDirective } from '../../directives';
     }
 })
 export class UiBasicSwitchComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormControl(false);
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   updateControl(e: Event): void {
     const checked = (e.target as HTMLInputElement).checked;
 
     this.control.setValue(checked);
-    this._onChange(checked);
+    this.onChange(checked);
   }
 }

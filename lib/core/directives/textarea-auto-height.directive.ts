@@ -11,8 +11,8 @@ import {
   standalone: true,
 })
 export class TextareaAutHeightDirective {
-  private _el = inject(ElementRef);
-  private _hostEl?: HTMLElement;
+  private el = inject(ElementRef);
+  private hostEl?: HTMLElement;
 
   @Input() autoResize = true;
 
@@ -21,29 +21,29 @@ export class TextareaAutHeightDirective {
   ngAfterViewInit(): void {
     if (typeof window === 'undefined') return;
 
-    this._hostEl = this._el.nativeElement as HTMLElement;
-    if (!this._hostEl) return;
+    this.hostEl = this.el.nativeElement as HTMLElement;
+    if (!this.hostEl) return;
 
-    this._hostEl.style.setProperty('resize', 'none');
-    this._setHeight();
+    this.hostEl.style.setProperty('resize', 'none');
+    this.setHeight();
   }
 
   @HostListener('input', ['$event'])
   onInput(): void {
-    this._setHeight();
+    this.setHeight();
   }
 
-  private _setHeight(): void {
-    if (!this._hostEl || !this.autoResize) return;
+  private setHeight(): void {
+    if (!this.hostEl || !this.autoResize) return;
 
     const borderWidth = Math.ceil(
-      parseFloat(window.getComputedStyle(this._hostEl).borderWidth)
+      parseFloat(window.getComputedStyle(this.hostEl).borderWidth)
     );
 
-    this._hostEl.style.removeProperty('height');
-    this._hostEl.style.setProperty(
+    this.hostEl.style.removeProperty('height');
+    this.hostEl.style.setProperty(
       'height',
-      `${this._hostEl.scrollHeight + borderWidth * 2}px`
+      `${this.hostEl.scrollHeight + borderWidth * 2}px`
     );
   }
 }

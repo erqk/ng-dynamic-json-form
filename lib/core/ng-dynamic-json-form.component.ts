@@ -69,67 +69,67 @@ import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
 
 @Component({
-    selector: 'ng-dynamic-json-form',
-    templateUrl: './ng-dynamic-json-form.component.html',
-    imports: [CommonModule, FormGroupComponent],
-    host: {
-        class: 'ng-dynamic-json-form',
+  selector: 'ng-dynamic-json-form',
+  templateUrl: './ng-dynamic-json-form.component.html',
+  imports: [CommonModule, FormGroupComponent],
+  host: {
+    class: 'ng-dynamic-json-form',
+  },
+  providers: [
+    ConfigValidationService,
+    ConfigMappingService,
+    FormGeneratorService,
+    FormConditionsService,
+    FormValidationService,
+    FormValueService,
+    FormReadyStateService,
+    GlobalVariableService,
+    HttpRequestCacheService,
+    OptionsDataService,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
     },
-    providers: [
-        ConfigValidationService,
-        ConfigMappingService,
-        FormGeneratorService,
-        FormConditionsService,
-        FormValidationService,
-        FormValueService,
-        FormReadyStateService,
-        GlobalVariableService,
-        HttpRequestCacheService,
-        OptionsDataService,
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => NgDynamicJsonFormComponent),
-            multi: true,
-        },
-        {
-            provide: NG_ASYNC_VALIDATORS,
-            useExisting: forwardRef(() => NgDynamicJsonFormComponent),
-            multi: true,
-        },
-    ]
+    {
+      provide: NG_ASYNC_VALIDATORS,
+      useExisting: forwardRef(() => NgDynamicJsonFormComponent),
+      multi: true,
+    },
+  ],
 })
 export class NgDynamicJsonFormComponent
   implements ControlValueAccessor, Validator
 {
-  private _providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
+  private providerConfig = inject(NG_DYNAMIC_JSON_FORM_CONFIG, {
     optional: true,
   });
-  private _cd = inject(ChangeDetectorRef);
-  private _el = inject(ElementRef);
-  private _injector = inject(Injector);
-  private _destroyRef = inject(DestroyRef);
-  private _configValidationService = inject(ConfigValidationService);
-  private _formGeneratorService = inject(FormGeneratorService);
-  private _formConditionsService = inject(FormConditionsService);
-  private _formValueService = inject(FormValueService);
-  private _formReadyStateService = inject(FormReadyStateService);
-  private _globalVariableService = inject(GlobalVariableService);
-  private _optionsDataService = inject(OptionsDataService);
+  private cd = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
+  private injector = inject(Injector);
+  private destroyRef = inject(DestroyRef);
+  private configValidationService = inject(ConfigValidationService);
+  private formGeneratorService = inject(FormGeneratorService);
+  private formConditionsService = inject(FormConditionsService);
+  private formValueService = inject(FormValueService);
+  private formReadyStateService = inject(FormReadyStateService);
+  private globalVariableService = inject(GlobalVariableService);
+  private optionsDataService = inject(OptionsDataService);
 
-  private _controlDirective: FormControlDirective | null = null;
+  private controlDirective: FormControlDirective | null = null;
   /**
    * Whether to allow the form to mark as dirty
    * @description
    * If false, then it will automatically set to pristine
    * after each value changes.
    */
-  private _allowFormDirty = false;
-  private _globalVariablesInitialized = false;
-  private _reset$ = new Subject<void>();
-  private _validationCount = 0;
+  private allowFormDirty = false;
+  private globalVariablesInitialized = false;
+  private reset$ = new Subject<void>();
+  private validationCount = 0;
 
-  private _onTouched = () => {};
-  private _onChange = (_: any) => {};
+  private onTouched = () => {};
+  private onChangeFn = (_: any) => {};
 
   configGet: FormControlConfig[] = [];
   configValidationErrors: ConfigValidationErrors[] = [];
@@ -230,26 +230,26 @@ export class NgDynamicJsonFormComponent
     const { configs, hideErrorMessage } = simpleChanges;
 
     if (hideErrorMessage) {
-      this._globalVariableService.hideErrorMessage$.next(
-        hideErrorMessage.currentValue
+      this.globalVariableService.hideErrorMessage$.next(
+        hideErrorMessage.currentValue,
       );
     }
 
-    if (configs && this._globalVariablesInitialized) {
-      this._buildForm();
+    if (configs && this.globalVariablesInitialized) {
+      this.buildForm();
     }
   }
 
   ngOnInit(): void {
-    this._setupVariables();
-    this._getControlDirective();
-    this._buildForm();
+    this.setupVariables();
+    this.getControlDirective();
+    this.buildForm();
   }
 
   ngOnDestroy(): void {
-    this._reset$.next();
-    this._reset$.complete();
-    this._optionsDataService.onDestroy();
+    this.reset$.next();
+    this.reset$.complete();
+    this.optionsDataService.onDestroy();
   }
 
   validate(): Observable<ValidationErrors | null> {
@@ -261,36 +261,36 @@ export class NgDynamicJsonFormComponent
       startWith(this.form.status),
       filter((x) => x !== 'PENDING'),
       take(1),
-      map(() => this._formErrors)
+      map(() => this._formErrors),
     );
   }
 
   registerOnValidatorChange?(fn: () => void): void {}
 
   writeValue(obj: any): void {
-    this._formValueService.patchForm(this.form, obj);
+    this.formValueService.patchForm(this.form, obj);
   }
 
   registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChangeFn = fn;
   }
 
   registerOnTouched(fn: any): void {
-    this._onTouched = fn;
+    this.onTouched = fn;
   }
 
   setDisabledState?(isDisabled: boolean): void {
     isDisabled ? this.form?.disable() : this.form?.enable();
   }
 
-  private _setupVariables(): void {
+  private setupVariables(): void {
     const {
       errorComponent,
       labelComponent,
       loadingComponent,
       uiComponents,
       ...providerProps
-    } = this._providerConfig ?? {};
+    } = this.providerConfig ?? {};
 
     const errors = {
       errorComponents: this.errorComponents,
@@ -311,7 +311,7 @@ export class NgDynamicJsonFormComponent
       loadingTemplate: this.loadingTemplate,
     };
 
-    this._globalVariableService.setup({
+    this.globalVariableService.setup({
       ...errors,
       ...labels,
       ...loading,
@@ -323,7 +323,7 @@ export class NgDynamicJsonFormComponent
       customTemplates: this.customTemplates,
       conditionsActionFunctions: this.conditionsActionFunctions,
       descriptionPosition: this.descriptionPosition,
-      hostElement: this._el.nativeElement,
+      hostElement: this.el.nativeElement,
       optionsSources: this.optionsSources,
       customAsyncValidators: providerProps.customAsyncValidators,
       customValidators: providerProps.customValidators,
@@ -332,32 +332,32 @@ export class NgDynamicJsonFormComponent
       validationMessages: providerProps.validationMessages,
     });
 
-    this._globalVariablesInitialized = true;
+    this.globalVariablesInitialized = true;
   }
 
-  private _buildForm(): void {
-    this._reset();
+  private buildForm(): void {
+    this.reset();
 
     if (!this.configs) {
       return;
     }
 
-    const result = this._configValidationService.validateAndGetConfig(
-      this.configs
+    const result = this.configValidationService.validateAndGetConfig(
+      this.configs,
     );
 
     this.configGet = result.configs ?? [];
     this.configValidationErrors = result.errors ?? [];
-    this._allowFormDirty = false;
+    this.allowFormDirty = false;
 
     if (this.configGet.length > 0 && !this.configValidationErrors.length) {
-      this.form = this._formGeneratorService.generateFormGroup(this.configGet);
+      this.form = this.formGeneratorService.generateFormGroup(this.configGet);
 
-      this._globalVariableService.rootForm = this.form;
-      this._globalVariableService.rootConfigs = this.configGet;
+      this.globalVariableService.rootForm = this.form;
+      this.globalVariableService.rootConfigs = this.configGet;
 
-      this._cd.detectChanges();
-      this._setupListeners();
+      this.cd.detectChanges();
+      this.setupListeners();
 
       if (typeof window !== 'undefined') {
         // The form controls' state will be toggle immediately after conditions listeners are setup.
@@ -366,39 +366,39 @@ export class NgDynamicJsonFormComponent
         window.setTimeout(() => {
           this.formGet.emit(this.form);
           this.updateStatusFunctions.emit({
-            setDirty: () => this._updateFormStatus('setDirty'),
-            setPristine: () => this._updateFormStatus('setPristine'),
-            setTouched: () => this._updateFormStatus('setTouched'),
-            setUntouched: () => this._updateFormStatus('setUntouched'),
+            setDirty: () => this.updateFormStatus('setDirty'),
+            setPristine: () => this.updateFormStatus('setPristine'),
+            setTouched: () => this.updateFormStatus('setTouched'),
+            setUntouched: () => this.updateFormStatus('setUntouched'),
           });
 
-          this._checkOptionsLoaded();
+          this.checkOptionsLoaded();
         });
       }
     }
 
-    if (!this._formReadyStateService.haveOptionsToWait(this.configGet)) {
-      this._formReadyStateService.optionsLoading(false);
+    if (!this.formReadyStateService.haveOptionsToWait(this.configGet)) {
+      this.formReadyStateService.optionsLoading(false);
     }
   }
 
-  private _getControlDirective(): void {
-    this._controlDirective = this._injector.get(NgControl, null, {
+  private getControlDirective(): void {
+    this.controlDirective = this.injector.get(NgControl, null, {
       optional: true,
       self: true,
     }) as FormControlDirective;
   }
 
-  private _setupListeners(): void {
+  private setupListeners(): void {
     if (!this.form || typeof window === 'undefined') {
       return;
     }
 
-    const host = this._el.nativeElement;
-    const conditions$ = this._formConditionsService.listenConditions$();
+    const host = this.el.nativeElement;
+    const conditions$ = this.formConditionsService.listenConditions$();
     const event$ = (name: string) => fromEvent(host, name, { passive: true });
 
-    const valueChanges$ = this._formValueChanges$();
+    const valueChanges$ = this.formValueChanges$();
 
     // Avoid using `debounceTime()` or `distinctUntilChanged()` here
     const statusChanges$ = this.form.statusChanges.pipe(
@@ -409,44 +409,44 @@ export class NgDynamicJsonFormComponent
         this.form?.setErrors(this._formErrors, {
           emitEvent: false, // prevent maximum call stack exceeded
         });
-      })
+      }),
     );
 
     const onTouched$ = event$('focusout').pipe(
       take(1),
-      tap(() => this._onTouched())
+      tap(() => this.onTouched()),
     );
 
     const allowDirtyState$ = merge(
       event$('pointerdown'),
-      event$('keydown')
+      event$('keydown'),
     ).pipe(
       take(1),
-      tap(() => (this._allowFormDirty = true))
+      tap(() => (this.allowFormDirty = true)),
     );
 
-    this._reset$.next();
+    this.reset$.next();
     merge(
       allowDirtyState$,
       conditions$,
       onTouched$,
       statusChanges$,
-      valueChanges$
+      valueChanges$,
     )
-      .pipe(takeUntil(this._reset$), takeUntilDestroyed(this._destroyRef))
+      .pipe(takeUntil(this.reset$), takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
 
-  private _reset(): void {
-    this._reset$.next();
-    this._optionsDataService.cancelAllRequest();
-    this._formReadyStateService.resetState();
-    this._controlDirective?.control.markAsUntouched();
-    this._controlDirective?.form.markAsUntouched();
+  private reset(): void {
+    this.reset$.next();
+    this.optionsDataService.cancelAllRequest();
+    this.formReadyStateService.resetState();
+    this.controlDirective?.control.markAsUntouched();
+    this.controlDirective?.form.markAsUntouched();
     this.configValidationErrors = [];
   }
 
-  private _updateFormStatus(status: keyof FormStatusFunctions): void {
+  private updateFormStatus(status: keyof FormStatusFunctions): void {
     switch (status) {
       case 'setDirty':
         this.formGroupRef?.updateStatus('dirty');
@@ -466,7 +466,7 @@ export class NgDynamicJsonFormComponent
     }
   }
 
-  private _formValueChanges$(): Observable<any> {
+  private formValueChanges$(): Observable<any> {
     const form = this.form;
     if (!form) {
       return EMPTY;
@@ -475,28 +475,28 @@ export class NgDynamicJsonFormComponent
     const updateValue = () => {
       const value = form.value;
 
-      if (this._controlDirective) {
-        this._onChange(value);
+      if (this.controlDirective) {
+        this.onChangeFn(value);
       }
 
-      if (this._allowFormDirty) {
+      if (this.allowFormDirty) {
         this.onChange.emit(value);
       }
     };
 
     const updateDisplayValue = () => {
-      const displayValue = this._formValueService.getFormDisplayValue(
+      const displayValue = this.formValueService.getFormDisplayValue(
         form.value,
-        this.configGet
+        this.configGet,
       );
 
       this.displayValue.emit(displayValue);
     };
 
     const keepFormPristine = () => {
-      if (this._allowFormDirty) return;
-      this._updateFormStatus('setPristine');
-      this._controlDirective?.control.markAsPristine();
+      if (this.allowFormDirty) return;
+      this.updateFormStatus('setPristine');
+      this.controlDirective?.control.markAsPristine();
     };
 
     // Avoid using `debounceTime()` or `distinctUntilChanged()` here
@@ -509,12 +509,12 @@ export class NgDynamicJsonFormComponent
         updateValue();
         updateDisplayValue();
         keepFormPristine();
-      })
+      }),
     );
   }
 
-  private _checkOptionsLoaded(): void {
-    const ready$ = this._formReadyStateService.optionsReady$;
+  private checkOptionsLoaded(): void {
+    const ready$ = this.formReadyStateService.optionsReady$;
 
     if (ready$.value) {
       this.optionsLoaded.emit();
@@ -526,7 +526,7 @@ export class NgDynamicJsonFormComponent
         filter(Boolean),
         take(1),
         tap(() => this.optionsLoaded.emit()),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }

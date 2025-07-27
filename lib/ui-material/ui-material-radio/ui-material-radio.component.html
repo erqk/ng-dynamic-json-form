@@ -6,24 +6,24 @@
       {
         key: 'mat-radio-group',
         props: data.props,
-        omit: ['labelPosition']
-      }
+        omit: ['labelPosition'],
+      },
     ]"
   >
-  <div
-    class="group-buttons"
-    [style]="data.options?.containerStyles"
-    [ngClass]="[data.options?.containerClass ?? '']"
+    <div
+      class="group-buttons"
+      [style]="data.options?.containerStyles"
+      [ngClass]="[data.options?.containerClass ?? '']"
       [ngStyle]="{
-        'flex-direction': data.options?.layout
+        'flex-direction': data.options?.layout,
       }"
     >
-    @for (item of data.options?.data; track item; let i = $index) {
-      <mat-radio-button
-        [value]="i"
-        [checked]="selectedIndex === i"
-        (change)="onChange(i)"
-        >{{ item.label }}</mat-radio-button
+      @for (item of data.options?.data; track item; let i = $index) {
+        <mat-radio-button
+          [value]="i"
+          [checked]="selectedIndex === i"
+          (change)="emitValue(i)"
+          >{{ item.label }}</mat-radio-button
         >
       }
     </div>

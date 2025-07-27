@@ -8,7 +8,7 @@ import { getStyleListFromString } from '../utilities/get-style-list-from-string'
   standalone: true,
 })
 export class ControlLayoutDirective implements OnChanges {
-  private _el = inject(ElementRef);
+  private el = inject(ElementRef);
 
   @Input() controlLayout?: {
     type?:
@@ -23,7 +23,7 @@ export class ControlLayoutDirective implements OnChanges {
   };
 
   ngOnChanges(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
+    const hostEl = this.el.nativeElement as HTMLElement;
     if (!hostEl || !this.controlLayout) return;
 
     const { type, layout } = this.controlLayout;

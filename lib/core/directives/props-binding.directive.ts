@@ -13,30 +13,30 @@ import { PROPS_BINDING_INJECTORS } from '../providers/props-binding.provider';
   standalone: true,
 })
 export class PropsBindingDirective {
-  private _injectionTokens = inject(PROPS_BINDING_INJECTORS, {
+  private injectionTokens = inject(PROPS_BINDING_INJECTORS, {
     optional: true,
   });
-  private _injector = inject(Injector);
-  private _cd = inject(ChangeDetectorRef);
-  private _el = inject(ElementRef);
+  private injector = inject(Injector);
+  private cd = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
   /**
    * Must ensure the view is initialized before applying any properties binding
    */
-  private _isViewInitialized = false;
+  private isViewInitialized = false;
 
   @Input() propsBinding?: { props: any; key?: string; omit?: string[] }[];
 
   ngOnChanges(): void {
-    if (!this._isViewInitialized) return;
-    this._bindProperties();
+    if (!this.isViewInitialized) return;
+    this.bindProperties();
   }
 
   ngAfterViewInit(): void {
-    this._isViewInitialized = true;
-    this._bindProperties();
+    this.isViewInitialized = true;
+    this.bindProperties();
   }
 
-  private _bindProperties(): void {
+  private bindProperties(): void {
     const propsBinding = (this.propsBinding ?? []).filter((x) => {
       return (
         Boolean(x) &&
@@ -49,15 +49,15 @@ export class PropsBindingDirective {
       return;
     }
 
-    const host = this._el.nativeElement as HTMLElement | undefined;
+    const host = this.el.nativeElement as HTMLElement | undefined;
 
     for (const item of propsBinding) {
       const { props, key, omit = [] } = item;
-      const providerToken = this._injectionTokens?.find(
+      const providerToken = this.injectionTokens?.find(
         (x) => x.key === key
       )?.token;
 
-      const target = !providerToken ? null : this._injector.get(providerToken);
+      const target = !providerToken ? null : this.injector.get(providerToken);
 
       for (const key in props) {
         const value = props[key];
@@ -80,7 +80,7 @@ export class PropsBindingDirective {
       }
     }
 
-    this._cd.markForCheck();
-    this._cd.detectChanges();
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 }

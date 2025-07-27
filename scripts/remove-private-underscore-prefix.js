@@ -4,7 +4,11 @@ const project = new Project({
   tsConfigFilePath: "tsconfig.json",
 });
 
-const files = project.getSourceFiles("src/app/**/*.ts");
+const files = [
+  ...project.getSourceFiles("src/app/**/*.ts"),
+  ...project.getSourceFiles("lib/**/*.ts"),
+];
+
 files.forEach((file) => {
   file.getClasses().forEach((cls) => {
     const getterSetterNames = new Set();

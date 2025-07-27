@@ -105,7 +105,7 @@ describe('Get all controls to listen', () => {
   });
 
   it('Should collect all the control paths listed in conditions', () => {
-    const result = formConditionsService['_getPathsOfControlsToListen']([
+    const result = formConditionsService['getPathsOfControlsToListen']([
       {
         formControlName: 'a',
         conditions: {
@@ -193,7 +193,7 @@ describe('Get configs that has conditions', () => {
   ];
 
   it('Should get 3 configs with conditions', () => {
-    const result = formConditionsService['_configsWithConditions'](configs);
+    const result = formConditionsService['configsWithConditions'](configs);
     expect(Object.keys(result)).toEqual(['a', 'a.a-1.a-1-1', 'b.b-1']);
   });
 });
@@ -242,7 +242,7 @@ describe('Validate condition result', () => {
     });
 
     const result =
-      formConditionsService['_evaluateConditionsStatement'](conditionsGroupA);
+      formConditionsService['evaluateConditionsStatement'](conditionsGroupA);
     expect(result).toBe(false);
   });
 
@@ -255,7 +255,7 @@ describe('Validate condition result', () => {
     });
 
     const result =
-      formConditionsService['_evaluateConditionsStatement'](conditionsGroupA);
+      formConditionsService['evaluateConditionsStatement'](conditionsGroupA);
     expect(result).toBe(true);
   });
 
@@ -268,7 +268,7 @@ describe('Validate condition result', () => {
     });
 
     const result =
-      formConditionsService['_evaluateConditionsStatement'](conditionsGroupA);
+      formConditionsService['evaluateConditionsStatement'](conditionsGroupA);
     expect(result).toBe(true);
   });
 
@@ -279,7 +279,7 @@ describe('Validate condition result', () => {
     });
 
     const result =
-      formConditionsService['_evaluateConditionsStatement'](conditionsGroupB);
+      formConditionsService['evaluateConditionsStatement'](conditionsGroupB);
     expect(result).toBe(true);
   });
 
@@ -290,7 +290,7 @@ describe('Validate condition result', () => {
     });
 
     const result =
-      formConditionsService['_evaluateConditionsStatement'](conditionsGroupB);
+      formConditionsService['evaluateConditionsStatement'](conditionsGroupB);
     expect(result).toBe(true);
   });
 });
@@ -342,16 +342,16 @@ describe('Execute custom functions', () => {
     };
 
     configsWithConditions =
-      formConditionsService['_configsWithConditions'](configs);
+      formConditionsService['configsWithConditions'](configs);
   });
 
   it('Should execute `customAction1` and set `result` to "CUSTOM_ACTION_1:SUCCESS"', () => {
-    formConditionsService['_onConditionsMet'](configsWithConditions);
+    formConditionsService['handleValueChanges'](configsWithConditions);
     expect(resultA).toBe('CUSTOM_ACTION_1:SUCCESS');
   });
 
   it('Should execute `customAction2` and set `result` to "CUSTOM_ACTION_2:SUCCESS_with_valueB"', () => {
-    formConditionsService['_onConditionsMet'](configsWithConditions);
+    formConditionsService['handleValueChanges'](configsWithConditions);
     expect(resultB).toBe('CUSTOM_ACTION_2:SUCCESS_with_valueB');
   });
 });

@@ -22,28 +22,28 @@ import { FormLabelComponent } from '../form-label/form-label.component';
     styles: []
 })
 export class ContentWrapperComponent {
-  private _globalVariableService = inject(GlobalVariableService);
+  private globalVariableService = inject(GlobalVariableService);
 
   @Input() config?: FormControlConfig;
   @Input() control?: AbstractControl;
   @Input() collapsibleState?: FormLayout['contentCollapsible'];
 
-  descriptionPosition = this._globalVariableService.descriptionPosition;
-  hideErrors$ = this._globalVariableService.hideErrorMessage$;
-  showErrorsOnTouched = this._globalVariableService.showErrorsOnTouched;
+  descriptionPosition = this.globalVariableService.descriptionPosition;
+  hideErrors$ = this.globalVariableService.hideErrorMessage$;
+  showErrorsOnTouched = this.globalVariableService.showErrorsOnTouched;
 
-  errorComponents = this._globalVariableService.errorComponents;
-  errorTemplates = this._globalVariableService.errorTemplates;
-  errorComponentDefault = this._globalVariableService.errorComponentDefault;
-  errorTemplateDefault = this._globalVariableService.errorTemplateDefault;
+  errorComponents = this.globalVariableService.errorComponents;
+  errorTemplates = this.globalVariableService.errorTemplates;
+  errorComponentDefault = this.globalVariableService.errorComponentDefault;
+  errorTemplateDefault = this.globalVariableService.errorTemplateDefault;
 
-  labelComponents = this._globalVariableService.labelComponents;
-  labelTemplates = this._globalVariableService.labelTemplates;
-  labelComponentDefault = this._globalVariableService.labelComponentDefault;
-  labelTemplateDefault = this._globalVariableService.labelTemplateDefault;
+  labelComponents = this.globalVariableService.labelComponents;
+  labelTemplates = this.globalVariableService.labelTemplates;
+  labelComponentDefault = this.globalVariableService.labelComponentDefault;
+  labelTemplateDefault = this.globalVariableService.labelTemplateDefault;
 
   renderErrorSection = (() => {
-    const typesToHide = this._globalVariableService.hideErrorsForTypes ?? [];
+    const typesToHide = this.globalVariableService.hideErrorsForTypes ?? [];
     const type = this.config?.type ?? 'text';
 
     return typesToHide.filter(Boolean).every((x) => x !== type);

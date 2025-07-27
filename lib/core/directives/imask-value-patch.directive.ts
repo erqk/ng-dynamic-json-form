@@ -6,16 +6,16 @@ import { IMaskDirective } from 'angular-imask';
   standalone: true,
 })
 export class ImaskValuePatchDirective {
-  private _imask = inject(IMaskDirective);
-  private _isNumber = false;
+  private imask = inject(IMaskDirective);
+  private isNumber = false;
 
   constructor() {
-    const iMask = this._imask;
+    const iMask = this.imask;
 
     iMask.writeValue = (value: string | number) => {
       // ----- Modified area -----
-      if (!this._isNumber) {
-        this._isNumber = typeof value === 'number';
+      if (!this.isNumber) {
+        this.isNumber = typeof value === 'number';
       }
 
       value = value == null && iMask.unmask !== 'typed' ? '' : `${value}`;
@@ -33,7 +33,7 @@ export class ImaskValuePatchDirective {
 
     iMask['_onAccept'] = () => {
       // ----- Modified area -----
-      const valueParsed = this._isNumber
+      const valueParsed = this.isNumber
         ? parseFloat(iMask.maskValue)
         : iMask.maskValue;
 

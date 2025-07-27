@@ -17,23 +17,23 @@ interface RequestParams {
 
 @Injectable()
 export class HttpRequestCacheService {
-  private _requests: RequestResponse[] = [];
-  private _http = inject(HttpClient);
+  private requests: RequestResponse[] = [];
+  private http = inject(HttpClient);
 
   request$(params: RequestParams): Observable<Object> {
     const { src, method, headers, body } = params;
     const source$ =
       method === 'GET'
-        ? this._http.get(src, { headers })
-        : this._http.post(src, body ?? {}, { headers });
+        ? this.http.get(src, { headers })
+        : this.http.post(src, body ?? {}, { headers });
 
-    const sameRequest = this._prevSameRequest(params);
+    const sameRequest = this.prevSameRequest(params);
 
     if (sameRequest) {
       if (!sameRequest.data$.closed) return sameRequest.data$;
       sameRequest.data$ = new Subject<Object>();
     } else {
-      this._requests.push({
+      this.requests.push({
         src,
         data$: new Subject<Object>(),
         body,
@@ -42,11 +42,11 @@ export class HttpRequestCacheService {
 
     return source$.pipe(
       tap((x) => {
-        const sameRequest = this._prevSameRequest(params);
+        const sameRequest = this.prevSameRequest(params);
         !sameRequest?.data$.closed && sameRequest?.data$.next(x);
       }),
       finalize(() => {
-        const sameRequest = this._prevSameRequest(params);
+        const sameRequest = this.prevSameRequest(params);
         sameRequest?.data$.complete();
         sameRequest?.data$.unsubscribe();
       })
@@ -54,7 +54,7 @@ export class HttpRequestCacheService {
   }
 
   reset(): void {
-    this._requests
+    this.requests
       .filter((x) => !x.data$.closed)
       .forEach(({ data$ }) => {
         data$.next([]);
@@ -62,15 +62,15 @@ export class HttpRequestCacheService {
         data$.unsubscribe();
       });
 
-    this._requests = [];
+    this.requests = [];
   }
 
-  private _prevSameRequest({
+  private prevSameRequest({
     src,
     method,
     body,
   }: RequestParams): RequestResponse | undefined {
-    const result = this._requests.find((x) => {
+    const result = this.requests.find((x) => {
       if (method === 'POST' && body) {
         const sameBody = JSON.stringify(body) === JSON.stringify(x.body);
         return x.src === src && sameBody;

@@ -28,10 +28,10 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
     }
 })
 export class FormLabelComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _viewInitialized = false;
-  private _collapsibleElCssText = '';
-  private _componentRef?: CustomFormLabel;
+  private destroyRef = inject(DestroyRef);
+  private viewInitialized = false;
+  private collapsibleElCssText = '';
+  private componentRef?: CustomFormLabel;
 
   @Input() label?: string;
   @Input() layout?: FormControlConfig['layout'];
@@ -69,15 +69,15 @@ export class FormLabelComponent {
     if (!this._collapsible) return;
 
     this.expand = value ?? !this.expand;
-    this._setElementHeight();
+    this.setElementHeight();
 
-    if (this._componentRef) {
-      this._componentRef.expand = this.expand;
+    if (this.componentRef) {
+      this.componentRef.expand = this.expand;
     }
   };
 
   ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (!this._viewInitialized) return;
+    if (!this.viewInitialized) return;
 
     const { state } = simpleChanges;
 
@@ -104,15 +104,15 @@ export class FormLabelComponent {
 
   ngAfterViewInit(): void {
     if (this.customComponent) {
-      this._injectComponent();
+      this.injectComponent();
       return;
     }
 
-    this._initCollapsibleEl();
-    this._viewInitialized = true;
+    this.initCollapsibleEl();
+    this.viewInitialized = true;
   }
 
-  private _injectComponent(): void {
+  private injectComponent(): void {
     if (!this.componentAnchor || !this.customComponent) {
       return;
     }
@@ -127,11 +127,11 @@ export class FormLabelComponent {
     componentRef.instance.collapsible = this._collapsible;
     componentRef.instance.expand = this.expand;
 
-    this._initCollapsibleEl();
-    this._componentRef = componentRef.instance;
+    this.initCollapsibleEl();
+    this.componentRef = componentRef.instance;
   }
 
-  private _listenTransition(): void {
+  private listenTransition(): void {
     if (!this.collapsibleEl) {
       return;
     }
@@ -145,36 +145,36 @@ export class FormLabelComponent {
       })
     );
 
-    transitionEnd$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe();
+    transitionEnd$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
-  private _setElementHeight(): void {
-    this._setExpandStyle();
+  private setElementHeight(): void {
+    this.setExpandStyle();
 
     if (!this.expand) {
-      requestAnimationFrame(() => this._setCollapseStyle());
+      requestAnimationFrame(() => this.setCollapseStyle());
     }
   }
 
-  private _initCollapsibleEl(): void {
+  private initCollapsibleEl(): void {
     if (!this.collapsibleEl || !this.collapsible) {
       return;
     }
 
-    this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
+    this.collapsibleElCssText = this.collapsibleEl.style.cssText || '';
     this.collapsibleEl.classList.add('collapsible-container');
-    this._listenTransition();
+    this.listenTransition();
 
     if (!this.expand) {
-      this._setCollapseStyle();
+      this.setCollapseStyle();
     }
   }
 
-  private _setCollapseStyle(): void {
+  private setCollapseStyle(): void {
     const stylesToRemove = ['border', 'padding', 'margin'];
 
     stylesToRemove.forEach((style) => {
-      if (!this._collapsibleElCssText.includes(style)) return;
+      if (!this.collapsibleElCssText.includes(style)) return;
       this.collapsibleEl?.style.removeProperty(style);
     });
 
@@ -182,14 +182,14 @@ export class FormLabelComponent {
     this.collapsibleEl?.style.setProperty('height', '0px');
   }
 
-  private _setExpandStyle(): void {
+  private setExpandStyle(): void {
     const height = !this.collapsibleEl
       ? 0
       : this.collapsibleEl.scrollHeight + 1;
 
     // Set existing styles from collapsible element first
-    if (this._collapsibleElCssText) {
-      this.collapsibleEl?.setAttribute('style', this._collapsibleElCssText);
+    if (this.collapsibleElCssText) {
+      this.collapsibleEl?.setAttribute('style', this.collapsibleElCssText);
     }
 
     // Then set height later to overwrite height style

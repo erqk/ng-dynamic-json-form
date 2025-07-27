@@ -5,7 +5,7 @@ import { FormValidationService } from './form-validation.service';
 
 @Injectable()
 export class FormGeneratorService {
-  private _formValidationService = inject(FormValidationService);
+  private formValidationService = inject(FormValidationService);
 
   generateFormGroup(data: FormControlConfig[]): UntypedFormGroup {
     const formGroup = new UntypedFormGroup({});
@@ -15,11 +15,11 @@ export class FormGeneratorService {
         ? new FormControl(item.value)
         : this.generateFormGroup(item.children);
 
-      const validators = this._formValidationService.getValidators(
+      const validators = this.formValidationService.getValidators(
         item.validators
       );
 
-      const asyncValidators = this._formValidationService.getAsyncValidators(
+      const asyncValidators = this.formValidationService.getAsyncValidators(
         item.asyncValidators
       );
 

@@ -27,15 +27,15 @@ import { DatePicker, DatePickerModule } from 'primeng/datepicker';
   styles: [],
 })
 export class UiPrimengDateComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormControl(new Date());
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   updateControl(): void {
-    this._onChange(this.control.value);
+    this.onChange(this.control.value);
   }
 }
