@@ -1,6 +1,7 @@
 import { Injectable, TemplateRef, Type } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { CustomErrorMessage, CustomFormLabel } from 'lib/public-api';
+import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
+import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   ConditionsActionFunctions,
