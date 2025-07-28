@@ -6,7 +6,6 @@ import {
   effect,
   inject,
   input,
-  Input,
   signal,
 } from '@angular/core';
 import {
@@ -37,7 +36,6 @@ export class PlaygroundFormDebuggerComponent {
   control = input<AbstractControl>();
   form = input<UntypedFormGroup>();
   formInstance = input<NgDynamicJsonFormComponent>();
-  @Input() triggerReset = false;
 
   readonly controlTypes = ['FormGroup', 'CVA'];
 
@@ -118,8 +116,8 @@ export class PlaygroundFormDebuggerComponent {
   });
 
   activeSections: string[] = ['value'];
-  editingForm = false;
   editingFormValue: any = '';
+  isFormEditing = false;
 
   eventsLog: string[] = [];
   statusFunctions?: FormStatusFunctions;
@@ -177,13 +175,28 @@ export class PlaygroundFormDebuggerComponent {
     }
   }
 
-  toggleFormEdit(patchForm?: boolean): void {
-    const control = this.activeControl();
-    this.editingForm = !this.editingForm;
+  editValue(): void {
+    this.isFormEditing = true;
+  }
 
-    if (!this.editingForm) {
-      control?.patchValue(patchForm ? this.editingFormValue : control.value);
-    }
+  confirmFormValueEdit(): void {
+    const control = this.activeControl();
+
+    control?.patchValue(this.editingFormValue);
+    this.isFormEditing = false;
+  }
+
+  cancelFormValueEdit(): void {
+    const control = this.activeControl();
+
+    this.isFormEditing = false;
+
+    // Restore the editor value to current form's value
+    control?.patchValue(control.value);
+  }
+
+  handleEditorChange(value: any): void {
+    this.editingFormValue = value;
   }
 
   private setHideErrorMessageValue(bool?: boolean): void {

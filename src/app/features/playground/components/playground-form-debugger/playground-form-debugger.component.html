@@ -24,27 +24,26 @@
     <div class="section-title">
       <span (click)="setActiveSection('value')">Value</span>
 
-      @if (editingForm) {
-        <button (click)="toggleFormEdit()">
+      @if (isFormEditing) {
+        <button (click)="cancelFormValueEdit()">
           <i class="bi bi-x-lg"></i>
         </button>
-      }
 
-      <button (click)="toggleFormEdit(true)">
-        <i
-          [ngClass]="{
-            'bi bi-pencil': !editingForm,
-            'bi bi-check2': editingForm,
-          }"
-        ></i>
-      </button>
+        <button (click)="confirmFormValueEdit()">
+          <i class="bi bi-check2"></i>
+        </button>
+      } @else {
+        <button (click)="editValue()">
+          <i class="bi bi-pencil"></i>
+        </button>
+      }
     </div>
 
     <div class="section-body">
       <div class="overflow-hidden">
         <div
           [ngClass]="{
-            hidden: editingForm,
+            hidden: isFormEditing,
           }"
         >
           <div class="code">
@@ -54,13 +53,13 @@
 
         <app-playground-editor
           [ngClass]="{
-            hidden: !editingForm,
+            hidden: !isFormEditing,
           }"
           [data]="{ json: activeControl()?.value }"
           [mainMenuBar]="false"
           [navigationBar]="false"
           [statusBar]="false"
-          (onEditing)="editingFormValue = $event"
+          (onEditing)="handleEditorChange($event)"
         ></app-playground-editor>
       </div>
     </div>
@@ -85,7 +84,7 @@
           <div
             class="code overflow-auto"
             [ngClass]="{
-              hidden: editingForm,
+              hidden: isFormEditing,
             }"
           >
             {{ activeControl()?.errors | json }}
