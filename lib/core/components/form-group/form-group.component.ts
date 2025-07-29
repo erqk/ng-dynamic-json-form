@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  computed,
   effect,
   inject,
   input,
@@ -50,6 +51,16 @@ export class FormGroupComponent {
 
   formGroupRefs = viewChildren(FormGroupComponent);
   formControlRefs = viewChildren(FormControlComponent);
+
+  configsWithTrackId = computed(() => {
+    const configs = this.configs() ?? [];
+    const result = configs.map((x) => ({
+      ...x,
+      trackId: `${x.formControlName}_${Date.now()}`,
+    }));
+
+    return result;
+  });
 
   updateClassList = effect(() => {
     const host = this.el.nativeElement as HTMLElement;

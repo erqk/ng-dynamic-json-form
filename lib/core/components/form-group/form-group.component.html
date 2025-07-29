@@ -1,6 +1,6 @@
 @if (parentForm(); as pForm) {
   <ng-container [formGroup]="pForm">
-    @for (item of configs(); track item.formControlName) {
+    @for (item of configsWithTrackId(); track item.trackId) {
       @if (!item.hidden) {
         @if (pForm.controls[item.formControlName]; as targetControl) {
           <content-wrapper
