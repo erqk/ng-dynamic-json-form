@@ -13,7 +13,7 @@ import { Select, SelectModule } from 'primeng/select';
   providers: [
     providePropsBinding([
       {
-        key: 'p-selects',
+        key: 'p-select',
         token: Select,
       },
     ]),
