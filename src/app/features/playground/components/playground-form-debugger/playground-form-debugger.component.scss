@@ -29,10 +29,20 @@
     gap: 0.5rem;
     padding: 0.25rem 0.75rem;
     border-top: solid 1px var(--border-color-50);
+    background-color: var(--body-bg-color);
+    width: 100%;
+    text-align: left;
     cursor: pointer;
     z-index: 10;
 
-    background-color: var(--body-bg-color);
+    &.readonly {
+      cursor: auto;
+      background-color: color-mix(
+        in oklch,
+        var(--color-gray-400),
+        transparent 80%
+      );
+    }
 
     span {
       flex: 1;

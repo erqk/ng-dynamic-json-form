@@ -21,23 +21,23 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('value') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('value')">Value</span>
+    <button class="section-title" (click)="setActiveSection('value')">
+      <span>Value</span>
 
       @if (isFormEditing) {
-        <button (click)="cancelFormValueEdit()">
+        <button (click)="$event.stopPropagation(); cancelFormValueEdit()">
           <i class="bi bi-x-lg"></i>
         </button>
 
-        <button (click)="confirmFormValueEdit()">
+        <button (click)="$event.stopPropagation(); confirmFormValueEdit()">
           <i class="bi bi-check2"></i>
         </button>
       } @else {
-        <button (click)="editValue()">
+        <button (click)="$event.stopPropagation(); editValue()">
           <i class="bi bi-pencil"></i>
         </button>
       }
-    </div>
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
@@ -70,13 +70,13 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('errors') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('errors')">Errors</span>
+    <button class="section-title" (click)="setActiveSection('errors')">
+      <span>Errors</span>
 
       @if (activeControl()?.errors) {
         <i class="bi bi-exclamation-triangle text-red-600"></i>
       }
-    </div>
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
@@ -113,8 +113,8 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('state') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('state')">State</span>
+    <button class="section-title" (click)="setActiveSection('state')">
+      <span>State</span>
 
       <div class="flex gap-3 break-keep">
         @for (item of controlStates; track item.label) {
@@ -123,7 +123,7 @@
           }}</span>
         }
       </div>
-    </div>
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
@@ -146,7 +146,7 @@
 
   <!-- Status -->
   <div class="section-container">
-    <div class="section-title">
+    <div class="section-title readonly">
       <span (click)="setActiveSection('status')">Status</span>
       <span class="text-right">{{ activeControl()?.status }}</span>
     </div>
@@ -157,12 +157,12 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('events') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('events')">Events</span>
-      <button type="button" (click)="eventsLog = []">
+    <button class="section-title" (click)="setActiveSection('events')">
+      <span>Events</span>
+      <button type="button" (click)="$event.stopPropagation(); eventsLog = []">
         <i class="bi bi-trash"></i>
       </button>
-    </div>
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
