@@ -1,31 +1,28 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 import { FormControlConfig } from '../models';
 
 @Injectable()
 export class FormReadyStateService {
-  optionsReady$ = new BehaviorSubject<boolean>(false);
+  private optionsLoadingCount = signal<number>(0);
 
-  private optionsLoadingCount = 0;
+  optionsReady = signal<boolean>(false);
 
   optionsLoading(add: boolean): void {
-    if (add) {
-      this.optionsLoadingCount++;
-    } else {
-      this.optionsLoadingCount--;
+    const ready = this.optionsReady();
 
-      if (this.optionsLoadingCount <= 0) {
-        this.optionsLoadingCount = 0;
+    if (ready) {
+      return;
+    }
 
-        if (this.optionsReady$.value !== true) {
-          this.optionsReady$.next(true);
-        }
-      }
+    this.optionsLoadingCount.update((x) => (x += add ? 1 : -1));
+
+    if (this.optionsLoadingCount() === 0) {
+      this.optionsReady.set(true);
     }
   }
 
   resetState(): void {
-    this.optionsReady$.next(false);
+    this.optionsReady.set(false);
   }
 
   haveOptionsToWait(configs: FormControlConfig[]): boolean {
@@ -34,7 +31,7 @@ export class FormReadyStateService {
     const result = configs.some((x) =>
       !x.children?.length
         ? Boolean(x.options) && Boolean(x.options!.src)
-        : this.haveOptionsToWait(x.children)
+        : this.haveOptionsToWait(x.children),
     );
 
     return result;

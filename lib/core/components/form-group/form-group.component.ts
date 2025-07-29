@@ -91,7 +91,7 @@ export class FormGroupComponent {
   });
 
   updateStatus(status: 'dirty' | 'pristine' | 'touched' | 'untouched'): void {
-    this.formControlRefs()?.forEach((x) => x.updateControlStatus(status, true));
+    this.formControlRefs()?.forEach((x) => x.updateControlStatus(status));
     this.formGroupRefs()?.forEach((x) => x.updateStatus(status));
   }
 }

@@ -6,14 +6,14 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { EMPTY, Observable, map, startWith } from 'rxjs';
+import { Observable, map, of, startWith } from 'rxjs';
 import { CustomValidators, ValidatorConfig, ValidatorsEnum } from '../models';
 import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { GlobalVariableService } from './global-variable.service';
 
 function emailValidator(control: AbstractControl): ValidationErrors | null {
   const emailValid = RegExp(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/).test(
-    control.value
+    control.value,
   );
 
   if (!control.value) {
@@ -24,7 +24,7 @@ function emailValidator(control: AbstractControl): ValidationErrors | null {
 }
 
 const builtInValidators = (
-  value?: any
+  value?: any,
 ): {
   [key in ValidatorsEnum]?: ValidatorFn;
 } =>
@@ -37,7 +37,7 @@ const builtInValidators = (
     [ValidatorsEnum.max]: Validators.max(value),
     [ValidatorsEnum.minLength]: Validators.minLength(value),
     [ValidatorsEnum.maxLength]: Validators.maxLength(value),
-  } as const);
+  }) as const;
 
 @Injectable()
 export class FormValidationService {
@@ -45,17 +45,17 @@ export class FormValidationService {
 
   getErrorMessages$(
     control: AbstractControl | null | undefined,
-    validators?: ValidatorConfig[]
+    validators?: ValidatorConfig[],
   ): Observable<string[]> {
     if (!control || !validators?.length) {
-      return EMPTY;
+      return of([]);
     }
 
     return control.statusChanges.pipe(
       startWith(control.status),
       map(() =>
-        this.getErrorMessages(control.errors, control.value, validators)
-      )
+        this.getErrorMessages(control.errors, control.value, validators),
+      ),
     );
   }
 
@@ -76,7 +76,7 @@ export class FormValidationService {
       const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
       const customValidator = this.getValidatorFn(
         item,
-        customValidators?.[name]
+        customValidators?.[name],
       ) as ValidatorFn | null;
 
       const result = customValidator ?? builtInValidator;
@@ -122,7 +122,7 @@ export class FormValidationService {
   private getErrorMessages(
     controlErrors: ValidationErrors | null,
     controlValue: any,
-    validatorConfigs: ValidatorConfig[]
+    validatorConfigs: ValidatorConfig[],
   ): string[] {
     if (!controlErrors) {
       return [];
@@ -136,7 +136,7 @@ export class FormValidationService {
       const error = controlErrors[key];
       const config = this.getConfigFromErrorKey(
         { [key]: error },
-        validatorConfigs
+        validatorConfigs,
       );
 
       const configMessage = config?.message;
@@ -155,7 +155,7 @@ export class FormValidationService {
 
   private getConfigFromErrorKey(
     error: { [key: string]: any },
-    configs: ValidatorConfig[]
+    configs: ValidatorConfig[],
   ): ValidatorConfig | undefined {
     // The key mapping of the `ValidationErrors` with the `ValidatorConfig`,
     // to let us get the correct message by using `name` of `ValidatorConfig`.
@@ -230,7 +230,7 @@ export class FormValidationService {
     validatorFn:
       | CustomValidators[string]
       | CustomAsyncValidators[string]
-      | undefined
+      | undefined,
   ): ValidatorFn | AsyncValidatorFn | null {
     const { value } = validatorConfig;
 

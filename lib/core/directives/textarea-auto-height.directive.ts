@@ -2,48 +2,50 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input,
   inject,
+  input,
+  OnInit,
 } from '@angular/core';
 
 @Directive({
   selector: '[textareaAutoHeight]',
   standalone: true,
 })
-export class TextareaAutHeightDirective {
+export class TextareaAutHeightDirective implements OnInit {
   private el = inject(ElementRef);
-  private hostEl?: HTMLElement;
 
-  @Input() autoResize = true;
-
-  // Call in this lifecycle hook to wait for PropsBindingDirective to bind the attributes,
-  // then we can get the correct scrollHeight
-  ngAfterViewInit(): void {
-    if (typeof window === 'undefined') return;
-
-    this.hostEl = this.el.nativeElement as HTMLElement;
-    if (!this.hostEl) return;
-
-    this.hostEl.style.setProperty('resize', 'none');
-    this.setHeight();
-  }
+  autoResize = input<boolean>(true);
 
   @HostListener('input', ['$event'])
   onInput(): void {
     this.setHeight();
   }
 
+  ngOnInit(): void {
+    this.removeResizeProperty();
+  }
+
+  private removeResizeProperty(): void {
+    const hostEl = this.el.nativeElement as HTMLElement;
+    hostEl.style.setProperty('resize', 'none');
+  }
+
   private setHeight(): void {
-    if (!this.hostEl || !this.autoResize) return;
+    const autoResize = this.autoResize();
+    const hostEl = this.el.nativeElement as HTMLElement;
+
+    if (!hostEl || !autoResize) {
+      return;
+    }
 
     const borderWidth = Math.ceil(
-      parseFloat(window.getComputedStyle(this.hostEl).borderWidth)
+      parseFloat(window.getComputedStyle(hostEl).borderWidth),
     );
 
-    this.hostEl.style.removeProperty('height');
-    this.hostEl.style.setProperty(
+    hostEl.style.removeProperty('height');
+    hostEl.style.setProperty(
       'height',
-      `${this.hostEl.scrollHeight + borderWidth * 2}px`
+      `${hostEl.scrollHeight + borderWidth * 2}px`,
     );
   }
 }

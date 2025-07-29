@@ -6,7 +6,11 @@ import { AbstractControl, Validators } from '@angular/forms';
   standalone: true,
 })
 export class IsControlRequiredPipe implements PipeTransform {
-  transform(value: AbstractControl): boolean {
+  transform(value: AbstractControl | undefined): boolean {
+    if (!value) {
+      return false;
+    }
+
     return value.hasValidator(Validators.required);
   }
 }

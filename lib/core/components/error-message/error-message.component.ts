@@ -1,18 +1,19 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
-  DestroyRef,
-  Input,
   TemplateRef,
   Type,
-  ViewChild,
   ViewContainerRef,
+  computed,
+  effect,
   inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { tap } from 'rxjs';
 import { ValidatorConfig } from '../../models';
 import { FormValidationService } from '../../services/form-validation.service';
 import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
@@ -25,58 +26,68 @@ import { CustomErrorMessage } from '../custom-error-message/custom-error-message
     class: 'error-message',
   },
 })
-export class ErrorMessageComponent implements AfterViewInit {
-  private internal_destroyRef = inject(DestroyRef);
+export class ErrorMessageComponent {
   private internal_formValidationService = inject(FormValidationService);
-  private customComponentInstance: CustomErrorMessage | null = null;
+  private customComponentInstance = signal<CustomErrorMessage | null>(null);
 
-  @Input() control?: AbstractControl;
-  @Input() validators?: ValidatorConfig[];
-  @Input() customComponent?: Type<CustomErrorMessage>;
-  @Input() customTemplate?: TemplateRef<any>;
+  control = input<AbstractControl>();
+  validators = input<ValidatorConfig[]>();
+  customComponent = input<Type<CustomErrorMessage>>();
+  customTemplate = input<TemplateRef<any> | null>(null);
 
-  @ViewChild('componentAnchor', { read: ViewContainerRef })
-  componentAnchor!: ViewContainerRef;
+  useDefaultTemplate = computed(
+    () => !this.customComponent() && !this.customTemplate(),
+  );
 
-  errorMessages: string[] = [];
+  componentAnchor = viewChild.required('componentAnchor', {
+    read: ViewContainerRef,
+  });
 
-  ngAfterViewInit(): void {
-    this.injectComponent();
-    this.getErrorMessages();
-  }
+  errorMessages = rxResource({
+    params: () => {
+      const control = this.control();
+      const validators = this.validators();
 
-  private injectComponent(): void {
-    if (!this.customComponent || !this.componentAnchor) {
+      return { control, validators };
+    },
+    stream: ({ params }) => {
+      return this.internal_formValidationService.getErrorMessages$(
+        params.control,
+        params.validators,
+      );
+    },
+    defaultValue: [],
+  });
+
+  updateControlErrors = effect(() => {
+    const messages = this.errorMessages.value();
+    const customComponent = this.customComponentInstance();
+
+    if (!customComponent) {
       return;
     }
 
-    this.componentAnchor.clear();
-    const componentRef = this.componentAnchor.createComponent(
-      this.customComponent,
-    );
+    customComponent.errorMessages = [...messages];
+  });
 
-    this.customComponentInstance = componentRef.instance;
+  injectComponent = effect(() => {
+    const control = this.control();
+    const customComponent = this.customComponent();
+    const anchor = this.componentAnchor();
 
-    if (this.control) {
-      componentRef.instance.control = this.control;
+    if (!customComponent || !anchor || !control) {
+      return;
     }
-  }
 
-  private getErrorMessages(): void {
-    this.internal_formValidationService
-      .getErrorMessages$(this.control, this.validators)
-      .pipe(
-        tap((x) => {
-          this.errorMessages = x;
+    untracked(() => {
+      anchor.clear();
 
-          if (this.customComponentInstance) {
-            this.customComponentInstance.errorMessages = [
-              ...this.errorMessages,
-            ];
-          }
-        }),
-        takeUntilDestroyed(this.internal_destroyRef),
-      )
-      .subscribe();
-  }
+      const componentRef = anchor.createComponent(customComponent);
+
+      componentRef.instance.control = control;
+      this.customComponentInstance.set(componentRef.instance);
+
+      this.injectComponent.destroy();
+    });
+  });
 }

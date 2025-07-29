@@ -7,6 +7,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  finalize,
   map,
   of,
   startWith,
@@ -32,47 +33,6 @@ export class OptionsDataService {
   private httpRequestCacheService = inject(HttpRequestCacheService);
   private cancelAll$ = new Subject<void>();
 
-  /**
-   * @param srcConfig @see OptionSourceConfig
-   * @param valueChangesCallback The callback after `valueChanges` is called
-   */
-  getOptions$(
-    srcConfig: OptionSourceConfig,
-    valueChangesCallback: () => void,
-  ): Observable<OptionItem[]> {
-    if (!srcConfig) {
-      return EMPTY;
-    }
-
-    const event$ = () => {
-      const valueChanges$ = this.onTriggerControlChanges$(
-        srcConfig.filter || srcConfig.trigger,
-        valueChangesCallback,
-      );
-
-      if (srcConfig.filter) {
-        return this.getOptionsByFilter$(srcConfig, valueChanges$);
-      }
-
-      if (srcConfig.trigger) {
-        return this.getOptionsOnTrigger$(srcConfig, valueChanges$);
-      }
-
-      return this.fetchData$(srcConfig);
-    };
-
-    return event$().pipe(
-      tap((x) => {
-        if (isDevMode() && x.length > 100) {
-          console.warn(
-            `NgDynamicJsonForm:\nThe data length from the response ${srcConfig.url} is > 100.\n` +
-              `Please make sure there is optimization made. e.g. virtual scroll, lazy loading`,
-          );
-        }
-      }),
-    );
-  }
-
   cancelAllRequest(): void {
     this.cancelAll$.next();
     this.httpRequestCacheService.reset();
@@ -83,7 +43,7 @@ export class OptionsDataService {
     this.cancelAll$.complete();
   }
 
-  private fetchData$(srcConfig: OptionSourceConfig): Observable<OptionItem[]> {
+  getOptions$(srcConfig: OptionSourceConfig): Observable<OptionItem[]> {
     if (!srcConfig) {
       return EMPTY;
     }
@@ -101,16 +61,34 @@ export class OptionsDataService {
       })
       .pipe(
         map((x) => this.mapData(x, mapData)),
+        tap((x) => {
+          if (isDevMode() && x.length > 100) {
+            console.warn(
+              `NgDynamicJsonForm:\nThe data length from the response ${srcConfig.url} is > 100.\n` +
+                `Please make sure there is optimization made. e.g. virtual scroll, lazy loading`,
+            );
+          }
+        }),
         catchError(() => of([])),
         takeUntil(this.cancelAll$),
       );
   }
 
-  private getOptionsByFilter$(
-    srcConfig: OptionSourceConfig,
-    valueChanges$: Observable<any>,
-  ): Observable<OptionItem[]> {
-    if (!srcConfig.filter) return of([]);
+  getOptionsByFilter$(props: {
+    srcConfig: OptionSourceConfig;
+    valueChangeCallback: () => void;
+    finalizeCallback: () => void;
+  }): Observable<OptionItem[]> {
+    const { srcConfig, finalizeCallback, valueChangeCallback } = props;
+
+    const sourceValueChanges$ = this.onTriggerControlChanges$(
+      srcConfig.filter || srcConfig.trigger,
+      valueChangeCallback,
+    );
+
+    if (!srcConfig.filter) {
+      return of([]);
+    }
 
     const mapTupleFn = (
       tuple: ConditionsStatementTuple,
@@ -125,8 +103,11 @@ export class OptionsDataService {
       ];
     };
 
-    const filterOptions$ = this.fetchData$(srcConfig).pipe(
-      switchMap((x) => combineLatest([of(x), valueChanges$])),
+    const data$ = this.getOptions$(srcConfig).pipe(
+      finalize(() => finalizeCallback()),
+    );
+
+    const result$ = combineLatest([data$, sourceValueChanges$]).pipe(
       map(([options, value]) =>
         options.filter((optionItem) => {
           const result = evaluateConditionsStatements(
@@ -137,22 +118,32 @@ export class OptionsDataService {
           return result;
         }),
       ),
+      tap(() => finalizeCallback()),
     );
 
-    return filterOptions$.pipe(takeUntil(this.cancelAll$));
+    return result$.pipe(takeUntil(this.cancelAll$));
   }
 
-  private getOptionsOnTrigger$(
-    srcConfig: OptionSourceConfig,
-    valueChanges$: Observable<any>,
-  ): Observable<OptionItem[]> {
-    if (!srcConfig.trigger) return of([]);
+  getOptionsOnTrigger$(props: {
+    srcConfig: OptionSourceConfig;
+    valueChangeCallback: () => void;
+    finalizeCallback: () => void;
+  }): Observable<OptionItem[]> {
+    const { srcConfig, finalizeCallback, valueChangeCallback } = props;
 
-    return valueChanges$.pipe(
-      switchMap((x) => {
-        const emptyValue = x === undefined || x === null || x === '';
-        return emptyValue ? of([]) : this.fetchData$(srcConfig);
-      }),
+    const sourceValueChanges$ = this.onTriggerControlChanges$(
+      srcConfig.filter || srcConfig.trigger,
+      valueChangeCallback,
+    );
+
+    if (!srcConfig.trigger) {
+      return of([]);
+    }
+
+    return sourceValueChanges$.pipe(
+      switchMap(() =>
+        this.getOptions$(srcConfig).pipe(finalize(() => finalizeCallback())),
+      ),
       takeUntil(this.cancelAll$),
     );
   }
@@ -162,10 +153,14 @@ export class OptionsDataService {
     triggerConfig: OptionSourceConfig['trigger'] | OptionSourceConfig['filter'],
     valueChangesCallback?: () => void,
   ): Observable<any> {
-    if (!triggerConfig) return EMPTY;
+    if (!triggerConfig) {
+      return EMPTY;
+    }
 
     const { by, debounceTime: _debounceTime = 0 } = triggerConfig;
-    if (!by.trim()) return EMPTY;
+    if (!by.trim()) {
+      return EMPTY;
+    }
 
     const form = this.globalVariableService.rootForm;
     const paths = getControlAndValuePath(by);
@@ -181,7 +176,8 @@ export class OptionsDataService {
     return control.valueChanges.pipe(
       startWith(control.value),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-      tap(() => valueChangesCallback && valueChangesCallback()),
+      // The callback when valueChanges emit, should place before debounceTime
+      tap(() => valueChangesCallback?.()),
       debounceTime(_debounceTime),
       map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath))),
     );

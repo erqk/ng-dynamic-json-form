@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DestroyRef,
@@ -66,12 +67,14 @@ import {
   OptionsDataService,
 } from './services';
 import { FormReadyStateService } from './services/form-ready-state.service';
+import { WindowEventService } from './services/window-event.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
 
 @Component({
   selector: 'ng-dynamic-json-form',
   templateUrl: './ng-dynamic-json-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormGroupComponent],
   host: {
     class: 'ng-dynamic-json-form',
@@ -115,6 +118,7 @@ export class NgDynamicJsonFormComponent
   private formValueService = inject(FormValueService);
   private formReadyStateService = inject(FormReadyStateService);
   private globalVariableService = inject(GlobalVariableService);
+  private windowEventService = inject(WindowEventService);
   private optionsDataService = inject(OptionsDataService);
 
   private controlDirective: FormControlDirective | null = null;
@@ -124,7 +128,7 @@ export class NgDynamicJsonFormComponent
    * If false, then it will automatically set to pristine
    * after each value changes.
    */
-  private allowFormDirty = false;
+  private allowFormDirty = signal<boolean>(false);
   private globalVariablesInitialized = signal<boolean>(false);
   private reset$ = new Subject<void>();
 
@@ -223,34 +227,27 @@ export class NgDynamicJsonFormComponent
   formGroupRef = viewChild(FormGroupComponent);
 
   form = signal<UntypedFormGroup | undefined>(undefined);
-  formErrors = computed(() => {
-    const form = this.form();
-
-    if (!form) return null;
-
-    const errors = getControlErrors(form);
-    return errors;
-  });
 
   configValidationResult = computed(() => {
     const configs = this.configs();
 
-    if (!configs) {
+    if (!configs?.length) {
       return undefined;
     }
 
     return this.configValidationService.validateAndGetConfig(configs);
   });
 
-  handleHideErrorMessageValueChange = effect(() => {
-    this.globalVariableService.hideErrorMessage$.next(this.hideErrorMessage());
-  });
-
-  afterConfigValidation = effect(() => {
+  buildForm = effect(() => {
     const globalVariablesInitialized = this.globalVariablesInitialized();
     const { configs, errors } = this.configValidationResult() ?? {};
 
-    if (!globalVariablesInitialized || !configs?.length || !!errors?.length) {
+    if (
+      typeof window === 'undefined' ||
+      !globalVariablesInitialized ||
+      !configs?.length ||
+      !!errors?.length
+    ) {
       return;
     }
 
@@ -263,33 +260,48 @@ export class NgDynamicJsonFormComponent
       this.globalVariableService.rootForm = form;
       this.globalVariableService.rootConfigs = configs;
 
-      this.cd.detectChanges();
       this.setupListeners();
 
-      if (typeof window !== 'undefined') {
-        // The form controls' state will be toggle immediately after conditions listeners are setup.
-        // It will be a problem when user calling the `disable()` or `enable()` in the `formGet` callback (race condition).
-        // Hence, we emit the event in the next tick to prevent this.
-        window.setTimeout(() => {
-          this.formGet.emit(form);
-          this.updateStatusFunctions.emit({
-            setDirty: () => this.updateFormStatus('setDirty'),
-            setPristine: () => this.updateFormStatus('setPristine'),
-            setTouched: () => this.updateFormStatus('setTouched'),
-            setUntouched: () => this.updateFormStatus('setUntouched'),
-          });
+      this.formGet.emit(form);
+      this.updateStatusFunctions.emit({
+        setDirty: () => this.updateFormStatus('setDirty'),
+        setPristine: () => this.updateFormStatus('setPristine'),
+        setTouched: () => this.updateFormStatus('setTouched'),
+        setUntouched: () => this.updateFormStatus('setUntouched'),
+      });
 
-          this.checkOptionsLoaded();
-        });
-      }
-
-      if (!this.formReadyStateService.haveOptionsToWait(configs)) {
-        this.formReadyStateService.optionsLoading(false);
-      }
+      this.cd.markForCheck();
     });
   });
 
+  handleOptionsReady = effect(() => {
+    const { configs } = this.configValidationResult() ?? {};
+    const form = this.form();
+    const needWaiting = this.formReadyStateService.haveOptionsToWait(
+      configs ?? [],
+    );
+
+    const ready = this.formReadyStateService.optionsReady();
+
+    if (!form || !needWaiting) {
+      return;
+    }
+
+    if (ready) {
+      this.optionsLoaded.emit();
+    }
+  });
+
+  handleHideErrorMessageValueChange = effect(() => {
+    this.globalVariableService.hideErrorMessage$.next(this.hideErrorMessage());
+  });
+
   ngOnInit(): void {
+    this.windowEventService
+      .start$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+
     this.setupVariables();
     this.getControlDirective();
   }
@@ -311,7 +323,7 @@ export class NgDynamicJsonFormComponent
       startWith(form.status),
       filter((x) => x !== 'PENDING'),
       take(1),
-      map(() => this.formErrors()),
+      map(() => this.formErrors),
     );
   }
 
@@ -346,31 +358,31 @@ export class NgDynamicJsonFormComponent
     } = this.providerConfig ?? {};
 
     this.globalVariableService.setup({
-      errorComponents: this.errorComponents(),
-      errorTemplates: this.errorTemplates(),
-      errorComponentDefault: this.errorComponentDefault() ?? errorComponent,
-      errorTemplateDefault: this.errorTemplateDefault(),
-      labelComponents: this.labelComponents(),
-      labelTemplates: this.labelTemplates(),
-      labelComponentDefault: this.labelComponentDefault() ?? labelComponent,
-      labelTemplateDefault: this.labelTemplateDefault(),
-      loadingComponent: this.loadingComponent() ?? loadingComponent,
-      loadingTemplate: this.loadingTemplate(),
+      customValidators: providerProps.customValidators,
+      customAsyncValidators: providerProps.customAsyncValidators,
       customComponents: this.customComponents(),
       customTemplates: this.customTemplates(),
       conditionsActionFunctions: this.conditionsActionFunctions(),
       descriptionPosition: this.descriptionPosition(),
+      errorComponentDefault: this.errorComponentDefault() ?? errorComponent,
+      errorComponents: this.errorComponents(),
+      errorTemplates: this.errorTemplates(),
+      errorTemplateDefault: this.errorTemplateDefault(),
       hostElement: this.el.nativeElement,
-      optionsSources: this.optionsSources(),
-      customAsyncValidators: providerProps.customAsyncValidators,
-      customValidators: providerProps.customValidators,
       hideErrorsForTypes: providerProps.hideErrorsForTypes,
+      labelComponentDefault: this.labelComponentDefault() ?? labelComponent,
+      labelComponents: this.labelComponents(),
+      labelTemplates: this.labelTemplates(),
+      labelTemplateDefault: this.labelTemplateDefault(),
+      loadingComponent: this.loadingComponent() ?? loadingComponent,
+      loadingTemplate: this.loadingTemplate(),
+      optionsSources: this.optionsSources(),
       showErrorsOnTouched: providerProps.showErrorsOnTouched ?? true,
-      validationMessages: providerProps.validationMessages,
       uiComponents: {
         ...UI_BASIC_COMPONENTS,
         ...uiComponents,
       },
+      validationMessages: providerProps.validationMessages,
     });
 
     this.globalVariablesInitialized.set(true);
@@ -390,17 +402,17 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    const host = this.el.nativeElement;
-    const conditions$ = this.formConditionsService.listenConditions$();
-    const event$ = (name: string) => fromEvent(host, name, { passive: true });
+    const hostEvent$ = (name: string) =>
+      fromEvent(this.el.nativeElement, name, { passive: true });
 
+    const conditions$ = this.formConditionsService.listenConditions$();
     const valueChanges$ = this.formValueChanges$();
 
     // Avoid using `debounceTime()` or `distinctUntilChanged()` here
     const statusChanges$ = form.statusChanges.pipe(
       startWith(form.status),
       tap(() => {
-        const errors = this.formErrors();
+        const errors = this.formErrors;
 
         // setErrors() again after statusChanges, to get the correct errors after
         // the re-validation if there are any async validators.
@@ -410,20 +422,19 @@ export class NgDynamicJsonFormComponent
       }),
     );
 
-    const onTouched$ = event$('focusout').pipe(
+    const onTouched$ = hostEvent$('focusout').pipe(
       take(1),
       tap(() => this.onTouched()),
     );
 
     const allowDirtyState$ = merge(
-      event$('pointerdown'),
-      event$('keydown'),
+      hostEvent$('pointerdown'),
+      hostEvent$('keydown'),
     ).pipe(
       take(1),
-      tap(() => (this.allowFormDirty = true)),
+      tap(() => this.allowFormDirty.set(true)),
     );
 
-    this.reset$.next();
     merge(
       allowDirtyState$,
       conditions$,
@@ -437,11 +448,13 @@ export class NgDynamicJsonFormComponent
 
   private reset(): void {
     this.reset$.next();
+    this.form.set(undefined);
+    this.allowFormDirty.set(false);
+
     this.optionsDataService.cancelAllRequest();
     this.formReadyStateService.resetState();
     this.controlDirective?.control.markAsUntouched();
     this.controlDirective?.form.markAsUntouched();
-    this.allowFormDirty = false;
   }
 
   private updateFormStatus(status: keyof FormStatusFunctions): void {
@@ -480,13 +493,14 @@ export class NgDynamicJsonFormComponent
     const { configs } = this.configValidationResult() ?? {};
 
     const updateValue = () => {
+      const allowDirty = this.allowFormDirty();
       const value = form.value;
 
       if (this.controlDirective) {
         this.onChangeFn(value);
       }
 
-      if (this.allowFormDirty) {
+      if (allowDirty) {
         this.onChange.emit(value);
       }
     };
@@ -501,7 +515,12 @@ export class NgDynamicJsonFormComponent
     };
 
     const keepFormPristine = () => {
-      if (this.allowFormDirty) return;
+      const allowDirty = this.allowFormDirty();
+
+      if (allowDirty) {
+        return;
+      }
+
       this.updateFormStatus('setPristine');
       this.controlDirective?.control.markAsPristine();
     };
@@ -510,7 +529,7 @@ export class NgDynamicJsonFormComponent
     return form.valueChanges.pipe(
       startWith(form.value),
       tap(() => {
-        const errors = this.formErrors();
+        const errors = this.formErrors;
 
         //`setErrors()` must be called first, so that the form errors
         // is correctly set when `onChange` callback is called
@@ -522,21 +541,18 @@ export class NgDynamicJsonFormComponent
     );
   }
 
-  private checkOptionsLoaded(): void {
-    const ready$ = this.formReadyStateService.optionsReady$;
+  /**
+   * Use getter function to make everything works fine,
+   * don't use computed signal
+   */
+  private get formErrors() {
+    const form = this.form();
 
-    if (ready$.value) {
-      this.optionsLoaded.emit();
-      return;
+    if (!form) {
+      return null;
     }
 
-    ready$
-      .pipe(
-        filter(Boolean),
-        take(1),
-        tap(() => this.optionsLoaded.emit()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe();
+    const errors = getControlErrors(form);
+    return errors;
   }
 }

@@ -1,87 +1,74 @@
-@if (config && control) {
-  <!-- Label -->
-  @if (!config.layout?.hideLabel && config.label) {
-    <form-label
-      [label]="config.label"
-      [layout]="config.layout"
-      [props]="config.props"
-      [collapsibleEl]="collapsibleEl"
-      [customComponent]="labelComponents?.[config.formControlName] ?? labelComponentDefault"
-      [customTemplate]="labelTemplates?.[config.formControlName] ?? labelTemplateDefault"
-      [state]="collapsibleState"
-      [controlLayout]="{
-        type: 'label',
-        layout: config.layout
-      }"
-      [ngClass]="{
-        required:
-          config.layout?.autoAddRequiredClass === false
-            ? null
-            : (control | isControlRequired)
-      }"
-    ></form-label>
-  }
-  <div
-    #collapsibleEl
+<!-- Label -->
+@if (showLabel()) {
+  <form-label
+    [label]="label()"
+    [layout]="layout()"
+    [props]="props()"
+    [collapsibleEl]="collapsibleEl"
+    [customComponent]="customLabelComponent()"
+    [customTemplate]="customLabelTemplate()"
+    [state]="collapsibleState()"
     [controlLayout]="{
-      type: 'content',
-      layout: config.layout
+      type: 'label',
+      layout: layout(),
     }"
-    >
-    <!-- Description (before) -->
-    @if (
-      config.description &&
-      (config.layout?.descriptionPosition ?? descriptionPosition) !== 'after'
-      ) {
-      <ng-container
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{ data: config }"
-      ></ng-container>
-    }
-    <ng-content></ng-content>
-    <!-- Validation message -->
-    @if (renderErrorSection) {
-      <error-message
-        [control]="control"
-        [validators]="
-          (config.validators ?? []).concat(config.asyncValidators ?? [])
-        "
-        [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
-        [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
-        [controlLayout]="{
-          type: 'error',
-          layout: config.layout
-        }"
-        [ngClass]="{
-          hidden: !showErrors
-        }"
-      ></error-message>
-    }
-    <!-- Description (after) -->
-    @if (
-      config.description &&
-      (config.layout?.descriptionPosition ?? descriptionPosition) === 'after'
-      ) {
-      <ng-container
-        [ngTemplateOutlet]="descriptionTemplate"
-        [ngTemplateOutletContext]="{ data: config }"
-      ></ng-container>
-    }
-  </div>
+    [ngClass]="{
+      required:
+        !layout()?.autoAddRequiredClass === true
+          ? (control() | isControlRequired)
+          : null,
+    }"
+  ></form-label>
 }
 
+<div
+  #collapsibleEl
+  [controlLayout]="{
+    type: 'content',
+    layout: layout(),
+  }"
+>
+  <!-- Description (before) -->
+  @if (description() && descriptionPosition() !== "after") {
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+  }
+
+  <ng-content></ng-content>
+
+  <!-- Validation message -->
+  @if (renderErrorSection()) {
+    <error-message
+      [control]="control()"
+      [validators]="validators()"
+      [customComponent]="customErrorComponent()"
+      [customTemplate]="customErrorTemplate()"
+      [controlLayout]="{
+        type: 'error',
+        layout: layout(),
+      }"
+      [ngClass]="{
+        hidden: !showErrors(),
+      }"
+    ></error-message>
+  }
+
+  <!-- Description (after) -->
+  @if (description() && descriptionPosition() === "after") {
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+  }
+</div>
+
 <!-- Description template -->
-<ng-template #descriptionTemplate let-data="data">
+<ng-template #descriptionTemplate>
   <span
     class="form-description"
     [ngClass]="{
-      'position-after':
-        (data.layout?.descriptionPosition ?? descriptionPosition) === 'after'
+      'position-after': descriptionPosition() === 'after',
     }"
     [controlLayout]="{
       type: 'description',
-      layout: data.layout
+      layout: layout(),
     }"
-    >{{ data.description }}</span
-    >
-  </ng-template>
+    >{{ description() }}</span
+  >
+</ng-template>
