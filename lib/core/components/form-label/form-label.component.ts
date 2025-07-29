@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
 import {
-  Component,
-  DestroyRef,
-  HostBinding,
-  HostListener,
-  TemplateRef,
-  Type,
-  ViewContainerRef,
   afterNextRender,
+  Component,
   computed,
+  DestroyRef,
   effect,
+  ElementRef,
   inject,
   input,
   signal,
+  TemplateRef,
+  Type,
+  untracked,
   viewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
@@ -31,8 +31,8 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
   },
 })
 export class FormLabelComponent {
+  private el = inject(ElementRef);
   private destroyRef = inject(DestroyRef);
-  private viewInitialized = false;
   private collapsibleElCssText = '';
   private componentRef?: CustomFormLabel;
 
@@ -48,7 +48,7 @@ export class FormLabelComponent {
   customComponent = input<Type<CustomFormLabel>>();
   customTemplate = input<TemplateRef<any>>();
 
-  componentAnchor = viewChild<ViewContainerRef>('componentAnchor');
+  componentAnchor = viewChild.required<ViewContainerRef>('componentAnchor');
 
   expand = signal<boolean>(false);
 
@@ -66,6 +66,29 @@ export class FormLabelComponent {
       layout.contentCollapsible === 'collapse' ||
       layout.contentCollapsible === 'expand'
     );
+  });
+
+  injectCustomComponent = effect(() => {
+    const anchor = this.componentAnchor();
+    const customComponent = this.customComponent();
+
+    if (!anchor || !customComponent) {
+      return;
+    }
+
+    untracked(() => {
+      const componentRef = anchor.createComponent(customComponent);
+
+      componentRef.instance.label = this.label();
+      componentRef.instance.layout = this.layout();
+      componentRef.instance.props = this.props();
+      componentRef.instance.collapsible = this.isCollapsible();
+      componentRef.instance.expand = this.expand();
+
+      this.componentRef = componentRef.instance;
+
+      this.injectCustomComponent.destroy();
+    });
   });
 
   handleStateChange = effect(() => {
@@ -91,36 +114,29 @@ export class FormLabelComponent {
     this.setExpandInitialState.destroy();
   });
 
-  @HostBinding('style.display') get styleDisplay() {
-    if (!this.label()) return null;
-    if (this.customComponent()) return null;
+  setHostStyle = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const label = this.label();
+    const customComponent = this.customComponent();
+    const isCollapsible = this.isCollapsible();
 
-    return this.isCollapsible() ? 'flex' : 'inline-block';
-  }
-  @HostBinding('style.cursor') get styleCursor() {
-    return this.isCollapsible() ? 'pointer' : 'normal';
-  }
+    if (!label || !!customComponent) {
+      return;
+    }
 
-  @HostListener('click', ['$event'])
-  onClick(): void {
-    this.toggle();
-  }
+    if (isCollapsible) {
+      host.style.setProperty('display', 'flex');
+      host.style.setProperty('cursor', 'pointer');
+    } else {
+      host.style.setProperty('display', 'inline-block');
+      host.style.removeProperty('cursor');
+    }
+  });
 
   constructor() {
     afterNextRender(() => {
-      const anchor = this.componentAnchor();
-      const customComponent = this.customComponent();
-
-      if (!anchor) {
-        return;
-      }
-
-      if (customComponent) {
-        this.injectComponent();
-        return;
-      }
-
       this.initCollapsibleEl();
+      this.listenClickEvent();
     });
   }
 
@@ -138,26 +154,6 @@ export class FormLabelComponent {
       this.componentRef.expand = this.expand();
     }
   };
-
-  private injectComponent(): void {
-    const anchor = this.componentAnchor();
-    const component = this.customComponent();
-
-    if (!anchor || !component) {
-      return;
-    }
-
-    const componentRef = anchor.createComponent(component);
-
-    componentRef.instance.label = this.label();
-    componentRef.instance.layout = this.layout();
-    componentRef.instance.props = this.props();
-    componentRef.instance.collapsible = this.isCollapsible();
-    componentRef.instance.expand = this.expand();
-
-    this.initCollapsibleEl();
-    this.componentRef = componentRef.instance;
-  }
 
   private listenTransition(): void {
     const el = this.collapsibleEl();
@@ -231,5 +227,21 @@ export class FormLabelComponent {
 
     // Then set height later to overwrite height style
     el?.style.setProperty('height', `${height}px`);
+  }
+
+  private listenClickEvent(): void {
+    const host = this.el.nativeElement as HTMLElement;
+    const collapsible = this.isCollapsible();
+
+    if (!collapsible) {
+      return;
+    }
+
+    fromEvent(host, 'click', { passive: true })
+      .pipe(
+        tap(() => this.toggle()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }
