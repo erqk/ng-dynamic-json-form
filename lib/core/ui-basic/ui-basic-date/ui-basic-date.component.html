@@ -1,4 +1,4 @@
-@if (data) {
+@if (data(); as data) {
   <div
     class="date-input"
     [ngClass]="{
@@ -7,8 +7,8 @@
   >
     <input
       type="date"
-      [attr.min]="dateSettings.min"
-      [attr.max]="dateSettings.max"
+      [attr.min]="dateSettings().min"
+      [attr.max]="dateSettings().max"
       [propsBinding]="[
         {
           props: data.props,
@@ -16,7 +16,7 @@
         },
       ]"
       [formControl]="control.controls.date"
-      (change)="updateControl()"
+      (change)="emitValue()"
     />
     @if (data.props?.showTime === true) {
       <input type="time" [formControl]="control.controls.time" />

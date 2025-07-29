@@ -79,12 +79,11 @@ export class FormLabelComponent {
     untracked(() => {
       const componentRef = anchor.createComponent(customComponent);
 
-      componentRef.instance.label = this.label();
-      componentRef.instance.layout = this.layout();
-      componentRef.instance.props = this.props();
-      componentRef.instance.collapsible = this.isCollapsible();
-      componentRef.instance.expand = this.expand();
-
+      componentRef.instance.label.set(this.label());
+      componentRef.instance.layout.set(this.layout());
+      componentRef.instance.props.set(this.props());
+      componentRef.instance.collapsible.set(this.isCollapsible());
+      componentRef.instance.expand.set(this.expand());
       this.componentRef = componentRef.instance;
 
       this.injectCustomComponent.destroy();
@@ -151,7 +150,7 @@ export class FormLabelComponent {
     this.setElementHeight();
 
     if (this.componentRef) {
-      this.componentRef.expand = this.expand();
+      this.componentRef.expand.set(this.expand());
     }
   };
 

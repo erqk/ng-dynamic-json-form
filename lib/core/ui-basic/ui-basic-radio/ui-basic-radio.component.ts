@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
@@ -16,16 +16,18 @@ import { PropsBindingDirective } from '../../directives';
 export class UiBasicRadioComponent extends CustomControlComponent {
   private onChange?: any;
 
-  selectedIndex = -1;
-  isDisabled = false;
+  options = computed(() => this.data()?.options?.data ?? []);
+
+  selectedIndex = signal<number>(-1);
+  isDisabled = signal<boolean>(false);
 
   override writeValue(obj: any): void {
     const index =
-      this.data?.options?.data?.findIndex(
+      this.options().findIndex(
         (x) => JSON.stringify(x.value) === JSON.stringify(obj),
       ) ?? -1;
 
-    this.selectedIndex = index;
+    this.selectedIndex.set(index);
   }
 
   override registerOnChange(fn: any): void {
@@ -33,11 +35,11 @@ export class UiBasicRadioComponent extends CustomControlComponent {
   }
 
   override setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
   }
 
   emitValue(i: number): void {
-    const value = this.data?.options?.data?.[i].value;
+    const value = this.options()[i].value;
     this.onChange(value);
   }
 }

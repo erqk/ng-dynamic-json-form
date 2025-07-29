@@ -346,8 +346,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   private initComponentInstance(
     componentRef: ComponentRef<CustomControlComponent>,
   ): void {
-    componentRef.instance.data = this.data();
-    componentRef.instance.hostForm = this.global.rootForm;
+    componentRef.instance.data.set(this.data());
+    componentRef.instance.hostForm.set(this.global.rootForm);
     componentRef.instance.writeValue(this.pendingValue());
     componentRef.instance.registerOnChange(this.onChange);
     componentRef.instance.registerOnTouched(this.onTouched);
@@ -389,7 +389,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     };
 
     const handleHideErrorsValueChange = (hide: boolean | undefined) => {
-      inputComponent.hideErrorMessage = hide;
+      inputComponent.hideErrorMessage.set(hide);
 
       if (hide === false) {
         this.updateControlStatus('dirty');

@@ -1,13 +1,13 @@
-@if (data) {
-<textarea
-  pTextarea
-  [formControl]="control"
-  [propsBinding]="[
-    {
-      key: 'p-textarea',
-      props: data.props
-    }
-  ]"
-  (input)="onInput($event)"
-></textarea>
+@if (data(); as data) {
+  <textarea
+    pTextarea
+    [formControl]="control"
+    [propsBinding]="[
+      {
+        key: 'p-textarea',
+        props: data.props,
+      },
+    ]"
+    (input)="onInput($event)"
+  ></textarea>
 }

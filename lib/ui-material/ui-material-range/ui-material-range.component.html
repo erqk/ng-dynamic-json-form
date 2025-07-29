@@ -1,16 +1,16 @@
-@if (data) {
+@if (data(); as data) {
   <mat-slider
     [propsBinding]="[
       {
         key: 'mat-slider',
-        props: data.props
-      }
+        props: data.props,
+      },
     ]"
   >
-  <input
-    matSliderThumb
-    [formControl]="control"
-    (input)="onChange(control.value)"
+    <input
+      matSliderThumb
+      [formControl]="control"
+      (input)="onChange(control.value)"
     />
   </mat-slider>
 }

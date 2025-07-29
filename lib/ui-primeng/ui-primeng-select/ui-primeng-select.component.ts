@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -23,6 +23,8 @@ import { Select, SelectModule } from 'primeng/select';
 })
 export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
+
+  options = computed(() => this.data()?.options?.data ?? []);
 
   onTouched = () => {};
   onChange = (_: any) => {};

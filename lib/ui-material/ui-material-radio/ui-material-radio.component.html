@@ -1,4 +1,4 @@
-@if (data) {
+@if (data(); as data) {
   <mat-radio-group
     [labelPosition]="data.options?.labelPosition ?? 'after'"
     [formControl]="control"
@@ -18,11 +18,11 @@
         'flex-direction': data.options?.layout,
       }"
     >
-      @for (item of data.options?.data; track item; let i = $index) {
+      @for (item of options(); track $index) {
         <mat-radio-button
-          [value]="i"
-          [checked]="selectedIndex === i"
-          (change)="emitValue(i)"
+          [value]="$index"
+          [checked]="selectedIndex() === $index"
+          (change)="emitValue($index)"
           >{{ item.label }}</mat-radio-button
         >
       }

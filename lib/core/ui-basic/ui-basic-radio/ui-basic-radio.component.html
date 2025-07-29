@@ -1,16 +1,16 @@
-@if (data) {
+@if (data(); as data) {
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
     [ngClass]="[
       data.options?.containerClass ?? '',
-      isDisabled ? 'disabled' : '',
+      isDisabled() ? 'disabled' : '',
     ]"
     [ngStyle]="{
       'flex-direction': data.options?.layout,
     }"
   >
-    @for (item of data.options?.data; track item; let i = $index) {
+    @for (item of data.options?.data; track $index) {
       <div class="option-button-wrapper">
         <label
           class="option-button"
@@ -31,8 +31,8 @@
                 omit: ['type', 'name'],
               },
             ]"
-            [checked]="selectedIndex === i"
-            (change)="emitValue(i)"
+            [checked]="selectedIndex() === $index"
+            (change)="emitValue($index)"
           />
           <span class="marker"></span>
           @if (data.options?.labelPosition !== "before") {

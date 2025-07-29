@@ -1,42 +1,42 @@
-@if (data) {
+@if (data(); as data) {
   <div
     class="group-buttons"
-    [style]="groupButtonsStyles"
+    [style]="groupButtonStyles()"
     [ngClass]="[data.options?.containerClass ?? '']"
-    >
+  >
     <!-- binary checkbox -->
-    @if (data.options && data.options.data?.length === 1) {
+    @if (options().length === 1) {
       <mat-checkbox
         [checked]="!control.value.length ? false : control.value[0]"
         [disabled]="control.disabled"
-        [labelPosition]="data.options.labelPosition ?? 'after'"
+        [labelPosition]="data.options?.labelPosition ?? 'after'"
         [propsBinding]="[
           {
             key: 'mat-checkbox',
             props: data.props,
-            omit: ['labelPosition']
-          }
+            omit: ['labelPosition'],
+          },
         ]"
-      (change)="toggle($event)"
-      >{{ data.options.data?.[0]?.label }}</mat-checkbox
+        (change)="toggle($event)"
+        >{{ options()[0].label }}</mat-checkbox
       >
     }
     <!-- muli-select checkbox -->
-    @if (data.options && data.options.data && data.options.data.length > 1) {
-      @for (item of data.options.data; track item; let i = $index) {
+    @if (options().length > 1) {
+      @for (item of options(); track $index) {
         <mat-checkbox
-          [labelPosition]="data.options.labelPosition ?? 'after'"
+          [labelPosition]="data.options?.labelPosition ?? 'after'"
           [checked]="isChecked(item.value)"
           [disabled]="control.disabled"
           [propsBinding]="[
             {
               key: 'mat-checkbox',
               props: data.props,
-              omit: ['labelPosition', 'checked', 'disabled', 'value']
-            }
+              omit: ['labelPosition', 'checked', 'disabled', 'value'],
+            },
           ]"
-        (change)="onCheckboxChange($event, i)"
-        >{{ item.label }}</mat-checkbox
+          (change)="onCheckboxChange($event, $index)"
+          >{{ item.label }}</mat-checkbox
         >
       }
     }

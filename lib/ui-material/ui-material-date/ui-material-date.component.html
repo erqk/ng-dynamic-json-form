@@ -1,4 +1,4 @@
-@if (data) {
+@if (data(); as data) {
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
     <input
@@ -9,10 +9,10 @@
         {
           key: 'mat-input',
           props: data.props,
-          omit: ['matDatepicker']
-        }
+          omit: ['matDatepicker'],
+        },
       ]"
-    (dateInput)="onChange(control.value)"
+      (dateInput)="onChange(control.value)"
     />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>

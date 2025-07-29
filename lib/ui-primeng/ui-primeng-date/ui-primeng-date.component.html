@@ -1,12 +1,12 @@
-@if (data) {
-<p-date-picker
-  [formControl]="control"
-  [propsBinding]="[
+@if (data(); as data) {
+  <p-date-picker
+    [formControl]="control"
+    [propsBinding]="[
       {
         key: 'p-datepicker',
         props: data.props,
-      }
+      },
     ]"
-  (onClose)="updateControl()"
-></p-date-picker>
+    (onClose)="updateControl()"
+  ></p-date-picker>
 }

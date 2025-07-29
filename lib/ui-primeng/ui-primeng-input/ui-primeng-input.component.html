@@ -1,4 +1,4 @@
-@if (control && data) {
+@if (data(); as data) {
   <input
     pInputText
     [type]="data.type ?? 'text'"
@@ -7,9 +7,9 @@
       {
         key: 'p-input-text',
         props: data.props,
-        omit: ['type']
-      }
+        omit: ['type'],
+      },
     ]"
-  (input)="onInput($event)"
+    (input)="onInput($event)"
   />
 }

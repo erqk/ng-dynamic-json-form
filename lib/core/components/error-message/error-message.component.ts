@@ -67,7 +67,7 @@ export class ErrorMessageComponent {
       return;
     }
 
-    customComponent.errorMessages = [...messages];
+    customComponent.errorMessages.set([...messages]);
   });
 
   injectComponent = effect(() => {
