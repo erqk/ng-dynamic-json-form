@@ -109,6 +109,9 @@ jobs:
           # Fix asset paths in HTML files to work with versioned folders
           echo "Fixing asset paths for version: $VERSION"
 
+          # First, fix the base href tag specifically to avoid double processing
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"[^\"]*\">|<base href=\"/$REPO_NAME/$VERSION/\">|g" {} \;
+
           # Fix paths that already contain repo name: "/repo-name/" to "/repo-name/version/"
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/$REPO_NAME/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/$REPO_NAME/|href=\"/$REPO_NAME/$VERSION/|g" {} \;
