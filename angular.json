@@ -87,7 +87,7 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/ng-dynamic-json-form/"
+              "baseHref": "/ng-dynamic-json-form/{{VERSION}}"
             },
             "development": {
               "optimization": false,
