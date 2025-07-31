@@ -1,4 +1,4 @@
-name: Pre-render docs content and deploy to GitHub pages s
+name: Pre-render docs content and deploy to GitHub pages
 
 on:
   push:
@@ -101,16 +101,23 @@ jobs:
           mkdir -p ./versioned-docs/$VERSION
           cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
 
+          # Get the repository name for proper path construction
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "Repository name: $REPO_NAME"
+          echo "Version: $VERSION"
+
           # Fix asset paths in HTML files to work with versioned folders
           echo "Fixing asset paths for version: $VERSION"
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
+
+          # Fix paths from "/" to "/repo-name/version/"
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$REPO_NAME/$VERSION/|g" {} \;
 
           # Fix any remaining absolute paths that might break
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$REPO_NAME/$VERSION/|g" {} \;
 
           echo "Asset path fixing complete"
 
