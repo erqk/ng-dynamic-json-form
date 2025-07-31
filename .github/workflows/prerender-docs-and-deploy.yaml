@@ -112,14 +112,20 @@ jobs:
           # First, fix the base href tag specifically to avoid double processing
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"[^\"]*\">|<base href=\"/$REPO_NAME/$VERSION/\">|g" {} \;
 
-          # Fix paths that already contain repo name: "/repo-name/" to "/repo-name/version/"
+          # Fix other href attributes (but NOT base href) that already contain repo name
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|\(<[^>]*\)\(href=\"/$REPO_NAME/\)\([^\"]*\"\)\([^>]*>\)|\1\2$VERSION/\3\4|g" {} \;
+
+          # Fix src attributes that already contain repo name
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/$REPO_NAME/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/$REPO_NAME/|href=\"/$REPO_NAME/$VERSION/|g" {} \;
+
+          # Fix url() in style attributes
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
 
-          # Fix generic absolute paths: "/" to "/repo-name/version/" (for paths that don't already have repo name)
+          # Fix generic absolute paths for src (excluding base href)
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/\([^/]\)|src=\"/$REPO_NAME/$VERSION/\1|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/\([^/]\)|href=\"/$REPO_NAME/$VERSION/\1|g" {} \;
+
+          # Fix generic absolute paths for href (excluding base href)
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "/base href/!s|\(<[^>]*\)\(href=\"/\)\([^/][^\"]*\"\)\([^>]*>\)|\1\2$REPO_NAME/$VERSION/\3\4|g" {} \;
 
           # Fix CSS files
           find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
