@@ -2,7 +2,7 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, computed, effect, ElementRef, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { LayoutService } from 'src/app/core/services/layout.service';
@@ -33,6 +33,7 @@ import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/u
 export class PageDocsComponent {
   private el = inject(ElementRef);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private title = inject(Title);
   private viewportScroller = inject(ViewportScroller);
   private docLoaderService = inject(DocsLoaderService);
@@ -80,6 +81,18 @@ export class PageDocsComponent {
 
     const result = this.markdownService.parse(data);
     return result;
+  });
+
+  reloadForDefaultDoc = effect(() => {
+    const defaultDocPath = this.defaultDocPath.value();
+    const currentRoute = this.currentRoute();
+
+    if (currentRoute === 'docs' && defaultDocPath) {
+      this.router.navigate([`/${defaultDocPath}`], {
+        relativeTo: this.route,
+        replaceUrl: true,
+      });
+    }
   });
 
   handleDocHtmlGet = effect(() => {
