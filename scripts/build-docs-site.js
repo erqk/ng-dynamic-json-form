@@ -5,6 +5,24 @@ const os = require("os");
 const PORT = 4201;
 const SERVER_URL = `tcp:localhost:${PORT}`;
 
+// Parse command line arguments
+const args = process.argv.slice(2);
+let baseHref = null;
+
+// Look for --base-href argument
+const baseHrefIndex = args.findIndex((arg) => arg.startsWith("--base-href"));
+if (baseHrefIndex !== -1) {
+  if (args[baseHrefIndex].includes("=")) {
+    // Format: --base-href="/path/"
+    baseHref = args[baseHrefIndex].split("=")[1];
+  } else if (args[baseHrefIndex + 1]) {
+    // Format: --base-href "/path/"
+    baseHref = args[baseHrefIndex + 1];
+  }
+}
+
+console.log(`🏷️ Base href: ${baseHref || "default"}`);
+
 function run(command, args = [], options = {}) {
   return new Promise((resolve, reject) => {
     const proc = spawn(command, args, {
@@ -58,7 +76,12 @@ async function main() {
     await waitOn({ resources: [SERVER_URL], timeout: 60000 });
 
     console.log("📄 Step 4: Running prerender...");
-    await run("npm", ["run", "prerender"]);
+    // Pass base href to prerender if provided
+    const prerenderArgs = ["run", "prerender"];
+    if (baseHref) {
+      prerenderArgs.push("--", "--base-href", baseHref);
+    }
+    await run("npm", prerenderArgs);
 
     console.log("🛑 Step 5: Stopping dev server...");
     await killByPid(serverProc.pid);
