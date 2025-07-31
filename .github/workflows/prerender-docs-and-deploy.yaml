@@ -109,15 +109,24 @@ jobs:
           # Fix asset paths in HTML files to work with versioned folders
           echo "Fixing asset paths for version: $VERSION"
 
-          # Fix paths from "/" to "/repo-name/version/"
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$REPO_NAME/$VERSION/|g" {} \;
+          # Fix paths that already contain repo name: "/repo-name/" to "/repo-name/version/"
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/$REPO_NAME/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/$REPO_NAME/|href=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
 
-          # Fix any remaining absolute paths that might break
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$REPO_NAME/$VERSION/|g" {} \;
+          # Fix generic absolute paths: "/" to "/repo-name/version/" (for paths that don't already have repo name)
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/\([^/]\)|src=\"/$REPO_NAME/$VERSION/\1|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/\([^/]\)|href=\"/$REPO_NAME/$VERSION/\1|g" {} \;
+
+          # Fix CSS files
+          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/\([^/]\)|url(/$REPO_NAME/$VERSION/\1|g" {} \;
+
+          # Fix JS files
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/$REPO_NAME/|'/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/$REPO_NAME/|\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/\([^/]\)|'/$REPO_NAME/$VERSION/\1|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/\([^/]\)|\"/$REPO_NAME/$VERSION/\1|g" {} \;
 
           echo "Asset path fixing complete"
 
