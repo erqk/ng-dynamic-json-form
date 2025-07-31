@@ -1,82 +1,10 @@
-# Setup major versioned directory structure and fix asset paths
-      - name: 📁 Setup versioned docs and fix asset paths
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-          mkdir -p ./versioned-docs/$VERSION
-          cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
-          
-          # Get the repository name for proper path construction
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "Repository name: $REPO_NAME"
-          echo "Version: $VERSION"
-          
-          # Fix asset paths in HTML files to work with versioned folders
-          echo "Fixing asset paths for version: $VERSION"
-          
-          # The key insight: paths like "/ng-dynamic-json-form/" need to become "../" 
-          # when served from "/ng-dynamic-json-form/v8/"
-          
-          # Fix absolute paths that start with the repo name
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i \
-            -e "s|=\"/$REPO_NAME/|=\"../|g" \
-            -e "s|='/$REPO_NAME/|='../|g" \
-            -e "s|src=\"/|src=\"../|g" \
-            -e "s|href=\"/|href=\"../|g" \
-            {} \;
-          
-          # Fix CSS files
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i \
-            -e "s|url(/$REPO_NAME/|url(../|g" \
-            -e "s|url(\"/$REPO_NAME/|url(\"../|g" \
-            -e "s|url('/$REPO_NAME/|url('../|g" \
-            -e "s|url(/|url(../|g" \
-            {} \;
-          
-          # Fix JS files - handle various quote styles
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i \
-            -e "s|\"/$REPO_NAME/\"|\"../\"|g" \
-            -e "s|'/$REPO_NAME/'|'../'|g" \
-            -e "s|\`/$REPO_NAME/\`|\`../\`|g" \
-            -e "s|\"./$REPO_NAME/\"|\"..\"|g" \
-            -e "s|'./$REPO_NAME/'|'..'|g" \
-            {} \;
-          
-          # Additional fix for any remaining absolute paths
-          find ./versioned-docs/$VERSION -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" \) -exec sed -i \
-            -e "s|/$REPO_NAME/|../|g" \
-            {} \;
-          
-          # Debug: Show some sample files to verify path fixing
-          echo "=== Checking for remaining absolute paths ==="
-          find ./versioned-docs/$VERSION -name "*.html" -exec grep -l "/$REPO_NAME/" {} \; | head -3
-          find ./versioned-docs/$VERSION -name "*.js" -exec grep -l "/$REPO_NAME/" {} \; | head -3
-          
-          echo "Asset path fixing complete"
-          
-          # Create or update root index.html that redirects to latest major version
-          cat > ./versioned-docs/index.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Documentation</title>
-            <meta http-equiv="refresh" content="0; url="./$VERSION/">
-            <link rel="canonical" href="./$VERSION/">
-          </head>
-          <body>
-            <p>Redirecting to <a href="./$VERSION/">latest documentation ($VERSION)</a>...</p>
-          </body>
-          </html>
-          EOF
-          
-          # Create 404.html from the versioned index
-          cp ./versioned-docs/$VERSION/index.html ./versioned-docs/404.htmlname: Pre-render docs content and deploy to GitHub pages
+name: Pre-render docs content and deploy to GitHub pages s
 
 on:
   push:
-    branches: 
-      - "v*"      # Matches v1, v2, v3, etc.
-      - "main"    # Optional: keep main branch
+    branches:
+      - "v*" # Matches v1, v2, v3, etc.
+      - "main" # Optional: keep main branch
   workflow_dispatch:
 
 permissions:
@@ -99,7 +27,7 @@ jobs:
       - name: 🛎️ Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for version detection
+          fetch-depth: 0 # Fetch all history for version detection
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
@@ -119,7 +47,7 @@ jobs:
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
           echo "Current branch: $BRANCH_NAME"
-          
+
           if [[ $BRANCH_NAME =~ ^v[0-9]+$ ]]; then
             # Branch name is already in format v1, v2, etc.
             VERSION=$BRANCH_NAME
@@ -162,7 +90,7 @@ jobs:
             VERSION=$(echo $BRANCH_NAME | grep -oE 'v[0-9]+' || echo "v1")
             echo "Fallback version: $VERSION"
           fi
-          
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Final detected major version: $VERSION"
 
@@ -172,20 +100,20 @@ jobs:
           VERSION=${{ steps.get_version.outputs.version }}
           mkdir -p ./versioned-docs/$VERSION
           cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
-          
+
           # Fix asset paths in HTML files to work with versioned folders
           echo "Fixing asset paths for version: $VERSION"
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
-          
+
           # Fix any remaining absolute paths that might break
           find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$VERSION/|g" {} \;
-          
+
           echo "Asset path fixing complete"
-          
+
           # Create or update root index.html that redirects to latest major version
           cat > ./versioned-docs/index.html << EOF
           <!DOCTYPE html>
@@ -201,7 +129,7 @@ jobs:
           </body>
           </html>
           EOF
-          
+
           # Create 404.html from the versioned index
           cp ./versioned-docs/$VERSION/index.html ./versioned-docs/404.html
 
@@ -210,7 +138,7 @@ jobs:
         run: |
           # Create a temporary directory for existing content
           mkdir -p ./temp-existing
-          
+
           # Check if gh-pages branch exists
           if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
             echo "gh-pages branch exists, fetching existing versions..."
@@ -237,7 +165,7 @@ jobs:
           else
             echo "gh-pages branch doesn't exist yet. This might be the first deployment."
           fi
-          
+
           # Copy preserved versions to versioned-docs (if any exist)
           if [ -d "./temp-existing" ] && [ "$(ls -A ./temp-existing 2>/dev/null)" ]; then
             echo "Copying preserved versions..."
@@ -245,7 +173,7 @@ jobs:
           else
             echo "No existing versions to preserve."
           fi
-          
+
           # List all major versions for debugging
           echo "Available major versions after preservation:"
           ls -la ./versioned-docs/
