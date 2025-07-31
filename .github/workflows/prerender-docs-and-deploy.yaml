@@ -38,9 +38,6 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: ⚙️ Run prerender pipeline
-        run: npm run build:docs
-
       # Get major version from branch name
       - name: 🏷️ Get major version
         id: get_version
@@ -94,50 +91,24 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Final detected major version: $VERSION"
 
-      # Setup major versioned directory structure and fix asset paths
+      - name: ⚙️ Run prerender pipeline
+        run: npm run build:docs
+
+      # Setup major versioned directory structure and replace version placeholder
       - name: 📁 Setup versioned docs
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           mkdir -p ./versioned-docs/$VERSION
           cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
 
-          # Get the repository name for proper path construction
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "Repository name: $REPO_NAME"
-          echo "Version: $VERSION"
+          echo "Replacing {{VERSION}} placeholder with actual version: $VERSION"
 
-          # Fix asset paths in HTML files to work with versioned folders
-          echo "Fixing asset paths for version: $VERSION"
+          # Replace {{VERSION}} placeholder specifically in base href tags only
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
-          # Step 1: Fix src attributes first
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/$REPO_NAME/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/\([^/]\)|src=\"/$REPO_NAME/$VERSION/\1|g" {} \;
-
-          # Step 2: Fix href attributes (except base href - we'll handle it separately)
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<link\([^>]*\)href=\"/$REPO_NAME/|<link\1href=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<link\([^>]*\)href=\"/\([^/]\)|<link\1href=\"/$REPO_NAME/$VERSION/\2|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<a\([^>]*\)href=\"/$REPO_NAME/|<a\1href=\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<a\([^>]*\)href=\"/\([^/]\)|<a\1href=\"/$REPO_NAME/$VERSION/\2|g" {} \;
-
-          # Step 3: Fix url() in CSS within HTML
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/\([^/]\)|url(/$REPO_NAME/$VERSION/\1|g" {} \;
-
-          # Step 4: Fix CSS files
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/\([^/]\)|url(/$REPO_NAME/$VERSION/\1|g" {} \;
-
-          # Step 5: Fix JS files
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/$REPO_NAME/|'/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/$REPO_NAME/|\"/$REPO_NAME/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/\([^/]\)|'/$REPO_NAME/$VERSION/\1|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/\([^/]\)|\"/$REPO_NAME/$VERSION/\1|g" {} \;
-
-          # Step 6: FINALLY fix base href (after all other processing is done)
-          echo "Fixing base href tag specifically..."
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"[^\"]*\">|<base href=\"/$REPO_NAME/$VERSION/\">|g" {} \;
-
-          echo "Asset path fixing complete"
+          # Verify the replacement worked
+          echo "=== Checking base href after replacement ==="
+          find ./versioned-docs/$VERSION -name "index.html" -exec grep -H "base href" {} \; || echo "No base href found"
 
           # Create or update root index.html that redirects to latest major version
           cat > ./versioned-docs/index.html << EOF
@@ -172,7 +143,7 @@ jobs:
             # Create a temporary branch to access gh-pages content safely
             git checkout -b temp-gh-pages origin/gh-pages 2>/dev/null || {
               echo "Failed to checkout gh-pages, continuing without preserving versions"
-              git checkout main
+              git checkout ${GITHUB_REF#refs/heads/}
               exit 0
             }
             
