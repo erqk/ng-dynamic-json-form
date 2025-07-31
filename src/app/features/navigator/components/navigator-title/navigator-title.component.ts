@@ -45,7 +45,7 @@ import { NavigatorService } from '../../services/navigator.service';
           }"
         >
           <div class="flex flex-col overflow-hidden">
-            @for (child of item.children; track child) {
+            @for (child of item.children; track $index) {
               <ng-container
                 [ngTemplateOutlet]="buttonTemplate"
                 [ngTemplateOutletContext]="{
