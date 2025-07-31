@@ -1,7 +1,7 @@
 <div
   class="beauty-scrollbar affect-child"
   [ngStyle]="{
-    '--window-height.px': (windowSize$ | async)?.y ?? 0,
+    '--window-height.px': windowSize()?.y ?? 0,
   }"
 >
   <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
@@ -24,26 +24,26 @@
           (click)="setSmoothScroll(false)"
         ></app-navigator-index>
       </div>
-
-      @if (content$ | async; as content) {
-        <div
-          class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
-          docRouterLink
-          [innerHTML]="content"
-        ></div>
-        <div
-          [ngClass]="[
-            'sticky w-64 py-10 overflow-auto',
-            'hidden lg:block',
-            'top-[var(--header-height)]',
-            'h-[calc(100vh-var(--header-height))]',
-          ]"
-        >
-          <app-navigator-title
-            (click)="setSmoothScroll(true)"
-          ></app-navigator-title>
+      @if (docHtml(); as content) {
+        <div class="markdown block min-w-0 p-4 lg:p-0 mb-24">
+          <div docRouterLink [innerHTML]="content"></div>
         </div>
+      } @else {
+        <div class="bg-gray-400/10 h-[30dvh] w-full rounded-xl"></div>
       }
+
+      <div
+        [ngClass]="[
+          'sticky w-64 py-10 overflow-auto',
+          'hidden lg:block',
+          'top-[var(--header-height)]',
+          'h-[calc(100vh-var(--header-height))]',
+        ]"
+      >
+        <app-navigator-title
+          (click)="setSmoothScroll(true)"
+        ></app-navigator-title>
+      </div>
     </div>
   </ui-content-wrapper>
 

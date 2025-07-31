@@ -1,17 +1,9 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SafeHtml, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import {
-  Observable,
-  delay,
-  distinctUntilChanged,
-  map,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { Component, computed, effect, ElementRef, inject } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs';
 import { FADE_UP_ANIMATION } from 'src/app/animations/fade-up.animation';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { getHeaderHeight } from 'src/app/core/utilities/get-header-height';
@@ -26,22 +18,21 @@ import { NavigatorService } from 'src/app/features/navigator/services/navigator.
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
 
 @Component({
-    selector: 'app-page-docs',
-    imports: [
-        CommonModule,
-        UiContentWrapperComponent,
-        DocsRouterLinkDirective,
-        NavigatorIndexComponent,
-        NavigatorTitleComponent,
-    ],
-    templateUrl: './page-docs.component.html',
-    styleUrls: ['./page-docs.component.scss'],
-    animations: [FADE_UP_ANIMATION]
+  selector: 'app-page-docs',
+  imports: [
+    CommonModule,
+    UiContentWrapperComponent,
+    DocsRouterLinkDirective,
+    NavigatorIndexComponent,
+    NavigatorTitleComponent,
+  ],
+  templateUrl: './page-docs.component.html',
+  styleUrls: ['./page-docs.component.scss'],
+  animations: [FADE_UP_ANIMATION],
 })
 export class PageDocsComponent {
-  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private title = inject(Title);
   private viewportScroller = inject(ViewportScroller);
   private docLoaderService = inject(DocsLoaderService);
@@ -50,38 +41,75 @@ export class PageDocsComponent {
   private layoutService = inject(LayoutService);
   private langService = inject(LanguageService);
   private useAnchorScrolling = false;
-  private loadDoc$ = this.route.url.pipe(
-    map((x) => x.map(({ path }) => path).join('/')),
-    switchMap((x) => (x === 'docs' ? this.getDefaultPath$() : of(x))),
-    distinctUntilChanged(),
-    switchMap((x) => this.docLoaderService.loadDoc$(x)),
-    tap((x) => {
-      const title = x
-        .match(/^#{1}.*/)?.[0]
-        .replace('#', '')
-        .trim();
 
-      this.title.setTitle(title ?? 'NgDynamicJsonForm');
-    })
+  windowSize = toSignal(this.layoutService.windowSize$);
+
+  currentRoute = toSignal(
+    this.route.url.pipe(map((x) => x.map((item) => item.path).join('/'))),
   );
+
+  currentLanguage = toSignal(this.langService.language$);
+
+  defaultDocPath = rxResource({
+    stream: () => this.docLoaderService.firstContentPath$(),
+    defaultValue: '',
+  });
+
+  docContent = rxResource({
+    params: () => {
+      const currentRoute = this.currentRoute() ?? '';
+      const defaultDocPath = this.defaultDocPath.value();
+      const lang = this.currentLanguage();
+      const languageFromUrl = this.langService.languageFromUrl;
+      const docPath = currentRoute.replace(
+        !languageFromUrl ? '' : `_${languageFromUrl}.md`,
+        `_${lang}.md`,
+      );
+
+      return currentRoute === 'docs' ? defaultDocPath : docPath;
+    },
+    stream: (x) => this.docLoaderService.loadDoc$(x.params),
+  });
+
+  docHtml = computed(() => {
+    const data = this.docContent.value();
+
+    if (!data) {
+      return undefined;
+    }
+
+    const result = this.markdownService.parse(data);
+    return result;
+  });
+
+  handleDocHtmlGet = effect(() => {
+    const docHtml = this.docHtml();
+
+    if (!docHtml) {
+      return;
+    }
+
+    setTimeout(() => {
+      const titles = this.navigatorService.getNavigatorTitles();
+      this.navigatorService.titles.set(titles);
+    });
+
+    this.wrapTable();
+    this.toggleMobileMenu(false);
+    this.scrollToContent();
+  });
+
+  updateTitle = effect(() => {
+    const docContent = this.docContent.value() ?? '';
+    const title = docContent
+      .match(/^#{1}.*/)?.[0]
+      .replace('#', '')
+      .trim();
+
+    this.title.setTitle(title || 'NgDynamicJsonForm');
+  });
 
   showMobileMenu = false;
-
-  windowSize$ = this.layoutService.windowSize$.pipe(delay(0));
-
-  content$: Observable<SafeHtml> = this.loadDoc$.pipe(
-    map((x) => this.markdownService.parse(x)),
-    tap(() => {
-      this.navigatorService.getNavigatorTitles();
-      this.docLoaderService.wrapTable();
-      this.toggleMobileMenu(false);
-      this.scrollToContent();
-    })
-  );
-
-  ngOnInit(): void {
-    this.reloadOnLanguageChange();
-  }
 
   ngOnDestroy(): void {
     this.docLoaderService.clearCache();
@@ -96,34 +124,38 @@ export class PageDocsComponent {
     html.style.scrollBehavior = value ? 'smooth' : '';
   }
 
-  private getDefaultPath$(): Observable<any> {
-    return this.docLoaderService
-      .firstContentPath$()
-      .pipe(tap((x) => this.router.navigateByUrl(x, { replaceUrl: true })));
-  }
+  private wrapTable(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-  private reloadOnLanguageChange(): void {
-    this.langService.language$
-      .pipe(
-        tap(() => {
-          if (!this.router.url.includes('.md')) return;
+    const host = this.el.nativeElement as HTMLElement;
 
-          const currentRoute = this.router.url;
-          const { selectedLanguage, languageFromUrl } = this.langService;
-          const newRoute = currentRoute.replace(
-            !languageFromUrl ? '' : `_${languageFromUrl}.md`,
-            `_${selectedLanguage}.md`
-          );
+    window.requestAnimationFrame(() => {
+      const tables = Array.from(
+        host.querySelectorAll('table'),
+      ) as HTMLTableElement[];
 
-          this.router.navigateByUrl(newRoute);
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
+      for (const table of tables) {
+        const tableWrapper = document.createElement('div');
+        const tableCloned = table.cloneNode(true);
+        const wrapped =
+          table.parentElement?.classList.contains('table-wrapper') ?? false;
+
+        if (wrapped) continue;
+
+        tableWrapper.classList.add('table-wrapper');
+        tableWrapper.appendChild(tableCloned);
+        table.parentElement?.insertBefore(tableWrapper, table);
+        table.remove();
+      }
+    });
   }
 
   private scrollToContent(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const id = this.route.snapshot.fragment?.split('?')[0];
 
