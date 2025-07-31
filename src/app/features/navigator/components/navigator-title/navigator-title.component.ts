@@ -78,9 +78,8 @@ export class NavigatorTitleComponent {
   linksFlatten = computed(() => {
     const links = this.links() ?? [];
     const flatten = (input: NavigatorTitleItem[]): NavigatorTitleItem[] => {
-      return input.flatMap((x) =>
-        !x.children ? x : flatten(x.children ?? []),
-      );
+      const children = input.flatMap((x) => flatten(x.children ?? []));
+      return [...input, ...children];
     };
 
     const result = flatten(links);
@@ -143,7 +142,7 @@ export class NavigatorTitleComponent {
     const activeTitle = this.getActiveTitle();
     if (!activeTitle) {
       if (this._bodyScrollFraction < 0.05) {
-        this.currentActiveId.set([]);
+        // this.currentActiveId.set([]);
       }
 
       return;
