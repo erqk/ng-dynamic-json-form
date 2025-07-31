@@ -109,33 +109,33 @@ jobs:
           # Fix asset paths in HTML files to work with versioned folders
           echo "Fixing asset paths for version: $VERSION"
 
-          # First, fix the base href tag specifically to avoid double processing
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"[^\"]*\">|<base href=\"/$REPO_NAME/$VERSION/\">|g" {} \;
-
-          # Fix other href attributes (but NOT base href) that already contain repo name
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|\(<[^>]*\)\(href=\"/$REPO_NAME/\)\([^\"]*\"\)\([^>]*>\)|\1\2$VERSION/\3\4|g" {} \;
-
-          # Fix src attributes that already contain repo name
+          # Step 1: Fix src attributes first
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/$REPO_NAME/|src=\"/$REPO_NAME/$VERSION/|g" {} \;
-
-          # Fix url() in style attributes
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
-
-          # Fix generic absolute paths for src (excluding base href)
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/\([^/]\)|src=\"/$REPO_NAME/$VERSION/\1|g" {} \;
 
-          # Fix generic absolute paths for href (excluding base href)
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "/base href/!s|\(<[^>]*\)\(href=\"/\)\([^/][^\"]*\"\)\([^>]*>\)|\1\2$REPO_NAME/$VERSION/\3\4|g" {} \;
+          # Step 2: Fix href attributes (except base href - we'll handle it separately)
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<link\([^>]*\)href=\"/$REPO_NAME/|<link\1href=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<link\([^>]*\)href=\"/\([^/]\)|<link\1href=\"/$REPO_NAME/$VERSION/\2|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<a\([^>]*\)href=\"/$REPO_NAME/|<a\1href=\"/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<a\([^>]*\)href=\"/\([^/]\)|<a\1href=\"/$REPO_NAME/$VERSION/\2|g" {} \;
 
-          # Fix CSS files
+          # Step 3: Fix url() in CSS within HTML
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/\([^/]\)|url(/$REPO_NAME/$VERSION/\1|g" {} \;
+
+          # Step 4: Fix CSS files
           find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/$REPO_NAME/|url(/$REPO_NAME/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/\([^/]\)|url(/$REPO_NAME/$VERSION/\1|g" {} \;
 
-          # Fix JS files
+          # Step 5: Fix JS files
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/$REPO_NAME/|'/$REPO_NAME/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/$REPO_NAME/|\"/$REPO_NAME/$VERSION/|g" {} \;
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/\([^/]\)|'/$REPO_NAME/$VERSION/\1|g" {} \;
           find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/\([^/]\)|\"/$REPO_NAME/$VERSION/\1|g" {} \;
+
+          # Step 6: FINALLY fix base href (after all other processing is done)
+          echo "Fixing base href tag specifically..."
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"[^\"]*\">|<base href=\"/$REPO_NAME/$VERSION/\">|g" {} \;
 
           echo "Asset path fixing complete"
 
