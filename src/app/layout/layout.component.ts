@@ -8,39 +8,38 @@ import { UiContentWrapperComponent } from '../features/ui-content-wrapper/ui-con
 import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
-    selector: 'app-layout',
-    imports: [
-        CommonModule,
-        RouterModule,
-        UiContentWrapperComponent,
-        NavigatorTitleComponent,
-        UiLoadingIndicatorComponent,
-    ],
-    template: `
+  selector: 'app-layout',
+  imports: [
+    CommonModule,
+    RouterModule,
+    UiContentWrapperComponent,
+    NavigatorTitleComponent,
+    UiLoadingIndicatorComponent,
+  ],
+  template: `
     @if (docsLoading$.value === true) {
-      <ui-loading-indicator
-      ></ui-loading-indicator>
+      <ui-loading-indicator></ui-loading-indicator>
     }
-    
+
     <ui-content-wrapper
       class="main"
       [ngClass]="{
-        hidden: docsLoading$.value === true
+        hidden: docsLoading$.value === true,
       }"
       [maxWidth]="'100%'"
       [@fade-up]="docsLoading$.value === false"
-      >
+    >
       <app-navigator-title class="side-pane"></app-navigator-title>
       <div class="content">
         <router-outlet></router-outlet>
       </div>
     </ui-content-wrapper>
-    `,
-    styleUrls: ['./layout.component.scss'],
-    animations: [FADE_UP_ANIMATION]
+  `,
+  styleUrls: ['./layout.component.scss'],
+  animations: [FADE_UP_ANIMATION],
 })
 export class LayoutComponent {
   private docsLoaderService = inject(DocsLoaderService);
 
-  docsLoading$ = this.docsLoaderService.docLoading$;
+  docsLoading$ = this.docsLoaderService.docLoading;
 }

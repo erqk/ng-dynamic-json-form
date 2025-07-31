@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, TransferState, inject, makeStateKey } from '@angular/core';
 import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  finalize,
-  map,
-  of,
-  tap,
-} from 'rxjs';
+  Injectable,
+  TransferState,
+  inject,
+  makeStateKey,
+  signal,
+} from '@angular/core';
+import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 import { LanguageService } from '../../language/language-data.service';
 import { VersionService } from '../../version/version.service';
 
@@ -22,7 +20,7 @@ export class DocsLoaderService {
   private languageDataService = inject(LanguageService);
   private docCache: { path: string; data: string }[] = [];
 
-  docLoading$ = new BehaviorSubject<boolean>(false);
+  docLoading = signal<boolean>(false);
 
   loadDoc$(path: string): Observable<string> {
     if (path.startsWith('docs/')) {
@@ -30,7 +28,7 @@ export class DocsLoaderService {
     }
 
     const cacheData = this.docCache.find(
-      (x) => x.path === path && x.data
+      (x) => x.path === path && x.data,
     )?.data;
 
     if (cacheData) return of(cacheData);
@@ -47,7 +45,7 @@ export class DocsLoaderService {
       return of(this.transferState.get(key, ''));
     }
 
-    this.docLoading$.next(true);
+    this.docLoading.set(true);
     return this.http
       .get(url, {
         responseType: 'text',
@@ -71,10 +69,10 @@ export class DocsLoaderService {
           this.docCache.push({ path, data: x });
           this.transferState.set(key, x);
         }),
-        finalize(() => this.docLoading$.next(false)),
+        finalize(() => this.docLoading.set(false)),
         catchError((err) => {
           throw err;
-        })
+        }),
       );
   }
 
@@ -109,7 +107,7 @@ export class DocsLoaderService {
 
         return result;
       }),
-      catchError(() => this.firstContentPath$(true))
+      catchError(() => this.firstContentPath$(true)),
     );
   }
 
@@ -118,7 +116,7 @@ export class DocsLoaderService {
 
     window.setTimeout(() => {
       const tables = Array.from(
-        document.querySelectorAll('table')
+        document.querySelectorAll('table'),
       ) as HTMLTableElement[];
 
       for (const table of tables) {

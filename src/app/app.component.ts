@@ -30,15 +30,15 @@ import { LanguageService } from './features/language/language-data.service';
 import { UiLoadingIndicatorComponent } from './features/ui-loading-indicator/ui-loading-indicator.component';
 
 @Component({
-    selector: 'app-root',
-    imports: [
-        CommonModule,
-        RouterOutlet,
-        HeaderComponent,
-        UiLoadingIndicatorComponent,
-    ],
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+  selector: 'app-root',
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeaderComponent,
+    UiLoadingIndicatorComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   private cd = inject(ChangeDetectorRef);
@@ -53,7 +53,7 @@ export class AppComponent {
   isServer = true;
 
   headerHeight$ = this.layoutService.headerHeight$.pipe(delay(0));
-  docLoading$ = this.docsLoaderService.docLoading$.pipe(delay(0));
+  docLoading = this.docsLoaderService.docLoading;
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -77,7 +77,7 @@ export class AppComponent {
         tap(() => {
           this.layoutService.updateHeaderHeight();
           this.layoutService.updateWindowSize();
-        })
+        }),
       )
       .subscribe();
   }
@@ -100,7 +100,7 @@ export class AppComponent {
           this.langService.setCurrentLanguage();
           this.cd.detectChanges();
         }
-      })
+      }),
     );
   }
 
@@ -125,7 +125,7 @@ export class AppComponent {
         selector,
         createCustomElement(component, {
           injector: this.injector!,
-        })
+        }),
       );
     };
 
