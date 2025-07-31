@@ -1,5 +1,5 @@
 # Simple workflow for deploying versioned static content to GitHub Pages
-name: Build and deploy github pages
+name: Build and deploy github pages with versioning
 
 on:
   # Runs on pushes to version branches
