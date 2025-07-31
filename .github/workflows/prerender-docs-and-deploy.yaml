@@ -1,4 +1,4 @@
-name: Pre-render docs content and deploy to GitHub pages s
+name: Pre-render docs content and deploy to GitHub pages
 
 on:
   push:
