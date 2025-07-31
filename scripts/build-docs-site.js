@@ -58,7 +58,8 @@ async function main() {
     await waitOn({ resources: [SERVER_URL], timeout: 60000 });
 
     console.log("📄 Step 4: Running prerender...");
-    await run("npm", ["run", "prerender"]);
+    await run("npm", ["run", "prerender:get-routes"]);
+    await run("npm", ["run", "ng", "build", "docs"]);
 
     console.log("🛑 Step 5: Stopping dev server...");
     await killByPid(serverProc.pid);

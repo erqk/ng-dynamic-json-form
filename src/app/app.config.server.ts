@@ -7,7 +7,7 @@ import { provideServerRendering } from '@angular/ssr';
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
 
 const serverConfig: ApplicationConfig = {
