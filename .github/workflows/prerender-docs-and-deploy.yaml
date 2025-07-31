@@ -1,4 +1,4 @@
-name: Deploy docs with version to GitHub pages
+name: Pre-render docs content and deploy to GitHub pages
 
 on:
   push:
@@ -51,32 +51,68 @@ jobs:
           if [[ $BRANCH_NAME =~ ^v[0-9]+$ ]]; then
             # Branch name is already in format v1, v2, etc.
             VERSION=$BRANCH_NAME
+            echo "Using branch name as version: $VERSION"
           elif [[ $BRANCH_NAME == "main" ]]; then
-            # For main branch, try to get version from package.json or git tag
-            if [ -f "package.json" ]; then
-              FULL_VERSION=$(node -p "require('./package.json').version")
-              MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
-              VERSION="v$MAJOR_VERSION"
+            # For main branch, try to get version from lib/package.json or git tag
+            if [ -f "lib/package.json" ]; then
+              FULL_VERSION=$(node -p "require('./lib/package.json').version" 2>/dev/null || echo "")
+              echo "Full version from lib/package.json: $FULL_VERSION"
+              if [[ -n "$FULL_VERSION" && "$FULL_VERSION" != "undefined" ]]; then
+                MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
+                VERSION="v$MAJOR_VERSION"
+                echo "Extracted major version from lib/package.json: $VERSION"
+              else
+                echo "Could not read version from lib/package.json, trying git tags..."
+                FULL_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
+                if [[ -n "$FULL_VERSION" ]]; then
+                  MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
+                  VERSION="v$MAJOR_VERSION"
+                  echo "Extracted major version from git tag: $VERSION"
+                else
+                  echo "No git tags found, defaulting to v1"
+                  VERSION="v1"
+                fi
+              fi
             else
-              # Fallback to latest git tag
-              FULL_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "1")
-              MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
-              VERSION="v$MAJOR_VERSION"
+              echo "No lib/package.json found, trying git tags..."
+              FULL_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
+              if [[ -n "$FULL_VERSION" ]]; then
+                MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
+                VERSION="v$MAJOR_VERSION"
+                echo "Extracted major version from git tag: $VERSION"
+              else
+                echo "No git tags found, defaulting to v1"
+                VERSION="v1"
+              fi
             fi
           else
             # Fallback: extract version from branch name or use branch name
-            VERSION=$(echo $BRANCH_NAME | grep -oE 'v[0-9]+' || echo $BRANCH_NAME)
+            VERSION=$(echo $BRANCH_NAME | grep -oE 'v[0-9]+' || echo "v1")
+            echo "Fallback version: $VERSION"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Detected major version: $VERSION"
+          echo "Final detected major version: $VERSION"
 
-      # Setup major versioned directory structure
+      # Setup major versioned directory structure and fix asset paths
       - name: 📁 Setup versioned docs
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           mkdir -p ./versioned-docs/$VERSION
           cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
+
+          # Fix asset paths in HTML files to work with versioned folders
+          echo "Fixing asset paths for version: $VERSION"
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
+
+          # Fix any remaining absolute paths that might break
+          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$VERSION/|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$VERSION/|g" {} \;
+
+          echo "Asset path fixing complete"
 
           # Create or update root index.html that redirects to latest major version
           cat > ./versioned-docs/index.html << EOF
