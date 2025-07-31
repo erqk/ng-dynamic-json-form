@@ -38,9 +38,6 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: ⚙️ Run prerender pipeline
-        run: npm run build:docs
-
       # Get major version from branch name
       - name: 🏷️ Get major version
         id: get_version
@@ -94,25 +91,31 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Final detected major version: $VERSION"
 
-      # Setup major versioned directory structure and fix asset paths
+      - name: ⚙️ Run prerender pipeline
+        run: npm run build:docs
+
+      # Setup major versioned directory structure and replace version placeholder
       - name: 📁 Setup versioned docs
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           mkdir -p ./versioned-docs/$VERSION
           cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
 
-          # Fix asset paths in HTML files to work with versioned folders
-          echo "Fixing asset paths for version: $VERSION"
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|src=\"/|src=\"/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|href=\"/|href=\"/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
+          echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
 
-          # Fix any remaining absolute paths that might break
-          find ./versioned-docs/$VERSION -name "*.css" -type f -exec sed -i "s|url(/|url(/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|'/|'/$VERSION/|g" {} \;
-          find ./versioned-docs/$VERSION -name "*.js" -type f -exec sed -i "s|\"/|\"/$VERSION/|g" {} \;
+          # Replace {{VERSION}} placeholder specifically in base href tags only - AFTER prerender
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
-          echo "Asset path fixing complete"
+          # Also handle the case where the closing tag might be different
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
+
+          # Verify the replacement worked
+          echo "=== Checking base href after replacement ==="
+          find ./versioned-docs/$VERSION -name "index.html" -exec grep -H "base href" {} \; || echo "No base href found"
+
+          # Debug: Show if any {{VERSION}} placeholders remain
+          echo "=== Checking for remaining {{VERSION}} placeholders ==="
+          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No placeholders remaining - good!"
 
           # Create or update root index.html that redirects to latest major version
           cat > ./versioned-docs/index.html << EOF
@@ -147,7 +150,7 @@ jobs:
             # Create a temporary branch to access gh-pages content safely
             git checkout -b temp-gh-pages origin/gh-pages 2>/dev/null || {
               echo "Failed to checkout gh-pages, continuing without preserving versions"
-              git checkout main
+              git checkout ${GITHUB_REF#refs/heads/}
               exit 0
             }
             
