@@ -11,7 +11,7 @@ env:
   # Customize these based on your project
   BUILD_COMMAND: npm run build:docs  # or yarn build:docs, make docs, etc.
   BUILD_OUTPUT_DIR: dist  # Directory where built docs are located
-  NODE_VERSION: '18'      # Node.js version to use
+  NODE_VERSION: '20'      # Node.js version to use
 
 jobs:
   build-and-commit:
