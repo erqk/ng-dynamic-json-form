@@ -4,290 +4,290 @@ name: Build and Commit Versioned Documentation (Advanced)
 on:
   push:
     branches:
-      - 'v[0-9]*'  # Matches version branches like v8, v9, v10, etc.
-  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
+      - "v[0-9]*" # Matches version branches like v8, v9, v10, etc.
+  workflow_dispatch: # Allows manual triggering from GitHub Actions UI
 
 env:
   # Customize these based on your project
-  BUILD_COMMAND: npm run build:docs  # or yarn build:docs, make docs, etc.
-  BUILD_OUTPUT_DIR: dist  # Directory where built docs are located
-  NODE_VERSION: '20'      # Node.js version to use
+  BUILD_COMMAND: npm run build:docs # or yarn build:docs, make docs, etc.
+  BUILD_OUTPUT_DIR: dist # Directory where built docs are located
+  NODE_VERSION: "18" # Node.js version to use
 
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write  # Required to push to gh-pages branch
-    
-    steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    # Setup build environment based on your project type
-    - name: Setup Node.js
-      if: contains(env.BUILD_COMMAND, 'npm') || contains(env.BUILD_COMMAND, 'yarn') || contains(env.BUILD_COMMAND, 'node')
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    - name: Setup Python
-      if: contains(env.BUILD_COMMAND, 'python') || contains(env.BUILD_COMMAND, 'pip')
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-        cache: 'pip'
-    
-    - name: Setup Ruby
-      if: contains(env.BUILD_COMMAND, 'bundle') || contains(env.BUILD_COMMAND, 'jekyll')
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.0'
-        bundler-cache: true
-    
-    # Install dependencies based on what's available
-    - name: Install dependencies
-      run: |
-        echo "Installing dependencies..."
-        if [ -f "package.json" ]; then
-          echo "Found package.json, installing npm dependencies"
-          npm install
-        elif [ -f "yarn.lock" ]; then
-          echo "Found yarn.lock, installing yarn dependencies"
-          yarn install
-        elif [ -f "requirements.txt" ]; then
-          echo "Found requirements.txt, installing Python dependencies"
-          pip install -r requirements.txt
-        elif [ -f "Gemfile" ]; then
-          echo "Found Gemfile, installing Ruby dependencies"
-          bundle install
-        elif [ -f "go.mod" ]; then
-          echo "Found go.mod, installing Go dependencies"
-          go mod download
-        else
-          echo "No dependency file found, skipping dependency installation"
-        fi
-    
-    - name: Build documentation
-      run: |
-        echo "Building documentation with command: ${{ env.BUILD_COMMAND }}"
-        ${{ env.BUILD_COMMAND }}
-        
-        # Verify build output exists
-        if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}" ]; then
-          echo "Error: Build output directory '${{ env.BUILD_OUTPUT_DIR }}' not found!"
-          echo "Available directories:"
-          ls -la
-          exit 1
-        fi
-        
-        echo "Build completed successfully. Output directory contents:"
-        ls -la ${{ env.BUILD_OUTPUT_DIR }}
-    
-    - name: Extract version information
-      id: version_info
-      run: |
-        BRANCH_NAME=${GITHUB_REF#refs/heads/}
-        VERSION=${BRANCH_NAME#v}
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-        echo "Building documentation for version: $VERSION from branch: $BRANCH_NAME"
-    
-    - name: Checkout gh-pages branch
-      uses: actions/checkout@v4
-      with:
-        ref: gh-pages
-        path: gh-pages
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Update version documentation
-      run: |
-        VERSION=${{ steps.version_info.outputs.version }}
-        
-        echo "Updating documentation for version: $VERSION"
-        
-        # Remove existing version directory if it exists
-        if [ -d "gh-pages/$VERSION" ]; then
-          echo "Removing existing version directory: $VERSION"
-          rm -rf gh-pages/$VERSION
-        fi
-        
-        # Create version directory
-        mkdir -p gh-pages/$VERSION
-        
-        # Copy built documentation to version directory
-        echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }} to gh-pages/$VERSION"
-        cp -r ${{ env.BUILD_OUTPUT_DIR }}/* gh-pages/$VERSION/
-        
-        # Verify files were copied
-        echo "Files in version directory:"
-        ls -la gh-pages/$VERSION/
-        
-        echo "Documentation successfully copied to version directory: $VERSION"
-    
-    - name: Create redirect index
-      run: |
-        cd gh-pages
-        
-        echo "Creating redirect index page..."
-        
-        # Find all version directories and sort them
-        VERSIONS=($(find . -maxdepth 1 -type d -name '[0-9]*' | sed 's|./||' | sort -V))
-        echo "Found versions: ${VERSIONS[*]}"
-        
-        # Get the latest version (last in sorted array)
-        if [ ${#VERSIONS[@]} -gt 0 ]; then
-          LATEST_VERSION=${VERSIONS[-1]}
-          echo "Latest version determined to be: $LATEST_VERSION"
-          
-          cat > index.html << EOF
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url=/$LATEST_VERSION/">
-    <link rel="canonical" href="/$LATEST_VERSION/">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-            background: #f8f9fa;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0366d6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        a {
-            color: #0366d6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .version-badge {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 0.9em;
-            display: inline-block;
-            margin-top: 10px;
-        }
-    </style>
-    <script>
-        // Immediate redirect using JavaScript as fallback
-        window.location.href = '/$LATEST_VERSION/';
-    </script>
-</head>
-<body>
-    <div class="container">
-        <div class="spinner"></div>
-        <h2>Redirecting to Documentation</h2>
-        <p>Taking you to the latest version...</p>
-        <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
-        <div class="version-badge">v$LATEST_VERSION</div>
-    </div>
-</body>
-</html>
-EOF
-          echo "Created redirect index for latest version: $LATEST_VERSION"
-        else
-          echo "No versions found, creating placeholder index"
-          cat > index.html << EOF
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-            background: #f8f9fa;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📚 Documentation</h1>
-        <p>No documentation versions available yet.</p>
-        <p><small>Documentation will appear here once you push to a version branch.</small></p>
-    </div>
-</body>
-</html>
-EOF
-        fi
-    
-    - name: Commit and push to gh-pages branch
-      run: |
-        cd gh-pages
-        
-        # Configure git
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        
-        # Add all changes
-        git add .
-        
-        # Check if there are changes to commit
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-          exit 0
-        fi
-        
-        # Show what will be committed
-        echo "Changes to be committed:"
-        git diff --staged --name-status
-        
-        # Commit changes
-        COMMIT_MESSAGE="Deploy documentation for version ${{ steps.version_info.outputs.version }}
 
-        - Updated version ${{ steps.version_info.outputs.version }} documentation
-        - Updated redirect to latest version
-        - Built from commit: ${{ github.sha }}
-        - Branch: ${{ steps.version_info.outputs.branch }}"
-        
-        git commit -m "$COMMIT_MESSAGE"
-        
-        # Push to gh-pages branch
-        echo "Pushing to gh-pages branch..."
-        git push origin gh-pages
-        
-        echo "✅ Successfully pushed documentation to gh-pages branch"
-        echo "📚 Documentation for version ${{ steps.version_info.outputs.version }} is now available"
+    permissions:
+      contents: write # Required to push to gh-pages branch
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Setup build environment based on your project type
+      - name: Setup Node.js
+        if: contains(env.BUILD_COMMAND, 'npm') || contains(env.BUILD_COMMAND, 'yarn') || contains(env.BUILD_COMMAND, 'node')
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Setup Python
+        if: contains(env.BUILD_COMMAND, 'python') || contains(env.BUILD_COMMAND, 'pip')
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          cache: "pip"
+
+      - name: Setup Ruby
+        if: contains(env.BUILD_COMMAND, 'bundle') || contains(env.BUILD_COMMAND, 'jekyll')
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0"
+          bundler-cache: true
+
+      # Install dependencies based on what's available
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          if [ -f "package.json" ]; then
+            echo "Found package.json, installing npm dependencies"
+            npm install
+          elif [ -f "yarn.lock" ]; then
+            echo "Found yarn.lock, installing yarn dependencies"
+            yarn install
+          elif [ -f "requirements.txt" ]; then
+            echo "Found requirements.txt, installing Python dependencies"
+            pip install -r requirements.txt
+          elif [ -f "Gemfile" ]; then
+            echo "Found Gemfile, installing Ruby dependencies"
+            bundle install
+          elif [ -f "go.mod" ]; then
+            echo "Found go.mod, installing Go dependencies"
+            go mod download
+          else
+            echo "No dependency file found, skipping dependency installation"
+          fi
+
+      - name: Build documentation
+        run: |
+          echo "Building documentation with command: ${{ env.BUILD_COMMAND }}"
+          ${{ env.BUILD_COMMAND }}
+
+          # Verify build output exists
+          if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}" ]; then
+            echo "Error: Build output directory '${{ env.BUILD_OUTPUT_DIR }}' not found!"
+            echo "Available directories:"
+            ls -la
+            exit 1
+          fi
+
+          echo "Build completed successfully. Output directory contents:"
+          ls -la ${{ env.BUILD_OUTPUT_DIR }}
+
+      - name: Extract version information
+        id: version_info
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          VERSION=${BRANCH_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Building documentation for version: $VERSION from branch: $BRANCH_NAME"
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update version documentation
+        run: |
+          VERSION=${{ steps.version_info.outputs.version }}
+
+          echo "Updating documentation for version: $VERSION"
+
+          # Remove existing version directory if it exists
+          if [ -d "gh-pages/$VERSION" ]; then
+            echo "Removing existing version directory: $VERSION"
+            rm -rf gh-pages/$VERSION
+          fi
+
+          # Create version directory
+          mkdir -p gh-pages/$VERSION
+
+          # Copy built documentation to version directory
+          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }} to gh-pages/$VERSION"
+          cp -r ${{ env.BUILD_OUTPUT_DIR }}/* gh-pages/$VERSION/
+
+          # Verify files were copied
+          echo "Files in version directory:"
+          ls -la gh-pages/$VERSION/
+
+          echo "Documentation successfully copied to version directory: $VERSION"
+
+      - name: Create redirect index
+        run: |
+          cd gh-pages
+
+          echo "Creating redirect index page..."
+
+          # Find all version directories and sort them
+          VERSIONS=($(find . -maxdepth 1 -type d -name '[0-9]*' | sed 's|./||' | sort -V))
+          echo "Found versions: ${VERSIONS[*]}"
+
+          # Get the latest version (last in sorted array)
+          if [ ${#VERSIONS[@]} -gt 0 ]; then
+            LATEST_VERSION=${VERSIONS[-1]}
+            echo "Latest version determined to be: $LATEST_VERSION"
+            
+            cat > index.html << EOF
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Documentation - Redirecting...</title>
+                <meta http-equiv="refresh" content="0; url=/$LATEST_VERSION/">
+                <link rel="canonical" href="/$LATEST_VERSION/">
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        text-align: center;
+                        padding: 50px 20px;
+                        color: #666;
+                        background: #f8f9fa;
+                    }
+                    .container {
+                        max-width: 400px;
+                        margin: 0 auto;
+                        background: white;
+                        padding: 40px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    }
+                    .spinner {
+                        border: 3px solid #f3f3f3;
+                        border-top: 3px solid #0366d6;
+                        border-radius: 50%;
+                        width: 40px;
+                        height: 40px;
+                        animation: spin 1s linear infinite;
+                        margin: 20px auto;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    a {
+                        color: #0366d6;
+                        text-decoration: none;
+                        font-weight: 500;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                    .version-badge {
+                        background: #e3f2fd;
+                        color: #1976d2;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 0.9em;
+                        display: inline-block;
+                        margin-top: 10px;
+                    }
+                </style>
+                <script>
+                    // Immediate redirect using JavaScript as fallback
+                    window.location.href = '/$LATEST_VERSION/';
+                </script>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="spinner"></div>
+                    <h2>Redirecting to Documentation</h2>
+                    <p>Taking you to the latest version...</p>
+                    <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
+                    <div class="version-badge">v$LATEST_VERSION</div>
+                </div>
+            </body>
+            </html>
+            EOF
+            echo "Created redirect index for latest version: $LATEST_VERSION"
+          else
+            echo "No versions found, creating placeholder index"
+            cat > index.html << EOF
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Documentation</title>
+                  <style>
+                      body {
+                          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                          text-align: center;
+                          padding: 50px 20px;
+                          color: #666;
+                          background: #f8f9fa;
+                      }
+                      .container {
+                          max-width: 400px;
+                          margin: 0 auto;
+                          background: white;
+                          padding: 40px;
+                          border-radius: 8px;
+                          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                      }
+                  </style>
+              </head>
+              <body>
+                  <div class="container">
+                      <h1>📚 Documentation</h1>
+                      <p>No documentation versions available yet.</p>
+                      <p><small>Documentation will appear here once you push to a version branch.</small></p>
+                  </div>
+              </body>
+              </html>
+              EOF
+          fi
+
+      - name: Commit and push to gh-pages branch
+        run: |
+          cd gh-pages
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add all changes
+          git add .
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Show what will be committed
+          echo "Changes to be committed:"
+          git diff --staged --name-status
+
+          # Commit changes
+          COMMIT_MESSAGE="Deploy documentation for version ${{ steps.version_info.outputs.version }}
+
+          - Updated version ${{ steps.version_info.outputs.version }} documentation
+          - Updated redirect to latest version
+          - Built from commit: ${{ github.sha }}
+          - Branch: ${{ steps.version_info.outputs.branch }}"
+
+          git commit -m "$COMMIT_MESSAGE"
+
+          # Push to gh-pages branch
+          echo "Pushing to gh-pages branch..."
+          git push origin gh-pages
+
+          echo "✅ Successfully pushed documentation to gh-pages branch"
+          echo "📚 Documentation for version ${{ steps.version_info.outputs.version }} is now available"
