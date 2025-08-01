@@ -147,24 +147,24 @@ jobs:
 
           echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
 
-          # Debug: Show what we're looking for before replacement in specific folders
-          echo "=== Looking for {{VERSION}} placeholder before replacement in browser and server folders ==="
-          find ./versioned-docs/$VERSION -path "*/browser/*.html" -o -path "*/server/*.html" | head -10 | xargs grep -H "{{VERSION}}" 2>/dev/null || echo "No {{VERSION}} placeholder found in browser/server HTML files"
+          # Debug: Show what we're looking for before replacement
+          echo "=== Looking for {{VERSION}} placeholder before replacement ==="
+          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No {{VERSION}} placeholder found"
 
           # Replace {{VERSION}} placeholder specifically in base href tags only - AFTER prerender
-          # Target only HTML files in browser and server directories
-          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
+          # Search in ALL HTML files in the version directory (since we copied everything to the root of version dir)
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
           # Also handle the case where the closing tag might be different
-          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
+          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
-          # Verify the replacement worked in the main index.html
+          # Verify the replacement worked
           echo "=== Checking base href after replacement ==="
           find ./versioned-docs/$VERSION -name "index.html" -exec grep -H "base href" {} \; || echo "No base href found"
 
-          # Debug: Show if any {{VERSION}} placeholders remain in browser/server folders
-          echo "=== Checking for remaining {{VERSION}} placeholders in browser/server folders ==="
-          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) | head -10 | xargs grep -H "{{VERSION}}" 2>/dev/null || echo "No placeholders remaining in browser/server - good!"
+          # Debug: Show if any {{VERSION}} placeholders remain
+          echo "=== Checking for remaining {{VERSION}} placeholders ==="
+          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No placeholders remaining - good!"
 
           # Debug: Show final index.html content
           if [ -f "./versioned-docs/$VERSION/index.html" ]; then
@@ -215,9 +215,8 @@ jobs:
           # Create a temporary directory for existing content
           mkdir -p ./temp-existing
 
-          # Since we're using actions/deploy-pages, previous versions aren't in gh-pages branch
-          # Try to discover existing versions dynamically from the live site
-          echo "Attempting to discover and preserve existing versions from live site..."
+          # Download existing versions from the live site and include them in the new deployment
+          echo "Downloading existing versions from live site to preserve them..."
 
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME"
@@ -225,20 +224,28 @@ jobs:
 
           echo "Checking for existing versions at: $BASE_URL"
 
-          # Method 1: Try to get the root page and parse for version links
-          echo "Attempting to discover versions from root page..."
+          # Try to get the root page and parse for version links
+          echo "Discovering versions from root page..."
           if curl -f -s "$BASE_URL/" -o ./temp-root.html 2>/dev/null; then
-            # Look for version links in the root page (like v1/, v2/, etc.)
+            # Look for version links in the root page
             DISCOVERED_VERSIONS=$(grep -oE 'href="[./]*v[0-9]+/"' ./temp-root.html | sed 's/href="[./]*\(v[0-9]\+\)\//\1/' | sort -u || echo "")
             if [ -n "$DISCOVERED_VERSIONS" ]; then
-              echo "Discovered versions from root page: $DISCOVERED_VERSIONS"
+              echo "Discovered versions: $DISCOVERED_VERSIONS"
               for version in $DISCOVERED_VERSIONS; do
                 if [ "$version" != "$CURRENT_VERSION" ]; then
-                  echo "Checking discovered version: $version"
-                  if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
-                    echo "✅ Confirmed existing version: $version"
-                    mkdir -p "./temp-existing/$version"
-                    echo "<!-- Existing version $version will be preserved -->" > "./temp-existing/$version/placeholder.html"
+                  echo "Downloading existing version: $version"
+                  mkdir -p "./temp-existing/$version"
+                  # Download the entire version directory using wget
+                  if wget -r -np -nH -P "./temp-existing" --cut-dirs=1 -q "$BASE_URL/$version/" 2>/dev/null; then
+                    echo "✅ Successfully downloaded: $version"
+                  else
+                    echo "⚠️ Failed to download $version, trying individual files..."
+                    # Fallback: try to download key files individually
+                    for file in index.html main.*.js polyfills.*.js styles.*.css; do
+                      if curl -f -s "$BASE_URL/$version/$file" -o "./temp-existing/$version/$file" 2>/dev/null; then
+                        echo "Downloaded $version/$file"
+                      fi
+                    done
                   fi
                 fi
               done
@@ -246,36 +253,36 @@ jobs:
             rm -f ./temp-root.html
           fi
 
-          # Method 2: Fallback - try common version patterns up to v20
+          # Fallback: try common versions if discovery failed
           if [ ! -d "./temp-existing" ] || [ -z "$(ls -A ./temp-existing 2>/dev/null)" ]; then
-            echo "No versions discovered from root page, trying systematic check..."
-            for i in {1..20}; do
+            echo "Discovery failed, trying systematic download for common versions..."
+            for i in {1..10}; do
               version="v$i"
               if [ "$version" != "$CURRENT_VERSION" ]; then
-                echo "Checking if $version exists..."
+                echo "Trying to download $version..."
                 if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
-                  echo "✅ Found existing version: $version"
+                  echo "Found $version, downloading..."
                   mkdir -p "./temp-existing/$version"
-                  echo "<!-- Existing version $version will be preserved -->" > "./temp-existing/$version/placeholder.html"
+                  if wget -r -np -nH -P "./temp-existing" --cut-dirs=1 -q "$BASE_URL/$version/" 2>/dev/null; then
+                    echo "✅ Downloaded: $version"
+                  fi
                 fi
               fi
             done
           fi
 
-          # Show what we found
+          # Copy downloaded versions to versioned-docs (ACTUALLY PRESERVE THEM)
           if [ -d "./temp-existing" ] && [ -n "$(ls -A ./temp-existing 2>/dev/null)" ]; then
-            echo "Found existing versions to preserve:"
+            echo "Copying preserved versions to deployment..."
+            cp -r ./temp-existing/* ./versioned-docs/ 2>/dev/null || true
+            echo "✅ Preserved versions:"
             ls -la ./temp-existing/
           else
-            echo "No existing versions found - this might be the first deployment or all previous versions are inaccessible"
+            echo "No existing versions found to preserve"
           fi
 
-          # For now, skip complex preservation and just deploy the current version
-          echo "Note: Full version preservation is temporarily disabled"
-          echo "Current deployment will only include: $CURRENT_VERSION"
-
           # List all major versions for debugging
-          echo "Available major versions after preservation:"
+          echo "Final deployment will include:"
           ls -la ./versioned-docs/
 
       - name: ⚙️ Configure GitHub Pages
