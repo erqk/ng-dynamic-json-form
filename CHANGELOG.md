@@ -1,3 +1,46 @@
+# 9.0.0 (2025-08-01)
+
+- Update to support Angular 20
+- Use signal to replace all the usage of `@Input`, `@Output`, `ngOnChanges`
+
+## Fix
+
+- For control with options, its value should not be overridden after the options is loaded.
+
+## BREAKING CHANGES
+
+### CustomControlComponent
+
+- The properties are now using signal.
+
+  ```ts
+  hostForm = signal<UntypedFormGroup | undefined>(undefined);
+  data = signal<FormControlConfig | undefined>(undefined);
+  hideErrorMessage = signal<boolean | undefined>(undefined);
+  ```
+
+- `registerOnChange` is doing nothing at default. It should not trigger event every time after the `valueChanges` to prevent the CVA becomes dirty unintentionally.
+
+  ```ts
+  // before
+  registerOnChange(fn: any): void {
+    this.control?.valueChanges.subscribe(fn);
+  }
+
+  // after
+  registerOnChange(fn: any): void {}
+  ```
+
+# 8.8.4 (2025-08-01)
+
+[22f8dc3]: https://github.com/erqk/ng-dynamic-json-form/commit/22f8dc3e2bea791c92d540e6d4da80d3a2a2d07e
+[c91e975]: https://github.com/erqk/ng-dynamic-json-form/commit/c91e975386a155453d2c2022b7c241fd4be7aee1
+
+| Commit    | Type | Description                                                                              |
+| --------- | ---- | ---------------------------------------------------------------------------------------- |
+| [22f8dc3] | fix  | FormControlComponent: Don't set errors for custom component on instantiate.              |
+| [c91e975] | feat | PropsBindingDirective: Check if property is signal, and bind only valid HTML attributes. |
+
 # 8.8.3 (2025-07-04)
 
 [e6b7c04]: https://github.com/erqk/ng-dynamic-json-form/commit/e6b7c049c36d21d010506e10e5840e09bb86d6f3
