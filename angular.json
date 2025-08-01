@@ -70,7 +70,7 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/ng-dynamic-json-form/{{VERSION}}"
+              "baseHref": "/ng-dynamic-json-form/{{VERSION}}/"
             },
             "development": {
               "buildOptimizer": false,
