@@ -1,298 +1,190 @@
-name: Pre-render docs content and deploy to GitHub pages
+# .github/workflows/deploy-docs.yml
+name: Build and Commit Versioned Documentation
 
 on:
   push:
     branches:
-      - "v*" # Matches v1, v2, v3, etc.
-      - "main" # Optional: keep main branch
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+      - 'v[0-9]*'  # Matches v8, v9, v10, v11, etc.
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-commit:
     runs-on: ubuntu-latest
-
+    
+    permissions:
+      contents: write  # Required to push to gh-pages branch
+    
     steps:
-      - name: 🛎️ Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history for version detection
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      # Get major version from branch name
-      - name: 🏷️ Get major version
-        id: get_version
-        run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          echo "Current branch: $BRANCH_NAME"
-
-          if [[ $BRANCH_NAME =~ ^v[0-9]+$ ]]; then
-            # Branch name is already in format v1, v2, etc.
-            VERSION=$BRANCH_NAME
-            echo "Using branch name as version: $VERSION"
-          elif [[ $BRANCH_NAME == "main" ]]; then
-            # For main branch, try to get version from lib/package.json or git tag
-            if [ -f "lib/package.json" ]; then
-              FULL_VERSION=$(node -p "require('./lib/package.json').version" 2>/dev/null || echo "")
-              echo "Full version from lib/package.json: $FULL_VERSION"
-              if [[ -n "$FULL_VERSION" && "$FULL_VERSION" != "undefined" ]]; then
-                MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
-                VERSION="v$MAJOR_VERSION"
-                echo "Extracted major version from lib/package.json: $VERSION"
-              else
-                echo "Could not read version from lib/package.json, trying git tags..."
-                FULL_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
-                if [[ -n "$FULL_VERSION" ]]; then
-                  MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
-                  VERSION="v$MAJOR_VERSION"
-                  echo "Extracted major version from git tag: $VERSION"
-                else
-                  echo "No git tags found, defaulting to v1"
-                  VERSION="v1"
-                fi
-              fi
-            else
-              echo "No lib/package.json found, trying git tags..."
-              FULL_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
-              if [[ -n "$FULL_VERSION" ]]; then
-                MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
-                VERSION="v$MAJOR_VERSION"
-                echo "Extracted major version from git tag: $VERSION"
-              else
-                echo "No git tags found, defaulting to v1"
-                VERSION="v1"
-              fi
-            fi
-          else
-            # Fallback: extract version from branch name or use branch name
-            VERSION=$(echo $BRANCH_NAME | grep -oE 'v[0-9]+' || echo "v1")
-            echo "Fallback version: $VERSION"
-          fi
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Final detected major version: $VERSION"
-
-      - name: ⚙️ Run prerender pipeline
-        run: |
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          npm run build:docs
-
-      # Setup major versioned directory structure and replace version placeholder
-      - name: 📁 Setup versioned docs
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-
-          # Debug: Check what was actually built
-          echo "=== Checking build output ==="
-          ls -la ./dist/ || echo "No dist directory"
-          ls -la ./dist/docs/ || echo "No dist/docs directory"
-          ls -la ./dist/docs/browser/ || echo "No dist/docs/browser directory"
-
-          mkdir -p ./versioned-docs/$VERSION
-
-          # Check if source files exist before copying
-          if [ -d "./dist/docs/browser" ]; then
-            echo "=== Files in ./dist/docs/browser ==="
-            ls -la ./dist/docs/browser/
-            
-            # Handle Angular's new prerender structure BEFORE copying
-            if [ -f "./dist/docs/browser/index.csr.html" ] && [ ! -f "./dist/docs/browser/index.html" ]; then
-              echo "Found index.csr.html but no index.html - copying csr as index for newer Angular"
-              cp "./dist/docs/browser/index.csr.html" "./dist/docs/browser/index.html"
-              echo "Successfully created index.html from index.csr.html"
-            fi
-            
-            # Verify we now have index.html
-            if [ -f "./dist/docs/browser/index.html" ]; then
-              echo "✅ index.html exists - proceeding with copy"
-              # Debug: Show content of index.html before copying
-              echo "=== Content of built index.html (first 10 lines) ==="
-              head -10 ./dist/docs/browser/index.html
-              echo "=== Looking for base href in built index.html ==="
-              grep "base href" ./dist/docs/browser/index.html || echo "No base href found in built file"
-            else
-              echo "❌ ERROR: Still no index.html after attempting to create from index.csr.html"
-              exit 1
-            fi
-            
-            cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
-          else
-            echo "❌ ERROR: ./dist/docs/browser directory does not exist!"
-            exit 1
-          fi
-
-          # Check what was actually copied
-          echo "=== Files copied to versioned-docs/$VERSION ==="
-          ls -la ./versioned-docs/$VERSION/
-
-          echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
-
-          # Debug: Show what we're looking for before replacement
-          echo "=== Looking for {{VERSION}} placeholder before replacement ==="
-          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No {{VERSION}} placeholder found"
-
-          # Replace {{VERSION}} placeholder specifically in base href tags only - AFTER prerender
-          # Search in ALL HTML files in the version directory (since we copied everything to the root of version dir)
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
-
-          # Also handle the case where the closing tag might be different
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
-
-          # Verify the replacement worked
-          echo "=== Checking base href after replacement ==="
-          find ./versioned-docs/$VERSION -name "index.html" -exec grep -H "base href" {} \; || echo "No base href found"
-
-          # Debug: Show if any {{VERSION}} placeholders remain
-          echo "=== Checking for remaining {{VERSION}} placeholders ==="
-          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No placeholders remaining - good!"
-
-          # Debug: Show final index.html content
-          if [ -f "./versioned-docs/$VERSION/index.html" ]; then
-            echo "=== Final index.html content (first 10 lines) ==="
-            head -10 ./versioned-docs/$VERSION/index.html
-          fi
-
-          # Create or update root index.html that redirects to latest major version
-          cat > ./versioned-docs/index.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Documentation</title>
-            <meta http-equiv="refresh" content="0; url=./$VERSION/">
-            <link rel="canonical" href="./$VERSION/">
-          </head>
-          <body>
-            <p>Redirecting to <a href="./$VERSION/">latest documentation ($VERSION)</a>...</p>
-          </body>
-          </html>
-          EOF
-
-          # Only create 404.html if index.html exists in the version directory
-          if [ -f "./versioned-docs/$VERSION/index.html" ]; then
-            cp ./versioned-docs/$VERSION/index.html ./versioned-docs/404.html
-            echo "Created 404.html from versioned index.html"
-          else
-            echo "⚠️ WARNING: No index.html found in version directory, creating simple 404.html"
-            cat > ./versioned-docs/404.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Page Not Found</title>
-          </head>
-          <body>
-            <h1>404 - Page Not Found</h1>
-            <p><a href="/">Go to documentation home</a></p>
-          </body>
-          </html>
-          EOF
-          fi
-
-      # Preserve existing major versions from previous deployment
-      - name: 🔄 Preserve existing versions
-        run: |
-          # Create a temporary directory for existing content
-          mkdir -p ./temp-existing
-
-          # Download existing versions from the live site and include them in the new deployment
-          echo "Downloading existing versions from live site to preserve them..."
-
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME"
-          CURRENT_VERSION="${{ steps.get_version.outputs.version }}"
-
-          echo "Checking for existing versions at: $BASE_URL"
-
-          # Try to get the root page and parse for version links
-          echo "Discovering versions from root page..."
-          if curl -f -s "$BASE_URL/" -o ./temp-root.html 2>/dev/null; then
-            # Look for version links in the root page
-            DISCOVERED_VERSIONS=$(grep -oE 'href="[./]*v[0-9]+/"' ./temp-root.html | sed 's/href="[./]*\(v[0-9]\+\)\//\1/' | sort -u || echo "")
-            if [ -n "$DISCOVERED_VERSIONS" ]; then
-              echo "Discovered versions: $DISCOVERED_VERSIONS"
-              for version in $DISCOVERED_VERSIONS; do
-                if [ "$version" != "$CURRENT_VERSION" ]; then
-                  echo "Downloading existing version: $version"
-                  mkdir -p "./temp-existing/$version"
-                  # Download the entire version directory using wget
-                  if wget -r -np -nH -P "./temp-existing" --cut-dirs=1 -q "$BASE_URL/$version/" 2>/dev/null; then
-                    echo "✅ Successfully downloaded: $version"
-                  else
-                    echo "⚠️ Failed to download $version, trying individual files..."
-                    # Fallback: try to download key files individually
-                    for file in index.html main.*.js polyfills.*.js styles.*.css; do
-                      if curl -f -s "$BASE_URL/$version/$file" -o "./temp-existing/$version/$file" 2>/dev/null; then
-                        echo "Downloaded $version/$file"
-                      fi
-                    done
-                  fi
-                fi
-              done
-            fi
-            rm -f ./temp-root.html
-          fi
-
-          # Fallback: try common versions if discovery failed
-          if [ ! -d "./temp-existing" ] || [ -z "$(ls -A ./temp-existing 2>/dev/null)" ]; then
-            echo "Discovery failed, trying systematic download for common versions..."
-            for i in {1..10}; do
-              version="v$i"
-              if [ "$version" != "$CURRENT_VERSION" ]; then
-                echo "Trying to download $version..."
-                if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
-                  echo "Found $version, downloading..."
-                  mkdir -p "./temp-existing/$version"
-                  if wget -r -np -nH -P "./temp-existing" --cut-dirs=1 -q "$BASE_URL/$version/" 2>/dev/null; then
-                    echo "✅ Downloaded: $version"
-                  fi
-                fi
-              fi
-            done
-          fi
-
-          # Copy downloaded versions to versioned-docs (ACTUALLY PRESERVE THEM)
-          if [ -d "./temp-existing" ] && [ -n "$(ls -A ./temp-existing 2>/dev/null)" ]; then
-            echo "Copying preserved versions to deployment..."
-            cp -r ./temp-existing/* ./versioned-docs/ 2>/dev/null || true
-            echo "✅ Preserved versions:"
-            ls -la ./temp-existing/
-          else
-            echo "No existing versions found to preserve"
-          fi
-
-          # List all major versions for debugging
-          echo "Final deployment will include:"
-          ls -la ./versioned-docs/
-
-      - name: ⚙️ Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: 📤 Upload versioned artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "./versioned-docs"
-
-      - name: 🚀 Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js (adjust based on your build tool)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'  # Remove if you don't use npm
+    
+    # Customize these build steps based on your documentation setup
+    - name: Install dependencies
+      run: npm install  # Change to: yarn install, pip install -r requirements.txt, etc.
+    
+    - name: Build documentation
+      run: npm run build:docs  # Change to your build command
+    
+    - name: Extract version from branch name
+      id: extract_version
+      run: |
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        VERSION=${BRANCH_NAME#v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        echo "Building documentation for version: $VERSION"
+    
+    - name: Checkout gh-pages branch
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Update version documentation
+      run: |
+        VERSION=${{ steps.extract_version.outputs.version }}
+        
+        # Remove existing version directory if it exists
+        rm -rf gh-pages/$VERSION
+        
+        # Create version directory
+        mkdir -p gh-pages/$VERSION
+        
+        # Copy built documentation to version directory
+        # Adjust 'dist' to match your build output directory
+        cp -r dist/* gh-pages/$VERSION/
+        
+        echo "Documentation copied to version directory: $VERSION"
+    
+    - name: Create redirect index
+      run: |
+        cd gh-pages
+        
+        # Find the latest version (highest number)
+        LATEST_VERSION=$(find . -maxdepth 1 -type d -name '[0-9]*' | sed 's|./||' | sort -V | tail -1)
+        
+        if [ -n "$LATEST_VERSION" ]; then
+          echo "Creating redirect index for latest version: $LATEST_VERSION"
+          
+          # Create index.html with redirect
+          cat > index.html <<'HTML_CONTENT'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Redirecting...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0366d6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .version-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>Redirecting to Documentation</h2>
+        <p>Taking you to the latest version...</p>
+        <p>If you are not redirected automatically, <a href="/VERSION_PLACEHOLDER/">click here</a>.</p>
+        <div class="version-badge">vVERSION_PLACEHOLDER</div>
+    </div>
+    <script>
+        window.location.href = '/VERSION_PLACEHOLDER/';
+    </script>
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=/VERSION_PLACEHOLDER/">
+    </noscript>
+</body>
+</html>
+HTML_CONTENT
+          
+          # Replace placeholder with actual version
+          sed -i "s/VERSION_PLACEHOLDER/$LATEST_VERSION/g" index.html
+          
+        else
+          echo "No versions found, creating placeholder index"
+          cat > index.html <<'HTML_CONTENT'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+</head>
+<body>
+    <h1>📚 Documentation</h1>
+    <p>No documentation versions available yet.</p>
+</body>
+</html>
+HTML_CONTENT
+        fi
+    
+    - name: Commit and push to gh-pages branch
+      run: |
+        cd gh-pages
+        
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Add all changes
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Deploy documentation for version ${{ steps.extract_version.outputs.version }}"
+          git push origin gh-pages
+          echo "Successfully pushed documentation to gh-pages branch"
+        fi
