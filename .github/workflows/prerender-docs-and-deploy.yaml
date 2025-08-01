@@ -92,7 +92,10 @@ jobs:
           echo "Final detected major version: $VERSION"
 
       - name: ⚙️ Run prerender pipeline
-        run: npm run build:docs
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          npm run build:docs
 
       # Setup major versioned directory structure and replace version placeholder
       - name: 📁 Setup versioned docs
@@ -111,6 +114,27 @@ jobs:
           if [ -d "./dist/docs/browser" ]; then
             echo "=== Files in ./dist/docs/browser ==="
             ls -la ./dist/docs/browser/
+            
+            # Handle Angular's new prerender structure BEFORE copying
+            if [ -f "./dist/docs/browser/index.csr.html" ] && [ ! -f "./dist/docs/browser/index.html" ]; then
+              echo "Found index.csr.html but no index.html - copying csr as index for newer Angular"
+              cp "./dist/docs/browser/index.csr.html" "./dist/docs/browser/index.html"
+              echo "Successfully created index.html from index.csr.html"
+            fi
+            
+            # Verify we now have index.html
+            if [ -f "./dist/docs/browser/index.html" ]; then
+              echo "✅ index.html exists - proceeding with copy"
+              # Debug: Show content of index.html before copying
+              echo "=== Content of built index.html (first 10 lines) ==="
+              head -10 ./dist/docs/browser/index.html
+              echo "=== Looking for base href in built index.html ==="
+              grep "base href" ./dist/docs/browser/index.html || echo "No base href found in built file"
+            else
+              echo "❌ ERROR: Still no index.html after attempting to create from index.csr.html"
+              exit 1
+            fi
+            
             cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
           else
             echo "❌ ERROR: ./dist/docs/browser directory does not exist!"
@@ -122,6 +146,10 @@ jobs:
           ls -la ./versioned-docs/$VERSION/
 
           echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
+
+          # Debug: Show what we're looking for before replacement
+          echo "=== Looking for {{VERSION}} placeholder before replacement ==="
+          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No {{VERSION}} placeholder found"
 
           # Replace {{VERSION}} placeholder specifically in base href tags only - AFTER prerender
           find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
@@ -136,6 +164,12 @@ jobs:
           # Debug: Show if any {{VERSION}} placeholders remain
           echo "=== Checking for remaining {{VERSION}} placeholders ==="
           find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No placeholders remaining - good!"
+
+          # Debug: Show final index.html content
+          if [ -f "./versioned-docs/$VERSION/index.html" ]; then
+            echo "=== Final index.html content (first 10 lines) ==="
+            head -10 ./versioned-docs/$VERSION/index.html
+          fi
 
           # Create or update root index.html that redirects to latest major version
           cat > ./versioned-docs/index.html << EOF
