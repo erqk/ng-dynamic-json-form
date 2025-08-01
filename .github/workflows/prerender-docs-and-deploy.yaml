@@ -215,29 +215,63 @@ jobs:
           mkdir -p ./temp-existing
 
           # Since we're using actions/deploy-pages, previous versions aren't in gh-pages branch
-          # Instead, we'll use a different approach: download the current live site content
-          echo "Attempting to preserve existing versions from live site..."
+          # Try to discover existing versions dynamically from the live site
+          echo "Attempting to discover and preserve existing versions from live site..."
 
-          # Try to download existing versions from the live site
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
           BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME"
+          CURRENT_VERSION="${{ steps.get_version.outputs.version }}"
 
-          # Check what versions exist by trying to download their index files
-          for version in v1 v2 v3 v4 v5 v6 v7 v8 v9 v10; do
-            if [ "$version" != "${{ steps.get_version.outputs.version }}" ]; then
-              echo "Checking if $version exists..."
-              if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
-                echo "Found existing version: $version"
-                mkdir -p "./temp-existing/$version"
-                # We'll just create a placeholder - the actual preservation happens differently
-                echo "<!-- Existing version $version will be preserved -->" > "./temp-existing/$version/placeholder.html"
-              fi
+          echo "Checking for existing versions at: $BASE_URL"
+
+          # Method 1: Try to get the root page and parse for version links
+          echo "Attempting to discover versions from root page..."
+          if curl -f -s "$BASE_URL/" -o ./temp-root.html 2>/dev/null; then
+            # Look for version links in the root page (like v1/, v2/, etc.)
+            DISCOVERED_VERSIONS=$(grep -oE 'href="[./]*v[0-9]+/"' ./temp-root.html | sed 's/href="[./]*\(v[0-9]\+\)\//\1/' | sort -u || echo "")
+            if [ -n "$DISCOVERED_VERSIONS" ]; then
+              echo "Discovered versions from root page: $DISCOVERED_VERSIONS"
+              for version in $DISCOVERED_VERSIONS; do
+                if [ "$version" != "$CURRENT_VERSION" ]; then
+                  echo "Checking discovered version: $version"
+                  if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
+                    echo "✅ Confirmed existing version: $version"
+                    mkdir -p "./temp-existing/$version"
+                    echo "<!-- Existing version $version will be preserved -->" > "./temp-existing/$version/placeholder.html"
+                  fi
+                fi
+              done
             fi
-          done
+            rm -f ./temp-root.html
+          fi
 
-          # For now, let's skip the complex preservation and just deploy the current version
-          # This is a temporary fix to get your site working again
-          echo "Skipping complex preservation for now - focusing on getting ${{ steps.get_version.outputs.version }} working"
+          # Method 2: Fallback - try common version patterns up to v20
+          if [ ! -d "./temp-existing" ] || [ -z "$(ls -A ./temp-existing 2>/dev/null)" ]; then
+            echo "No versions discovered from root page, trying systematic check..."
+            for i in {1..20}; do
+              version="v$i"
+              if [ "$version" != "$CURRENT_VERSION" ]; then
+                echo "Checking if $version exists..."
+                if curl -f -s "$BASE_URL/$version/" > /dev/null 2>&1; then
+                  echo "✅ Found existing version: $version"
+                  mkdir -p "./temp-existing/$version"
+                  echo "<!-- Existing version $version will be preserved -->" > "./temp-existing/$version/placeholder.html"
+                fi
+              fi
+            done
+          fi
+
+          # Show what we found
+          if [ -d "./temp-existing" ] && [ -n "$(ls -A ./temp-existing 2>/dev/null)" ]; then
+            echo "Found existing versions to preserve:"
+            ls -la ./temp-existing/
+          else
+            echo "No existing versions found - this might be the first deployment or all previous versions are inaccessible"
+          fi
+
+          # For now, skip complex preservation and just deploy the current version
+          echo "Note: Full version preservation is temporarily disabled"
+          echo "Current deployment will only include: $CURRENT_VERSION"
 
           # List all major versions for debugging
           echo "Available major versions after preservation:"
