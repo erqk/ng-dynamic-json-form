@@ -147,23 +147,24 @@ jobs:
 
           echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
 
-          # Debug: Show what we're looking for before replacement
-          echo "=== Looking for {{VERSION}} placeholder before replacement ==="
-          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No {{VERSION}} placeholder found"
+          # Debug: Show what we're looking for before replacement in specific folders
+          echo "=== Looking for {{VERSION}} placeholder before replacement in browser and server folders ==="
+          find ./versioned-docs/$VERSION -path "*/browser/*.html" -o -path "*/server/*.html" | head -10 | xargs grep -H "{{VERSION}}" 2>/dev/null || echo "No {{VERSION}} placeholder found in browser/server HTML files"
 
           # Replace {{VERSION}} placeholder specifically in base href tags only - AFTER prerender
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
+          # Target only HTML files in browser and server directories
+          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}/\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
           # Also handle the case where the closing tag might be different
-          find ./versioned-docs/$VERSION -name "*.html" -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
+          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) -type f -exec sed -i "s|<base href=\"/ng-dynamic-json-form/{{VERSION}}\">|<base href=\"/ng-dynamic-json-form/$VERSION/\">|g" {} \;
 
-          # Verify the replacement worked
+          # Verify the replacement worked in the main index.html
           echo "=== Checking base href after replacement ==="
           find ./versioned-docs/$VERSION -name "index.html" -exec grep -H "base href" {} \; || echo "No base href found"
 
-          # Debug: Show if any {{VERSION}} placeholders remain
-          echo "=== Checking for remaining {{VERSION}} placeholders ==="
-          find ./versioned-docs/$VERSION -name "*.html" -exec grep -H "{{VERSION}}" {} \; || echo "No placeholders remaining - good!"
+          # Debug: Show if any {{VERSION}} placeholders remain in browser/server folders
+          echo "=== Checking for remaining {{VERSION}} placeholders in browser/server folders ==="
+          find ./versioned-docs/$VERSION \( -path "*/browser/*.html" -o -path "*/server/*.html" \) | head -10 | xargs grep -H "{{VERSION}}" 2>/dev/null || echo "No placeholders remaining in browser/server - good!"
 
           # Debug: Show final index.html content
           if [ -f "./versioned-docs/$VERSION/index.html" ]; then
