@@ -92,7 +92,10 @@ jobs:
           echo "Final detected major version: $VERSION"
 
       - name: ⚙️ Run prerender pipeline
-        run: npm run build:docs
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          npm run build:docs
 
       # Setup major versioned directory structure and replace version placeholder
       - name: 📁 Setup versioned docs
