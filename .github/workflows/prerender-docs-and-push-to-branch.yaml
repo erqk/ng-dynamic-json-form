@@ -106,12 +106,12 @@ jobs:
 
           # Get the latest version (last in sorted array)
           if [ ${#VERSIONS[@]} -gt 0 ]; then
-            LATEST_VERSION=${VERSIONS[-1]}
-            echo "Latest version determined to be: $LATEST_VERSION"
-            
-            cat > index.html << EOF
-            <!DOCTYPE html>
-            <html lang="en">
+          LATEST_VERSION=${VERSIONS[-1]}
+          echo "Latest version determined to be: $LATEST_VERSION"
+
+          cat > index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,14 +127,16 @@ jobs:
                 <p>Redirecting to documentation version $LATEST_VERSION...</p>
                 <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
             </body>
-            </html>
-            EOF
-            echo "Created redirect index for latest version: $LATEST_VERSION"
+          </html>
+          EOF
+
+          echo "Created redirect index for latest version: $LATEST_VERSION"
           else
-            echo "No versions found, creating placeholder index"
-            cat > index.html << EOF
-            <!DOCTYPE html>
-            <html lang="en">
+          echo "No versions found, creating placeholder index"
+
+          cat > index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -145,8 +147,8 @@ jobs:
                 <p>No documentation versions available yet.</p>
                 <p><small>Documentation will appear here once you push to a version branch.</small></p>
             </body>
-            </html>
-            EOF
+          </html>
+          EOF
           fi
 
       - name: Commit and push to gh-pages branch
