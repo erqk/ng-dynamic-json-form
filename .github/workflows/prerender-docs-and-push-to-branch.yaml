@@ -140,15 +140,11 @@ jobs:
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <title>Documentation - Redirecting...</title>
               <meta http-equiv="refresh" content="0; url=/$LATEST_VERSION/">
-              <link rel="canonical" href="/$LATEST_VERSION/">
-              <script>
-                  // Immediate redirect using JavaScript as fallback
-                  window.location.href = '/$LATEST_VERSION/';
-              </script>
+              <link rel="canonical" href="./v$LATEST_VERSION/">
           </head>
           <body>
-              <p>Redirecting to documentation version $LATEST_VERSION...</p>
-              <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
+              <p>Redirecting to documentation version v$LATEST_VERSION...</p>
+              <p>If you are not redirected automatically, <a href="./v$LATEST_VERSION/">click here</a>.</p>
           </body>
           </html>
           EOF
