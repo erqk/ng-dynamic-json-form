@@ -1,0 +1,20 @@
+@mixin date-input {
+  .date-input {
+    display: flex;
+    gap: var(--column-gap);
+
+    input[type="date"],
+    input[type="time"] {
+      font-size: inherit;
+      font-family: inherit;
+    }
+
+    input[type="date"] {
+      flex: 3;
+    }
+
+    input[type="time"] {
+      flex: 2;
+    }
+  }
+}

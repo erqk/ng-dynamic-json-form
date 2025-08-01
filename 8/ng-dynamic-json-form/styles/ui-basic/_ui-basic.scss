@@ -1,0 +1,67 @@
+@use "./ui-basic-checkbox" as checkbox;
+@use "./ui-basic-date" as date;
+@use "./ui-basic-radio" as radio;
+@use "./ui-basic-range" as range;
+@use "./ui-basic-select" as select;
+@use "./ui-basic-switch" as switch;
+@use "./ui-basic-textarea" as textarea;
+
+.ng-dynamic-json-form .ui-basic {
+  * {
+    box-sizing: border-box;
+  }
+
+  input,
+  textarea {
+    padding: 0.75em 1em;
+    font-size: inherit;
+    border: solid var(--input-border-width) var(--color-border);
+    border-radius: 0.5em;
+    outline: none;
+    width: 100%;
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+
+    &:focus-visible {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.2em var(--color-primary-lighter);
+    }
+
+    &.ng-invalid:not(.ng-pristine) {
+      border-color: var(--color-error);
+    }
+  }
+
+  .option-button {
+    --markerSize: 1.35em;
+
+    &:hover {
+      .marker {
+        box-shadow: 0 0.2em 0.8em rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .marker {
+      position: relative;
+      flex-shrink: 0;
+      display: block;
+      width: var(--markerSize);
+      height: var(--markerSize);
+      cursor: pointer;
+      transition: 0.25s;
+      transition-property: background-color, box-shadow, border-color;
+      z-index: 0;
+    }
+
+    @include radio.radio();
+    @include checkbox.checkbox();
+  }
+
+  @include date.date-input();
+  @include range.range-input();
+  @include select.select();
+  @include switch.switch-button();
+  @include textarea.textarea();
+}

@@ -1,0 +1,32 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
+import { PropsBindingDirective } from '../../directives';
+import * as i0 from "@angular/core";
+import * as i1 from "@angular/common";
+import * as i2 from "@angular/forms";
+class UiBasicInputComponent extends CustomControlComponent {
+    constructor() {
+        super(...arguments);
+        this.control = new UntypedFormControl('');
+    }
+    registerOnChange(fn) {
+        this.onChange = fn;
+    }
+    onInput(e) {
+        const value = e.target.value;
+        this.control.setValue(value);
+        this.onChange(value);
+    }
+    static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "16.2.12", ngImport: i0, type: UiBasicInputComponent, deps: null, target: i0.ɵɵFactoryTarget.Component }); }
+    static { this.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "16.2.12", type: UiBasicInputComponent, isStandalone: true, selector: "ui-basic-input", host: { classAttribute: "ui-basic" }, usesInheritance: true, ngImport: i0, template: "<ng-container *ngIf=\"data\">\n  <input\n    [ngClass]=\"{ disabled: control.disabled }\"\n    [attr.type]=\"data.type ?? 'text'\"\n    [propsBinding]=\"[\n      {\n        props: data.props,\n        omit: ['type']\n      }\n    ]\"\n    [formControl]=\"control\"\n    (input)=\"onInput($event)\"\n  />\n</ng-container>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i2.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.FormControlDirective, selector: "[formControl]", inputs: ["formControl", "disabled", "ngModel"], outputs: ["ngModelChange"], exportAs: ["ngForm"] }, { kind: "directive", type: PropsBindingDirective, selector: "[propsBinding]", inputs: ["propsBinding"] }] }); }
+}
+export { UiBasicInputComponent };
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.2.12", ngImport: i0, type: UiBasicInputComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'ui-basic-input', standalone: true, imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective], host: {
+                        class: 'ui-basic',
+                    }, template: "<ng-container *ngIf=\"data\">\n  <input\n    [ngClass]=\"{ disabled: control.disabled }\"\n    [attr.type]=\"data.type ?? 'text'\"\n    [propsBinding]=\"[\n      {\n        props: data.props,\n        omit: ['type']\n      }\n    ]\"\n    [formControl]=\"control\"\n    (input)=\"onInput($event)\"\n  />\n</ng-container>\n" }]
+        }] });
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidWktYmFzaWMtaW5wdXQuY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbGliL2NvcmUvdWktYmFzaWMvdWktYmFzaWMtaW5wdXQvdWktYmFzaWMtaW5wdXQuY29tcG9uZW50LnRzIiwiLi4vLi4vLi4vLi4vLi4vLi4vbGliL2NvcmUvdWktYmFzaWMvdWktYmFzaWMtaW5wdXQvdWktYmFzaWMtaW5wdXQuY29tcG9uZW50Lmh0bWwiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLGlCQUFpQixDQUFDO0FBQy9DLE9BQU8sRUFBRSxTQUFTLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDMUMsT0FBTyxFQUFFLG1CQUFtQixFQUFFLGtCQUFrQixFQUFFLE1BQU0sZ0JBQWdCLENBQUM7QUFDekUsT0FBTyxFQUFFLHNCQUFzQixFQUFFLE1BQU0sMERBQTBELENBQUM7QUFDbEcsT0FBTyxFQUFFLHFCQUFxQixFQUFFLE1BQU0sa0JBQWtCLENBQUM7Ozs7QUFFekQsTUFVYSxxQkFBc0IsU0FBUSxzQkFBc0I7SUFWakU7O1FBV1csWUFBTyxHQUFHLElBQUksa0JBQWtCLENBQUMsRUFBRSxDQUFDLENBQUM7S0FjL0M7SUFWVSxnQkFBZ0IsQ0FBQyxFQUFPO1FBQy9CLElBQUksQ0FBQyxRQUFRLEdBQUcsRUFBRSxDQUFDO0lBQ3JCLENBQUM7SUFFRCxPQUFPLENBQUMsQ0FBUTtRQUNkLE1BQU0sS0FBSyxHQUFJLENBQUMsQ0FBQyxNQUEyQixDQUFDLEtBQUssQ0FBQztRQUVuRCxJQUFJLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FBQyxLQUFLLENBQUMsQ0FBQztRQUM3QixJQUFJLENBQUMsUUFBUSxDQUFDLEtBQUssQ0FBQyxDQUFDO0lBQ3ZCLENBQUM7K0dBZFUscUJBQXFCO21HQUFyQixxQkFBcUIsdUlDaEJsQyxvVUFjQSwyQ0RMWSxZQUFZLGdPQUFFLG1CQUFtQiwwa0JBQUUscUJBQXFCOztTQU92RCxxQkFBcUI7NEZBQXJCLHFCQUFxQjtrQkFWakMsU0FBUzsrQkFDRSxnQkFBZ0IsY0FDZCxJQUFJLFdBQ1AsQ0FBQyxZQUFZLEVBQUUsbUJBQW1CLEVBQUUscUJBQXFCLENBQUMsUUFHN0Q7d0JBQ0osS0FBSyxFQUFFLFVBQVU7cUJBQ2xCIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29tbW9uTW9kdWxlIH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uJztcbmltcG9ydCB7IENvbXBvbmVudCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgUmVhY3RpdmVGb3Jtc01vZHVsZSwgVW50eXBlZEZvcm1Db250cm9sIH0gZnJvbSAnQGFuZ3VsYXIvZm9ybXMnO1xuaW1wb3J0IHsgQ3VzdG9tQ29udHJvbENvbXBvbmVudCB9IGZyb20gJy4uLy4uL2NvbXBvbmVudHMvY3VzdG9tLWNvbnRyb2wvY3VzdG9tLWNvbnRyb2wuY29tcG9uZW50JztcbmltcG9ydCB7IFByb3BzQmluZGluZ0RpcmVjdGl2ZSB9IGZyb20gJy4uLy4uL2RpcmVjdGl2ZXMnO1xuXG5AQ29tcG9uZW50KHtcbiAgc2VsZWN0b3I6ICd1aS1iYXNpYy1pbnB1dCcsXG4gIHN0YW5kYWxvbmU6IHRydWUsXG4gIGltcG9ydHM6IFtDb21tb25Nb2R1bGUsIFJlYWN0aXZlRm9ybXNNb2R1bGUsIFByb3BzQmluZGluZ0RpcmVjdGl2ZV0sXG4gIHRlbXBsYXRlVXJsOiAnLi91aS1iYXNpYy1pbnB1dC5jb21wb25lbnQuaHRtbCcsXG4gIHN0eWxlczogW10sXG4gIGhvc3Q6IHtcbiAgICBjbGFzczogJ3VpLWJhc2ljJyxcbiAgfSxcbn0pXG5leHBvcnQgY2xhc3MgVWlCYXNpY0lucHV0Q29tcG9uZW50IGV4dGVuZHMgQ3VzdG9tQ29udHJvbENvbXBvbmVudCB7XG4gIG92ZXJyaWRlIGNvbnRyb2wgPSBuZXcgVW50eXBlZEZvcm1Db250cm9sKCcnKTtcblxuICBvbkNoYW5nZT86IGFueTtcblxuICBvdmVycmlkZSByZWdpc3Rlck9uQ2hhbmdlKGZuOiBhbnkpOiB2b2lkIHtcbiAgICB0aGlzLm9uQ2hhbmdlID0gZm47XG4gIH1cblxuICBvbklucHV0KGU6IEV2ZW50KTogdm9pZCB7XG4gICAgY29uc3QgdmFsdWUgPSAoZS50YXJnZXQgYXMgSFRNTElucHV0RWxlbWVudCkudmFsdWU7XG5cbiAgICB0aGlzLmNvbnRyb2wuc2V0VmFsdWUodmFsdWUpO1xuICAgIHRoaXMub25DaGFuZ2UodmFsdWUpO1xuICB9XG59XG4iLCI8bmctY29udGFpbmVyICpuZ0lmPVwiZGF0YVwiPlxuICA8aW5wdXRcbiAgICBbbmdDbGFzc109XCJ7IGRpc2FibGVkOiBjb250cm9sLmRpc2FibGVkIH1cIlxuICAgIFthdHRyLnR5cGVdPVwiZGF0YS50eXBlID8/ICd0ZXh0J1wiXG4gICAgW3Byb3BzQmluZGluZ109XCJbXG4gICAgICB7XG4gICAgICAgIHByb3BzOiBkYXRhLnByb3BzLFxuICAgICAgICBvbWl0OiBbJ3R5cGUnXVxuICAgICAgfVxuICAgIF1cIlxuICAgIFtmb3JtQ29udHJvbF09XCJjb250cm9sXCJcbiAgICAoaW5wdXQpPVwib25JbnB1dCgkZXZlbnQpXCJcbiAgLz5cbjwvbmctY29udGFpbmVyPlxuIl19
