@@ -33,7 +33,6 @@ import {
 } from '../../services';
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
-import { getControlErrors } from '../../utilities/get-control-errors';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 
 @Component({
@@ -142,7 +141,7 @@ export class FormControlComponent
 
   updateControlStatus(
     status: 'dirty' | 'pristine' | 'touched' | 'untouched',
-    updateSelf = false
+    updateSelf = false,
   ): void {
     const control = this.control;
     const controlComponent = this._controlComponent;
@@ -216,7 +215,7 @@ export class FormControlComponent
 
   private _injectComponent<T>(
     vcr?: ViewContainerRef,
-    component?: Type<T>
+    component?: Type<T>,
   ): ComponentRef<T> | null {
     if (!vcr || !component) return null;
 
@@ -238,7 +237,7 @@ export class FormControlComponent
 
     const componentRef = this._injectComponent(
       this.inputComponentAnchor,
-      inputComponent
+      inputComponent,
     );
 
     if (!componentRef) return;
@@ -250,7 +249,6 @@ export class FormControlComponent
     componentRef.instance.registerOnTouched(this._onTouched);
 
     this._controlComponent = componentRef.instance;
-    this._setControlErrors();
   }
 
   private _fetchOptions(): void {
@@ -314,7 +312,7 @@ export class FormControlComponent
           setLoading(false);
           this._controlComponent?.onOptionsGet(options);
         }),
-        finalize(() => setLoading(false))
+        finalize(() => setLoading(false)),
       )
       .subscribe();
   }
@@ -351,20 +349,9 @@ export class FormControlComponent
             this.updateControlStatus('touched', true);
           }
         }),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this._destroyRef),
       )
       .subscribe();
-  }
-
-  /**
-   * If the CVA has errors but this control doesn't,
-   * we set this control with the CVA errors
-   */
-  private _setControlErrors(): void {
-    const cvaErrors = getControlErrors(this._controlComponent?.control);
-    if (!this.control?.errors && cvaErrors) {
-      this.control?.setErrors(cvaErrors);
-    }
   }
 
   private get _inputType(): FormControlType {
