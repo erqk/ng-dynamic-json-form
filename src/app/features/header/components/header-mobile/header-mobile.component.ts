@@ -6,12 +6,14 @@ import { HeaderTabBarComponent } from 'src/app/features/header/components/header
 import { LanguageSelectorComponent } from 'src/app/features/language/language-selector.component';
 import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-switcher/theme-switcher.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
+import { GithubLinkComponent } from '../github-link/github-link.component';
 
 @Component({
   selector: 'app-header-mobile',
   imports: [
     CommonModule,
     RouterModule,
+    GithubLinkComponent,
     HeaderTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
