@@ -1,6 +1,6 @@
 # 開始
 
-> 僅支援 Angular 16 或以上的版本。
+> 僅支援 Angular 16 至 Angular 19 的版本。
 
 ## 安裝
 
