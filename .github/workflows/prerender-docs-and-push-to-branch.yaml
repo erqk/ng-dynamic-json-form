@@ -110,25 +110,25 @@ jobs:
             echo "Latest version determined to be: $LATEST_VERSION"
             
             cat > index.html << EOF
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Documentation - Redirecting...</title>
-              <meta http-equiv="refresh" content="0; url=/$LATEST_VERSION/">
-              <link rel="canonical" href="/$LATEST_VERSION/">
-              <script>
-                  // Immediate redirect using JavaScript as fallback
-                  window.location.href = '/$LATEST_VERSION/';
-              </script>
-          </head>
-          <body>
-              <p>Redirecting to documentation version $LATEST_VERSION...</p>
-              <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
-          </body>
-          </html>
-          EOF
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Documentation - Redirecting...</title>
+                <meta http-equiv="refresh" content="0; url=/$LATEST_VERSION/">
+                <link rel="canonical" href="/$LATEST_VERSION/">
+                <script>
+                    // Immediate redirect using JavaScript as fallback
+                    window.location.href = '/$LATEST_VERSION/';
+                </script>
+            </head>
+            <body>
+                <p>Redirecting to documentation version $LATEST_VERSION...</p>
+                <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
+            </body>
+            </html>
+            EOF
             echo "Created redirect index for latest version: $LATEST_VERSION"
           else
             echo "No versions found, creating placeholder index"
