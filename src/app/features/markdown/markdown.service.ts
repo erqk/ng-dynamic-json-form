@@ -22,11 +22,11 @@ export class MarkdownService {
         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
         return hljs.highlight(code, { language }).value;
       },
-    })
+    }),
   );
 
   parse(val: string): SafeHtml {
-    const version = this.versionService.docVersion;
+    const version = this.versionService.currentVersion();
     const renderer: RendererObject = {
       link: this.linkRendererFn({
         searchValue: version,
@@ -72,7 +72,7 @@ export class MarkdownService {
         ?.substring(prefix.length)
         .replace(
           replaceHref?.searchValue || '',
-          replaceHref?.replaceValue || ''
+          replaceHref?.replaceValue || '',
         );
 
       return `<a title="${title || text}" routerLink

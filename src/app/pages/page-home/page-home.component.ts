@@ -24,7 +24,7 @@ export class PageHomeComponent implements OnInit {
   private title = inject(Title);
   private langService = inject(LanguageService);
 
-  lang$ = this.langService.language$;
+  lang = this.langService.selectedLanguage;
   i18nContent$ = this.langService.i18nContent$;
   features$ = this.i18nContent$.pipe(map((x) => x['FEATURES']));
 

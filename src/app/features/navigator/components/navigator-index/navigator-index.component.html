@@ -1,6 +1,7 @@
 <div
   class="docs-index-container"
   docRouterLink
-  [ngClass]="containerClass"
-  [innerHTML]="content$ | async"
+  activeRouteHighlight
+  [ngClass]="containerClass()"
+  [innerHTML]="content.value()"
 ></div>

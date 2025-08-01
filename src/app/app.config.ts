@@ -14,15 +14,22 @@ import {
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
+import { merge } from 'rxjs';
 import { appRoutes } from './app.routes';
 import { absolutePathInterceptor } from './core/interceptors/absolute-path.interceptor';
 import { LanguageService } from './features/language/language-data.service';
+import { VersionService } from './features/version/version.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(() => {
       const langService = inject(LanguageService);
-      return langService.loadLanguageData$();
+      const versionService = inject(VersionService);
+
+      return merge(
+        langService.loadLanguageData$(),
+        versionService.loadVersions$(),
+      );
     }),
     provideAnimations(),
     provideHttpClient(withInterceptors([absolutePathInterceptor])),

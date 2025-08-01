@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
-import { map } from 'rxjs';
 import { CONFIG_BASIC_ADDRESS_EN } from 'src/app/example/configs/basic/address/config-basic-address_en';
 import { CONFIG_BASIC_ADDRESS_ZHTW } from 'src/app/example/configs/basic/address/config-basic-address_zh-TW';
 import { CONFIG_BASIC_AGE_EN } from 'src/app/example/configs/basic/age/config-basic-age_en';
@@ -23,10 +22,10 @@ interface StyleOption {
 }
 
 @Component({
-    selector: 'app-form-style-tweaker',
-    imports: [CommonModule, NgDynamicJsonFormComponent],
-    templateUrl: './form-style-tweaker.component.html',
-    styleUrls: ['./form-style-tweaker.component.scss']
+  selector: 'app-form-style-tweaker',
+  imports: [CommonModule, NgDynamicJsonFormComponent],
+  templateUrl: './form-style-tweaker.component.html',
+  styleUrls: ['./form-style-tweaker.component.scss'],
 })
 export class FormStyleTweakerComponent {
   private langService = inject(LanguageService);
@@ -44,9 +43,10 @@ export class FormStyleTweakerComponent {
     CONFIG_BASIC_GENDER_ZHTW,
   ];
 
-  configs$ = this.langService.language$.pipe(
-    map((x) => (x === 'en' ? this.configEn : this.configZhTW))
-  );
+  configs = computed(() => {
+    const lang = this.langService.selectedLanguage();
+    return lang === 'en' ? this.configEn : this.configZhTW;
+  });
 
   styleOptions: StyleOption[] = [
     {
@@ -160,7 +160,7 @@ export class FormStyleTweakerComponent {
       unit: 'em',
       min: 0,
       max: 5,
-      step: 0.01
+      step: 0.01,
     },
     {
       key: '--options-row-gap',
@@ -169,7 +169,7 @@ export class FormStyleTweakerComponent {
       unit: 'em',
       min: 0,
       max: 5,
-      step: 0.01
+      step: 0.01,
     },
   ];
 

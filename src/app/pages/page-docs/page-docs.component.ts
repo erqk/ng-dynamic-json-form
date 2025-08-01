@@ -49,8 +49,6 @@ export class PageDocsComponent {
     this.route.url.pipe(map((x) => x.map((item) => item.path).join('/'))),
   );
 
-  currentLanguage = toSignal(this.langService.language$);
-
   defaultDocPath = rxResource({
     stream: () => this.docLoaderService.firstContentPath$(),
     defaultValue: '',
@@ -60,14 +58,19 @@ export class PageDocsComponent {
     params: () => {
       const currentRoute = this.currentRoute() ?? '';
       const defaultDocPath = this.defaultDocPath.value();
-      const lang = this.currentLanguage();
+      const lang = this.langService.selectedLanguage();
       const languageFromUrl = this.langService.languageFromUrl;
+
+      if (currentRoute === 'docs') {
+        return defaultDocPath;
+      }
+
       const docPath = currentRoute.replace(
         !languageFromUrl ? '' : `_${languageFromUrl}.md`,
         `_${lang}.md`,
       );
 
-      return currentRoute === 'docs' ? defaultDocPath : docPath;
+      return docPath;
     },
     stream: (x) => this.docLoaderService.loadDoc$(x.params),
   });
@@ -93,6 +96,24 @@ export class PageDocsComponent {
         replaceUrl: true,
       });
     }
+  });
+
+  reloadOnLanguageChange = effect(() => {
+    const lang = this.langService.selectedLanguage();
+    const route = this.currentRoute();
+
+    if (!route?.endsWith('.md')) {
+      return;
+    }
+
+    const currentRoute = this.router.url;
+    const languageFromUrl = this.langService.languageFromUrl;
+    const newRoute = currentRoute.replace(
+      !languageFromUrl ? '' : `_${languageFromUrl}.md`,
+      `_${lang}.md`,
+    );
+
+    this.router.navigateByUrl(newRoute, { replaceUrl: true });
   });
 
   handleDocHtmlGet = effect(() => {

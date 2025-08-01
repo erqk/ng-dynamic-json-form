@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import { combineLatest, map } from 'rxjs';
 import { LanguageService } from '../../language/language-data.service';
@@ -15,7 +16,7 @@ export class PlaygroundEditorDataService {
     | undefined = [];
 
   configEditorData$ = combineLatest([
-    this.langService.language$,
+    toObservable(this.langService.selectedLanguage),
     this.templateDataService.currentTemplateKey$,
   ]).pipe(
     map(() => {
@@ -26,7 +27,7 @@ export class PlaygroundEditorDataService {
         this.templateDataService.fallbackExample;
 
       return { json: configs as any };
-    })
+    }),
   );
 
   get configModifiedData(): typeof this.modifiedData {

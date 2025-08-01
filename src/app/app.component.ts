@@ -5,6 +5,7 @@ import {
   Injector,
   Type,
   inject,
+  signal,
 } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import {
@@ -49,7 +50,7 @@ export class AppComponent {
   private layoutService = inject(LayoutService);
 
   title = 'NgDynamicJsonForm';
-  routeLoading = false;
+  routeLoading = signal<boolean>(false);
   isServer = true;
 
   headerHeight$ = this.layoutService.headerHeight$.pipe(delay(0));
@@ -92,11 +93,11 @@ export class AppComponent {
     return this.router.events.pipe(
       tap((x) => {
         if (x instanceof RouteConfigLoadStart || x instanceof NavigationStart) {
-          this.routeLoading = true;
+          this.routeLoading.set(true);
         }
 
         if (x instanceof RouteConfigLoadEnd || x instanceof NavigationEnd) {
-          this.routeLoading = false;
+          this.routeLoading.set(false);
           this.langService.setCurrentLanguage();
           this.cd.detectChanges();
         }

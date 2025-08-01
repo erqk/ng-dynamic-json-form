@@ -1,22 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, debounceTime, map, share } from 'rxjs';
+import { combineLatest, debounceTime, map } from 'rxjs';
 import { LanguageService } from 'src/app/features/language/language-data.service';
-import { VersionService } from 'src/app/features/version/version.service';
 import { PlaygroundEditorDataService } from '../../services/playground-editor-data.service';
 import { PlaygroundTemplateDataService } from '../../services/playground-template-data.service';
 
 @Component({
-    selector: 'app-playground-template-list',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
-    templateUrl: './playground-template-list.component.html',
-    styleUrls: ['./playground-template-list.component.scss']
+  selector: 'app-playground-template-list',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './playground-template-list.component.html',
+  styleUrls: ['./playground-template-list.component.scss'],
 })
 export class PlaygroundTemplateListComponent {
   private langService = inject(LanguageService);
   private templateDataService = inject(PlaygroundTemplateDataService);
-  private versionService = inject(VersionService);
   private editorDataService = inject(PlaygroundEditorDataService);
 
   @Input() isMobile = false;
@@ -24,7 +22,6 @@ export class PlaygroundTemplateListComponent {
 
   nameControl = new FormControl('');
   isEditing = false;
-  currentVersion = this.versionService.docVersion;
   showTemplateNameInput = false;
 
   list$ = combineLatest([
@@ -32,13 +29,13 @@ export class PlaygroundTemplateListComponent {
     this.templateDataService.userTemplateList$,
   ]).pipe(
     debounceTime(0),
-    map(([examples, userTemplates]) => [...examples, ...userTemplates])
+    map(([examples, userTemplates]) => [...examples, ...userTemplates]),
   );
 
   currentTemplateKey$ = this.templateDataService.currentTemplateKey$;
   currentTemplate$ = combineLatest([this.list$, this.currentTemplateKey$]).pipe(
     debounceTime(0),
-    map(([list, key]) => list.find((x) => x.key === key))
+    map(([list, key]) => list.find((x) => x.key === key)),
   );
   i18nContent$ = this.langService.i18nContent$;
 
@@ -88,7 +85,7 @@ export class PlaygroundTemplateListComponent {
   newTemplate(): void {
     const key = this.nameControl.value?.trim();
     const keyExists = this.templateDataService.allTemplateKeys.includes(
-      key ?? ''
+      key ?? '',
     );
 
     if (!key || keyExists) return;

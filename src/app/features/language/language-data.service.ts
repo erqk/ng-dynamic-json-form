@@ -1,6 +1,12 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, TransferState, inject, makeStateKey } from '@angular/core';
+import {
+  Injectable,
+  TransferState,
+  inject,
+  makeStateKey,
+  signal,
+} from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { LanguageType } from './language.type';
 
@@ -11,20 +17,16 @@ export class LanguageService {
   private http = inject(HttpClient);
   private transferState = inject(TransferState);
   private location = inject(Location);
-  private defaultLanguage: LanguageType = 'en';
-  private _language$ = new BehaviorSubject<LanguageType>(this.defaultLanguage);
+  private DEFAULT_LANGUAGE: LanguageType = 'en';
   private cache: { lang: string; data: any }[] = [];
+
+  selectedLanguage = signal<LanguageType>(this.DEFAULT_LANGUAGE);
 
   languageList: LanguageType[] = ['zh-TW', 'en'];
   i18nContent$ = new BehaviorSubject<any>({});
 
-  setLanguage(lang: LanguageType): void {
-    if (lang === this._language$.value) return;
-    this._language$.next(lang);
-  }
-
   setCurrentLanguage(): void {
-    this.setLanguage(this.currentLanguage);
+    this.selectedLanguage.set(this.currentLanguage);
   }
 
   loadLanguageData$(lang?: LanguageType): Observable<any> {
@@ -48,18 +50,16 @@ export class LanguageService {
 
     return source$().pipe(
       tap((x) => {
-        if (!x) return;
-        this.setLanguage(_lang);
+        if (!x) {
+          return;
+        }
+
         this.i18nContent$.next(x);
         this.cache.push({ lang: _lang, data: x });
         this._userLanguage = _lang;
         this.transferState.set(key, x);
-      })
+      }),
     );
-  }
-
-  get language$(): Observable<LanguageType> {
-    return this._language$.asObservable();
   }
 
   get languageFromUrl(): string | undefined {
@@ -70,10 +70,6 @@ export class LanguageService {
       .replace('.md', '');
 
     return langFromUrl;
-  }
-
-  get selectedLanguage(): LanguageType {
-    return this._language$.value;
   }
 
   get currentLanguage(): LanguageType {

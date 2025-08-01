@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, viewChild } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   FormGroup,
   FormsModule,
@@ -89,7 +90,6 @@ export class PagePlaygroundComponent implements OnInit {
   formControl = new UntypedFormControl('');
 
   showEditor = false;
-  currentVersion = this.versionService.docVersion;
   mobileTabSelected = 0;
   asSplitSizes = this.playgroundSettingsService.asSplitSizes;
 
@@ -126,7 +126,7 @@ export class PagePlaygroundComponent implements OnInit {
 
   configs$ = combineLatest([
     this.templateDataService.currentTemplateKey$,
-    this.langService.language$,
+    toObservable(this.langService.selectedLanguage),
   ]).pipe(
     debounceTime(0),
     map(([key]) => {

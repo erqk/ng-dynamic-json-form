@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControlConfig } from 'ng-dynamic-json-form';
 import {
   BehaviorSubject,
@@ -22,11 +23,11 @@ export class PlaygroundTemplateDataService {
   private browserStorageUpdated$ = new Subject<void>();
 
   currentTemplateKey$ = new BehaviorSubject<string>(
-    Object.keys(this.templateList)[0]
+    Object.keys(this.templateList)[0],
   );
 
   exampleList$ = combineLatest([
-    this.langService.language$,
+    toObservable(this.langService.selectedLanguage),
     this.browserStorageUpdated$.pipe(startWith(null)),
   ]).pipe(
     debounceTime(0),
@@ -42,8 +43,8 @@ export class PlaygroundTemplateDataService {
           config,
           key,
         };
-      })
-    )
+      }),
+    ),
   );
 
   userTemplateList$ = this.browserStorageUpdated$.pipe(
@@ -59,11 +60,11 @@ export class PlaygroundTemplateDataService {
           acc.push({ key, label: key, config: this._userTemplateSaved![key] });
           return acc;
         }, [] as PlaygroundConfigItem[]);
-    })
+    }),
   );
 
   getExampleTemplate(key: string): FormControlConfig[] | null {
-    const lang = this.langService.selectedLanguage;
+    const lang = this.langService.selectedLanguage();
     const savedData = this._exampleSaved;
 
     if (!savedData) {
@@ -75,7 +76,7 @@ export class PlaygroundTemplateDataService {
 
   setExampleTemplate(
     key: string,
-    data: FormControlConfig[] | { configs?: FormControlConfig[] }
+    data: FormControlConfig[] | { configs?: FormControlConfig[] },
   ) {
     if (typeof window === 'undefined') return;
 
@@ -84,7 +85,7 @@ export class PlaygroundTemplateDataService {
 
     if (noData) return;
 
-    const lang = this.langService.selectedLanguage;
+    const lang = this.langService.selectedLanguage();
     const savedData = this._exampleSaved;
     const newData = !savedData
       ? { [key]: { [lang]: data } }
@@ -98,7 +99,7 @@ export class PlaygroundTemplateDataService {
 
     window.sessionStorage.setItem(
       this._exampleSavedTemplateKey,
-      JSON.stringify(newData)
+      JSON.stringify(newData),
     );
 
     this.browserStorageUpdated$.next();
@@ -113,7 +114,7 @@ export class PlaygroundTemplateDataService {
 
   setUserTemplate(
     key: string,
-    data: FormControlConfig[] | { configs?: FormControlConfig[] } | null
+    data: FormControlConfig[] | { configs?: FormControlConfig[] } | null,
   ) {
     if (typeof window === 'undefined') return;
 
@@ -132,7 +133,7 @@ export class PlaygroundTemplateDataService {
 
     window.localStorage.setItem(
       this._userSavedTemplateKey,
-      JSON.stringify(newData)
+      JSON.stringify(newData),
     );
 
     this.browserStorageUpdated$.next();
@@ -144,12 +145,12 @@ export class PlaygroundTemplateDataService {
       .concat(
         !this._userTemplateSaved
           ? []
-          : Object.keys(this._userTemplateSaved).sort()
+          : Object.keys(this._userTemplateSaved).sort(),
       );
   }
 
   get fallbackExample(): FormControlConfig[] {
-    const lang = this.langService.selectedLanguage;
+    const lang = this.langService.selectedLanguage();
     const key = this._currentTemplateKey;
     const formConfig = (this.templateList as any)[key]?.[lang]?.['config'];
 
@@ -176,7 +177,7 @@ export class PlaygroundTemplateDataService {
     if (typeof window === 'undefined') return null;
 
     const savedData = window.sessionStorage.getItem(
-      this._exampleSavedTemplateKey
+      this._exampleSavedTemplateKey,
     );
 
     if (!savedData) {

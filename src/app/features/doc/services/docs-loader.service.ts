@@ -6,7 +6,7 @@ import {
   makeStateKey,
   signal,
 } from '@angular/core';
-import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
+import { Observable, catchError, filter, finalize, map, of, tap } from 'rxjs';
 import { LanguageService } from '../../language/language-data.service';
 import { VersionService } from '../../version/version.service';
 
@@ -23,6 +23,10 @@ export class DocsLoaderService {
   docLoading = signal<boolean>(false);
 
   loadDoc$(path: string): Observable<string> {
+    if (!path) {
+      return of('');
+    }
+
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
@@ -31,10 +35,12 @@ export class DocsLoaderService {
       (x) => x.path === path && x.data,
     )?.data;
 
-    if (cacheData) return of(cacheData);
+    if (cacheData) {
+      return of(cacheData);
+    }
 
-    const version = this.versionService.docVersion;
-    const lang = this.languageDataService.selectedLanguage;
+    const version = this.versionService.currentVersion();
+    const lang = this.languageDataService.selectedLanguage();
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
     const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
@@ -52,27 +58,21 @@ export class DocsLoaderService {
         observe: 'response',
       })
       .pipe(
-        map((x) => {
+        filter((x) => {
           const contentType = x.headers.get('Content-Type') ?? '';
-          const docNotFound = contentType.indexOf('text/markdown') < 0;
-
-          if (docNotFound) {
-            // To let the wildcard route redirection works correctly,
-            // otherwise content after redirection will load into the doc.
-            throw 'Content not found';
+          return contentType.indexOf('text/markdown') > -1;
+        }),
+        map((x) => x.body ?? ''),
+        tap((x) => {
+          if (this.docCache.some((x) => x.path === path)) {
+            return;
           }
 
-          return x.body ?? '';
-        }),
-        tap((x) => {
-          if (this.docCache.some((x) => x.path === path)) return;
           this.docCache.push({ path, data: x });
           this.transferState.set(key, x);
         }),
         finalize(() => this.docLoading.set(false)),
-        catchError((err) => {
-          throw err;
-        }),
+        catchError(() => of('')),
       );
   }
 
@@ -80,12 +80,10 @@ export class DocsLoaderService {
     this.docCache = [];
   }
 
-  firstContentPath$(useDefaultLang = false): Observable<string> {
-    const lang = this.languageDataService.selectedLanguage;
-    const version = this.versionService.docVersion;
-    const indexPath = `assets/docs/${version}/index_${
-      useDefaultLang ? 'en' : lang
-    }.md`;
+  firstContentPath$(): Observable<string> {
+    const lang = this.languageDataService.selectedLanguage();
+    const version = this.versionService.currentVersion();
+    const indexPath = `assets/docs/${version}/index_${lang}.md`;
     const key = makeStateKey<string>(indexPath);
 
     const source$ = () => {
@@ -107,7 +105,7 @@ export class DocsLoaderService {
 
         return result;
       }),
-      catchError(() => this.firstContentPath$(true)),
+      catchError(() => of('')),
     );
   }
 

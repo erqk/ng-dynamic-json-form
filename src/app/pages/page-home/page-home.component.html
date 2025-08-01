@@ -15,17 +15,17 @@
           'py-3 px-8 mt-12 bg-[var(--primary-500)] rounded-full',
           'text-white md:text-lg',
           'duration-500 transition-transform',
-          'hover:-translate-y-1 hover:drop-shadow-lg'
+          'hover:-translate-y-1 hover:drop-shadow-lg',
         ]"
         [routerLink]="'/docs'"
-        >
+      >
         {{ i18nContent$.value.GET_STARTED }}
       </button>
     </div>
 
     <div
       class="absolute -z-10 left-3/4 top-[50vh] lg:top-[35vh] -translate-x-1/2"
-      >
+    >
       <div class="illustration">
         <div style="--index: 0; height: 100%"></div>
         <div style="--index: 1; height: 50%; top: 35%; left: -40%"></div>
@@ -48,7 +48,7 @@
             <li>{{ features.UI_LIBRARY }}</li>
           </ul>
           <app-doc-form-viewer
-            [configPath]="'HOME_DEMO.' + (lang$ | async)?.toUpperCase()"
+            [configPath]="'HOME_DEMO.' + lang().toUpperCase()"
           ></app-doc-form-viewer>
         </div>
       </ui-content-wrapper>
