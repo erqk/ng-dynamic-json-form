@@ -98,8 +98,28 @@ jobs:
       - name: 📁 Setup versioned docs
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
+
+          # Debug: Check what was actually built
+          echo "=== Checking build output ==="
+          ls -la ./dist/ || echo "No dist directory"
+          ls -la ./dist/docs/ || echo "No dist/docs directory"
+          ls -la ./dist/docs/browser/ || echo "No dist/docs/browser directory"
+
           mkdir -p ./versioned-docs/$VERSION
-          cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
+
+          # Check if source files exist before copying
+          if [ -d "./dist/docs/browser" ]; then
+            echo "=== Files in ./dist/docs/browser ==="
+            ls -la ./dist/docs/browser/
+            cp -r ./dist/docs/browser/* ./versioned-docs/$VERSION/
+          else
+            echo "❌ ERROR: ./dist/docs/browser directory does not exist!"
+            exit 1
+          fi
+
+          # Check what was actually copied
+          echo "=== Files copied to versioned-docs/$VERSION ==="
+          ls -la ./versioned-docs/$VERSION/
 
           echo "Replacing {{VERSION}} placeholder with actual version: $VERSION (after prerender)"
 
@@ -133,8 +153,26 @@ jobs:
           </html>
           EOF
 
-          # Create 404.html from the versioned index
-          cp ./versioned-docs/$VERSION/index.html ./versioned-docs/404.html
+          # Only create 404.html if index.html exists in the version directory
+          if [ -f "./versioned-docs/$VERSION/index.html" ]; then
+            cp ./versioned-docs/$VERSION/index.html ./versioned-docs/404.html
+            echo "Created 404.html from versioned index.html"
+          else
+            echo "⚠️ WARNING: No index.html found in version directory, creating simple 404.html"
+            cat > ./versioned-docs/404.html << EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Page Not Found</title>
+          </head>
+          <body>
+            <h1>404 - Page Not Found</h1>
+            <p><a href="/">Go to documentation home</a></p>
+          </body>
+          </html>
+          EOF
+          fi
 
       # Preserve existing major versions from gh-pages branch
       - name: 🔄 Preserve existing versions
