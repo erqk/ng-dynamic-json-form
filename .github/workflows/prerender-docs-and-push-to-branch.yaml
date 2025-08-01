@@ -11,7 +11,7 @@ env:
   # Customize these based on your Angular project
   BUILD_COMMAND: npm run build:docs # Change to your docs build script
   BUILD_OUTPUT_DIR: dist # Angular typically outputs to dist/
-  NODE_VERSION: "20" # Node.js LTS version
+  NODE_VERSION: "18" # Node.js LTS version
 
 jobs:
   build-and-commit:
@@ -73,26 +73,49 @@ jobs:
         run: |
           VERSION=${{ steps.version_info.outputs.version }}
 
-          echo "Updating documentation for version: $VERSION"
+          echo "Updating documentation for version: v$VERSION"
 
           # Remove existing version directory if it exists
-          if [ -d "gh-pages/$VERSION" ]; then
-            echo "Removing existing version directory: $VERSION"
-            rm -rf gh-pages/$VERSION
+          if [ -d "gh-pages/v$VERSION" ]; then
+            echo "Removing existing version directory: v$VERSION"
+            rm -rf gh-pages/v$VERSION
           fi
 
           # Create version directory
-          mkdir -p gh-pages/$VERSION
+          mkdir -p gh-pages/v$VERSION
 
-          # Copy built documentation to version directory
-          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }} to gh-pages/$VERSION"
-          cp -r ${{ env.BUILD_OUTPUT_DIR }}/* gh-pages/$VERSION/
+          # Verify docs/browser directory exists
+          if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}/docs/browser" ]; then
+            echo "Error: docs/browser directory not found in ${{ env.BUILD_OUTPUT_DIR }}"
+            echo "Available directories in ${{ env.BUILD_OUTPUT_DIR }}:"
+            ls -la ${{ env.BUILD_OUTPUT_DIR }}
+            exit 1
+          fi
+
+          # Copy built documentation files directly (without preserving directory structure)
+          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }}/docs/browser to gh-pages/v$VERSION"
+          cp -r ${{ env.BUILD_OUTPUT_DIR }}/docs/browser/* gh-pages/v$VERSION/
+
+          # Find and process HTML files to replace {{VERSION}} placeholder
+          echo "Processing HTML files to replace {{VERSION}} placeholder..."
+          find gh-pages/v$VERSION -name "*.html" -type f | while read -r html_file; do
+            echo "Processing: $html_file"
+            # Replace {{VERSION}} with v$VERSION in the base href
+            sed -i "s|{{VERSION}}|v$VERSION|g" "$html_file"
+            
+            # Verify the replacement was made
+            if grep -q "v$VERSION" "$html_file"; then
+              echo "✅ Successfully replaced {{VERSION}} with v$VERSION in $html_file"
+            else
+              echo "ℹ️ No {{VERSION}} placeholder found in $html_file"
+            fi
+          done
 
           # Verify files were copied
           echo "Files in version directory:"
-          ls -la gh-pages/$VERSION/
+          ls -la gh-pages/v$VERSION/
 
-          echo "Documentation successfully copied to version directory: $VERSION"
+          echo "Documentation successfully copied to version directory: v$VERSION"
 
       - name: Create redirect index
         run: |
@@ -106,12 +129,12 @@ jobs:
 
           # Get the latest version (last in sorted array)
           if [ ${#VERSIONS[@]} -gt 0 ]; then
-          LATEST_VERSION=${VERSIONS[-1]}
-          echo "Latest version determined to be: $LATEST_VERSION"
-
-          cat > index.html << EOF
-          <!DOCTYPE html>
-          <html lang="en">
+            LATEST_VERSION=${VERSIONS[-1]}
+            echo "Latest version determined to be: $LATEST_VERSION"
+            
+            cat > index.html << EOF
+            <!DOCTYPE html>
+            <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,16 +150,14 @@ jobs:
                 <p>Redirecting to documentation version $LATEST_VERSION...</p>
                 <p>If you are not redirected automatically, <a href="/$LATEST_VERSION/">click here</a>.</p>
             </body>
-          </html>
-          EOF
-
-          echo "Created redirect index for latest version: $LATEST_VERSION"
+            </html>
+            EOF
+            echo "Created redirect index for latest version: $LATEST_VERSION"
           else
-          echo "No versions found, creating placeholder index"
-
-          cat > index.html << EOF
-          <!DOCTYPE html>
-          <html lang="en">
+            echo "No versions found, creating placeholder index"
+            cat > index.html << EOF
+            <!DOCTYPE html>
+            <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -147,8 +168,8 @@ jobs:
                 <p>No documentation versions available yet.</p>
                 <p><small>Documentation will appear here once you push to a version branch.</small></p>
             </body>
-          </html>
-          EOF
+            </html>
+            EOF
           fi
 
       - name: Commit and push to gh-pages branch
