@@ -51,6 +51,8 @@ export class DocsLoaderService {
       return of(this.transferState.get(key, ''));
     }
 
+    console.log('url', url);
+
     this.docLoading.set(true);
     return this.http
       .get(url, {
