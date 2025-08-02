@@ -58,14 +58,7 @@ async function main() {
     await waitOn({ resources: [SERVER_URL], timeout: 60000 });
 
     console.log("📄 Step 4: Running prerender...");
-
-    // Pass base href to prerender if provided
-    const prerenderArgs = ["run", "prerender"];
-    if (baseHref) {
-      prerenderArgs.push("--", "--base-href", baseHref);
-    }
-
-    await run("npm", prerenderArgs);
+    await run("npm", ["run", "prerender"]);
 
     console.log("🛑 Step 5: Stopping dev server...");
     await killByPid(serverProc.pid);
