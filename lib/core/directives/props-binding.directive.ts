@@ -4,12 +4,10 @@ import {
   ElementRef,
   Injector,
   SimpleChange,
-  WritableSignal,
   computed,
   effect,
   inject,
   input,
-  isSignal,
 } from '@angular/core';
 import { PROPS_BINDING_INJECTORS } from '../providers/props-binding.provider';
 @Directive({
@@ -95,10 +93,8 @@ export class PropsBindingDirective {
 
     const property = component[key];
 
-    if (isSignal(property)) {
-      if (typeof (property as any).set === 'function') {
-        (property as WritableSignal<any>).set(value);
-      }
+    if (typeof (property as any)?.set === 'function') {
+      (property as any).set(value);
     } else {
       component[key] = value;
     }

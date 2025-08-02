@@ -1,6 +1,6 @@
 # Getting started
 
-> Supports only Angular 16 and above.
+> Supports only Angular 16 - Angular 19.
 
 ## Installation
 
