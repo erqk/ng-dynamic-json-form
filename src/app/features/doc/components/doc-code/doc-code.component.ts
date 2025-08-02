@@ -1,20 +1,19 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ElementRef, Input, inject } from '@angular/core';
 
 @Component({
-  selector: 'app-doc-code',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './doc-code.component.html',
-  styleUrls: ['./doc-code.component.scss'],
+    selector: 'app-doc-code',
+    imports: [],
+    templateUrl: './doc-code.component.html',
+    styleUrls: ['./doc-code.component.scss']
 })
 export class DocCodeComponent {
-  private _el = inject(ElementRef);
+  private el = inject(ElementRef);
 
   @Input() enableCopy = true;
 
   copyToClipboard(): void {
-    const host = this._el.nativeElement as HTMLElement;
+    const host = this.el.nativeElement as HTMLElement;
     const target = host.querySelector('.code-container') as
       | HTMLElement
       | undefined;

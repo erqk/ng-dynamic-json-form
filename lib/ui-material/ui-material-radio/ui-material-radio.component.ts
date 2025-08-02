@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { Component, computed, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioGroup, MatRadioModule } from '@angular/material/radio';
 import {
@@ -11,7 +11,6 @@ import {
 
 @Component({
   selector: 'ui-material-radio',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -31,24 +30,28 @@ import {
   styles: [],
 })
 export class UiMaterialRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
-  override control = new UntypedFormControl('');
-  selectedIndex = -1;
+  override control = new FormControl('');
+
+  options = computed(() => this.data()?.options?.data ?? []);
+
+  selectedIndex = signal<number>(-1);
 
   override writeValue(obj: any): void {
-    this.selectedIndex =
-      this.data?.options?.data
-        ?.map((x) => x.value)
-        .findIndex((x) => JSON.stringify(x) === JSON.stringify(obj)) ?? -1;
+    const index = this.options().findIndex(
+      (x) => JSON.stringify(x.value) === JSON.stringify(obj),
+    );
+
+    this.selectedIndex.set(index);
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
-  onChange(i: number): void {
-    const value = this.data?.options?.data?.[i].value;
-    this._onChange(value);
+  emitValue(i: number): void {
+    const value = this.options()[i].value;
+    this.onChange(value);
   }
 }

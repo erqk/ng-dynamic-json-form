@@ -1,6 +1,6 @@
 <div class="flex gap-4 items-center">
-  <a [routerLink]="'/'" class="flex gap-2 shrink-0 h-6">
-    <img src="assets/logo.svg" alt="" />
+  <a [routerLink]="'/'" class="flex items-center gap-3 shrink-0 h-6">
+    <img class="h-full" src="assets/logo.svg" alt="" />
     <version-selector></version-selector>
   </a>
 
@@ -20,21 +20,22 @@
   [ngClass]="[
     'grid',
     'duration-200',
-    openSettings ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+    openSettings ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
   ]"
 >
   <div class="overflow-hidden">
     <div
       [ngClass]="[
         'relative z-0',
-        'grid grid-cols-[1fr,auto] items-center gap-5',
+        'grid grid-cols-[1fr_auto_auto] items-center gap-3',
         'py-4 pb-2',
         'duration-300 delay-100',
-        openSettings ? 'opacity-100' : 'opacity-0'
+        openSettings ? 'opacity-100' : 'opacity-0',
       ]"
     >
       <app-language-selector></app-language-selector>
       <app-theme-switcher></app-theme-switcher>
+      <github-link></github-link>
     </div>
   </div>
 </div>

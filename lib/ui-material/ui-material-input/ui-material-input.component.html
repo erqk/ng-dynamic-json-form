@@ -1,7 +1,6 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
-
     <input
       matInput
       [formControl]="control"
@@ -10,10 +9,10 @@
         {
           key: 'mat-input',
           props: data.props,
-          omit: ['type']
-        }
+          omit: ['type'],
+        },
       ]"
       (input)="onInput($event)"
     />
   </mat-form-field>
-</ng-container>
+}

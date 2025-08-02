@@ -1,27 +1,20 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import {
   CustomControlComponent,
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { Select, SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'ui-primeng-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    PropsBindingDirective,
-  ],
+  imports: [ReactiveFormsModule, SelectModule, PropsBindingDirective],
   providers: [
     providePropsBinding([
       {
-        key: 'p-dropdown',
-        token: Dropdown,
+        key: 'p-select',
+        token: Select,
       },
     ]),
   ],
@@ -31,13 +24,15 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
 export class UiPrimengSelectComponent extends CustomControlComponent {
   override control = new UntypedFormControl('');
 
+  options = computed(() => this.data()?.options?.data ?? []);
+
   onTouched = () => {};
   onChange = (_: any) => {};
 
   override registerOnChange(fn: any): void {
     this.onChange = fn;
   }
-  
+
   override registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }

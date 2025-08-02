@@ -1,22 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import {
   CustomControlComponent,
   PropsBindingDirective,
-  providePropsBinding
+  providePropsBinding,
 } from 'ng-dynamic-json-form';
 
 @Component({
   selector: 'ui-material-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    PropsBindingDirective,
-  ],
+  imports: [ReactiveFormsModule, MatSelectModule, PropsBindingDirective],
   providers: [
     providePropsBinding([
       {
@@ -29,23 +22,24 @@ import {
   styles: [],
 })
 export class UiMaterialSelectComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormControl(-1);
+
+  options = computed(() => this.data()?.options?.data ?? []);
 
   onTouched = () => {};
 
   override writeValue(obj: any): void {
-    const index =
-      this.data?.options?.data
-        ?.map((x) => x.value)
-        .findIndex((x) => JSON.stringify(x) === JSON.stringify(obj)) ?? -1;
+    const index = this.options().findIndex(
+      (x) => JSON.stringify(x.value) === JSON.stringify(obj),
+    );
 
     this.control.setValue(index);
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   override registerOnTouched(fn: any): void {
@@ -56,8 +50,8 @@ export class UiMaterialSelectComponent extends CustomControlComponent {
     const index = this.control.value ?? -1;
 
     if (index > -1) {
-      const value = this.data?.options?.data?.map((x) => x.value)?.[index];
-      this._onChange(value);
+      const value = this.options().map((x) => x.value)[index];
+      this.onChange(value);
     }
   }
 }

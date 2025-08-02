@@ -1,82 +1,93 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
-  DestroyRef,
-  HostBinding,
-  Input,
   TemplateRef,
   Type,
-  ViewChild,
   ViewContainerRef,
+  computed,
+  effect,
   inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { tap } from 'rxjs';
-import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { ValidatorConfig } from '../../models';
 import { FormValidationService } from '../../services/form-validation.service';
 import { CustomErrorMessage } from '../custom-error-message/custom-error-message.abstract';
 
 @Component({
   selector: 'error-message',
-  standalone: true,
-  imports: [CommonModule, ControlLayoutDirective],
+  imports: [CommonModule],
   templateUrl: './error-message.component.html',
+  host: {
+    class: 'error-message',
+  },
 })
-export class ErrorMessageComponent implements AfterViewInit {
-  private _internal_destroyRef = inject(DestroyRef);
-  private _internal_formValidationService = inject(FormValidationService);
-  private _customComponent: CustomErrorMessage | null = null;
+export class ErrorMessageComponent {
+  private internal_formValidationService = inject(FormValidationService);
+  private customComponentInstance = signal<CustomErrorMessage | null>(null);
 
-  @Input() control?: AbstractControl;
-  @Input() validators?: ValidatorConfig[];
-  @Input() customComponent?: Type<CustomErrorMessage>;
-  @Input() customTemplate?: TemplateRef<any>;
+  control = input<AbstractControl>();
+  validators = input<ValidatorConfig[]>();
+  customComponent = input<Type<CustomErrorMessage>>();
+  customTemplate = input<TemplateRef<any> | null>(null);
 
-  @ViewChild('componentAnchor', { read: ViewContainerRef })
-  componentAnchor!: ViewContainerRef;
+  useDefaultTemplate = computed(
+    () => !this.customComponent() && !this.customTemplate(),
+  );
 
-  @HostBinding('class') hostClass = 'error-message';
+  componentAnchor = viewChild.required('componentAnchor', {
+    read: ViewContainerRef,
+  });
 
-  errorMessages: string[] = [];
+  errorMessages = rxResource({
+    params: () => {
+      const control = this.control();
+      const validators = this.validators();
 
-  ngAfterViewInit(): void {
-    this._injectComponent();
-    this._getErrorMessages();
-  }
+      return { control, validators };
+    },
+    stream: ({ params }) => {
+      return this.internal_formValidationService.getErrorMessages$(
+        params.control,
+        params.validators,
+      );
+    },
+    defaultValue: [],
+  });
 
-  private _injectComponent(): void {
-    if (!this.customComponent || !this.componentAnchor) {
+  updateControlErrors = effect(() => {
+    const messages = this.errorMessages.value();
+    const customComponent = this.customComponentInstance();
+
+    if (!customComponent) {
       return;
     }
 
-    this.componentAnchor.clear();
-    const componentRef = this.componentAnchor.createComponent(
-      this.customComponent
-    );
+    customComponent.errorMessages.set([...messages]);
+  });
 
-    this._customComponent = componentRef.instance;
+  injectComponent = effect(() => {
+    const control = this.control();
+    const customComponent = this.customComponent();
+    const anchor = this.componentAnchor();
 
-    if (this.control) {
-      componentRef.instance.control = this.control;
+    if (!customComponent || !anchor || !control) {
+      return;
     }
-  }
 
-  private _getErrorMessages(): void {
-    this._internal_formValidationService
-      .getErrorMessages$(this.control, this.validators)
-      .pipe(
-        tap((x) => {
-          this.errorMessages = x;
+    untracked(() => {
+      anchor.clear();
 
-          if (this._customComponent) {
-            this._customComponent.errorMessages = [...this.errorMessages];
-          }
-        }),
-        takeUntilDestroyed(this._internal_destroyRef)
-      )
-      .subscribe();
-  }
+      const componentRef = anchor.createComponent(customComponent);
+
+      componentRef.instance.control = control;
+      this.customComponentInstance.set(componentRef.instance);
+
+      this.injectComponent.destroy();
+    });
+  });
 }

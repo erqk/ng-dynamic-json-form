@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
-import { map } from 'rxjs';
 import { CONFIG_BASIC_ADDRESS_EN } from 'src/app/example/configs/basic/address/config-basic-address_en';
 import { CONFIG_BASIC_ADDRESS_ZHTW } from 'src/app/example/configs/basic/address/config-basic-address_zh-TW';
 import { CONFIG_BASIC_AGE_EN } from 'src/app/example/configs/basic/age/config-basic-age_en';
@@ -24,30 +23,30 @@ interface StyleOption {
 
 @Component({
   selector: 'app-form-style-tweaker',
-  standalone: true,
   imports: [CommonModule, NgDynamicJsonFormComponent],
   templateUrl: './form-style-tweaker.component.html',
   styleUrls: ['./form-style-tweaker.component.scss'],
 })
 export class FormStyleTweakerComponent {
-  private _langService = inject(LanguageService);
-  private _configEn = [
+  private langService = inject(LanguageService);
+  private configEn = [
     CONFIG_BASIC_AGE_EN,
     CONFIG_BASIC_ADDRESS_EN(),
     CONFIG_BASIC_CARDS_EN,
     CONFIG_BASIC_GENDER_EN,
   ];
 
-  private _configZhTW = [
+  private configZhTW = [
     CONFIG_BASIC_AGE_ZHTW,
     CONFIG_BASIC_ADDRESS_ZHTW,
     CONFIG_BASIC_CARDS_ZHTW,
     CONFIG_BASIC_GENDER_ZHTW,
   ];
 
-  configs$ = this._langService.language$.pipe(
-    map((x) => (x === 'en' ? this._configEn : this._configZhTW))
-  );
+  configs = computed(() => {
+    const lang = this.langService.selectedLanguage();
+    return lang === 'en' ? this.configEn : this.configZhTW;
+  });
 
   styleOptions: StyleOption[] = [
     {
@@ -161,7 +160,7 @@ export class FormStyleTweakerComponent {
       unit: 'em',
       min: 0,
       max: 5,
-      step: 0.01
+      step: 0.01,
     },
     {
       key: '--options-row-gap',
@@ -170,7 +169,7 @@ export class FormStyleTweakerComponent {
       unit: 'em',
       min: 0,
       max: 5,
-      step: 0.01
+      step: 0.01,
     },
   ];
 
@@ -183,13 +182,13 @@ export class FormStyleTweakerComponent {
 
   updateStyle(item: StyleOption, e: Event): void {
     const value = (e.target as HTMLInputElement).value;
-    this.styles[item.key] = this._getStyleValue(item, value);
+    this.styles[item.key] = this.getStyleValue(item, value);
   }
 
   resetStyles(): void {
     this.reseting = true;
     this.styles = [...this.styleOptions].reduce((acc, curr) => {
-      acc[curr.key] = this._getStyleValue(curr);
+      acc[curr.key] = this.getStyleValue(curr);
       return acc;
     }, {} as any);
 
@@ -198,7 +197,7 @@ export class FormStyleTweakerComponent {
     });
   }
 
-  private _getStyleValue(item: StyleOption, value?: string): string {
+  private getStyleValue(item: StyleOption, value?: string): string {
     const multiplier = (item.step ?? 1) >= 1 ? item.step : 1;
     const _value = value ?? `${item.value}`;
 

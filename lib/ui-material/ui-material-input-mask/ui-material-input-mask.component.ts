@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
@@ -11,30 +11,28 @@ import {
 } from 'ng-dynamic-json-form';
 
 @Component({
-  selector: 'ui-material-input-mask',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'ui-material-input-mask',
+    imports: [
     ReactiveFormsModule,
     MatInputModule,
     IMaskDirective,
     ImaskValuePatchDirective,
-    PropsBindingDirective,
-  ],
-  templateUrl: './ui-material-input-mask.component.html',
-  providers: [
-    providePropsBinding([
-      {
-        key: 'mat-input',
-        token: MatInput,
-      },
-      {
-        key: 'imask',
-        token: IMaskDirective,
-      },
-    ]),
-  ],
-  styles: [],
+    PropsBindingDirective
+],
+    templateUrl: './ui-material-input-mask.component.html',
+    providers: [
+        providePropsBinding([
+            {
+                key: 'mat-input',
+                token: MatInput,
+            },
+            {
+                key: 'imask',
+                token: IMaskDirective,
+            },
+        ]),
+    ],
+    styles: []
 })
 export class UiMaterialInputMaskComponent extends CustomControlComponent {
   override control = new FormControl('');

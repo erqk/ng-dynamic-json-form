@@ -1,27 +1,38 @@
-import { Directive, ElementRef, Input, Renderer2, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 
 @Directive({
   selector: '[hostId]',
   standalone: true,
 })
 export class HostIdDirective {
-  private _renderer2 = inject(Renderer2);
-  private _el = inject(ElementRef);
+  private el = inject(ElementRef);
 
-  @Input() hostId?: { parentId?: string; controlName?: string };
+  hostId = input<{ parentId?: string; controlName?: string }>();
 
-  ngOnChanges(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
-    if (!hostEl || !this._hostId) return;
+  computedId = computed(() => {
+    const hostId = this.hostId();
 
-    // Set `id` to this component so that `querySelector` can find it correctly.
-    this._renderer2.setAttribute(hostEl, 'id', this._hostId);
-  }
+    if (!hostId) {
+      return;
+    }
 
-  private get _hostId(): string | undefined {
-    if (!this.hostId) return undefined;
-
-    const { parentId, controlName } = this.hostId;
+    const { parentId, controlName } = hostId;
     return parentId ? `${parentId}.${controlName}` : controlName;
-  }
+  });
+
+  updateAttribute = effect(() => {
+    const id = this.computedId();
+    const host = this.el.nativeElement as HTMLElement;
+
+    if (id) {
+      host.setAttribute('id', id);
+    }
+  });
 }

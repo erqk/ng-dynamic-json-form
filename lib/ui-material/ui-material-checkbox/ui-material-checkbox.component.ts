@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCheckbox,
@@ -15,7 +15,6 @@ import {
 
 @Component({
   selector: 'ui-material-checkbox',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -35,53 +34,58 @@ import {
   styles: [],
 })
 export class UiMaterialCheckboxComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormArray<FormControl>([]);
+
+  options = computed(() => this.data()?.options?.data ?? []);
+  groupButtonStyles = computed(() => {
+    const { layout, containerStyles } = this.data()?.options ?? {};
+
+    return `
+      flex-direction: ${layout ?? 'row'};
+      align-items: flex-start;
+      ${containerStyles ?? ''}
+    `.replace(/\s{2,}/g, '');
+  });
 
   override writeValue(obj: any): void {
     this.control.clear();
 
     if (Array.isArray(obj)) {
-      obj.forEach((x) => this._addItem(x));
+      obj.forEach((x) => this.addItem(x));
+    } else {
+      this.addItem(obj);
     }
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   toggle(e: MatCheckboxChange): void {
     const checked = e.checked;
-    this._onChange(checked);
+    this.onChange(checked);
   }
 
   onCheckboxChange(e: MatCheckboxChange, index: number): void {
     const checked = e.checked;
-    const value = this.data?.options?.data
-      ?.map((x) => x.value)
+    const value = this.options()
+      .map((x) => x.value)
       .filter((val, i) => (i === index ? checked : this.isChecked(val)));
 
     this.control.clear();
-    value?.forEach((x) => this._addItem(x));
-    this._onChange(this.control.value);
+    value?.forEach((x) => this.addItem(x));
+    this.onChange(this.control.value);
   }
 
   isChecked(val: any): boolean {
     return this.control.value.some(
-      (x) => JSON.stringify(x) === JSON.stringify(val)
+      (x) => JSON.stringify(x) === JSON.stringify(val),
     );
   }
 
-  get groupButtonsStyles(): string {
-    return `
-      flex-direction: ${this.data?.options?.layout ?? 'row'};
-      align-items: flex-start;
-      ${this.data?.options?.containerStyles ?? ''}
-    `.replace(/\s{2,}/g, '');
-  }
-
-  private _addItem(val?: any): void {
+  private addItem(val?: any): void {
     const control = new FormControl(val);
     this.control.push(control);
   }

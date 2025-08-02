@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <input
     type="text"
     imaskValuePatch
@@ -7,14 +7,14 @@
     [propsBinding]="[
       {
         props: data.props,
-        omit: ['type']
+        omit: ['type'],
       },
       {
         key: 'imask',
-        props: data.props
-      }
+        props: data.props,
+      },
     ]"
     [formControl]="control"
     (complete)="onChange(control.value)"
   />
-</ng-container>
+}

@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-custom-loading',
-  standalone: true,
-  imports: [CommonModule],
-  template: ` <span class="loader mx-4 my-2"></span> `,
-  styles: [
-    `
+    selector: 'app-custom-loading',
+    imports: [],
+    template: ` <span class="loader mx-4 my-2"></span> `,
+    styles: [
+        `
       .loader {
         width: 1.25em;
         height: 1.25em;
@@ -28,6 +27,6 @@ import { Component } from '@angular/core';
         }
       }
     `,
-  ],
+    ]
 })
 export class CustomLoadingComponent {}

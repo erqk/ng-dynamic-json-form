@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
+  afterNextRender,
   Component,
   DestroyRef,
+  effect,
   ElementRef,
-  EventEmitter,
   inject,
-  Input,
-  Output,
-  SimpleChanges,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -16,117 +17,117 @@ import {
   map,
   merge,
   Subject,
-  take,
-  takeUntil,
   tap,
   timer,
 } from 'rxjs';
 import { ThemeService } from 'src/app/features/theme/services/theme.service';
-import { Content, JSONEditor, Mode } from 'vanilla-jsoneditor';
+import {
+  Content,
+  createJSONEditor,
+  JsonEditor,
+  Mode,
+} from 'vanilla-jsoneditor';
 import { getJsonEditorContent } from '../../utilities/get-json-editor-content';
 
 @Component({
   selector: 'app-playground-editor',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './playground-editor.component.html',
   styleUrls: ['./playground-editor.component.scss'],
 })
 export class PlaygroundEditorComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _el = inject(ElementRef);
-  private _themeService = inject(ThemeService);
-  private _cancelWriteValue$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
+  private themeService = inject(ThemeService);
+  private cancelWriteValue$ = new Subject<void>();
 
-  @Input() data: Content | null = null;
-  @Input() mainMenuBar = true;
-  @Input() navigationBar = true;
-  @Input() statusBar = true;
-  @Output() onEditing = new EventEmitter<any>();
+  data = input<Content | null>(null);
+  mainMenuBar = input<boolean>(true);
+  navigationBar = input<boolean>(true);
+  statusBar = input<boolean>(true);
+  onEditing = output<any>();
 
-  jsonEditor: JSONEditor | null = null;
+  jsonEditor = signal<JsonEditor | null>(null);
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    const { data } = simpleChanges;
-
-    if (data && this.jsonEditor) {
-      this._cancelWriteValue$.next();
-      try {
-        timer(100)
-          .pipe(
-            take(1),
-            tap(() => this.jsonEditor?.set(data.currentValue)),
-            takeUntil(this._cancelWriteValue$)
-          )
-          .subscribe();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }
-
-  ngAfterViewInit(): void {
+  initEvent = afterNextRender(() => {
     // Put in the next event loop to improve performance if there are multiple editor
     // in the same page.
     timer(200)
       .pipe(
         tap(() => {
-          this._initEditor();
-          this._darkThemeEvent();
+          this.createEditor();
+          this.darkThemeEvent();
         }),
-        takeUntilDestroyed(this._destroyRef)
       )
       .subscribe();
-  }
+  });
+
+  writeValueIntoEditor = effect(() => {
+    const data = this.data();
+    const editor = this.jsonEditor();
+
+    if (!data || !editor) {
+      return;
+    }
+
+    editor.set(data);
+  });
+
+  themeSwitchEvent = effect(() => {
+    const editor = this.jsonEditor();
+    if (!editor) {
+      return;
+    }
+  });
 
   ngOnDestroy(): void {
-    this.jsonEditor?.destroy();
+    this.jsonEditor()?.destroy();
   }
 
-  private _initEditor(): void {
+  private createEditor(): void {
     if (typeof window === 'undefined') {
       return;
     }
 
-    const host = this._el.nativeElement as HTMLElement;
+    const host = this.el.nativeElement as HTMLElement;
     const el = host.querySelector('.json-editor') as HTMLElement;
 
-    this.jsonEditor = new JSONEditor({
-      target: el,
-      props: {
-        mode: Mode.text,
-        content: this.data || undefined,
-        mainMenuBar: this.mainMenuBar,
-        navigationBar: this.navigationBar,
-        statusBar: this.statusBar,
-        onChange: (content, previousContent, status) => {
-          const _content = getJsonEditorContent(content) as any;
-          this.onEditing.emit(_content['json']);
+    this.jsonEditor.set(
+      createJSONEditor({
+        target: el,
+        props: {
+          mode: Mode.text,
+          content: this.data() || undefined,
+          mainMenuBar: this.mainMenuBar(),
+          navigationBar: this.navigationBar(),
+          statusBar: this.statusBar(),
+          onChange: (
+            content: Content | undefined,
+            previousContent: Content | undefined,
+            status: any,
+          ) => {
+            const _content = getJsonEditorContent(content) as any;
+            this.onEditing.emit(_content['json']);
+          },
         },
-      },
-    });
+      }),
+    );
   }
 
-  private _darkThemeEvent(): void {
-    if (typeof window === 'undefined') return;
-
-    let refreshTimeout = 0;
-
-    const refreshEditor = () => {
-      if (!this.jsonEditor) return;
-      if (typeof this.jsonEditor.refresh !== 'function') return;
-      this.jsonEditor.refresh();
-    };
+  private darkThemeEvent(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const setDarkTheme = (dark = false) => {
-      const host = this._el.nativeElement as HTMLElement;
+      const host = this.el.nativeElement as HTMLElement;
       const el = host.querySelector('.json-editor') as HTMLElement;
+      const editor = this.jsonEditor();
 
       if (dark) el.classList.add('jse-theme-dark');
       else el.classList.remove('jse-theme-dark');
 
-      window.clearTimeout(refreshTimeout);
-      refreshTimeout = window.setTimeout(() => refreshEditor());
+      editor?.refresh();
     };
 
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
@@ -134,16 +135,16 @@ export class PlaygroundEditorComponent {
       passive: true,
     }).pipe(
       map((x) => (x as MediaQueryListEvent).matches),
-      tap((x) => setDarkTheme(x))
+      tap((x) => setDarkTheme(x)),
     );
 
-    const themeDark$ = this._themeService.theme$.pipe(
+    const themeDark$ = this.themeService.theme$.pipe(
       distinctUntilChanged(),
-      tap((x) => setDarkTheme(x === 'dark'))
+      tap((x) => setDarkTheme(x === 'dark')),
     );
 
     merge(prefersDark$, themeDark$)
-      .pipe(takeUntilDestroyed(this._destroyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
 }

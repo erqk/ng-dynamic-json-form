@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <mat-form-field class="example-full-width">
     <mat-label>{{ data.label }}</mat-label>
     <textarea
@@ -8,14 +8,14 @@
       [propsBinding]="[
         {
           key: 'mat-input',
-          props: data.props
+          props: data.props,
         },
         {
           key: 'cdk-textarea-autosize',
-          props: data.props
-        }
+          props: data.props,
+        },
       ]"
       (input)="onInput($event)"
     ></textarea>
   </mat-form-field>
-</ng-container>
+}

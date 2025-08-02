@@ -1,4 +1,4 @@
-import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import {
   Observable,
@@ -25,28 +25,26 @@ import { GlobalVariableService } from './global-variable.service';
 
 @Injectable()
 export class FormConditionsService {
-  /**https://github.com/angular/angular/issues/17824#issuecomment-353239017 */
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
-  private _globalVariableService = inject(GlobalVariableService);
-  private _formValidationService = inject(FormValidationService);
+  private globalVariableService = inject(GlobalVariableService);
+  private formValidationService = inject(FormValidationService);
 
   /**Listen to the controls that specified in `conditions` to trigger the `targetControl` status and validators
    * @param form The root form
    * @param configs The JSON data
    */
   listenConditions$(): Observable<any> {
-    const configs = this._globalVariableService.rootConfigs;
-    const form = this._globalVariableService.rootForm;
+    const configs = this.globalVariableService.rootConfigs;
+    const form = this.globalVariableService.rootForm;
 
     if (!configs.length || !form || typeof window === 'undefined') {
       return of(null);
     }
 
-    const controls = this._getPathsOfControlsToListen(configs)
+    const controls = this.getPathsOfControlsToListen(configs)
       .map((x) => form.get(x))
       .filter(Boolean) as AbstractControl[];
 
-    const configsWithConditions = this._configsWithConditions(configs);
+    const configsWithConditions = this.configsWithConditions(configs);
     const valueChanges$ = (c: AbstractControl) =>
       c.valueChanges.pipe(
         startWith(c.value),
@@ -56,14 +54,14 @@ export class FormConditionsService {
 
     return from(controls).pipe(
       mergeMap((x) => valueChanges$(x)),
-      tap(() => this._onConditionsMet(configsWithConditions))
+      tap(() => this.handleValueChanges(configsWithConditions))
     );
   }
 
-  private _onConditionsMet(data: {
+  private handleValueChanges(data: {
     [fullControlPath: string]: FormControlConfig;
   }): void {
-    const form = this._globalVariableService.rootForm;
+    const form = this.globalVariableService.rootForm;
     if (!form) return;
 
     for (const key in data) {
@@ -73,13 +71,13 @@ export class FormConditionsService {
       const config = data[key];
       const conditions = config.conditions!;
 
-      this._executeCustomActions(conditions, control);
-      this._toggleValidators(config, control);
-      this._toggleControlStates(conditions, control, key);
+      this.executeCustomActions(conditions, control);
+      this.toggleValidators(config, control);
+      this.toggleControlStates(conditions, control, key);
     }
   }
 
-  private _toggleControlStates(
+  private toggleControlStates(
     conditions: Conditions,
     control: AbstractControl,
     controlPath: string
@@ -95,40 +93,41 @@ export class FormConditionsService {
     }
 
     for (const action of actions) {
-      const bool = this._evaluateConditionsStatement(conditions[action]!);
+      const bool = this.evaluateConditionsStatement(conditions[action]!);
 
       if (bool === undefined) {
         continue;
       }
 
       if (action === actionDisabled) {
-        this._disableControl(control, bool);
+        this.disableControl(control, bool);
       }
 
       if (action === actionHidden) {
         // Must toggle visibility before disable, to prevent incorrect behavior of child element
         // e.g. Primeng Textarea `autoResize` will fail
-        this._hideControl$(controlPath, bool)
-          .pipe(tap(() => this._disableControl(control, bool)))
+        this.hideControl$(controlPath, bool)
+          .pipe(tap(() => this.disableControl(control, bool)))
           .subscribe();
       }
     }
   }
 
-  private _disableControl(control: AbstractControl, disable: boolean): void {
-    // Prevent weird behavior, which the control status will change after calling
-    // `disable()` or `enable()`, cause the resulting status unmatched with the conditions set.
-    window.requestAnimationFrame(() => {
-      disable ? control.disable() : control.enable();
-    });
+  private disableControl(control: AbstractControl, disable: boolean): void {
+    disable ? control.disable() : control.enable();
+    this.globalVariableService.rootForm?.updateValueAndValidity();
   }
 
-  private _hideControl$(controlPath: string, hide: boolean): Observable<any> {
+  private hideControl$(controlPath: string, hide: boolean): Observable<any> {
     const setStyle = (el: HTMLElement, name: string, value: any) => {
-      this._renderer2.setStyle(el, name, hide ? value : null);
+      if (hide) {
+        el.style.setProperty(name, value);
+      } else {
+        el.style.removeProperty(name);
+      }
     };
 
-    return this._getTargetEl$(controlPath).pipe(
+    return this.getTargetEl$(controlPath).pipe(
       filter(Boolean),
       tap((x) => {
         setStyle(x, 'display', 'none');
@@ -136,36 +135,75 @@ export class FormConditionsService {
     );
   }
 
-  private _toggleValidators(
+  private toggleValidators(
     config: FormControlConfig,
     control: AbstractControl
   ): void {
     const { conditions = {}, validators = [] } = config;
-    const actions = Object.keys(conditions).filter((x) =>
-      new RegExp(/^validator\.[a-zA-z]{1,}$/).test(x)
-    );
+    const actionPrefix = {
+      asyncValidator: 'asyncValidator',
+      validator: 'validator',
+    };
 
-    if (!actions.length) {
+    if (!validators.length) {
       return;
     }
 
-    const validatorConfigs = validators.filter((x) => {
-      const actionName = `validator.${x.name ?? ''}` as ConditionsActionEnum;
-      const target = actions.includes(actionName);
+    const getActions = (async: boolean) => {
+      return Object.keys(conditions).filter((x) => {
+        const prefix = async
+          ? actionPrefix.asyncValidator
+          : actionPrefix.validator;
 
-      return !target
-        ? false
-        : this._evaluateConditionsStatement(conditions[actionName]!);
-    });
+        // Get the actions that starts with "validator.xxx" or "asyncValidator.xxx" only
+        const regExp = new RegExp(`^${prefix}\.[a-zA-z]{1,}$`);
 
-    const resultValidators =
-      this._formValidationService.getValidators(validatorConfigs);
+        return regExp.test(x);
+      });
+    };
 
-    control.setValidators(resultValidators);
+    const getConditionValidatorConfigs = (async: boolean) => {
+      const actions = getActions(async);
+      const result = validators.filter((x) => {
+        const prefix = async
+          ? actionPrefix.asyncValidator
+          : actionPrefix.validator;
+        const actionName = `${prefix}.${x.name ?? ''}` as ConditionsActionEnum;
+        const target = actions.includes(actionName);
+
+        if (target) {
+          return this.evaluateConditionsStatement(conditions[actionName]!);
+        }
+
+        return true;
+      });
+
+      return result;
+    };
+
+    const toggleValidators = () => {
+      const validatorConfigs = getConditionValidatorConfigs(false);
+      const validatorFns =
+        this.formValidationService.getValidators(validatorConfigs);
+
+      control.setValidators(validatorFns);
+    };
+
+    const toggleAsyncValidators = () => {
+      const validatorConfigs = getConditionValidatorConfigs(true);
+      const validatorFns =
+        this.formValidationService.getAsyncValidators(validatorConfigs);
+
+      control.setAsyncValidators(validatorFns);
+    };
+
+    toggleValidators();
+    toggleAsyncValidators();
     control.updateValueAndValidity();
+    this.globalVariableService.rootForm?.updateValueAndValidity();
   }
 
-  private _executeCustomActions(
+  private executeCustomActions(
     conditions: Conditions,
     control: AbstractControl
   ): void {
@@ -179,10 +217,10 @@ export class FormConditionsService {
     }
 
     for (const action of customActions) {
-      const bool = this._evaluateConditionsStatement(conditions[action]!);
+      const bool = this.evaluateConditionsStatement(conditions[action]!);
       if (!bool) continue;
 
-      const functions = this._globalVariableService.conditionsActionFunctions;
+      const functions = this.globalVariableService.conditionsActionFunctions;
 
       if (!functions) continue;
       if (!functions[action]) continue;
@@ -193,7 +231,7 @@ export class FormConditionsService {
   }
 
   /**Get the target element by using `id`(full control path) on each `div` inside current NgDynamicJsonForm instance */
-  private _getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
+  private getTargetEl$(controlPath: string): Observable<HTMLElement | null> {
     if (typeof window === 'undefined') {
       return of(null);
     }
@@ -201,7 +239,7 @@ export class FormConditionsService {
     return new Observable((subscriber) => {
       window.requestAnimationFrame(() => {
         // Use `CSS.escape()` to escape all the invalid characters.
-        const element = this._globalVariableService.hostElement?.querySelector(
+        const element = this.globalVariableService.hostElement?.querySelector(
           `#${CSS.escape(controlPath)}`
         );
 
@@ -212,7 +250,7 @@ export class FormConditionsService {
     });
   }
 
-  private _getPathsOfControlsToListen(configs: FormControlConfig[]): string[] {
+  private getPathsOfControlsToListen(configs: FormControlConfig[]): string[] {
     const extractPaths = (group: ConditionsGroup): string[] => {
       const value = group['&&'] || group['||'];
       if (!value) return [];
@@ -220,8 +258,8 @@ export class FormConditionsService {
       return value.flatMap((x) =>
         Array.isArray(x)
           ? [
-              this._getControlPathFromStatement(x[0]) ?? '',
-              this._getControlPathFromStatement(x[2]) ?? '',
+              this.getControlPathFromStatement(x[0]) ?? '',
+              this.getControlPathFromStatement(x[2]) ?? '',
             ]
           : extractPaths(x)
       );
@@ -238,7 +276,7 @@ export class FormConditionsService {
 
       const childrenPaths = !children?.length
         ? []
-        : this._getPathsOfControlsToListen(children);
+        : this.getPathsOfControlsToListen(children);
 
       acc.push(...paths.concat(childrenPaths));
       return acc;
@@ -254,7 +292,7 @@ export class FormConditionsService {
    * @description
    * The `fullControlPath` is the path to the control where the conditions will have effect on it.
    */
-  private _configsWithConditions(
+  private configsWithConditions(
     configs: FormControlConfig[],
     parentControlPath?: string
   ): { [fullControlPath: string]: FormControlConfig } {
@@ -268,7 +306,7 @@ export class FormConditionsService {
       if (children && children.length) {
         acc = {
           ...acc,
-          ...this._configsWithConditions(children, fullControlPath),
+          ...this.configsWithConditions(children, fullControlPath),
         };
       }
 
@@ -278,10 +316,10 @@ export class FormConditionsService {
     return result;
   }
 
-  private _evaluateConditionsStatement(
+  private evaluateConditionsStatement(
     conditionsGroup: ConditionsGroup
   ): boolean | undefined {
-    const form = this._globalVariableService.rootForm;
+    const form = this.globalVariableService.rootForm;
 
     if (!form || (!conditionsGroup['&&'] && !conditionsGroup['||'])) {
       return undefined;
@@ -290,9 +328,9 @@ export class FormConditionsService {
     const mapTupleFn = (tuple: ConditionsStatementTuple) => {
       const [left, operator, right] = tuple;
       const result = [
-        this._getValueFromStatement(left),
+        this.getValueFromStatement(left),
         operator,
-        this._getValueFromStatement(right),
+        this.getValueFromStatement(right),
       ] as ConditionsStatementTuple;
 
       return result;
@@ -301,13 +339,23 @@ export class FormConditionsService {
     return evaluateConditionsStatements(conditionsGroup, mapTupleFn);
   }
 
-  /**Get control path using the string in the conditions statement tuple.
-   * - `['controlA', '===', 'text']` => Should get "controlA"
-   * - `['controlA', '===', 'controlB']` => Should get "controlA", "controlB" individually
-   * - `['value', '===', 'controlA,prop1']` => Should get "controlA"
+  /**
+   * Get control path using the string in the conditions statement tuple.
+   *
+   * ```js
+   * form = new FormGroup{
+   *  controlA: new FormControl(),
+   *  controlB: new FormControl(),
+   * }
+   * ```
+   *
+   * - "controlA" => Should get "controlA"
+   * - "controlB" => Should get "controlB"
+   * - "controlA,prop1" => Should get "controlA"
+   * - "controlC" => undefined
    */
-  private _getControlPathFromStatement(input: any): string | undefined {
-    const form = this._globalVariableService.rootForm;
+  private getControlPathFromStatement(input: any): string | undefined {
+    const form = this.globalVariableService.rootForm;
     if (!form) return undefined;
     if (typeof input !== 'string') return undefined;
 
@@ -320,18 +368,18 @@ export class FormConditionsService {
 
   /**Get the value from the statement, either it's literally a value or comes from a control
    *
-   * ```json
-   * {
+   * ```js
+   * formValue = {
    *   controlA: 'textValue',
    *   controlB: false
    * }
    * ```
    *
-   * - [controlA, "===", "value"] => ["textValue", "===", "value"]
-   * - [false, "===", "controlB"] => [false, "===", false]
+   * - "controlA" => "textValue"
+   * - "controlB" => false
    */
-  private _getValueFromStatement(input: any): any {
-    const form = this._globalVariableService.rootForm;
+  private getValueFromStatement(input: any): any {
+    const form = this.globalVariableService.rootForm;
 
     if (!form) return input;
     if (typeof input !== 'string') return input;

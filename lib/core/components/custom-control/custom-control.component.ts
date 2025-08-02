@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -15,28 +15,36 @@ import { getControlErrors } from '../../utilities/get-control-errors';
   standalone: true,
 })
 export class CustomControlComponent implements ControlValueAccessor, Validator {
-  /**Must assign it with instance of `AbstractControl`
-   * @example
-   * override control = new FormControl() 'or' new UntypedFormControl();
-   * override control = new FormGroup() 'or' new UntypedFormGroup();
-   * override control = new FormArray() 'or' new UntypedFormArray();
+  /**
+   * This control can be use to bind the UI of the custom component with the parent control.
+   * Use this if you don't want to rewrite/override every methods in the CVA manually.
+   *
+   * Assign it with instance of `AbstractControl`
+   *
+   * ```
+   * // FormControl
+   * override control = new FormControl('');
+   *
+   * // FormGroup
+   * override control = new FormGroup({
+   *  controlA: new FormControl(...),
+   *  controlB: new FormControl(...)
+   * });
+   * ```
    */
-  public control?: AbstractControl;
-  public hostForm?: UntypedFormGroup;
-  public data?: FormControlConfig;
-  public hideErrorMessage?: boolean;
+  control?: AbstractControl;
+
+  hostForm = signal<UntypedFormGroup | undefined>(undefined);
+  data = signal<FormControlConfig | undefined>(undefined);
+  hideErrorMessage = signal<boolean | undefined>(undefined);
 
   writeValue(obj: any): void {
     this.control?.patchValue(obj);
   }
 
-  registerOnChange(fn: any): void {
-    this.control?.valueChanges.subscribe(fn);
-  }
+  registerOnChange(fn: any): void {}
 
-  registerOnTouched(fn: any): void {
-    return;
-  }
+  registerOnTouched(fn: any): void {}
 
   setDisabledState(isDisabled: boolean): void {
     isDisabled ? this.control?.disable() : this.control?.enable();
@@ -56,11 +64,21 @@ export class CustomControlComponent implements ControlValueAccessor, Validator {
 
   setErrors(errors: ValidationErrors | null): void {}
 
-  onOptionsGet(data: OptionItem[]): void {
-    if (!this.data || !this.data.options) {
+  onOptionsGet(options: OptionItem[]): void {
+    const data = this.data();
+
+    if (!data || !data.options) {
       return;
     }
 
-    this.data.options.data = data;
+    this.data.update((x) => {
+      if (!x?.options) {
+        return x;
+      }
+
+      x.options.data = [...options];
+
+      return { ...x };
+    });
   }
 }

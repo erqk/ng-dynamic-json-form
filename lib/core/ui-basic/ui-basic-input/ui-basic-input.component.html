@@ -1,14 +1,14 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <input
     [ngClass]="{ disabled: control.disabled }"
     [attr.type]="data.type ?? 'text'"
     [propsBinding]="[
       {
         props: data.props,
-        omit: ['type']
-      }
+        omit: ['type'],
+      },
     ]"
     [formControl]="control"
     (input)="onInput($event)"
   />
-</ng-container>
+}

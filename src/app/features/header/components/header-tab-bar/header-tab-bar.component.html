@@ -1,23 +1,23 @@
 <div
   [ngClass]="[
     'relative z-0 flex gap-2',
-    'overflow-x-auto overflow-y-hidden hidden-scrollbar'
+    'overflow-x-auto overflow-y-hidden hidden-scrollbar',
   ]"
 >
-  <ng-container *ngFor="let item of links">
+  @for (item of links(); track item.route) {
     <a
       [ngClass]="[
         'inline-flex',
         'p-3 px-4',
         'text-sm lg:text-base',
         'word-keep whitespace-nowrap',
-        'duration-200 transition-[opacity]'
+        'duration-200 transition-[opacity]',
       ]"
       [routerLink]="'/' + item.route"
       [routerLinkActive]="'active'"
       >{{ item.label }}</a
     >
-  </ng-container>
+  }
 
   <span class="indicator"></span>
 </div>

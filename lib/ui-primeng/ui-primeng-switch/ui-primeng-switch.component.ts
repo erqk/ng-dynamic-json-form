@@ -6,22 +6,21 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { InputSwitch, InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitch, ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'ui-primeng-switch',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InputSwitchModule,
     PropsBindingDirective,
+    ToggleSwitchModule,
   ],
   providers: [
     providePropsBinding([
       {
-        key: 'p-input-switch',
-        token: InputSwitch,
+        key: 'p-toggle-switch',
+        token: ToggleSwitch,
       },
     ]),
   ],

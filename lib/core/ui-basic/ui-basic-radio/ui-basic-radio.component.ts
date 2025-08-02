@@ -1,43 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomControlComponent } from '../../components/custom-control/custom-control.component';
 import { PropsBindingDirective } from '../../directives';
 
 @Component({
   selector: 'ui-basic-radio',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PropsBindingDirective],
   templateUrl: './ui-basic-radio.component.html',
   styles: [],
+  host: {
+    class: 'ui-basic',
+  },
 })
 export class UiBasicRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
-  selectedIndex = -1;
-  isDisabled = false;
+  options = computed(() => this.data()?.options?.data ?? []);
 
-  @HostBinding('class') hostClass = 'ui-basic';
+  selectedIndex = signal<number>(-1);
+  isDisabled = signal<boolean>(false);
 
   override writeValue(obj: any): void {
     const index =
-      this.data?.options?.data?.findIndex(
-        (x) => JSON.stringify(x.value) === JSON.stringify(obj)
+      this.options().findIndex(
+        (x) => JSON.stringify(x.value) === JSON.stringify(obj),
       ) ?? -1;
 
-    this.selectedIndex = index;
+    this.selectedIndex.set(index);
   }
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   override setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
   }
 
-  onChange(i: number): void {
-    const value = this.data?.options?.data?.[i].value;
-    this._onChange(value);
+  emitValue(i: number): void {
+    const value = this.options()[i].value;
+    this.onChange(value);
   }
 }

@@ -7,6 +7,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  finalize,
   map,
   of,
   startWith,
@@ -28,64 +29,30 @@ import { HttpRequestCacheService } from './http-request-cache.service';
 
 @Injectable()
 export class OptionsDataService {
-  private _globalVariableService = inject(GlobalVariableService);
-  private _httpRequestCacheService = inject(HttpRequestCacheService);
-  private _cancelAll$ = new Subject<void>();
-
-  getOptions$(
-    srcConfig: OptionSourceConfig,
-    valueChangesCallback: () => void
-  ): Observable<OptionItem[]> {
-    if (!srcConfig) {
-      return EMPTY;
-    }
-
-    const event$ = () => {
-      if (srcConfig.filter) {
-        return this._getOptionsByFilter$(srcConfig);
-      }
-
-      if (srcConfig.trigger) {
-        return this._getOptionsOnTrigger$(srcConfig, valueChangesCallback);
-      }
-
-      return this._getOptions$(srcConfig);
-    };
-
-    return event$().pipe(
-      tap((x) => {
-        if (isDevMode() && x.length > 100) {
-          console.warn(
-            `NgDynamicJsonForm:\nThe data length from the response ${srcConfig.url} is > 100.\n` +
-              `Please make sure there is optimization made. e.g. virtual scroll, lazy loading`
-          );
-        }
-      })
-    );
-  }
+  private globalVariableService = inject(GlobalVariableService);
+  private httpRequestCacheService = inject(HttpRequestCacheService);
+  private cancelAll$ = new Subject<void>();
 
   cancelAllRequest(): void {
-    this._cancelAll$.next();
-    this._httpRequestCacheService.reset();
+    this.cancelAll$.next();
+    this.httpRequestCacheService.reset();
   }
 
   onDestroy(): void {
     this.cancelAllRequest();
-    this._cancelAll$.complete();
+    this.cancelAll$.complete();
   }
 
-  private _getOptions$(
-    srcConfig: OptionSourceConfig
-  ): Observable<OptionItem[]> {
+  getOptions$(srcConfig: OptionSourceConfig): Observable<OptionItem[]> {
     if (!srcConfig) {
       return EMPTY;
     }
 
     const { url, method, headers, mapData } = srcConfig;
-    const bodyMapped = this._mapBodyValue(srcConfig);
-    const src = this._getMappedSrc(url, bodyMapped);
+    const bodyMapped = this.mapBodyValue(srcConfig);
+    const src = this.getMappedSrc(url, bodyMapped);
 
-    return this._httpRequestCacheService
+    return this.httpRequestCacheService
       .request$({
         src,
         method,
@@ -93,21 +60,40 @@ export class OptionsDataService {
         body: bodyMapped,
       })
       .pipe(
-        map((x) => this._mapData(x, mapData)),
+        map((x) => this.mapData(x, mapData)),
+        tap((x) => {
+          if (isDevMode() && x.length > 100) {
+            console.warn(
+              `NgDynamicJsonForm:\nThe data length from the response ${srcConfig.url} is > 100.\n` +
+                `Please make sure there is optimization made. e.g. virtual scroll, lazy loading`,
+            );
+          }
+        }),
         catchError(() => of([])),
-        takeUntil(this._cancelAll$)
+        takeUntil(this.cancelAll$),
       );
   }
 
-  private _getOptionsByFilter$(
-    srcConfig: OptionSourceConfig
-  ): Observable<OptionItem[]> {
-    if (!srcConfig.filter) return of([]);
+  getOptionsByFilter$(props: {
+    srcConfig: OptionSourceConfig;
+    valueChangeCallback: () => void;
+    finalizeCallback: () => void;
+  }): Observable<OptionItem[]> {
+    const { srcConfig, finalizeCallback, valueChangeCallback } = props;
+
+    const sourceValueChanges$ = this.onTriggerControlChanges$(
+      srcConfig.filter || srcConfig.trigger,
+      valueChangeCallback,
+    );
+
+    if (!srcConfig.filter) {
+      return of([]);
+    }
 
     const mapTupleFn = (
       tuple: ConditionsStatementTuple,
       triggerValue: any,
-      optionItem: OptionItem | null | undefined
+      optionItem: OptionItem | null | undefined,
     ): ConditionsStatementTuple => {
       const [triggerValuePath, operator, optionValuePath] = tuple;
       return [
@@ -117,51 +103,66 @@ export class OptionsDataService {
       ];
     };
 
-    const filterOptions$ = this._getOptions$(srcConfig).pipe(
-      switchMap((x) =>
-        combineLatest([of(x), this._onTriggerControlChanges$(srcConfig.filter)])
-      ),
+    const data$ = this.getOptions$(srcConfig).pipe(
+      finalize(() => finalizeCallback()),
+    );
+
+    const result$ = combineLatest([data$, sourceValueChanges$]).pipe(
       map(([options, value]) =>
         options.filter((optionItem) => {
           const result = evaluateConditionsStatements(
             srcConfig.filter!.conditions!,
-            (e) => mapTupleFn(e, value, optionItem)
+            (e) => mapTupleFn(e, value, optionItem),
           );
 
           return result;
-        })
-      )
+        }),
+      ),
+      tap(() => finalizeCallback()),
     );
 
-    return filterOptions$.pipe(takeUntil(this._cancelAll$));
+    return result$.pipe(takeUntil(this.cancelAll$));
   }
 
-  private _getOptionsOnTrigger$(
-    srcConfig: OptionSourceConfig,
-    valueChangesCallback: () => void
-  ): Observable<OptionItem[]> {
-    if (!srcConfig.trigger) return of([]);
+  getOptionsOnTrigger$(props: {
+    srcConfig: OptionSourceConfig;
+    valueChangeCallback: () => void;
+    finalizeCallback: () => void;
+  }): Observable<OptionItem[]> {
+    const { srcConfig, finalizeCallback, valueChangeCallback } = props;
 
-    return this._onTriggerControlChanges$(srcConfig.trigger).pipe(
-      switchMap((x) => {
-        valueChangesCallback();
-        const emptyValue = x === undefined || x === null || x === '';
-        return emptyValue ? of([]) : this._getOptions$(srcConfig);
-      }),
-      takeUntil(this._cancelAll$)
+    const sourceValueChanges$ = this.onTriggerControlChanges$(
+      srcConfig.filter || srcConfig.trigger,
+      valueChangeCallback,
+    );
+
+    if (!srcConfig.trigger) {
+      return of([]);
+    }
+
+    return sourceValueChanges$.pipe(
+      switchMap(() =>
+        this.getOptions$(srcConfig).pipe(finalize(() => finalizeCallback())),
+      ),
+      takeUntil(this.cancelAll$),
     );
   }
 
   /**The `valueChanges` of trigger control */
-  private _onTriggerControlChanges$(
-    triggerConfig: OptionSourceConfig['trigger'] | OptionSourceConfig['filter']
+  private onTriggerControlChanges$(
+    triggerConfig: OptionSourceConfig['trigger'] | OptionSourceConfig['filter'],
+    valueChangesCallback?: () => void,
   ): Observable<any> {
-    if (!triggerConfig) return EMPTY;
+    if (!triggerConfig) {
+      return EMPTY;
+    }
 
     const { by, debounceTime: _debounceTime = 0 } = triggerConfig;
-    if (!by.trim()) return EMPTY;
+    if (!by.trim()) {
+      return EMPTY;
+    }
 
-    const form = this._globalVariableService.rootForm;
+    const form = this.globalVariableService.rootForm;
     const paths = getControlAndValuePath(by);
     const control = form?.get(paths.controlPath);
 
@@ -174,15 +175,17 @@ export class OptionsDataService {
 
     return control.valueChanges.pipe(
       startWith(control.value),
-      debounceTime(_debounceTime),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-      map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath)))
+      // The callback when valueChanges emit, should place before debounceTime
+      tap(() => valueChangesCallback?.()),
+      debounceTime(_debounceTime),
+      map((x) => (!paths.valuePath ? x : getValueInObject(x, paths.valuePath))),
     );
   }
 
-  private _mapData(
+  private mapData(
     input: Object,
-    mapData: OptionSourceConfig['mapData']
+    mapData: OptionSourceConfig['mapData'],
   ): OptionItem[] {
     if (!input) return [];
 
@@ -203,7 +206,7 @@ export class OptionsDataService {
     return result;
   }
 
-  private _getMappedSrc(src: string, body: any): string {
+  private getMappedSrc(src: string, body: any): string {
     // url variables (.../:x/:y/:z)
     const urlVariables = src.match(/:([^/:\s]+)/g) || ([] as string[]);
 
@@ -221,16 +224,16 @@ export class OptionsDataService {
     }, src);
   }
 
-  private _mapBodyValue(config: OptionSourceConfig): any {
+  private mapBodyValue(config: OptionSourceConfig): any {
     if (!config.trigger) return config.body;
 
     const triggerBody = config.trigger.body;
     if (!triggerBody) return null;
 
-    const form = this._globalVariableService.rootForm;
+    const form = this.globalVariableService.rootForm;
     const result = Object.keys(triggerBody).reduce((acc, key) => {
       const { controlPath, valuePath } = getControlAndValuePath(
-        triggerBody[key]
+        triggerBody[key],
       );
 
       const control = form?.get(controlPath);

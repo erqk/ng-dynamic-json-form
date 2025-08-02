@@ -6,6 +6,7 @@
     "outDir": "./dist/out-tsc",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -13,25 +14,18 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "ng-dynamic-json-form": [
-        "dist/ng-dynamic-json-form"
-      ],
-      "ng-dynamic-json-form/*": [
-        "dist/ng-dynamic-json-form/*"
-      ]
+      "ng-dynamic-json-form": ["dist/ng-dynamic-json-form"],
+      "ng-dynamic-json-form/*": ["dist/ng-dynamic-json-form/*"]
     },
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -39,9 +33,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": [
-    "src/**/*.ts",
-    "lib/**/*.ts",
-    "lib/**/*.js"
-  ]
+  "include": ["src/**/*.ts", "lib/**/*.ts"]
 }

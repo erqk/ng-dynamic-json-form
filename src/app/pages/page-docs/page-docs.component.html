@@ -1,14 +1,14 @@
 <div
   class="beauty-scrollbar affect-child"
   [ngStyle]="{
-    '--window-height.px': (windowSize$ | async)?.y ?? 0
+    '--window-height.px': windowSize()?.y ?? 0,
   }"
 >
   <ui-content-wrapper [maxWidth]="'var(--page-max-width)'">
     <div
       [ngClass]="[
-        'grid-cols-[auto,3fr,auto] gap-8 items-start',
-        'block lg:grid'
+        'grid-cols-[auto_3fr_auto] gap-8 items-start',
+        'block lg:grid',
       ]"
     >
       <div
@@ -16,7 +16,7 @@
           'sticky w-64 pt-5 pb-10 px-6 overflow-auto',
           'hidden lg:block',
           'top-[var(--header-height)]',
-          'h-[calc(100vh-var(--header-height))]'
+          'h-[calc(100vh-var(--header-height))]',
         ]"
       >
         <app-navigator-index
@@ -24,27 +24,26 @@
           (click)="setSmoothScroll(false)"
         ></app-navigator-index>
       </div>
-
-      <ng-container *ngIf="content$ | async as content">
-        <div
-          class="markdown block min-w-0 p-4 lg:p-0 mt-4 lg:mt-10 mb-24"
-          docRouterLink
-          [innerHTML]="content"
-        ></div>
-
-        <div
-          [ngClass]="[
-            'sticky w-64 py-10 overflow-auto',
-            'hidden lg:block',
-            'top-[var(--header-height)]',
-            'h-[calc(100vh-var(--header-height))]'
-          ]"
-        >
-          <app-navigator-title
-            (click)="setSmoothScroll(true)"
-          ></app-navigator-title>
+      @if (docHtml(); as content) {
+        <div class="markdown block min-w-0 p-4 lg:p-0 mb-24">
+          <div docRouterLink [innerHTML]="content"></div>
         </div>
-      </ng-container>
+      } @else {
+        <div class="bg-gray-400/10 h-[30dvh] w-full rounded-xl"></div>
+      }
+
+      <div
+        [ngClass]="[
+          'sticky w-64 py-10 overflow-auto',
+          'hidden lg:block',
+          'top-[var(--header-height)]',
+          'h-[calc(100vh-var(--header-height))]',
+        ]"
+      >
+        <app-navigator-title
+          (click)="setSmoothScroll(true)"
+        ></app-navigator-title>
+      </div>
     </div>
   </ui-content-wrapper>
 
@@ -55,7 +54,7 @@
       'bg-[rgba(var(--bg-color-rgb),0.25)] backdrop-blur duration-100',
       showMobileMenu
         ? 'pointer-events-auto opacity-100'
-        : 'pointer-events-none opacity-0'
+        : 'pointer-events-none opacity-0',
     ]"
     (click)="toggleMobileMenu(false)"
   ></div>
@@ -73,7 +72,7 @@
       'duration-300 transition-transform',
       showMobileMenu
         ? 'shadow-2xl translate-x-0'
-        : 'translate-x-[calc(-100%-1rem)]'
+        : 'translate-x-[calc(-100%-1rem)]',
     ]"
   >
     <app-navigator-index
@@ -87,7 +86,7 @@
       'fixed z-[1002] bottom-12 left-8',
       'flex lg:hidden items-center justify-center',
       'h-16 w-16 bg-[var(--primary-500)] text-white text-lg',
-      '!rounded-full shadow-[rgba(0,0,0,0.5)] shadow-xl'
+      '!rounded-full shadow-[rgba(0,0,0,0.5)] shadow-xl',
     ]"
     (click)="toggleMobileMenu()"
   >

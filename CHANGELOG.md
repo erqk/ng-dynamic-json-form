@@ -1,3 +1,181 @@
+# 9.0.0 (2025-08-01)
+
+- Update to support Angular 20
+- Use signal to replace all the usage of `@Input`, `@Output`, `ngOnChanges`
+
+## Fix
+
+- For control with options, its value should not be overridden after the options is loaded.
+
+## BREAKING CHANGES
+
+### CustomControlComponent
+
+- The properties are now using signal.
+
+  ```ts
+  hostForm = signal<UntypedFormGroup | undefined>(undefined);
+  data = signal<FormControlConfig | undefined>(undefined);
+  hideErrorMessage = signal<boolean | undefined>(undefined);
+  ```
+
+- `registerOnChange` is doing nothing at default. It should not trigger event every time after the `valueChanges` to prevent the CVA becomes dirty unintentionally.
+
+  ```ts
+  // before
+  registerOnChange(fn: any): void {
+    this.control?.valueChanges.subscribe(fn);
+  }
+
+  // after
+  registerOnChange(fn: any): void {}
+  ```
+
+# 8.8.4 (2025-08-01)
+
+[22f8dc3]: https://github.com/erqk/ng-dynamic-json-form/commit/22f8dc3e2bea791c92d540e6d4da80d3a2a2d07e
+[c91e975]: https://github.com/erqk/ng-dynamic-json-form/commit/c91e975386a155453d2c2022b7c241fd4be7aee1
+
+| Commit    | Type | Description                                                                              |
+| --------- | ---- | ---------------------------------------------------------------------------------------- |
+| [22f8dc3] | fix  | FormControlComponent: Don't set errors for custom component on instantiate.              |
+| [c91e975] | feat | PropsBindingDirective: Check if property is signal, and bind only valid HTML attributes. |
+
+# 8.8.3 (2025-07-04)
+
+[e6b7c04]: https://github.com/erqk/ng-dynamic-json-form/commit/e6b7c049c36d21d010506e10e5840e09bb86d6f3
+
+| Commit    | Type | Description          |
+| --------- | ---- | -------------------- |
+| [e6b7c04] | fix  | Add 'textMask' type. |
+
+# 8.8.2 (2025-07-04)
+
+[2f8c5aa]: https://github.com/erqk/ng-dynamic-json-form/commit/2f8c5aa01170f05f9b5a40ebce69051bdf153328
+
+| Commit    | Type | Description                      |
+| --------- | ---- | -------------------------------- |
+| [2f8c5aa] | fix  | `layout.hideLabel` fail to work. |
+
+# 8.8.1 (2025-06-25)
+
+[9c2577d]: https://github.com/erqk/ng-dynamic-json-form/commit/9c2577d93a7dffb4a559d7c72be6d174c8c0e2d4
+
+| Commit    | Type | Description                                                               |
+| --------- | ---- | ------------------------------------------------------------------------- |
+| [9c2577d] | fix  | Basic checkbox and Material checkbox not working properly in binary mode. |
+
+# 8.8.0 (2025-04-15)
+
+[88ab17a]: https://github.com/erqk/ng-dynamic-json-form/commit/88ab17ac1de175540d54ab5de629cd7358207570
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [88ab17a] | feat | Add control to show errors on touched. |
+
+# 8.7.7 (2025-03-20)
+
+[0561fd3]: https://github.com/erqk/ng-dynamic-json-form/commit/0561fd30c46885a9e6a9742178f246c7cd8c6f85
+
+| Commit    | Type | Description               |
+| --------- | ---- | ------------------------- |
+| [0561fd3] | fix  | Add position-after class. |
+
+# 8.7.6 (2025-03-20)
+
+[3fbf20c]: https://github.com/erqk/ng-dynamic-json-form/commit/3fbf20cf57c0f69c2a868792a48f52de0460cb0b
+[af5e5ac]: https://github.com/erqk/ng-dynamic-json-form/commit/af5e5acd61e5716fdddd6f777fa12785ac9fa5fc
+[f69d732]: https://github.com/erqk/ng-dynamic-json-form/commit/f69d732e3d84342d2c3beb022e535d5d4448d904
+[a08535c]: https://github.com/erqk/ng-dynamic-json-form/commit/a08535cc1e1829bfeabd192bedcf9176273d1e7e
+
+| Commit    | Type     | Description                                       |
+| --------- | -------- | ------------------------------------------------- |
+| [3fbf20c] | feat     | Add support for root class and root styles.       |
+| [af5e5ac] | feat     | Enable setting for description position globally. |
+| [f69d732] | refactor | Use host attribute to add host class.             |
+| [a08535c] | refactor | Remove Renderer2 usages.                          |
+
+# 8.7.5 (2025-03-19)
+
+[fcaba90]: https://github.com/erqk/ng-dynamic-json-form/commit/fcaba90f7366c0f8bc3791dbc13a1214b9043f50
+
+| Commit    | Type | Description                                 |
+| --------- | ---- | ------------------------------------------- |
+| [fcaba90] | feat | Add support for global validation messages. |
+
+# 8.7.4 (2025-03-19)
+
+[3ae737e]: https://github.com/erqk/ng-dynamic-json-form/commit/3ae737ef228442b51e1a817d0d7b3433a6cccc1c
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [3ae737e] | fix  | Use custom validator first if present. |
+
+# 8.7.3 (2025-03-10)
+
+[6229bdd]: https://github.com/erqk/ng-dynamic-json-form/commit/6229bdd4ddab5f9afbc21ad52932299b539d1ded
+[8108b29]: https://github.com/erqk/ng-dynamic-json-form/commit/8108b29825d036134208b013ec9caecd688d9930
+[7ee59f6]: https://github.com/erqk/ng-dynamic-json-form/commit/7ee59f66f9820e085dba9225337d51806b0f418d
+
+| Commit    | Type | Description                                                                                 |
+| --------- | ---- | ------------------------------------------------------------------------------------------- |
+| [6229bdd] | fix  | Fail to get validation message on async validator.                                          |
+| [8108b29] | fix  | When no validator action is set in "conditions", don't filter the current validator config. |
+
+BREAKING CHANGE
+
+- [7ee59f6] For description position set as "after", place it below the validation message section.
+
+# 8.7.2 (2025-02-20)
+
+[17d03f6]: https://github.com/erqk/ng-dynamic-json-form/commit/17d03f63a6fa4568a37c8bfed0df75455e3042b1
+
+| Commit    | Type | Description                         |
+| --------- | ---- | ----------------------------------- |
+| [17d03f6] | fix  | Form validation incorrect behavior. |
+
+# 8.7.1 (2025-02-19)
+
+[2f66a65]: https://github.com/erqk/ng-dynamic-json-form/commit/2f66a65a5c1441eefa1fb6addd7193fe2b237d19
+
+| Commit    | Type | Description                                            |
+| --------- | ---- | ------------------------------------------------------ |
+| [2f66a65] | fix  | ImaskValuePatchDirective: Return null if value is NaN. |
+
+# 8.7.0 (2025-02-14)
+
+[f18d93a]: https://github.com/erqk/ng-dynamic-json-form/commit/f18d93ad179b4ed8c42e151d7f19a3401514d3e0
+[b1b924e]: https://github.com/erqk/ng-dynamic-json-form/commit/b1b924e27b5fb12c67bb9cb53046d387eec57cc9
+
+| Commit    | Type | Description                                                            |
+| --------- | ---- | ---------------------------------------------------------------------- |
+| [f18d93a] | feat | Add support for async validators.                                      |
+| [b1b924e] | fix  | Error message not showing when only async validators is in the config. |
+
+# 8.6.1 (2025-01-02)
+
+[28e5e5a]: https://github.com/erqk/ng-dynamic-json-form/commit/28e5e5ae591e180de56c410348b90ffd4ab054d8
+
+| Commit    | Type | Description                                     |
+| --------- | ---- | ----------------------------------------------- |
+| [28e5e5a] | fix  | The logic to check key existence in the object. |
+
+# 8.6.0 (2024-12-17)
+
+[7ccfb3d]: https://github.com/erqk/ng-dynamic-json-form/commit/7ccfb3d3c1df9a2d185a19e241b8be5f2f8296bc
+
+| Commit    | Type | Description                                                          |
+| --------- | ---- | -------------------------------------------------------------------- |
+| [7ccfb3d] | fix  | Add option to hide the error section for the specific control types. |
+
+# 8.5.11 (2024-12-03)
+
+[e920f2e]: https://github.com/erqk/ng-dynamic-json-form/commit/e920f2ed1f9646d4fbfdf347f569323e60447391
+
+| Commit    | Type | Description                                                          |
+| --------- | ---- | -------------------------------------------------------------------- |
+| [e920f2e] | fix  | Add options loading state on valueChanges, change order of callback. |
+
 # 8.5.10 (2024-11-22)
 
 [df18456]: https://github.com/erqk/ng-dynamic-json-form/commit/df184563cd7880c5ab5acc3a95916285ac5c4ed3

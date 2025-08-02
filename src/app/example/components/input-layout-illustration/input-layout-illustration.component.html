@@ -3,7 +3,7 @@
   [ngClass]="{
     'no-tags': showTags === 'false'
   }"
->
+  >
   <span>Host</span>
   <div class="tags">
     <span>hostClass</span>
@@ -25,50 +25,52 @@
       <span>contentStyles</span>
     </div>
 
-    <ng-container
-      *ngIf="descriptionPosition === 'before'"
-      [ngTemplateOutlet]="descriptionTemplate"
-    >
-    </ng-container>
+    @if (descriptionPosition === 'before') {
+      <ng-container
+        [ngTemplateOutlet]="descriptionTemplate"
+        >
+      </ng-container>
+    }
 
     <div class="input-area">
       <span>{{ isFormGroup === "true" ? "Form Group" : "Input Area" }}</span>
       <div class="tags">
         <span
           >{{ isFormGroup === "true" ? "formGroup" : "inputArea" }}Class</span
-        >
-        <span
-          >{{ isFormGroup === "true" ? "formGroup" : "inputArea" }}Styles</span
-        >
+          >
+          <span
+            >{{ isFormGroup === "true" ? "formGroup" : "inputArea" }}Styles</span
+            >
+          </div>
+
+          @if (isFormGroup === 'false') {
+            <input class="doc-form-element" type="text" />
+          }
+        </div>
+
+        @if (descriptionPosition === 'after') {
+          <ng-container
+            [ngTemplateOutlet]="descriptionTemplate"
+            >
+          </ng-container>
+        }
+
+        <div class="error">
+          <span>Error</span>
+          <div class="tags">
+            <span>errorClass</span>
+            <span>errorStyles</span>
+          </div>
+        </div>
       </div>
-
-      <ng-container *ngIf="isFormGroup === 'false'">
-        <input class="doc-form-element" type="text" />
-      </ng-container>
     </div>
 
-    <ng-container
-      *ngIf="descriptionPosition === 'after'"
-      [ngTemplateOutlet]="descriptionTemplate"
-    >
-    </ng-container>
-
-    <div class="error">
-      <span>Error</span>
-      <div class="tags">
-        <span>errorClass</span>
-        <span>errorStyles</span>
+    <ng-template #descriptionTemplate>
+      <div class="description">
+        <span>Description</span>
+        <div class="tags">
+          <span>descriptionClass</span>
+          <span>descriptionStyles</span>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<ng-template #descriptionTemplate>
-  <div class="description">
-    <span>Description</span>
-    <div class="tags">
-      <span>descriptionClass</span>
-      <span>descriptionStyles</span>
-    </div>
-  </div>
-</ng-template>
+    </ng-template>

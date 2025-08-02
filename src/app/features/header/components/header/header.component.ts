@@ -1,22 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
-import {
-  debounceTime,
-  filter,
-  map,
-  takeUntil,
-  tap,
-  windowWhen,
-} from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { LayoutService } from 'src/app/core/services/layout.service';
 import { LanguageService } from 'src/app/features/language/language-data.service';
 import { HeaderDesktopComponent } from '../header-desktop/header-desktop.component';
 import { HeaderMobileComponent } from '../header-mobile/header-mobile.component';
-import { LayoutService } from 'src/app/core/services/layout.service';
-import { Subject, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [CommonModule, HeaderDesktopComponent, HeaderMobileComponent],
   template: `
     <div
@@ -25,31 +17,36 @@ import { Subject, fromEvent } from 'rxjs';
         'p-3 px-7 lg:p-4 lg:pb-2',
         'duration-200',
         showBackground ? 'show-background' : '',
-        openSettings ? 'full-background' : ''
+        openSettings ? 'full-background' : '',
       ]"
     >
-      <ng-container *ngIf="links$ | async as links">
-        <app-header-desktop [links]="links"></app-header-desktop>
+      @if (links$ | async; as links) {
+        <app-header-desktop
+          class="hidden lg:block"
+          [links]="links"
+        ></app-header-desktop>
+
         <app-header-mobile
+          class="block lg:hidden"
           [links]="links"
           [openSettings]="openSettings"
           (settingsOpened)="openSettings = $event"
         ></app-header-mobile>
-      </ng-container>
+      }
     </div>
   `,
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  private _el = inject(ElementRef);
-  private _languageDataService = inject(LanguageService);
-  private _layoutService = inject(LayoutService);
-  private readonly _onDestroy$ = new Subject<void>();
+  private el = inject(ElementRef);
+  private languageDataService = inject(LanguageService);
+  private layoutService = inject(LayoutService);
+  private readonly onDestroy$ = new Subject<void>();
 
   showBackground = false;
   openSettings = false;
 
-  links$ = this._languageDataService.i18nContent$.pipe(
+  links$ = this.languageDataService.i18nContent$.pipe(
     filter((x) => Object.values(x).length > 0),
     map((x) => [
       {
@@ -60,7 +57,7 @@ export class HeaderComponent {
         route: 'playground',
         label: `${x['MENU']['PLAYGROUND']}`,
       },
-    ])
+    ]),
   );
 
   @HostListener('window:scroll', ['$event'])
@@ -70,32 +67,32 @@ export class HeaderComponent {
   }
 
   constructor() {
-    this._layoutService.windowSize$
+    this.layoutService.windowSize$
       .pipe(
         filter((x) => x.x >= 1024),
-        tap(() => (this.openSettings = false))
+        tap(() => (this.openSettings = false)),
       )
       .subscribe();
   }
 
   ngAfterViewInit(): void {
-    this._updateHeaderHeight();
+    this.updateHeaderHeight();
   }
 
   ngOnDestroy(): void {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
-  private _updateHeaderHeight(): void {
-    const host = this._el.nativeElement as HTMLElement;
+  private updateHeaderHeight(): void {
+    const host = this.el.nativeElement as HTMLElement;
     if (!host) return;
 
     fromEvent(host, 'transitionend', { passive: true })
       .pipe(
         debounceTime(0),
-        tap(() => this._layoutService.updateHeaderHeight()),
-        takeUntil(this._onDestroy$)
+        tap(() => this.layoutService.updateHeaderHeight()),
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }

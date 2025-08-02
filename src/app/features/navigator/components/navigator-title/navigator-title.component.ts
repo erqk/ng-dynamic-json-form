@@ -1,162 +1,176 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, DestroyRef, HostBinding, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Subject, fromEvent, merge, takeUntil, tap } from 'rxjs';
+import { fromEvent, Subject, takeUntil, tap } from 'rxjs';
 import { scrollToTitle } from 'src/app/core/utilities/scroll-to-title';
-import { UiContentWrapperComponent } from '../../../ui-content-wrapper/ui-content-wrapper.component';
 import { NavigatorTitleItem } from '../../interfaces/navigator-title-item.interface';
 import { NavigatorService } from '../../services/navigator.service';
 
 @Component({
   selector: 'app-navigator-title',
-  standalone: true,
-  imports: [CommonModule, UiContentWrapperComponent],
+  imports: [CommonModule],
   template: `
-    <ng-container *ngFor="let item of links">
+    @for (item of links(); track $index) {
       <ng-container
         [ngTemplateOutlet]="buttonTemplate"
         [ngTemplateOutletContext]="{ item, level: 1 }"
       ></ng-container>
-    </ng-container>
+    }
 
     <ng-template #buttonTemplate let-item="item" let-level="level">
       <button
         [ngClass]="{
-          active: currentActiveId[level - 1] === item.id,
-          child: level > 1
+          active: currentActiveId()[level - 1] === item.id,
+          child: level > 1,
         }"
         (click)="onLinkClick($event, item)"
       >
         {{ item.label }}
       </button>
 
-      <ng-container *ngIf="item.children?.length">
+      @if (item.children?.length) {
         <div
           class="sub-titles"
           [ngClass]="{
             active:
-              item.children?.length && currentActiveId[level - 1] === item.id
+              item.children?.length && currentActiveId()[level - 1] === item.id,
           }"
         >
           <div class="flex flex-col overflow-hidden">
-            <ng-container
-              *ngFor="let child of item.children"
-              [ngTemplateOutlet]="buttonTemplate"
-              [ngTemplateOutletContext]="{
-                item: child,
-                level: level + 1
-              }"
-            ></ng-container>
+            @for (child of item.children; track $index) {
+              <ng-container
+                [ngTemplateOutlet]="buttonTemplate"
+                [ngTemplateOutletContext]="{
+                  item: child,
+                  level: level + 1,
+                }"
+              ></ng-container>
+            }
           </div>
         </div>
-      </ng-container>
+      }
     </ng-template>
   `,
   styleUrls: ['./navigator-title.component.scss'],
+  host: {
+    class: 'beauty-scrollbar',
+  },
 })
 export class NavigatorTitleComponent {
-  private _destroyRef = inject(DestroyRef);
-  private _navigatorService = inject(NavigatorService);
-  private _router = inject(Router);
-  private _location = inject(Location);
-  private _currentLinkIndex = 0;
-  private _linksFlatten: NavigatorTitleItem[] = [];
+  private destroyRef = inject(DestroyRef);
+  private navigatorService = inject(NavigatorService);
+  private router = inject(Router);
+  private location = inject(Location);
+  private currentLinkIndex = 0;
 
-  private _reset$ = new Subject<void>();
+  private reset$ = new Subject<void>();
 
-  links: NavigatorTitleItem[] = [];
-  currentActiveId = ['', ''];
+  links = this.navigatorService.titles;
 
-  @HostBinding('class') hostClass = 'beauty-scrollbar';
+  linksFlatten = computed(() => {
+    const links = this.links() ?? [];
+    const flatten = (input: NavigatorTitleItem[]): NavigatorTitleItem[] => {
+      const children = input.flatMap((x) => flatten(x.children ?? []));
+      return [...input, ...children];
+    };
 
-  constructor() {
-    this._navigatorService.titles$
-      .pipe(
-        tap((x) => {
-          this.links = x;
-          this._flattenLinks(x);
-          this._syncActiveIndexWithScroll();
-          this._scrollToContent(undefined, false);
-          this._setActiveIds();
-          this._syncActiveIndexWithScroll();
-        }),
-        takeUntilDestroyed()
-      )
-      .subscribe();
-  }
+    const result = flatten(links);
+    return result;
+  });
+
+  currentActiveId = signal(['', '']);
+
+  handleLinksGet = effect(() => {
+    const links = this.links();
+
+    if (!links) {
+      return;
+    }
+
+    this.scrollToContent(undefined, false);
+    this.setActiveIds();
+    this.syncActiveIndexWithScroll();
+  });
 
   onLinkClick(e: Event, item: NavigatorTitleItem): void {
     const el = e.target as HTMLElement;
-    const newUrl = this._router.url.split('?')[0].split('#')[0];
+    const newUrl = this.router.url.split('?')[0].split('#')[0];
     const level = parseInt(item.tagName.replace('H', '')) - 2;
 
     el.scrollIntoView({
       block: 'center',
     });
 
-    this.currentActiveId[level] = item.id;
-    this.currentActiveId[level + 1] = item.children?.[0].id || '';
-    this._router.navigateByUrl(`${newUrl}#${item.id}`, {
+    this.currentActiveId.update((x) => {
+      x[level] = item.id;
+      x[level + 1] = item.children?.[0].id || '';
+
+      return [...x];
+    });
+
+    this.router.navigateByUrl(`${newUrl}#${item.id}`, {
       onSameUrlNavigation: 'reload',
     });
   }
 
-  private _flattenLinks(links: NavigatorTitleItem[]): void {
-    this._linksFlatten = [];
-
-    const flatten = (input: NavigatorTitleItem[]) => {
-      for (const item of input) {
-        this._linksFlatten.push(item);
-        if (!item.children) continue;
-
-        flatten(item.children);
-      }
-    };
-
-    flatten(links);
-  }
-
-  private _syncActiveIndexWithScroll(): void {
+  private syncActiveIndexWithScroll(): void {
     if (typeof window === 'undefined') return;
 
-    this._reset$.next();
+    this.reset$.next();
     fromEvent(document, 'scroll', { passive: true })
       .pipe(
-        tap(() => this._highlightTitle()),
-        takeUntil(this._reset$),
-        takeUntilDestroyed(this._destroyRef)
+        tap(() => this.highlightTitle()),
+        takeUntil(this.reset$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
 
-  private _setActiveIds(): void {
-    if (typeof window === 'undefined') return;
+  private setActiveIds(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-    const activeTitle = this._getActiveTitle();
+    const activeTitle = this.getActiveTitle();
     if (!activeTitle) {
       if (this._bodyScrollFraction < 0.05) {
-        this.currentActiveId = [];
+        // this.currentActiveId.set([]);
       }
 
       return;
     }
 
+    const links = this.links() ?? [];
+    const linksFlatten = this.linksFlatten();
     const level = parseInt(activeTitle.tagName.replace('H', '')) - 2;
-    const parent = this.links.find(({ children }) =>
-      (children || []).find(({ id }) => id === activeTitle!.id)
+    const parent = links.find(({ children }) =>
+      (children || []).find(({ id }) => id === activeTitle!.id),
     );
 
-    this.currentActiveId[level - 1] = parent?.id || '';
-    this.currentActiveId[level] = activeTitle.id || '';
-    this._currentLinkIndex = this._linksFlatten.findIndex(
-      ({ id }) => id === activeTitle!.id
+    this.currentActiveId.update((x) => {
+      x[level - 1] = parent?.id || '';
+      x[level] = activeTitle.id || '';
+
+      return [...x];
+    });
+
+    this.currentLinkIndex = linksFlatten.findIndex(
+      ({ id }) => id === activeTitle!.id,
     );
   }
 
-  private _getActiveTitle(): Element | undefined {
+  private getActiveTitle(): Element | undefined {
+    const linksFlatten = this.linksFlatten();
     const rect = (input: Element) => input.getBoundingClientRect();
-    const titles = this._linksFlatten
+    const titles = linksFlatten
       .map(({ id }) => document.querySelector(`#${id}`)!)
       .filter((x) => !!x);
 
@@ -174,23 +188,30 @@ export class NavigatorTitleComponent {
       }
 
       return titles.findIndex(
-        (x) => rect(x).top >= 0 && rect(x).bottom < this._visibleThreshold
+        (x) => rect(x).top >= 0 && rect(x).bottom < this._visibleThreshold,
       );
     };
 
     return titles[targetIndex()];
   }
 
-  private _scrollToContent(id?: string, smoothScrolling = true): void {
-    if (typeof window === 'undefined') return;
+  private scrollToContent(id?: string, smoothScrolling = true): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-    const idFromRoute = this._router.parseUrl(this._location.path())
-      .queryParams['id'];
+    const idFromRoute = this.router.parseUrl(this.location.path()).queryParams[
+      'id'
+    ];
 
     const targetId = id ?? idFromRoute;
 
     if (!targetId) {
-      this.currentActiveId[0] = document.querySelector('markdown h2')?.id || '';
+      this.currentActiveId.update((x) => {
+        x[0] = document.querySelector('markdown h2')?.id || '';
+        return [...x];
+      });
+
       return;
     }
 
@@ -200,19 +221,25 @@ export class NavigatorTitleComponent {
     scrollToTitle(target, smoothScrolling ? 'smooth' : 'auto');
   }
 
-  private _highlightTitle(): void {
-    if (typeof window === 'undefined') return;
+  private highlightTitle(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     let lastScrollPosition = 0;
+    const linksFlatten = this.linksFlatten();
     const scrollUp = window.scrollY < lastScrollPosition;
-    const prevLinkItem = this._linksFlatten[this._currentLinkIndex - 1];
+    const prevLinkItem = linksFlatten[this.currentLinkIndex - 1];
 
     if (scrollUp && !!prevLinkItem) {
       const level = parseInt(prevLinkItem.tagName.replace('H', '')) - 2;
-      this.currentActiveId[level] = prevLinkItem.id || '';
+      this.currentActiveId.update((x) => {
+        x[level] = prevLinkItem.id || '';
+        return [...x];
+      });
     }
 
-    this._setActiveIds();
+    this.setActiveIds();
     lastScrollPosition = window.scrollY;
   }
 

@@ -1,22 +1,23 @@
 import {
   Directive,
   ElementRef,
-  Input,
-  OnChanges,
-  Renderer2,
+  computed,
+  effect,
   inject,
+  input,
 } from '@angular/core';
 import { FormControlConfig } from '../models';
+import { getClassListFromString } from '../utilities/get-class-list-from-string';
+import { getStyleListFromString } from '../utilities/get-style-list-from-string';
 
 @Directive({
   selector: '[controlLayout]',
   standalone: true,
 })
-export class ControlLayoutDirective implements OnChanges {
-  private _renderer2 = inject(Renderer2);
-  private _el = inject(ElementRef);
+export class ControlLayoutDirective {
+  private el = inject(ElementRef);
 
-  @Input() controlLayout?: {
+  controlLayout = input<{
     type?:
       | 'host'
       | 'label'
@@ -26,36 +27,56 @@ export class ControlLayoutDirective implements OnChanges {
       | 'inputArea'
       | 'error';
     layout?: FormControlConfig['layout'];
-  };
+  }>();
 
-  ngOnChanges(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
-    if (!hostEl || !this.controlLayout) return;
-
-    const { type, layout } = this.controlLayout;
-    const classNames = layout?.[`${type ?? 'host'}Class`] ?? '';
-    const styles = layout?.[`${type ?? 'host'}Styles`] ?? '';
-
-    if (classNames.length > 0) {
-      classNames
-        .split(/\s{1,}/)
-        .map((x) => x.trim())
-        .filter(Boolean)
-        .forEach((name) => {
-          this._renderer2.addClass(hostEl, name);
-        });
+  classNames = computed(() => {
+    const data = this.controlLayout();
+    if (!data) {
+      return [];
     }
 
-    if (styles.length > 0) {
-      const styleProperties = styles
-        .split(';')
-        .map((x) => x.trim())
-        .filter(Boolean);
+    const { type, layout } = data;
+    const classString = layout?.[`${type ?? 'host'}Class`] ?? '';
+    const result = getClassListFromString(classString);
 
-      styleProperties.forEach((style) => {
-        const [name, value] = style.split(':').map((x) => x.trim());
-        hostEl.style.setProperty(name, value);
-      });
+    return result;
+  });
+
+  styleList = computed(() => {
+    const data = this.controlLayout();
+    if (!data) {
+      return [];
     }
-  }
+
+    const { type, layout } = data;
+    const styleString = layout?.[`${type ?? 'host'}Styles`] ?? '';
+    const result = getStyleListFromString(styleString);
+
+    return result;
+  });
+
+  updateClass = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const classNames = this.classNames();
+
+    if (!classNames.length) {
+      return;
+    }
+
+    host.classList.add(...classNames);
+  });
+
+  updateStyles = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const styleList = this.styleList();
+
+    if (!styleList.length) {
+      return;
+    }
+
+    for (const item of styleList) {
+      const [name, value] = item.split(':').map((x) => x.trim());
+      host.style.setProperty(name, value);
+    }
+  });
 }

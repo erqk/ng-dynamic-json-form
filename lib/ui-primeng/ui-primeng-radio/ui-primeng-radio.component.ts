@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomControlComponent,
@@ -10,7 +10,6 @@ import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
   selector: 'ui-primeng-radio',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -29,29 +28,16 @@ import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
   styles: [],
 })
 export class UiPrimengRadioComponent extends CustomControlComponent {
-  private _onChange?: any;
-  override control = new FormControl(-1);
+  private onChange?: any;
+  override control = new FormControl('');
 
-  override writeValue(obj: any): void {
-    const index = this.data?.options?.data?.findIndex(
-      (x) => JSON.stringify(x.value) === JSON.stringify(obj)
-    );
-
-    if (index !== undefined) {
-      this.control.setValue(index);
-    }
-  }
+  options = computed(() => this.data()?.options?.data ?? []);
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
-  updateControl(): void {
-    const index = this.control.value ?? -1;
-
-    if (index > -1) {
-      const value = this.data?.options?.data?.[index].value;
-      this._onChange(value);
-    }
+  emitValue(): void {
+    this.onChange(this.control.value);
   }
 }

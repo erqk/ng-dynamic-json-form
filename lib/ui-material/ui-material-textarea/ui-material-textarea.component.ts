@@ -1,5 +1,5 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
@@ -11,13 +11,7 @@ import {
 
 @Component({
   selector: 'ui-material-textarea',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    PropsBindingDirective,
-  ],
+  imports: [ReactiveFormsModule, MatInputModule, PropsBindingDirective],
   providers: [
     providePropsBinding([
       {

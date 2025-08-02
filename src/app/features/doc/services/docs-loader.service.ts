@@ -1,20 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import {
   Injectable,
-  RendererFactory2,
   TransferState,
   inject,
   makeStateKey,
+  signal,
 } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  finalize,
-  map,
-  of,
-  tap,
-} from 'rxjs';
+import { Observable, catchError, filter, finalize, map, of, tap } from 'rxjs';
 import { LanguageService } from '../../language/language-data.service';
 import { VersionService } from '../../version/version.service';
 
@@ -22,89 +14,86 @@ import { VersionService } from '../../version/version.service';
   providedIn: 'root',
 })
 export class DocsLoaderService {
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
-  private _http = inject(HttpClient);
-  private _transferState = inject(TransferState);
-  private _versionService = inject(VersionService);
-  private _languageDataService = inject(LanguageService);
-  private _docCache: { path: string; data: string }[] = [];
+  private http = inject(HttpClient);
+  private transferState = inject(TransferState);
+  private versionService = inject(VersionService);
+  private languageDataService = inject(LanguageService);
+  private docCache: { path: string; data: string }[] = [];
 
-  docLoading$ = new BehaviorSubject<boolean>(false);
+  docLoading = signal<boolean>(false);
 
   loadDoc$(path: string): Observable<string> {
+    if (!path) {
+      return of('');
+    }
+
     if (path.startsWith('docs/')) {
       path = path.replace('docs/', '');
     }
 
-    const cacheData = this._docCache.find(
-      (x) => x.path === path && x.data
+    const cacheData = this.docCache.find(
+      (x) => x.path === path && x.data,
     )?.data;
 
-    if (cacheData) return of(cacheData);
+    if (cacheData) {
+      return of(cacheData);
+    }
 
-    const version = this._versionService.docVersion;
-    const lang = this._languageDataService.selectedLanguage;
+    const version = this.versionService.currentVersion();
+    const lang = this.languageDataService.selectedLanguage();
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
     const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
     const url = `assets/docs/${version}/${filePath}`;
     const key = makeStateKey<string>(url);
 
-    if (this._transferState.hasKey(key)) {
-      return of(this._transferState.get(key, ''));
+    if (this.transferState.hasKey(key)) {
+      return of(this.transferState.get(key, ''));
     }
 
-    this.docLoading$.next(true);
-    return this._http
+    this.docLoading.set(true);
+    return this.http
       .get(url, {
         responseType: 'text',
         observe: 'response',
       })
       .pipe(
-        map((x) => {
+        filter((x) => {
           const contentType = x.headers.get('Content-Type') ?? '';
-          const docNotFound = contentType.indexOf('text/markdown') < 0;
-
-          if (docNotFound) {
-            // To let the wildcard route redirection works correctly,
-            // otherwise content after redirection will load into the doc.
-            throw 'Content not found';
+          return contentType.indexOf('text/markdown') > -1;
+        }),
+        map((x) => x.body ?? ''),
+        tap((x) => {
+          if (this.docCache.some((x) => x.path === path)) {
+            return;
           }
 
-          return x.body ?? '';
+          this.docCache.push({ path, data: x });
+          this.transferState.set(key, x);
         }),
-        tap((x) => {
-          if (this._docCache.some((x) => x.path === path)) return;
-          this._docCache.push({ path, data: x });
-          this._transferState.set(key, x);
-        }),
-        finalize(() => this.docLoading$.next(false)),
-        catchError((err) => {
-          throw err;
-        })
+        finalize(() => this.docLoading.set(false)),
+        catchError(() => of('')),
       );
   }
 
   clearCache(): void {
-    this._docCache = [];
+    this.docCache = [];
   }
 
-  firstContentPath$(useDefaultLang = false): Observable<string> {
-    const lang = this._languageDataService.selectedLanguage;
-    const version = this._versionService.docVersion;
-    const indexPath = `assets/docs/${version}/index_${
-      useDefaultLang ? 'en' : lang
-    }.md`;
+  firstContentPath$(): Observable<string> {
+    const lang = this.languageDataService.selectedLanguage();
+    const version = this.versionService.currentVersion();
+    const indexPath = `assets/docs/${version}/index_${lang}.md`;
     const key = makeStateKey<string>(indexPath);
 
     const source$ = () => {
-      if (this._transferState.hasKey(key)) {
-        return of(this._transferState.get(key, ''));
+      if (this.transferState.hasKey(key)) {
+        return of(this.transferState.get(key, ''));
       }
 
-      return this._http
+      return this.http
         .get(indexPath, { responseType: 'text' })
-        .pipe(tap((x) => this._transferState.set(key, x)));
+        .pipe(tap((x) => this.transferState.set(key, x)));
     };
 
     return source$().pipe(
@@ -116,7 +105,7 @@ export class DocsLoaderService {
 
         return result;
       }),
-      catchError(() => this.firstContentPath$(true))
+      catchError(() => of('')),
     );
   }
 
@@ -125,7 +114,7 @@ export class DocsLoaderService {
 
     window.setTimeout(() => {
       const tables = Array.from(
-        document.querySelectorAll('table')
+        document.querySelectorAll('table'),
       ) as HTMLTableElement[];
 
       for (const table of tables) {
@@ -138,8 +127,7 @@ export class DocsLoaderService {
 
         tableWrapper.classList.add('table-wrapper');
         tableWrapper.appendChild(tableCloned);
-        this._renderer2.appendChild(tableWrapper, tableCloned);
-        this._renderer2.insertBefore(table.parentElement, tableWrapper, table);
+        table.parentElement?.insertBefore(tableWrapper, table);
         table.remove();
       }
     });

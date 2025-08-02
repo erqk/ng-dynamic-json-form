@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IMaskDirective } from 'angular-imask';
@@ -11,30 +11,28 @@ import {
 import { InputText, InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'ui-primeng-input-mask',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'ui-primeng-input-mask',
+    imports: [
     ReactiveFormsModule,
     InputTextModule,
     IMaskDirective,
     ImaskValuePatchDirective,
-    PropsBindingDirective,
-  ],
-  templateUrl: './ui-primeng-input-mask.component.html',
-  providers: [
-    providePropsBinding([
-      {
-        key: 'p-input-text',
-        token: InputText,
-      },
-      {
-        key: 'imask',
-        token: IMaskDirective,
-      },
-    ]),
-  ],
-  styles: [],
+    PropsBindingDirective
+],
+    templateUrl: './ui-primeng-input-mask.component.html',
+    providers: [
+        providePropsBinding([
+            {
+                key: 'p-input-text',
+                token: InputText,
+            },
+            {
+                key: 'imask',
+                token: IMaskDirective,
+            },
+        ]),
+    ],
+    styles: []
 })
 export class UiPrimengInputMaskComponent extends CustomControlComponent {
   @ViewChild(InputText) target?: InputText;

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -6,23 +5,21 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { Calendar, CalendarModule } from 'primeng/calendar';
+import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'ui-primeng-date',
-  standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CalendarModule,
+    DatePickerModule,
     FormsModule,
     PropsBindingDirective,
+    ReactiveFormsModule,
   ],
   providers: [
     providePropsBinding([
       {
-        key: 'p-calendar',
-        token: Calendar,
+        key: 'p-datepicker',
+        token: DatePicker,
       },
     ]),
   ],
@@ -30,15 +27,15 @@ import { Calendar, CalendarModule } from 'primeng/calendar';
   styles: [],
 })
 export class UiPrimengDateComponent extends CustomControlComponent {
-  private _onChange?: any;
+  private onChange?: any;
 
   override control = new FormControl(new Date());
 
   override registerOnChange(fn: any): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   updateControl(): void {
-    this._onChange(this.control.value);
+    this.onChange(this.control.value);
   }
 }

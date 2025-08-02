@@ -1,24 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Renderer2, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 
 @Component({
   selector: 'app-doc-tab',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './doc-tab.component.html',
   styleUrls: ['./doc-tab.component.scss'],
 })
 export class DocTabComponent {
-  private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
-  private _resizeObserver?: ResizeObserver;
+  private el = inject(ElementRef);
+  private resizeObserver?: ResizeObserver;
 
   children: HTMLElement[] = [];
   tabs: string[] = [];
   activeTab = '';
 
-  ngAfterViewInit(): void {
-    const host = this._el.nativeElement as HTMLElement;
+  ngOnInit(): void {
+    const host = this.el.nativeElement as HTMLElement;
     this.children = Array.from(host.querySelectorAll(':scope > .content > *'));
     this.children.forEach((x, i) => {
       const name = x.getAttribute('name');
@@ -26,11 +24,11 @@ export class DocTabComponent {
       this.tabs.push(name);
       i === 0 && this.toggleTab(name);
     });
-    this._listenChildrenMutation();
+    this.listenChildrenMutation();
   }
 
   ngOnDestroy(): void {
-    this._resizeObserver?.disconnect();
+    this.resizeObserver?.disconnect();
   }
 
   toggleTab(name: string): void {
@@ -43,7 +41,7 @@ export class DocTabComponent {
       if (selectedTab) {
         x.classList.add('block');
         x.classList.remove('hidden');
-        this._updateContainerHeight();
+        this.updateContainerHeight();
       } else {
         x.classList.add('hidden');
         x.classList.remove('block');
@@ -51,31 +49,26 @@ export class DocTabComponent {
     });
   }
 
-  private _listenChildrenMutation(): void {
-
+  private listenChildrenMutation(): void {
     const resizeCallback: ResizeObserverCallback = () => {
-      this._updateContainerHeight();
+      this.updateContainerHeight();
     };
 
-    this._resizeObserver = new ResizeObserver(resizeCallback);
+    this.resizeObserver = new ResizeObserver(resizeCallback);
     this.children.forEach((child) => {
-      this._resizeObserver?.observe(child);
+      this.resizeObserver?.observe(child);
     });
   }
 
-  private _updateContainerHeight(): void {
-    const hostEl = this._el.nativeElement as HTMLElement;
-    const contentEl = hostEl.querySelector('.content');
+  private updateContainerHeight(): void {
+    const hostEl = this.el.nativeElement as HTMLElement;
+    const contentEl = hostEl.querySelector('.content') as HTMLElement | null;
     const selectedTab = this.children.find(
-      (x) => x.getAttribute('name') === this.activeTab
+      (x) => x.getAttribute('name') === this.activeTab,
     );
 
     if (!selectedTab) return;
 
-    this._renderer2.setStyle(
-      contentEl,
-      'height',
-      selectedTab.scrollHeight + 'px'
-    );
+    contentEl?.style.setProperty('height', selectedTab.scrollHeight + 'px');
   }
 }

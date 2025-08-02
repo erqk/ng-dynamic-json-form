@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
     <mat-select
@@ -7,14 +7,14 @@
         {
           key: 'mat-select',
           props: data.props,
-        }
+        },
       ]"
       (openedChange)="onTouched()"
       (selectionChange)="updateControl()"
     >
-      <ng-container *ngFor="let item of data.options?.data; index as i">
-        <mat-option [value]="i">{{ item.label }}</mat-option>
-      </ng-container>
+      @for (item of options(); track $index) {
+        <mat-option [value]="$index">{{ item.label }}</mat-option>
+      }
     </mat-select>
   </mat-form-field>
-</ng-container>
+}

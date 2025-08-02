@@ -4,17 +4,16 @@ import { RouterModule } from '@angular/router';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { HeaderTabBarComponent } from 'src/app/features/header/components/header-tab-bar/header-tab-bar.component';
 import { LanguageSelectorComponent } from 'src/app/features/language/language-selector.component';
-import { NavigatorTitleComponent } from 'src/app/features/navigator/components/navigator-title/navigator-title.component';
 import { ThemeSwitcherComponent } from 'src/app/features/theme/components/theme-switcher/theme-switcher.component';
 import { VersionSelectorComponent } from 'src/app/features/version/version-selector.component';
+import { GithubLinkComponent } from '../github-link/github-link.component';
 
 @Component({
   selector: 'app-header-mobile',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
-    NavigatorTitleComponent,
+    GithubLinkComponent,
     HeaderTabBarComponent,
     ThemeSwitcherComponent,
     LanguageSelectorComponent,
@@ -24,7 +23,7 @@ import { VersionSelectorComponent } from 'src/app/features/version/version-selec
   styleUrls: ['./header-mobile.component.scss'],
 })
 export class HeaderMobileComponent {
-  private _layoutService = inject(LayoutService);
+  private layoutService = inject(LayoutService);
 
   @Input() links: { label: string; route: string }[] = [];
   @Input() openSettings = false;
@@ -35,7 +34,7 @@ export class HeaderMobileComponent {
     this.settingsOpened.emit(this.openSettings);
 
     requestAnimationFrame(() => {
-      this._layoutService.updateHeaderHeight();
+      this.layoutService.updateHeaderHeight();
     });
   }
 }

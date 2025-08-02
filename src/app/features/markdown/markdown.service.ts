@@ -11,10 +11,10 @@ import { VersionService } from '../version/version.service';
   providedIn: 'root',
 })
 export class MarkdownService {
-  private _router = inject(Router);
-  private _versionService = inject(VersionService);
-  private _domSanitizer = inject(DomSanitizer);
-  private _marked = new Marked(
+  private router = inject(Router);
+  private versionService = inject(VersionService);
+  private domSanitizer = inject(DomSanitizer);
+  private marked = new Marked(
     gfmHeadingId(),
     markedHighlight({
       langPrefix: 'hljs language-',
@@ -22,60 +22,61 @@ export class MarkdownService {
         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
         return hljs.highlight(code, { language }).value;
       },
-    })
+    }),
   );
 
   parse(val: string): SafeHtml {
-    const version = this._versionService.docVersion;
+    const version = this.versionService.currentVersion();
     const renderer: RendererObject = {
-      link: this._linkRendererFn({
+      link: this.linkRendererFn({
         searchValue: version,
         replaceValue: 'docs',
       }),
     };
 
-    this._marked.use({ renderer: renderer as any });
+    this.marked.use({ renderer: renderer as any });
     const tabsReplaced = val.replace(/\t/g, '  ');
-    const result = this._marked.parse(tabsReplaced, {
+    const result = this.marked.parse(tabsReplaced, {
       async: false,
       gfm: true,
     }) as string;
 
-    return this._domSanitizer.bypassSecurityTrustHtml(result);
+    return this.domSanitizer.bypassSecurityTrustHtml(result);
   }
 
-  private _linkRendererFn(replaceHref?: {
+  private linkRendererFn(replaceHref?: {
     searchValue: string | RegExp;
     replaceValue: string;
   }) {
-    return (href: string, title: string | null | undefined, text: string) => {
+    return (link: { href: string; title?: string | null; text: string }) => {
+      const { href, title, text } = link;
       const prefix = href?.match(/(\.*\/){1,}/)?.[0] || '';
       const pageAnchor = href.startsWith('#');
       const externalLink = prefix && !href?.startsWith(prefix);
-      const routeClean = this._router.url
+      const routeClean = this.router.url
         .split('?')[0]
         .split('#')[0]
         .substring(1);
 
       if (pageAnchor) {
         return `<a title="${title || text}" routerLink
-          href="${routeClean}${href}">${text}</a>`;
+        href="${routeClean}${href}">${text}</a>`;
       }
 
       if (externalLink) {
         return `<a target="_blank" rel="noreferrer noopener"
-          title="${title || text}" href="${href}">${text}</a>`;
+        title="${title || text}" href="${href}">${text}</a>`;
       }
 
       const newHref = href
         ?.substring(prefix.length)
         .replace(
           replaceHref?.searchValue || '',
-          replaceHref?.replaceValue || ''
+          replaceHref?.replaceValue || '',
         );
 
       return `<a title="${title || text}" routerLink
-        href="${newHref}">${text}</a>`;
+      href="${newHref}">${text}</a>`;
     };
   }
 }

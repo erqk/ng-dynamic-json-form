@@ -1,25 +1,27 @@
-<ng-container *ngIf="!configs">
+@if (!configs()) {
   <div class="no-configs-error">
     <span>No configs found.</span>
   </div>
-</ng-container>
+}
 
-<ng-container *ngIf="!!configValidationErrors?.length">
-  <div class="config-validation-error">
-    <div>NgDynamicJsonForm:</div>
-    <ng-container *ngFor="let item of configValidationErrors">
-      <div style="color: var(--color-error)">{{ item.errors }}</div>
-      <ng-container *ngIf="item.config">
-        <code>{{ item.config | json }}</code>
-      </ng-container>
-    </ng-container>
-  </div>
-</ng-container>
-
-<ng-container *ngIf="form">
-  <form-group
-    [parentForm]="form"
-    [configs]="configGet"
-    [collapsibleState]="collapsibleState"
-  ></form-group>
-</ng-container>
+@if (configValidationResult(); as result) {
+  @if (result.errors; as validationErrors) {
+    <div class="config-validation-error">
+      <div>NgDynamicJsonForm:</div>
+      @for (item of validationErrors; track $index) {
+        <div style="color: var(--color-error)">{{ item.errors }}</div>
+        @if (item.config) {
+          <code>{{ item.config | json }}</code>
+        }
+      }
+    </div>
+  } @else if (result.configs && form()) {
+    <form-group
+      [configs]="result.configs"
+      [collapsibleState]="collapsibleState()"
+      [parentForm]="form()!"
+      [rootClass]="rootClass()"
+      [rootStyles]="rootStyles()"
+    ></form-group>
+  }
+}

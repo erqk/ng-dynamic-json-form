@@ -1,42 +1,40 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VersionService {
-  private _http = inject(HttpClient);
+  private http = inject(HttpClient);
 
-  readonly versions = ['v8'];
-  readonly docVersion = 'v8';
-
-  versions$ = new BehaviorSubject<{ label: string; value: string }[]>([]);
+  versions = signal<string[]>([]);
+  currentVersion = computed(() => this.versions()[0]);
 
   loadVersions$(): Observable<string[]> {
-    return this._npmPackageVersions$().pipe(
+    return this.collectVersionsFromDocIndex$().pipe(
       tap((x) => {
-        this.versions$.next(
-          x.map((x) => ({
-            label: `v${x}`,
-            value: `v${x.slice(0, 1)}`,
-          }))
-        );
+        this.versions.set(x.map((x) => `v${x}`));
       }),
-      catchError(() => of(['Latest']))
     );
   }
 
-  firstContentPath$(path: string): Observable<string> {
-    return this._http.get(path, { responseType: 'text' }).pipe(
-      map((x) => x.match(/(\.+\/){1,}.+/)?.[0]),
-      map((x) => x?.replace(/(\.*\/){1,}/, 'docs/') ?? ''),
-      catchError(() => of(''))
+  private collectVersionsFromDocIndex$(): Observable<string[]> {
+    return this.http.get('assets/docs/index.md', { responseType: 'text' }).pipe(
+      map((x) => {
+        const matchItems = x.match(/^## (?!.*\(deprecated\)).*$/gm) || [];
+        const result = matchItems
+          .map((x) => x.split('##')[1].trim()[0])
+          .sort()
+          .reverse();
+
+        return result;
+      }),
     );
   }
 
-  private _npmPackageVersions$(): Observable<string[]> {
-    return this._http
+  private npmPackageVersions$(): Observable<string[]> {
+    return this.http
       .get('https://registry.npmjs.org/ng-dynamic-json-form', {
         responseType: 'json',
       })
@@ -57,7 +55,7 @@ export class VersionService {
           }, [] as string[]);
 
           return majorVersions;
-        })
+        }),
       );
   }
 }

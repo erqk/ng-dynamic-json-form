@@ -13,11 +13,14 @@
 }
 
 select.doc-form-element {
-  @apply px-4 py-2 border border-[var(--border-color-25)];
-  @apply hover:border-[var(--primary-500)];
-
+  border: solid 1px var(--border-color-50);
   background-color: rgb(var(--bg-color-rgb));
   color: rgb(var(--text-color-rgb));
+  padding: 0.5rem 1rem;
+
+  &:hover {
+    border-color: var(--primary-500);
+  }
 }
 
 input.doc-form-element {

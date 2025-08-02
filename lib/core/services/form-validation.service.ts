@@ -1,17 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import {
   AbstractControl,
+  AsyncValidatorFn,
   ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { EMPTY, Observable, map, startWith } from 'rxjs';
-import { ValidatorConfig, ValidatorsEnum } from '../models';
+import { Observable, map, of, startWith } from 'rxjs';
+import { CustomValidators, ValidatorConfig, ValidatorsEnum } from '../models';
+import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { GlobalVariableService } from './global-variable.service';
 
 function emailValidator(control: AbstractControl): ValidationErrors | null {
   const emailValid = RegExp(/^[^@\s!(){}<>]+@[\w-]+(\.[A-Za-z]+)+$/).test(
-    control.value
+    control.value,
   );
 
   if (!control.value) {
@@ -22,7 +24,7 @@ function emailValidator(control: AbstractControl): ValidationErrors | null {
 }
 
 const builtInValidators = (
-  value?: any
+  value?: any,
 ): {
   [key in ValidatorsEnum]?: ValidatorFn;
 } =>
@@ -35,31 +37,31 @@ const builtInValidators = (
     [ValidatorsEnum.max]: Validators.max(value),
     [ValidatorsEnum.minLength]: Validators.minLength(value),
     [ValidatorsEnum.maxLength]: Validators.maxLength(value),
-  } as const);
+  }) as const;
 
 @Injectable()
 export class FormValidationService {
-  private _globalVariableService = inject(GlobalVariableService);
+  private globalVariableService = inject(GlobalVariableService);
 
   getErrorMessages$(
     control: AbstractControl | null | undefined,
-    validators?: ValidatorConfig[]
+    validators?: ValidatorConfig[],
   ): Observable<string[]> {
     if (!control || !validators?.length) {
-      return EMPTY;
+      return of([]);
     }
 
     return control.statusChanges.pipe(
       startWith(control.status),
       map(() =>
-        this._getErrorMessages(control.errors, control.value, validators)
-      )
+        this.getErrorMessages(control.errors, control.value, validators),
+      ),
     );
   }
 
-  getValidators(input: ValidatorConfig[] | undefined): ValidatorFn[] | null {
+  getValidators(input: ValidatorConfig[] | undefined): ValidatorFn[] {
     if (!input || !input.length) {
-      return null;
+      return [];
     }
 
     // Remove duplicates
@@ -67,33 +69,43 @@ export class FormValidationService {
       ...new Map(input.map((v) => [v.name, v])).values(),
     ];
 
-    return filteredConfigs.map((item) => {
+    const customValidators = this.globalVariableService.customValidators;
+    const validatorFns = filteredConfigs.map((item) => {
       const { name } = item;
-      const value = this._getValidatorValue(item);
+      const value = this.getValidatorValue(item);
       const builtInValidator = builtInValidators(value)[name as ValidatorsEnum];
-      const customValidator = this._getCustomValidator(item);
+      const customValidator = this.getValidatorFn(
+        item,
+        customValidators?.[name],
+      ) as ValidatorFn | null;
 
-      const result =
-        builtInValidator ?? customValidator ?? Validators.nullValidator;
+      const result = customValidator ?? builtInValidator;
 
       return result;
     });
+
+    return validatorFns.filter(Boolean) as ValidatorFn[];
   }
 
-  private _getCustomValidator(config: ValidatorConfig): ValidatorFn | null {
-    const customValidators = this._globalVariableService.customValidators;
-    const { name, value } = config;
-    const validator = customValidators?.[name];
-
-    if (!validator) {
-      return null;
+  getAsyncValidators(input: ValidatorConfig[] | undefined): AsyncValidatorFn[] {
+    if (!input || !input.length) {
+      return [];
     }
 
-    if (value === null || value === undefined || `${value}`.trim() === '') {
-      return validator;
-    }
+    // Remove duplicates
+    const filteredConfigs = [
+      ...new Map(input.map((v) => [v.name, v])).values(),
+    ];
 
-    return validator(value) as ValidatorFn;
+    const customAsyncValidators =
+      this.globalVariableService.customAsyncValidators;
+
+    const validatorFns = filteredConfigs.map((item) => {
+      const validatorFn = customAsyncValidators?.[item.name];
+      return this.getValidatorFn(item, validatorFn) as AsyncValidatorFn | null;
+    });
+
+    return validatorFns.filter(Boolean) as AsyncValidatorFn[];
   }
 
   /**Get the error messages of the control
@@ -102,13 +114,15 @@ export class FormValidationService {
    * Try to get the custom error message specified in the config first,
    * else use the error message in the `ValidationErrors`.
    *
-   * To use custom message when using custom validator, match the key inside
-   * `ValidationErrors` with the `name` inside config.
+   * When using custom validator, the custom message most likely will not working,
+   * it's because we are using the key in the errors to find the config message.
+   * Since user can define the error object, it becomes very difficult to match the config name
+   * with the keys in the error object.
    */
-  private _getErrorMessages(
+  private getErrorMessages(
     controlErrors: ValidationErrors | null,
     controlValue: any,
-    validatorConfigs: ValidatorConfig[]
+    validatorConfigs: ValidatorConfig[],
   ): string[] {
     if (!controlErrors) {
       return [];
@@ -120,24 +134,28 @@ export class FormValidationService {
 
     return Object.keys(controlErrors).reduce((acc, key) => {
       const error = controlErrors[key];
-      const config = this._getConfigFromErrorKey(
+      const config = this.getConfigFromErrorKey(
         { [key]: error },
-        validatorConfigs
+        validatorConfigs,
       );
 
-      const customMessage = config?.message?.replace(
-        /{{value}}/g,
-        controlValue || ''
-      );
+      const configMessage = config?.message;
+      const defaultMessage =
+        this.globalVariableService.validationMessages?.[config?.name ?? ''];
+
+      const customMessage = (configMessage || defaultMessage)
+        ?.replace(/{{value}}/g, controlValue || '')
+        .replace(/{{validatorValue}}/g, config?.value);
 
       acc.push(customMessage || errorMessage(error));
+
       return acc;
     }, [] as string[]);
   }
 
-  private _getConfigFromErrorKey(
+  private getConfigFromErrorKey(
     error: { [key: string]: any },
-    configs: ValidatorConfig[]
+    configs: ValidatorConfig[],
   ): ValidatorConfig | undefined {
     // The key mapping of the `ValidationErrors` with the `ValidatorConfig`,
     // to let us get the correct message by using `name` of `ValidatorConfig`.
@@ -154,6 +172,7 @@ export class FormValidationService {
     };
 
     const [errorKey, errorValue] = Object.entries(error)[0];
+
     const result = configs.find((item) => {
       const { name, value } = item;
 
@@ -177,7 +196,7 @@ export class FormValidationService {
     return result;
   }
 
-  private _getValidatorValue(validatorConfig: ValidatorConfig) {
+  private getValidatorValue(validatorConfig: ValidatorConfig) {
     const { name, value, flags } = validatorConfig;
 
     switch (name) {
@@ -197,5 +216,33 @@ export class FormValidationService {
       default:
         return value;
     }
+  }
+
+  /**
+   * Get validatorFn from either validatorFn or factory function that return a validatorFn.
+   * If it's a factory function, return the validatorFn instead.
+   *
+   * @param validatorConfig
+   * @param validatorFn
+   */
+  private getValidatorFn(
+    validatorConfig: ValidatorConfig,
+    validatorFn:
+      | CustomValidators[string]
+      | CustomAsyncValidators[string]
+      | undefined,
+  ): ValidatorFn | AsyncValidatorFn | null {
+    const { value } = validatorConfig;
+
+    if (!validatorFn) {
+      return null;
+    }
+
+    const result =
+      typeof validatorFn({} as any) !== 'function'
+        ? validatorFn
+        : validatorFn(value);
+
+    return result as ValidatorFn | AsyncValidatorFn;
   }
 }

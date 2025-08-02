@@ -7,8 +7,11 @@
 @Input() customComponents?: CustomComponents;
 @Input() customTemplates?: CustomTemplates;
 @Input() conditionsActionFuntions?: ConditionsActionFunctions;
-@Input() hideErrorMessage?: boolean;
 @Input() collapsibleState?: FormLayout['contentCollapsible'];
+@Input() descriptionPosition?: FormLayout['descriptionPosition'];
+@Input() rootClass?: string;
+@Input() rootStyles?: string;
+@Input() hideErrorMessage?: boolean;
 @Input() errorComponents?: CustomErrorComponents;
 @Input() errorComponentDefault?: Type<CustomErrorMessage>;
 @Input() errorTemplates?: CustomTemplates;
@@ -33,6 +36,18 @@ See [Custom Components](../../v8/custom-components/custom-components_en.md).
 ### conditionsActionFuntions
 
 See [Execute custom function](../../v8/conditions/conditions_en.md#execute-custom-function).
+
+### collapsibleState
+
+Control all of the collapsible states.
+
+### descriptionPosition
+
+Set the default description position for every field.
+
+### rootClass, rootStyes
+
+Class and styles for the root form container.
 
 ### hideErrorMessage
 
@@ -77,10 +92,6 @@ submit(): void {
 </doc-tab>
 
 > In order to trigger change detection, we must leave the `hideErrors` undefined at first, then set its value later when submit button is pressed.
-
-### collapsibleState
-
-Control all of the collapsible states.
 
 ### optionsSources
 

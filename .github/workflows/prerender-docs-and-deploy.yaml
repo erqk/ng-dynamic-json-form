@@ -1,0 +1,195 @@
+# .github/workflows/deploy-docs-angular.yml
+name: Build and Deploy Angular Documentation
+
+on:
+  push:
+    branches:
+      - "v[0-9]*" # Matches version branches like v8, v9, v10, etc.
+  workflow_dispatch: # Allows manual triggering from GitHub Actions UI
+
+env:
+  BUILD_COMMAND: npm run build:docs
+  BUILD_OUTPUT_DIR: dist
+  NODE_VERSION: "24"
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Required to push to gh-pages branch
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install npm dependencies
+        run: |
+          echo "Installing npm dependencies..."
+          npm ci # Use npm ci for faster, reliable builds
+
+      - name: Build Angular documentation
+        run: |
+          echo "Building Angular documentation with command: ${{ env.BUILD_COMMAND }}"
+          ${{ env.BUILD_COMMAND }}
+
+          # Verify build output exists
+          if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}" ]; then
+            echo "Error: Build output directory '${{ env.BUILD_OUTPUT_DIR }}' not found!"
+            echo "Available directories:"
+            ls -la
+            exit 1
+          fi
+
+          echo "Build completed successfully. Output directory contents:"
+          ls -la ${{ env.BUILD_OUTPUT_DIR }}
+
+      - name: Extract version information
+        id: version_info
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          VERSION=${BRANCH_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Building documentation for version: $VERSION from branch: $BRANCH_NAME"
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update version documentation
+        run: |
+          VERSION=${{ steps.version_info.outputs.version }}
+
+          echo "Updating documentation for version: v$VERSION"
+
+          # Remove existing version directory if it exists
+          if [ -d "gh-pages-repo/v$VERSION" ]; then
+            echo "Removing existing version directory: v$VERSION"
+            rm -rf gh-pages-repo/v$VERSION
+          fi
+
+          # Create version directory
+          mkdir -p gh-pages-repo/v$VERSION
+
+          # Verify docs/browser directory exists
+          if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}/docs/browser" ]; then
+            echo "Error: docs/browser directory not found in ${{ env.BUILD_OUTPUT_DIR }}"
+            echo "Available directories in ${{ env.BUILD_OUTPUT_DIR }}:"
+            ls -la ${{ env.BUILD_OUTPUT_DIR }}
+            exit 1
+          fi
+
+          # Copy built documentation files directly (without preserving directory structure)
+          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }}/docs/browser to gh-pages-repo/v$VERSION"
+          cp -r ${{ env.BUILD_OUTPUT_DIR }}/docs/browser/* gh-pages-repo/v$VERSION/
+
+          # Verify files were copied
+          echo "Files in version directory:"
+          ls -la gh-pages-repo/v$VERSION/
+
+          echo "Documentation successfully copied to version directory: v$VERSION"
+
+      - name: Create redirect index
+        run: |
+          cd gh-pages-repo
+
+          echo "Creating redirect index page..."
+
+          # Find all version directories and sort them (looking for v1, v2, v3... pattern)
+          VERSIONS=($(find . -maxdepth 1 -type d -name 'v[0-9]*' | sed 's|./v||' | sort -V))
+          echo "Found versions: ${VERSIONS[*]}"
+
+          # Get the latest version (last in sorted array)
+          if [ ${#VERSIONS[@]} -gt 0 ]; then
+            LATEST_VERSION=${VERSIONS[-1]}
+            echo "Latest version determined to be: v$LATEST_VERSION"
+            
+            cat > index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Documentation - Redirecting...</title>
+                <meta http-equiv="refresh" content="0; url=/ng-dynamic-json-form/v$LATEST_VERSION/">
+                <link rel="canonical" href="/ng-dynamic-json-form/v$LATEST_VERSION/">
+                <script>
+                    // Immediate redirect using JavaScript as fallback
+                    window.location.href = '/ng-dynamic-json-form/v$LATEST_VERSION/';
+                </script>
+            </head>
+            <body>
+                <p>Redirecting to documentation version v$LATEST_VERSION...</p>
+                <p>If you are not redirected automatically, <a href="/ng-dynamic-json-form/v$LATEST_VERSION/">click here</a>.</p>
+            </body>
+          </html>
+          EOF
+            echo "Created redirect index for latest version: v$LATEST_VERSION"
+          else
+            echo "No versions found, creating placeholder index"
+            cat > index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Documentation</title>
+          </head>
+          <body>
+              <h1>📚 Documentation</h1>
+              <p>No documentation versions available yet.</p>
+              <p><small>Documentation will appear here once you push to a version branch.</small></p>
+          </body>
+          </html>
+          EOF
+          fi
+
+      - name: Commit and push to gh-pages branch
+        run: |
+          cd gh-pages-repo
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add all changes
+          git add .
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Show what will be committed
+          echo "Changes to be committed:"
+          git diff --staged --name-status
+
+          # Commit changes
+          COMMIT_MESSAGE="Deploy documentation for version ${{ steps.version_info.outputs.version }}
+
+          - Updated version ${{ steps.version_info.outputs.version }} documentation
+          - Updated redirect to latest version
+          - Built from commit: ${{ github.sha }}
+          - Branch: ${{ steps.version_info.outputs.branch }}"
+
+          git commit -m "$COMMIT_MESSAGE"
+
+          # Push to gh-pages branch
+          echo "Pushing to gh-pages branch..."
+          git push origin gh-pages
+
+          echo "✅ Successfully pushed documentation to gh-pages branch"
+          echo "📚 Documentation for version ${{ steps.version_info.outputs.version }} is now available"

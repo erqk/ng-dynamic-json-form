@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -6,22 +5,16 @@ import {
   PropsBindingDirective,
   providePropsBinding,
 } from 'ng-dynamic-json-form';
-import { InputTextarea, InputTextareaModule } from 'primeng/inputtextarea';
+import { Textarea, TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'ui-primeng-textarea',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    PropsBindingDirective,
-  ],
+  imports: [ReactiveFormsModule, TextareaModule, PropsBindingDirective],
   providers: [
     providePropsBinding([
       {
-        key: 'p-input-textarea',
-        token: InputTextarea,
+        key: 'p-textarea',
+        token: Textarea,
       },
     ]),
   ],

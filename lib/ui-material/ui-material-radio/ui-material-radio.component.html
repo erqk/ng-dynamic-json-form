@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <mat-radio-group
     [labelPosition]="data.options?.labelPosition ?? 'after'"
     [formControl]="control"
@@ -6,8 +6,8 @@
       {
         key: 'mat-radio-group',
         props: data.props,
-        omit: ['labelPosition']
-      }
+        omit: ['labelPosition'],
+      },
     ]"
   >
     <div
@@ -15,17 +15,17 @@
       [style]="data.options?.containerStyles"
       [ngClass]="[data.options?.containerClass ?? '']"
       [ngStyle]="{
-        'flex-direction': data.options?.layout
+        'flex-direction': data.options?.layout,
       }"
     >
-      <ng-container *ngFor="let item of data.options?.data; index as i">
+      @for (item of options(); track $index) {
         <mat-radio-button
-          [value]="i"
-          [checked]="selectedIndex === i"
-          (change)="onChange(i)"
+          [value]="$index"
+          [checked]="selectedIndex() === $index"
+          (change)="emitValue($index)"
           >{{ item.label }}</mat-radio-button
         >
-      </ng-container>
+      }
     </div>
   </mat-radio-group>
-</ng-container>
+}

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
 })
 export class DocsRouterLinkDirective {
-  private _router = inject(Router);
+  private router = inject(Router);
 
   /**https://stackoverflow.com/questions/36310288/add-element-with-routerlink-dynamically */
   @HostListener('click', ['$event'])
@@ -18,6 +18,6 @@ export class DocsRouterLinkDirective {
     e.preventDefault();
 
     const route = e.target.getAttribute('href') || '';
-    this._router.navigateByUrl(route);
+    this.router.navigateByUrl(route);
   }
 }

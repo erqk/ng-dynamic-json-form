@@ -2,52 +2,50 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input,
-  Renderer2,
   inject,
+  input,
+  OnInit,
 } from '@angular/core';
 
 @Directive({
   selector: '[textareaAutoHeight]',
   standalone: true,
 })
-export class TextareaAutHeightDirective {
-  private _el = inject(ElementRef);
-  private _renderer2 = inject(Renderer2);
+export class TextareaAutHeightDirective implements OnInit {
+  private el = inject(ElementRef);
 
-  private _hostEl?: HTMLElement;
-
-  @Input() autoResize = true;
-
-  // Call in this lifecycle hook to wait for PropsBindingDirective to bind the attributes,
-  // then we can get the correct scrollHeight
-  ngAfterViewInit(): void {
-    if (typeof window === 'undefined') return;
-
-    this._hostEl = this._el.nativeElement as HTMLElement;
-    if (!this._hostEl) return;
-
-    this._renderer2.setStyle(this._hostEl, 'resize', 'none');
-    this._setHeight();
-  }
+  autoResize = input<boolean>(true);
 
   @HostListener('input', ['$event'])
   onInput(): void {
-    this._setHeight();
+    this.setHeight();
   }
 
-  private _setHeight(): void {
-    if (!this._hostEl || !this.autoResize) return;
+  ngOnInit(): void {
+    this.removeResizeProperty();
+  }
+
+  private removeResizeProperty(): void {
+    const hostEl = this.el.nativeElement as HTMLElement;
+    hostEl.style.setProperty('resize', 'none');
+  }
+
+  private setHeight(): void {
+    const autoResize = this.autoResize();
+    const hostEl = this.el.nativeElement as HTMLElement;
+
+    if (!hostEl || !autoResize) {
+      return;
+    }
 
     const borderWidth = Math.ceil(
-      parseFloat(window.getComputedStyle(this._hostEl).borderWidth)
+      parseFloat(window.getComputedStyle(hostEl).borderWidth),
     );
 
-    this._renderer2.removeStyle(this._hostEl, 'height');
-    this._renderer2.setStyle(
-      this._hostEl,
+    hostEl.style.removeProperty('height');
+    hostEl.style.setProperty(
       'height',
-      `${this._hostEl.scrollHeight + borderWidth * 2}px`
+      `${hostEl.scrollHeight + borderWidth * 2}px`,
     );
   }
 }

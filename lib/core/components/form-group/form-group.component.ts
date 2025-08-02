@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  HostBinding,
-  Input,
-  QueryList,
-  ViewChildren,
+  ElementRef,
+  computed,
+  effect,
   inject,
+  input,
+  viewChildren,
 } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { getClassListFromString } from '../../../core/utilities/get-class-list-from-string';
+import { getStyleListFromString } from '../../../core/utilities/get-style-list-from-string';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { HostIdDirective } from '../../directives/host-id.directive';
 import { FormControlConfig } from '../../models';
@@ -19,7 +22,6 @@ import { FormControlComponent } from '../form-control/form-control.component';
 
 @Component({
   selector: 'form-group',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -30,28 +32,66 @@ import { FormControlComponent } from '../form-control/form-control.component';
     ControlTypeByConfigPipe,
   ],
   templateUrl: './form-group.component.html',
+  host: {
+    class: 'grid-container form-group-container',
+  },
 })
 export class FormGroupComponent {
-  private _globalVariableService = inject(GlobalVariableService);
+  private el = inject(ElementRef);
+  private globalVariableService = inject(GlobalVariableService);
 
-  @Input() configs?: FormControlConfig[];
-  @Input() parentId?: string;
-  @Input() parentForm = new UntypedFormGroup({});
-  @Input() hostLayout?: FormLayout;
-  @Input() collapsibleState?: FormLayout['contentCollapsible'];
+  readonly customComponents = this.globalVariableService.customComponents;
 
-  @HostBinding('class') hostClass = 'grid-container form-group-container';
+  configs = input<FormControlConfig[]>();
+  collapsibleState = input<FormLayout['contentCollapsible']>();
+  parentId = input<string>();
+  parentForm = input.required<UntypedFormGroup>();
+  rootClass = input<string>();
+  rootStyles = input<string>();
 
-  @ViewChildren(FormGroupComponent)
-  formGroupRefs?: QueryList<FormGroupComponent>;
+  formGroupRefs = viewChildren(FormGroupComponent);
+  formControlRefs = viewChildren(FormControlComponent);
 
-  @ViewChildren(FormControlComponent)
-  formControlRefs?: QueryList<FormControlComponent>;
+  configsWithTrackId = computed(() => {
+    const configs = this.configs() ?? [];
+    const result = configs.map((x) => ({
+      ...x,
+      trackId: `${x.formControlName}_${Date.now()}`,
+    }));
 
-  customComponents = this._globalVariableService.customComponents;
+    return result;
+  });
+
+  updateClassList = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const rootClass = this.rootClass();
+
+    if (!rootClass) {
+      return;
+    }
+
+    const classList = getClassListFromString(rootClass);
+    host.classList.add(...classList);
+  });
+
+  updateStyleList = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const rootStyles = this.rootStyles();
+
+    if (!rootStyles) {
+      return;
+    }
+
+    const styleList = getStyleListFromString(rootStyles);
+
+    for (const item of styleList) {
+      const [name, value] = item.split(':');
+      host.style.setProperty(name, value);
+    }
+  });
 
   updateStatus(status: 'dirty' | 'pristine' | 'touched' | 'untouched'): void {
-    this.formControlRefs?.forEach((x) => x.updateControlStatus(status, true));
-    this.formGroupRefs?.forEach((x) => x.updateStatus(status));
+    this.formControlRefs()?.forEach((x) => x.updateControlStatus(status));
+    this.formGroupRefs()?.forEach((x) => x.updateStatus(status));
   }
 }

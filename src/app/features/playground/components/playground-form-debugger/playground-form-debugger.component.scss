@@ -1,19 +1,17 @@
-:host {
-}
-
 .section-container {
-  @apply border border-t-0 border-[var(--border-color-50)];
+  border: solid 1px var(--border-color-50);
+  border-top: 0;
 
   &:last-child {
-    @apply mb-8;
+    margin-bottom: 2rem;
   }
 
   &.active {
     .section-title {
-      @apply border-b  border-[var(--border-color-50)];
+      border-bottom: solid 1px var(--border-color-50);
 
       button {
-        @apply inline-flex;
+        display: inline-flex;
       }
     }
 
@@ -23,20 +21,50 @@
   }
 
   .section-title {
-    @apply sticky top-0 z-10 flex justify-between items-center gap-2;
-    @apply px-3 py-1 border-t border-[var(--border-color-50)];
-    @apply cursor-pointer;
-
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-top: solid 1px var(--border-color-50);
     background-color: var(--body-bg-color);
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    z-index: 10;
+
+    &.readonly {
+      cursor: auto;
+      background-color: color-mix(
+        in oklch,
+        var(--color-gray-400),
+        transparent 80%
+      );
+    }
 
     span {
-      @apply flex-1 py-2;
+      flex: 1;
+      padding: 0.5rem 0;
     }
 
     button {
-      @apply hidden items-center justify-center;
-      @apply pb-0.5 w-9 h-9 rounded-full;
-      @apply hover:bg-gray-400/30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: color-mix(
+          in oklch,
+          var(--color-gray-400),
+          transparent 70%
+        );
+      }
     }
   }
 
@@ -51,6 +79,13 @@
   }
 
   .code {
-    @apply p-2 bg-gray-400/10 rounded-md text-sm;
+    padding: 0.5rem;
+    background-color: color-mix(
+      in oklch,
+      var(--color-gray-400),
+      transparent 90%
+    );
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
   }
 }

@@ -1,43 +1,40 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <div
     class="range-input"
     [ngClass]="{
       'show-tick-marks':
         data.props?.showTickMarks === true ||
         data.props?.showCurrentValue === true,
-      disabled: control.disabled
+      disabled: control.disabled,
     }"
   >
     <input
       type="range"
       [ngStyle]="{
-        'background-size': valuePosition
+        'background-size': valuePosition,
       }"
       [propsBinding]="[
         {
           props: data.props,
-          omit: ['type']
-        }
+          omit: ['type'],
+        },
       ]"
       [formControl]="control"
       (input)="onChange(control.value)"
     />
-
-    <ng-container *ngIf="data.props?.showCurrentValue">
-      <div class="current-value" [style.--left]="valuePosition">
+    @if (data.props?.showCurrentValue) {
+      <div class="current-value" [style.--left]="valuePosition()">
         {{ control.value }}
       </div>
-    </ng-container>
-
-    <ng-container *ngIf="data.props?.showTickMarks">
+    }
+    @if (data.props?.showTickMarks) {
       <div class="tick-marks-container">
-        <ng-container *ngFor="let mark of tickMarks; index as i">
+        @for (mark of tickMarks(); track $index) {
           <span class="tick-mark"></span>
-        </ng-container>
+        }
       </div>
-
       <div class="min-number">{{ data.props?.min }}</div>
       <div class="max-number">{{ data.props?.max }}</div>
-    </ng-container>
+    }
   </div>
-</ng-container>
+}

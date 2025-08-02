@@ -1,14 +1,14 @@
 <div
   class="duration-500 transition-opacity"
   [ngClass]="{
-    'opacity-0': isServer
+    'opacity-0': isServer,
   }"
   [ngStyle]="{
     '--header-height.px': headerHeight$ | async,
   }"
 >
   <ui-loading-indicator
-    [start]="routeLoading || ((docLoading$ | async) ?? false)"
+    [start]="routeLoading() || docLoading()"
   ></ui-loading-indicator>
 
   <div class="top-bg"></div>

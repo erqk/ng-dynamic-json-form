@@ -1,17 +1,17 @@
 <div class="p-2">
   <div class="grid grid-cols-2 gap-2">
-    <ng-container *ngFor="let item of controlTypes">
+    @for (item of controlTypes; track item) {
       <button
         class="p-1 text-sm rounded-sm"
         [ngClass]="{
-          'bg-transparent': activeControlType !== item,
-          'bg-gray-500/20 font-bold': activeControlType === item
+          'bg-transparent': activeControlType() !== item,
+          'bg-gray-500/20 font-bold': activeControlType() === item,
         }"
         (click)="setActiveInfoType(item)"
       >
         {{ item }}
       </button>
-    </ng-container>
+    }
   </div>
 </div>
 
@@ -21,46 +21,45 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('value') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('value')">Value</span>
+    <button class="section-title" (click)="setActiveSection('value')">
+      <span>Value</span>
 
-      <ng-container *ngIf="editingForm">
-        <button (click)="toggleFormEdit()">
+      @if (isFormEditing) {
+        <button (click)="$event.stopPropagation(); cancelFormValueEdit()">
           <i class="bi bi-x-lg"></i>
         </button>
-      </ng-container>
 
-      <button (click)="toggleFormEdit(true)">
-        <i
-          [ngClass]="{
-            'bi bi-pencil': !editingForm,
-            'bi bi-check2': editingForm
-          }"
-        ></i>
-      </button>
-    </div>
+        <button (click)="$event.stopPropagation(); confirmFormValueEdit()">
+          <i class="bi bi-check2"></i>
+        </button>
+      } @else {
+        <button (click)="$event.stopPropagation(); editValue()">
+          <i class="bi bi-pencil"></i>
+        </button>
+      }
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
         <div
           [ngClass]="{
-            hidden: editingForm
+            hidden: isFormEditing,
           }"
         >
           <div class="code">
-            {{ activeControl?.value | json }}
+            {{ activeControl()?.value | json }}
           </div>
         </div>
 
         <app-playground-editor
           [ngClass]="{
-            hidden: !editingForm
+            hidden: !isFormEditing,
           }"
-          [data]="{ json: activeControl?.value }"
+          [data]="{ json: activeControl()?.value }"
           [mainMenuBar]="false"
           [navigationBar]="false"
           [statusBar]="false"
-          (onEditing)="editingFormValue = $event"
+          (onEditing)="handleEditorChange($event)"
         ></app-playground-editor>
       </div>
     </div>
@@ -71,13 +70,13 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('errors') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('errors')">Errors</span>
+    <button class="section-title" (click)="setActiveSection('errors')">
+      <span>Errors</span>
 
-      <ng-container *ngIf="activeControl?.errors">
+      @if (activeControl()?.errors) {
         <i class="bi bi-exclamation-triangle text-red-600"></i>
-      </ng-container>
-    </div>
+      }
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
@@ -85,24 +84,60 @@
           <div
             class="code overflow-auto"
             [ngClass]="{
-              hidden: editingForm
+              hidden: isFormEditing,
             }"
           >
-            {{ activeControl?.errors | json }}
+            {{ activeControl()?.errors | json }}
           </div>
 
           <div
             class="flex flex-wrap items-center gap-1 bg-gray-400/10 rounded-md px-3 py-2 text-sm"
           >
             <span class="">hideErrorMessage =</span>
-            <ng-container *ngFor="let button of hideErrorMessageActions">
+            @for (button of hideErrorMessageActions; track button.label) {
               <button
                 class="p-1 bg-gray-400/30 rounded-md"
                 (click)="button.action()"
               >
                 {{ button.label }}
               </button>
-            </ng-container>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- State -->
+  <div
+    class="section-container"
+    [ngClass]="{ active: activeSections.includes('state') }"
+  >
+    <button class="section-title" (click)="setActiveSection('state')">
+      <span>State</span>
+
+      <div class="flex gap-3 break-keep">
+        @for (item of controlStates; track item.label) {
+          <span [ngClass]="{ 'opacity-40': !item.value() }">{{
+            item.label
+          }}</span>
+        }
+      </div>
+    </button>
+
+    <div class="section-body">
+      <div class="overflow-hidden">
+        <div class="flex flex-col gap-1 text-sm">
+          <span>Update status functions</span>
+          <div class="flex flex-wrap gap-2">
+            @for (button of statusActions; track button.label) {
+              <button
+                class="px-2 py-1 bg-gray-400/20 rounded-md"
+                (click)="button.action()"
+              >
+                {{ button.label }}
+              </button>
+            }
           </div>
         </div>
       </div>
@@ -110,38 +145,10 @@
   </div>
 
   <!-- Status -->
-  <div
-    class="section-container"
-    [ngClass]="{ active: activeSections.includes('status') }"
-  >
-    <div class="section-title">
+  <div class="section-container">
+    <div class="section-title readonly">
       <span (click)="setActiveSection('status')">Status</span>
-
-      <div class="flex gap-3 break-keep">
-        <ng-container *ngFor="let item of controlStatus">
-          <span [ngClass]="{ 'opacity-40': !item.value() }">{{
-            item.label
-          }}</span>
-        </ng-container>
-      </div>
-    </div>
-
-    <div class="section-body">
-      <div class="overflow-hidden">
-        <div class="flex flex-col gap-1 text-sm">
-          <span>Update status functions</span>
-          <div class="flex flex-wrap gap-2">
-            <ng-container *ngFor="let button of statusActions">
-              <button
-                class="px-2 py-1 bg-gray-400/20 rounded-md"
-                (click)="button.action()"
-              >
-                {{ button.label }}
-              </button>
-            </ng-container>
-          </div>
-        </div>
-      </div>
+      <span class="text-right">{{ activeControl()?.status }}</span>
     </div>
   </div>
 
@@ -150,24 +157,24 @@
     class="section-container"
     [ngClass]="{ active: activeSections.includes('events') }"
   >
-    <div class="section-title">
-      <span (click)="setActiveSection('events')">Events</span>
-      <button type="button" (click)="eventsLog = []">
+    <button class="section-title" (click)="setActiveSection('events')">
+      <span>Events</span>
+      <button type="button" (click)="$event.stopPropagation(); eventsLog = []">
         <i class="bi bi-trash"></i>
       </button>
-    </div>
+    </button>
 
     <div class="section-body">
       <div class="overflow-hidden">
         <div>
           <div class="code">
-            <ng-container *ngFor="let item of eventsLog">
+            @for (item of eventsLog; track $index) {
               <div>{{ item }}</div>
-            </ng-container>
+            }
 
-            <ng-container *ngIf="!eventsLog.length">
+            @if (!eventsLog.length) {
               <span>--</span>
-            </ng-container>
+            }
           </div>
         </div>
       </div>

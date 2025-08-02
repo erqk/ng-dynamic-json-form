@@ -1,9 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, TemplateRef, Type } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { FormControlConfig, UiComponents } from '../models';
+import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
+import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  ConditionsActionFunctions,
+  CustomComponents,
+  CustomErrorComponents,
+  CustomLabelComponents,
+  CustomTemplates,
+  FormControlConfig,
+  FormLayout,
+  OptionItem,
+  UiComponents,
+} from '../models';
+import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 import { CustomValidators } from '../models/custom-validators.type';
-import { NgDynamicJsonFormComponent } from '../ng-dynamic-json-form.component';
+import { FormConfig } from '../providers/ng-dynamic-json-form.provider';
 interface GlobalVariables
   extends Omit<
     GlobalVariableService,
@@ -11,34 +24,47 @@ interface GlobalVariables
   > {}
 @Injectable()
 export class GlobalVariableService {
+  descriptionPosition?: FormLayout['descriptionPosition'];
   hideErrorMessage$ = new BehaviorSubject<boolean | undefined>(undefined);
   rootConfigs: FormControlConfig[] = [];
   rootForm?: UntypedFormGroup;
+  showErrorsOnTouched = true;
 
   // =============== The variables that must be initialized ===============
   hostElement?: HTMLElement;
-  conditionsActionFunctions: NgDynamicJsonFormComponent['conditionsActionFunctions'];
-  optionsSources: NgDynamicJsonFormComponent['optionsSources'];
+  conditionsActionFunctions: ConditionsActionFunctions | undefined;
+  optionsSources:
+    | {
+        [key: string]: Observable<OptionItem[]>;
+      }
+    | undefined;
   uiComponents: UiComponents | undefined;
+  customAsyncValidators: CustomAsyncValidators | undefined;
   customValidators: CustomValidators | undefined;
-  customComponents: NgDynamicJsonFormComponent['customComponents'];
-  customTemplates: NgDynamicJsonFormComponent['customTemplates'];
+  customComponents: CustomComponents | undefined;
+  customTemplates: CustomTemplates | undefined;
 
   // Custom error
-  errorComponents: NgDynamicJsonFormComponent['errorComponents'];
-  errorTemplates: NgDynamicJsonFormComponent['errorTemplates'];
-  errorTemplateDefault: NgDynamicJsonFormComponent['errorTemplateDefault'];
-  errorComponentDefault: NgDynamicJsonFormComponent['errorComponentDefault'];
+  errorComponents: CustomErrorComponents | undefined;
+  errorTemplates: CustomTemplates | undefined;
+  errorTemplateDefault: TemplateRef<any> | undefined;
+  errorComponentDefault: Type<CustomErrorMessage> | undefined;
 
   // Custom label
-  labelComponents: NgDynamicJsonFormComponent['labelComponents'];
-  labelTemplates: NgDynamicJsonFormComponent['labelTemplates'];
-  labelTemplateDefault: NgDynamicJsonFormComponent['labelTemplateDefault'];
+  labelComponents: CustomLabelComponents | undefined;
+  labelTemplates: CustomTemplates | undefined;
+  labelTemplateDefault: TemplateRef<any> | undefined;
 
   // Custom loading
-  labelComponentDefault: NgDynamicJsonFormComponent['labelComponentDefault'];
-  loadingComponent: NgDynamicJsonFormComponent['loadingComponent'];
-  loadingTemplate: NgDynamicJsonFormComponent['loadingTemplate'];
+  labelComponentDefault: Type<CustomFormLabel> | undefined;
+  loadingComponent: Type<any> | undefined;
+  loadingTemplate: TemplateRef<any> | undefined;
+
+  // Hide error message
+  hideErrorsForTypes: FormConfig['hideErrorsForTypes'];
+
+  // Global validation messages
+  validationMessages: FormConfig['validationMessages'];
   // ======================================================================
 
   setup(variables: GlobalVariables): void {

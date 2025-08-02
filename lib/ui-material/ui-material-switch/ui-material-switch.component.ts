@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -14,9 +13,7 @@ import {
 
 @Component({
   selector: 'ui-material-switch',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatInputModule,

@@ -1,22 +1,25 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ComponentRef,
+  computed,
   DestroyRef,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  Type,
-  ViewChild,
-  ViewContainerRef,
+  effect,
   forwardRef,
+  HostListener,
   inject,
+  input,
+  signal,
+  Type,
+  untracked,
+  viewChild,
+  ViewContainerRef,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -25,8 +28,21 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { combineLatest, debounceTime, finalize, startWith, tap } from 'rxjs';
-import { FormControlConfig, FormControlType, OptionItem } from '../../models';
+import {
+  combineLatest,
+  EMPTY,
+  filter,
+  finalize,
+  Observable,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
+import {
+  FormControlConfig,
+  OptionItem,
+  OptionSourceConfig,
+} from '../../models';
 import {
   FormReadyStateService,
   GlobalVariableService,
@@ -34,12 +50,10 @@ import {
 } from '../../services';
 import { UI_BASIC_COMPONENTS } from '../../ui-basic/ui-basic-components.constant';
 import { UiBasicInputComponent } from '../../ui-basic/ui-basic-input/ui-basic-input.component';
-import { getControlErrors } from '../../utilities/get-control-errors';
 import { CustomControlComponent } from '../custom-control/custom-control.component';
 
 @Component({
   selector: 'form-control',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './form-control.component.html',
   providers: [
@@ -55,345 +69,347 @@ import { CustomControlComponent } from '../custom-control/custom-control.compone
     },
   ],
   styles: [':host { display: block }'],
+  host: {
+    class: 'form-control',
+  },
 })
-export class FormControlComponent
-  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, Validator
-{
-  private _cd = inject(ChangeDetectorRef);
-  private _destroyRef = inject(DestroyRef);
-  private _globalVariableService = inject(GlobalVariableService);
-  private _formReadyStateService = inject(FormReadyStateService);
-  private _optionsDataService = inject(OptionsDataService);
+export class FormControlComponent implements ControlValueAccessor, Validator {
+  private destroyRef = inject(DestroyRef);
+  private global = inject(GlobalVariableService);
+  private formReadyStateService = inject(FormReadyStateService);
+  private optionsDataService = inject(OptionsDataService);
 
-  private _uiComponents = this._globalVariableService.uiComponents;
+  private readonly uiComponents = this.global.uiComponents;
 
-  private _controlComponent?: CustomControlComponent;
-  private _pendingValue: any = null;
+  private inputComponentRef = signal<CustomControlComponent | undefined>(
+    undefined,
+  );
+  private pendingValue = signal<any>(null);
 
-  private _onChange = (_: any) => {};
-  private _onTouched = () => {};
+  private onChange = (_: any) => {};
+  private onTouched = () => {};
 
-  @Input() data?: FormControlConfig;
-  @Input() control?: AbstractControl;
-  @Input() customComponent?: Type<CustomControlComponent>;
+  readonly loadingComponent = this.global.loadingComponent ?? null;
+  readonly loadingTemplate = this.global.loadingTemplate ?? null;
+  readonly hostForm = this.global.rootForm;
+  readonly hideErrorMessage$ = this.global.hideErrorMessage$;
 
-  @ViewChild('inputComponentAnchor', { read: ViewContainerRef })
-  inputComponentAnchor!: ViewContainerRef;
+  data = input<FormControlConfig>();
+  control = input<AbstractControl>();
+  customComponent = input<Type<CustomControlComponent>>();
 
-  @HostBinding('class') hostClass = 'form-control';
+  inputComponentAnchor = viewChild.required('inputComponentAnchor', {
+    read: ViewContainerRef,
+  });
 
-  @HostListener('focusout', ['$event'])
-  onFocusOut(): void {
-    if (this.data?.type === 'select') {
-      // For select component, trigger when it's blurred.
-      // It's implemented on the corresponding component.
+  loading = signal<boolean>(false);
+
+  inputType = computed(() => {
+    const data = this.data();
+
+    if (data?.inputMask) {
+      return 'textMask';
+    }
+
+    // Fallback to text input if `type` is not specified.
+    if (!data?.type) {
+      return 'text';
+    }
+
+    switch (data.type) {
+      case 'number':
+      case 'text':
+        return 'text';
+
+      default:
+        return data.type;
+    }
+  });
+
+  inputComponent = computed(() => {
+    const customComponent = this.customComponent();
+    const inputType = this.inputType();
+    const uiComponents = this.uiComponents;
+
+    if (customComponent) {
+      return customComponent;
+    }
+
+    if (uiComponents && uiComponents[inputType]) {
+      return uiComponents[inputType];
+    }
+
+    return UI_BASIC_COMPONENTS[inputType] || UiBasicInputComponent;
+  });
+
+  customInputTemplate = computed(() => {
+    const formControlName = this.data()?.formControlName;
+    const templates = this.global.customTemplates;
+
+    if (!formControlName || !templates) {
+      return null;
+    }
+
+    return templates[formControlName];
+  });
+
+  optionsConfig = computed(() => structuredClone(this.data()?.options));
+
+  dynamicOptions = toSignal(
+    toObservable(this.optionsConfig).pipe(
+      filter(Boolean),
+      switchMap((x) => {
+        const { src } = x;
+
+        if (!src) {
+          return EMPTY;
+        }
+
+        if (typeof src === 'string') {
+          const source$ = this.global.optionsSources?.[src] || EMPTY;
+
+          this.setLoading(true);
+          return source$.pipe(finalize(() => this.setLoading(false)));
+        }
+
+        if (src.filter || src.trigger) {
+          return this.getOptionsByFilterOrTrigger(src);
+        }
+
+        this.setLoading(true);
+        return this.optionsDataService
+          .getOptions$(src)
+          .pipe(finalize(() => this.setLoading(false)));
+      }),
+    ),
+  );
+
+  useCustomLoading = computed(
+    () => Boolean(this.loadingComponent) || Boolean(this.loadingTemplate),
+  );
+
+  init = effect(() => {
+    const anchor = this.inputComponentAnchor();
+    const useTemplate = !!this.customInputTemplate();
+    const inputComponent = this.inputComponent();
+
+    if (useTemplate || !anchor || !inputComponent) {
       return;
     }
 
-    this._onTouched();
+    anchor.clear();
+
+    untracked(() => {
+      const componentRef = anchor.createComponent(inputComponent);
+      this.inputComponentRef.set(componentRef.instance);
+      this.initComponentInstance(componentRef);
+      this.syncControlErrors();
+
+      this.init.destroy();
+    });
+  });
+
+  handleOptionsFetched = effect(() => {
+    const optionsConfig = this.optionsConfig();
+    const dynamicOptions = this.dynamicOptions();
+    const inputComponent = this.inputComponentRef();
+    const pendingValue = this.pendingValue();
+
+    if (!dynamicOptions || !inputComponent) {
+      return;
+    }
+
+    const { autoSelectFirst, data, srcAppendPosition } = optionsConfig ?? {};
+    const staticOptions = structuredClone(data ?? []);
+    const newOptions =
+      srcAppendPosition === 'before'
+        ? dynamicOptions.concat(staticOptions)
+        : staticOptions?.concat(dynamicOptions);
+
+    untracked(() => {
+      inputComponent.onOptionsGet(newOptions);
+
+      if (pendingValue) {
+        this.writeControlValue(pendingValue);
+        this.pendingValue.set(null);
+      } else if (autoSelectFirst) {
+        this.writeControlValue(newOptions?.[0]);
+      }
+    });
+  });
+
+  @HostListener('focusout', ['$event'])
+  onFocusOut(): void {
+    if (this.inputType() === 'select') {
+      // For select component, trigger when it's blurred.
+      // It should be implemented on the corresponding component.
+      return;
+    }
+
+    this.onTouched();
   }
 
-  customTemplates = this._globalVariableService.customTemplates;
-  loadingComponent = this._globalVariableService.loadingComponent;
-  loadingTemplate = this._globalVariableService.loadingTemplate;
-
-  loading = false;
-  useCustomLoading = false;
-  hostForm = this._globalVariableService.rootForm;
-  hideErrorMessage$ = this._globalVariableService.hideErrorMessage$;
-
   writeValue(obj: any): void {
-    this._pendingValue = obj;
-    this._controlComponent?.writeValue(obj);
+    this.pendingValue.set(obj);
+    this.inputComponentRef()?.writeValue(obj);
   }
 
   registerOnChange(fn: (_: any) => void): void {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
-    this._onTouched = fn;
+    this.onTouched = fn;
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this._controlComponent?.setDisabledState(isDisabled);
+    this.inputComponentRef()?.setDisabledState(isDisabled);
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    return this._controlComponent?.validate(control) ?? null;
-  }
-
-  ngOnInit(): void {
-    this.useCustomLoading =
-      Boolean(this.loadingComponent) || Boolean(this.loadingTemplate);
-  }
-
-  ngAfterViewInit(): void {
-    this._injectInputComponent();
-    this._fetchOptions();
-    this._errorMessageEvent();
-    this._cd.detectChanges();
-  }
-
-  ngOnDestroy(): void {
-    this.control = undefined;
-    this.data = undefined;
+    return this.inputComponentRef()?.validate(control) ?? null;
   }
 
   updateControlStatus(
     status: 'dirty' | 'pristine' | 'touched' | 'untouched',
-    updateSelf = false
   ): void {
-    const control = this.control;
-    const controlComponent = this._controlComponent;
-
-    const markAsDirty = () => {
-      controlComponent?.control?.markAsDirty();
-      controlComponent?.markAsDirty();
-
-      if (updateSelf) {
-        control?.markAsDirty();
-      }
-    };
-
-    const markAsPristine = () => {
-      controlComponent?.control?.markAsPristine();
-      controlComponent?.markAsPristine();
-
-      if (updateSelf) {
-        control?.markAsPristine();
-      }
-    };
-
-    const markAsTouched = () => {
-      controlComponent?.control?.markAsTouched();
-      controlComponent?.markAsTouched();
-
-      if (updateSelf) {
-        control?.markAsTouched();
-      }
-    };
-
-    const markAsUntouched = () => {
-      controlComponent?.control?.markAsUntouched();
-      controlComponent?.markAsUntouched();
-
-      if (updateSelf) {
-        control?.markAsUntouched();
-      }
-    };
+    const control = this.control();
+    const inputComponent = this.inputComponentRef();
 
     switch (status) {
-      case 'dirty':
-        markAsDirty();
-        break;
+      case 'dirty': {
+        inputComponent?.control?.markAsDirty();
+        inputComponent?.markAsDirty();
+        control?.markAsDirty();
 
-      case 'pristine':
-        markAsPristine();
         break;
+      }
 
-      case 'touched':
-        markAsTouched();
-        break;
+      case 'pristine': {
+        inputComponent?.control?.markAsPristine();
+        inputComponent?.markAsPristine();
+        control?.markAsPristine();
 
-      case 'untouched':
-        markAsUntouched();
         break;
+      }
+
+      case 'touched': {
+        inputComponent?.control?.markAsTouched();
+        inputComponent?.markAsTouched();
+        control?.markAsTouched();
+
+        break;
+      }
+
+      case 'untouched': {
+        inputComponent?.control?.markAsUntouched();
+        inputComponent?.markAsUntouched();
+        control?.markAsUntouched();
+
+        break;
+      }
     }
   }
 
-  get showErrors(): boolean {
-    const controlTouched = this.control?.touched ?? false;
-    const controlDirty = this.control?.dirty ?? false;
-    const hasErrors = !!this.control?.errors;
+  private getOptionsByFilterOrTrigger(
+    srcConfig: OptionSourceConfig,
+  ): Observable<OptionItem[]> {
+    const { filter } = srcConfig;
 
-    if (this.hideErrorMessage$) {
-      return false;
-    }
+    const valueChangeCallback = () => {
+      this.setLoading(true);
 
-    return (controlDirty || controlTouched) && hasErrors;
-  }
-
-  private _injectComponent<T>(
-    vcr?: ViewContainerRef,
-    component?: Type<T>
-  ): ComponentRef<T> | null {
-    if (!vcr || !component) return null;
-
-    vcr.clear();
-    const componentRef = vcr.createComponent(component);
-    return componentRef;
-  }
-
-  private _injectInputComponent(): void {
-    if (this.customTemplates?.[this.data?.formControlName ?? '']) {
-      return;
-    }
-
-    const inputComponent =
-      this.customComponent ||
-      this._uiComponents?.[this._inputType] ||
-      UI_BASIC_COMPONENTS[this._inputType] ||
-      UiBasicInputComponent;
-
-    const componentRef = this._injectComponent(
-      this.inputComponentAnchor,
-      inputComponent
-    );
-
-    if (!componentRef) return;
-
-    componentRef.instance.data = this.data;
-    componentRef.instance.hostForm = this._globalVariableService.rootForm;
-    componentRef.instance.writeValue(this._pendingValue);
-    componentRef.instance.registerOnChange(this._onChange);
-    componentRef.instance.registerOnTouched(this._onTouched);
-
-    this._controlComponent = componentRef.instance;
-    this._setControlErrors();
-  }
-
-  private _fetchOptions(): void {
-    if (!this.data || !this.data.options) {
-      this._pendingValue = null;
-      return;
-    }
-
-    const {
-      src,
-      srcAppendPosition,
-      autoSelectFirst,
-      data: staticOptions = [],
-    } = this.data.options;
-
-    const updateControlValue = (value: any) => {
-      this.control?.setValue(value);
-      this._controlComponent?.writeValue(value);
-    };
-
-    const autoSelectFirstOption = (options: OptionItem[]) => {
-      if (autoSelectFirst && options.length > 0) {
-        updateControlValue(options[0].value);
+      if (!this.pendingValue()) {
+        this.writeControlValue(null);
       }
     };
 
-    if (!src) {
-      autoSelectFirstOption(staticOptions);
+    const finalizeCallback = () => {
+      this.setLoading(false);
+    };
+
+    if (filter) {
+      return this.optionsDataService.getOptionsByFilter$({
+        srcConfig,
+        valueChangeCallback,
+        finalizeCallback,
+      });
+    }
+
+    return this.optionsDataService.getOptionsOnTrigger$({
+      srcConfig,
+      valueChangeCallback,
+      finalizeCallback,
+    });
+  }
+
+  private initComponentInstance(
+    componentRef: ComponentRef<CustomControlComponent>,
+  ): void {
+    componentRef.instance.data.set(this.data());
+    componentRef.instance.hostForm.set(this.global.rootForm);
+    componentRef.instance.writeValue(this.pendingValue());
+    componentRef.instance.registerOnChange(this.onChange);
+    componentRef.instance.registerOnTouched(this.onTouched);
+  }
+
+  private setLoading(loading: boolean): void {
+    this.loading.set(loading);
+    this.formReadyStateService.optionsLoading(loading);
+  }
+
+  private writeControlValue(value: any): void {
+    this.control()?.setValue(value);
+    this.inputComponentRef()?.writeValue(value);
+  }
+
+  private syncControlErrors(): void {
+    const control = this.control();
+    const inputComponent = this.inputComponentRef();
+
+    if (!control || !inputComponent) {
+      console.error('No control or input component found!');
       return;
     }
 
-    const usingTriggerOrFilter =
-      typeof src !== 'string' && (src.filter || src.trigger);
+    const getErrors = () => {
+      const controlErrors = control.errors;
+      const componentErrors = inputComponent?.control?.errors;
 
-    const source$ =
-      typeof src === 'string'
-        ? this._globalVariableService.optionsSources?.[src]
-        : this._optionsDataService.getOptions$(
-            src,
-            () => (this.loading = false)
-          );
+      if (!controlErrors && !componentErrors) {
+        return null;
+      }
 
-    const setLoading = (val: boolean) => {
-      this.loading = val;
-      this._formReadyStateService.optionsLoading(val);
+      return controlErrors;
     };
 
-    setLoading(true);
+    const setComponentErrors = (errors: ValidationErrors | null) => {
+      inputComponent.control?.setErrors(errors);
+      inputComponent.setErrors(errors);
+    };
 
-    source$
-      ?.pipe(
-        tap((x) => {
-          const options =
-            srcAppendPosition === 'before'
-              ? x.concat(staticOptions)
-              : staticOptions.concat(x);
+    const handleHideErrorsValueChange = (hide: boolean | undefined) => {
+      inputComponent.hideErrorMessage.set(hide);
 
-          if (this._pendingValue) {
-            updateControlValue(this._pendingValue);
-            this._pendingValue = null;
-          } else {
-            if (usingTriggerOrFilter) updateControlValue(null);
-            else autoSelectFirstOption(options);
-          }
-
-          this._controlComponent?.onOptionsGet(options);
-
-          if (usingTriggerOrFilter) {
-            setLoading(false);
-          }
-        }),
-        finalize(() => {
-          setLoading(false);
-        })
-      )
-      .subscribe();
-  }
-
-  private _errorMessageEvent(): void {
-    if (!this.control) return;
-
-    const control = this.control;
-    const controlComponent = this._controlComponent;
+      if (hide === false) {
+        this.updateControlStatus('dirty');
+        this.updateControlStatus('touched');
+      }
+    };
 
     combineLatest([
       this.hideErrorMessage$,
       control.statusChanges.pipe(startWith(control.status)),
     ])
       .pipe(
-        debounceTime(0),
-        tap(() => {
-          const hideErrors = this.hideErrorMessage$.value;
-          const controlErrors = control.errors;
-          const componentErrors = controlComponent?.control?.errors;
-          const errors =
-            hideErrors || (!controlErrors && !componentErrors)
-              ? null
-              : control.errors;
+        tap(([hideErrors]) => {
+          const errors = hideErrors ? null : getErrors();
 
-          if (controlComponent) {
-            controlComponent.control?.setErrors(errors);
-            controlComponent.setErrors(errors);
-            controlComponent.hideErrorMessage = hideErrors;
-          }
-
-          if (hideErrors === false) {
-            this.updateControlStatus('dirty', true);
-            this.updateControlStatus('touched', true);
-          }
+          setComponentErrors(errors);
+          handleHideErrorsValueChange(hideErrors);
         }),
-        takeUntilDestroyed(this._destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
-  }
-
-  /**
-   * If the CVA has errors but this control doesn't,
-   * we set this control with the CVA errors
-   */
-  private _setControlErrors(): void {
-    const cvaErrors = getControlErrors(this._controlComponent?.control);
-    if (!this.control?.errors && cvaErrors) {
-      this.control?.setErrors(cvaErrors);
-    }
-  }
-
-  private get _inputType(): FormControlType {
-    if (this.data?.inputMask) {
-      return 'textMask';
-    }
-
-    // Fallback to text input if `type` is not specified.
-    if (!this.data?.type) {
-      return 'text';
-    }
-
-    switch (this.data.type) {
-      case 'number':
-      case 'text':
-        return 'text';
-
-      default:
-        return this.data.type;
-    }
   }
 }

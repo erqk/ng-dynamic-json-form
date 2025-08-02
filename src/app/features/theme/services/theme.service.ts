@@ -1,4 +1,4 @@
-import { Injectable, RendererFactory2, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
@@ -13,8 +13,6 @@ import {
   providedIn: 'root',
 })
 export class ThemeService {
-  private _renderer2 = inject(RendererFactory2).createRenderer(null, null);
-
   themes: { key: 'dark' | 'light'; class: string }[] = [
     {
       key: 'light',
@@ -65,19 +63,15 @@ export class ThemeService {
       document.head.querySelector(`#${id}`) as HTMLLinkElement;
 
     const insertStylesheet = (_id: string): HTMLStyleElement => {
-      const style = this._renderer2.createElement('link');
+      const styleEl = document.createElement('link');
 
-      this._renderer2.setProperty(style, 'id', _id);
-      this._renderer2.setProperty(style, 'rel', 'stylesheet');
-      this._renderer2.setProperty(style, 'href', path);
+      styleEl.id = _id;
+      styleEl.rel = 'stylesheet';
+      styleEl.href = path;
 
-      this._renderer2.insertBefore(
-        document.head,
-        style,
-        document.head.childNodes[0]
-      );
+      document.head.insertBefore(styleEl, document.head.childNodes[0]);
 
-      return style;
+      return styleEl;
     };
 
     const existingStyle = getStylesheet(id);
@@ -87,12 +81,12 @@ export class ThemeService {
       const nextStyle = existingNextStyle ?? insertStylesheet(`${id}-next`);
 
       if (existingNextStyle) {
-        this._renderer2.setProperty(existingNextStyle, 'href', path);
+        existingNextStyle.href = path;
       }
 
       nextStyle.onload = () => {
         existingStyle.remove();
-        this._renderer2.setAttribute(nextStyle, 'id', id);
+        nextStyle.id = id;
       };
     } else {
       insertStylesheet(id);

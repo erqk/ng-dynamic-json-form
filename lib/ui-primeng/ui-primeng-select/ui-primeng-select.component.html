@@ -1,15 +1,15 @@
-<ng-container *ngIf="data">
-  <p-dropdown
-    [options]="data.options?.data"
+@if (data(); as data) {
+  <p-select
+    [options]="options()"
     [formControl]="control"
     [propsBinding]="[
       {
-        key: 'p-dropdown',
+        key: 'p-select',
         props: data.props,
-        omit: ['options']
-      }
+        omit: ['options'],
+      },
     ]"
     (onChange)="onChange(control.value)"
     (onBlur)="onTouched()"
-  ></p-dropdown>
-</ng-container>
+  ></p-select>
+}

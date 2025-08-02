@@ -1,18 +1,18 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <div
     class="group-buttons"
     [style]="data.options?.containerStyles"
     [ngClass]="[data.options?.containerClass ?? '']"
     [ngStyle]="{
-      'flex-direction': data.options?.layout
+      'flex-direction': data.options?.layout,
     }"
   >
-    <ng-container *ngFor="let item of data.options?.data; index as i">
+    @for (item of options(); track $index) {
       <label
         class="option-button"
         [ngStyle]="{
           'justify-content':
-            data.options?.labelPosition === 'before' ? 'space-between' : null
+            data.options?.labelPosition === 'before' ? 'space-between' : null,
         }"
       >
         <ng-container
@@ -20,22 +20,22 @@
             labelTemplate;
             context: {
               label: item.label,
-              isBefore: true
+              isBefore: true,
             }
           "
         ></ng-container>
 
         <p-radioButton
-          [value]="i"
+          [value]="$index"
           [formControl]="control"
           [propsBinding]="[
             {
               key: 'p-radio-button',
               props: data.props,
-              omit: ['value']
-            }
+              omit: ['value'],
+            },
           ]"
-          (onClick)="updateControl()"
+          (onClick)="emitValue()"
         ></p-radioButton>
 
         <ng-container
@@ -43,19 +43,16 @@
             labelTemplate;
             context: {
               label: item.label,
-              isBefore: false
+              isBefore: false,
             }
           "
         ></ng-container>
       </label>
-    </ng-container>
+    }
   </div>
-
   <ng-template #labelTemplate let-label="label" let-isBefore="isBefore">
-    <ng-container
-      *ngIf="(data.options?.labelPosition === 'before') === isBefore"
-    >
+    @if ((data.options?.labelPosition === "before") === isBefore) {
       <span>{{ label }}</span>
-    </ng-container>
+    }
   </ng-template>
-</ng-container>
+}

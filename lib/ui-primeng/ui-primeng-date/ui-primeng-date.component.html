@@ -1,12 +1,12 @@
-<ng-container *ngIf="data">
-  <p-calendar
+@if (data(); as data) {
+  <p-date-picker
     [formControl]="control"
     [propsBinding]="[
       {
-        key: 'p-calendar',
+        key: 'p-datepicker',
         props: data.props,
-      }
+      },
     ]"
     (onClose)="updateControl()"
-  ></p-calendar>
-</ng-container>
+  ></p-date-picker>
+}

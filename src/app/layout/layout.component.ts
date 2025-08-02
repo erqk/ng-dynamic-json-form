@@ -9,7 +9,6 @@ import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui
 
 @Component({
   selector: 'app-layout',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -18,14 +17,14 @@ import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui
     UiLoadingIndicatorComponent,
   ],
   template: `
-    <ui-loading-indicator
-      *ngIf="docsLoading$.value === true"
-    ></ui-loading-indicator>
+    @if (docsLoading$.value === true) {
+      <ui-loading-indicator></ui-loading-indicator>
+    }
 
     <ui-content-wrapper
       class="main"
       [ngClass]="{
-        hidden: docsLoading$.value === true
+        hidden: docsLoading$.value === true,
       }"
       [maxWidth]="'100%'"
       [@fade-up]="docsLoading$.value === false"
@@ -40,7 +39,7 @@ import { UiLoadingIndicatorComponent } from '../features/ui-loading-indicator/ui
   animations: [FADE_UP_ANIMATION],
 })
 export class LayoutComponent {
-  private _docsLoaderService = inject(DocsLoaderService);
+  private docsLoaderService = inject(DocsLoaderService);
 
-  docsLoading$ = this._docsLoaderService.docLoading$;
+  docsLoading$ = this.docsLoaderService.docLoading;
 }

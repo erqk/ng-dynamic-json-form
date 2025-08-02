@@ -1,9 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, SimpleChanges } from '@angular/core';
 import {
-  Subject,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
   interval,
-  merge,
+  Subject,
   switchMap,
   takeUntil,
   takeWhile,
@@ -13,57 +22,57 @@ import {
 
 @Component({
   selector: 'ui-loading-indicator',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div
       class="loading-bar"
-      [ngClass]="{start}"
+      [ngClass]="{ start: start() }"
       [ngStyle]="{
-        '--step-count': step
+        '--step-count': stepPercentage,
       }"
     ></div>
   `,
   styleUrls: ['./ui-loading-indicator.component.scss'],
 })
 export class UiLoadingIndicatorComponent {
-  private _step = 0;
-  private _cancelTimer$ = new Subject<void>();
-  private _onDestroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
+  private cancelTimer$ = new Subject<void>();
+  private step = signal<number>(0);
 
-  @Input() start = false;
+  start = input<boolean>(false);
 
-  step = '0%';
+  stepPercentage = computed(() => `${this.step}%`);
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    const { start } = simpleChanges;
-    if (start) {
-      if (start.currentValue === true) {
-        this._addStep();
-      } else {
-        this.step = '0%';
-        this._cancelTimer$.next();
-      }
-    }
+  constructor() {
+    effect(() => {
+      const start = this.start();
+
+      untracked(() => {
+        if (start) {
+          this.addStep();
+        } else {
+          this.step.set(0);
+          this.cancelTimer$.next();
+        }
+      });
+    });
   }
 
   ngOnDestroy(): void {
-    this._cancelTimer$.next();
-    this._cancelTimer$.complete();
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this.cancelTimer$.next();
+    this.cancelTimer$.complete();
   }
 
-  private _addStep(): void {
+  private addStep(): void {
     timer(3000)
       .pipe(
         switchMap(() => interval(1000)),
         tap(() => {
-          this._step += Math.round(Math.random());
-          this.step = `${this._step}%`;
+          this.step.update((x) => (x += Math.round(Math.random())));
         }),
-        takeUntil(merge(this._onDestroy$, this._cancelTimer$)),
-        takeWhile(() => this._step < 10)
+        takeWhile(() => this.step() < 10),
+        takeUntil(this.cancelTimer$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }

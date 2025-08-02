@@ -1,3 +1,4 @@
+import { provideServerRendering } from '@angular/ssr';
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -6,8 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
-import { provideServerRendering } from '@angular/platform-server';
+import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
 import { appConfig } from './app.config';
 
 const serverConfig: ApplicationConfig = {

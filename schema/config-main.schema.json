@@ -6,6 +6,9 @@
     "type": "object",
     "properties": {
       "formControlName": { "type": "string" },
+      "asyncValidators": {
+        "$ref": "ConfigValidatorsSchema"
+      },
       "conditions": {
         "$ref": "ConfigConditionsSchema"
       },

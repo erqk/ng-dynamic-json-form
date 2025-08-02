@@ -1,39 +1,74 @@
 import { InjectionToken, Provider, Type } from '@angular/core';
 import { CustomErrorMessage } from '../components/custom-error-message/custom-error-message.abstract';
 import { CustomFormLabel } from '../components/custom-form-label/custom-form-label.abstract';
-import { CustomValidators, UiComponents } from '../models';
+import { CustomValidators, FormControlType, UiComponents } from '../models';
+import { CustomAsyncValidators } from '../models/custom-async-validators.type';
 
-interface FormConfig {
+export interface FormConfig {
   /**
-   * User defined custom valiators. Use `name` as the key to map target ValidatorFn.
+   * User defined custom validators. Use `name` as the key to map target ValidatorFn.
    *
-   * @example
-   * // Config
+   * Config:
+   * ```json
    * {
    *    ...
    *    "validators": [
    *      { "name": "firstUppercase" }
    *    ]
    * }
+   * ```
    *
-   * // TS
+   * TS:
+   * ```ts
    * validators = {
    *    firstUppercase: firstUppercaseValidator,
    *    url: urlValidator,
    *    ...
    * }
+   * ```
    *
-   * // HTML
+   * HTML:
+   * ```html
    * <ng-dynamic-json-form
    *  [configs]="..."
    *  [customValidators]="validators"
    * ></ng-dynamic-json-form>
+   * ```
    */
   customValidators?: CustomValidators;
   /**
+   * User defined custom async validators. Similar to custom validators.
+   *
+   * Config:
+   * ```json
+   * {
+   *    ...
+   *    "asyncValidators": [
+   *      ...
+   *    ]
+   * }
+   * ```
+   *
+   * TS:
+   * ```ts
+   * asyncValidators = {
+   *    ...
+   * }
+   * ```
+   *
+   * HTML:
+   * ```html
+   * <ng-dynamic-json-form
+   *  [configs]="..."
+   *  [customAsyncValidators]="validators"
+   * ></ng-dynamic-json-form>
+   * ```
+   */
+  customAsyncValidators?: CustomAsyncValidators;
+  /**
    * If the key is matched with `type` in the config, then the corresponding component will be used.
    *
-   * @example
+   * ```ts
    * config = {
    *  ...
    *  type: "file"
@@ -42,8 +77,13 @@ interface FormConfig {
    * uiComponents = {
    *  file: InputFileComponent
    * }
+   * ```
    */
   uiComponents?: UiComponents;
+  /**
+   * Default validation message to use for the specific validator in the entire form.
+   */
+  validationMessages?: { [validatorName: string]: string };
   /**
    * Custom component for all labels in this form
    */
@@ -56,6 +96,11 @@ interface FormConfig {
    * Custom component for all errors in this form
    */
   errorComponent?: Type<CustomErrorMessage>;
+  /**
+   * Hide the error message for specific type of UI components
+   */
+  hideErrorsForTypes?: FormControlType[];
+  showErrorsOnTouched?: boolean;
 }
 
 export const NG_DYNAMIC_JSON_FORM_CONFIG = new InjectionToken<FormConfig>(

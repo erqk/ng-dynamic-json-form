@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import {
+  afterNextRender,
   Component,
+  computed,
   DestroyRef,
-  HostBinding,
-  HostListener,
-  Input,
-  Renderer2,
-  SimpleChanges,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
   TemplateRef,
   Type,
-  ViewChild,
+  untracked,
+  viewChild,
   ViewContainerRef,
-  inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, fromEvent, tap } from 'rxjs';
@@ -21,189 +23,224 @@ import { CustomFormLabel } from '../custom-form-label/custom-form-label.abstract
 
 @Component({
   selector: 'form-label',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './form-label.component.html',
   styleUrls: ['./form-label.component.scss'],
+  host: {
+    class: 'form-label',
+  },
 })
 export class FormLabelComponent {
-  private _renderer2 = inject(Renderer2);
-  private _destroyRef = inject(DestroyRef);
-  private _viewInitialized = false;
-  private _collapsibleElCssText = '';
-  private _componentRef?: CustomFormLabel;
+  private el = inject(ElementRef);
+  private destroyRef = inject(DestroyRef);
+  private collapsibleElCssText = '';
+  private componentRef?: CustomFormLabel;
 
-  @Input() label?: string;
-  @Input() layout?: FormControlConfig['layout'];
-  @Input() props?: FormControlConfig['props'];
-  @Input() collapsibleEl?: HTMLElement;
+  label = input<string>();
+  layout = input<FormControlConfig['layout']>();
+  props = input<FormControlConfig['props']>();
+  collapsibleEl = input<HTMLElement>();
   /**
-   * State comes from root, to overwrite all the collapsible state
+   * State that comes from the root component.
+   * This will overwrite the current collapsible state
    */
-  @Input() state?: FormLayout['contentCollapsible'];
-  @Input() customComponent?: Type<CustomFormLabel>;
-  @Input() customTemplate?: TemplateRef<any>;
+  state = input<FormLayout['contentCollapsible']>();
+  customComponent = input<Type<CustomFormLabel>>();
+  customTemplate = input<TemplateRef<any>>();
 
-  @ViewChild('componentAnchor', { read: ViewContainerRef })
-  componentAnchor?: ViewContainerRef;
+  componentAnchor = viewChild.required<ViewContainerRef>('componentAnchor');
 
-  @HostBinding('class') hostClass = 'form-label';
-  @HostBinding('style.display') get styleDisplay() {
-    if (!this.label) return null;
-    if (this.customComponent) return null;
+  expand = signal<boolean>(false);
 
-    return this._collapsible ? 'flex' : 'inline-block';
+  useDefaultTemplate = computed(
+    () => !this.customComponent() && !this.customTemplate(),
+  );
+
+  isCollapsible = computed(() => {
+    const layout = this.layout();
+    if (!layout) {
+      return false;
+    }
+
+    return (
+      layout.contentCollapsible === 'collapse' ||
+      layout.contentCollapsible === 'expand'
+    );
+  });
+
+  injectCustomComponent = effect(() => {
+    const anchor = this.componentAnchor();
+    const customComponent = this.customComponent();
+
+    if (!anchor || !customComponent) {
+      return;
+    }
+
+    untracked(() => {
+      const componentRef = anchor.createComponent(customComponent);
+
+      componentRef.instance.label.set(this.label());
+      componentRef.instance.layout.set(this.layout());
+      componentRef.instance.props.set(this.props());
+      componentRef.instance.collapsible.set(this.isCollapsible());
+      componentRef.instance.expand.set(this.expand());
+      this.componentRef = componentRef.instance;
+
+      this.injectCustomComponent.destroy();
+    });
+  });
+
+  handleStateChange = effect(() => {
+    const isCollapsible = this.isCollapsible();
+    const state = this.state();
+
+    if (!isCollapsible || !state) {
+      return;
+    }
+
+    this.toggle(state === 'expand');
+  });
+
+  setExpandInitialState = effect(() => {
+    const state = this.state();
+
+    if (state) {
+      this.expand.set(state === 'expand');
+    } else {
+      this.expand.set(this.layout()?.contentCollapsible === 'expand');
+    }
+
+    this.setExpandInitialState.destroy();
+  });
+
+  setHostStyle = effect(() => {
+    const host = this.el.nativeElement as HTMLElement;
+    const label = this.label();
+    const customComponent = this.customComponent();
+    const isCollapsible = this.isCollapsible();
+
+    if (!label || !!customComponent) {
+      return;
+    }
+
+    if (isCollapsible) {
+      host.style.setProperty('display', 'flex');
+      host.style.setProperty('cursor', 'pointer');
+    } else {
+      host.style.setProperty('display', 'inline-block');
+      host.style.removeProperty('cursor');
+    }
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.initCollapsibleEl();
+      this.listenClickEvent();
+    });
   }
-  @HostBinding('style.cursor') get styleCursor() {
-    return this._collapsible ? 'pointer' : 'normal';
-  }
 
-  @HostListener('click', ['$event'])
-  onClick(): void {
-    this.toggle();
-  }
+  toggle = (expand?: boolean) => {
+    const collapsible = this.isCollapsible();
 
-  collapsible = false;
-  expand = false;
+    if (!collapsible) {
+      return;
+    }
 
-  toggle = (value?: boolean) => {
-    if (!this._collapsible) return;
+    this.expand.update((x) => expand ?? !x);
+    this.setElementHeight();
 
-    this.expand = value ?? !this.expand;
-    this._setElementHeight();
-
-    if (this._componentRef) {
-      this._componentRef.expand = this.expand;
+    if (this.componentRef) {
+      this.componentRef.expand.set(this.expand());
     }
   };
 
-  ngOnChanges(simpleChanges: SimpleChanges): void {
-    if (!this._viewInitialized) return;
+  private listenTransition(): void {
+    const el = this.collapsibleEl();
 
-    const { state } = simpleChanges;
-
-    if (state && this._collapsible) {
-      switch (this.state) {
-        case 'collapse':
-          this.toggle(false);
-          break;
-
-        case 'expand':
-          this.toggle(true);
-          break;
-      }
-    }
-  }
-
-  ngOnInit(): void {
-    this.collapsible = this._collapsible;
-    this.expand =
-      this.state === undefined
-        ? this.layout?.contentCollapsible === 'expand'
-        : this.state === 'expand';
-  }
-
-  ngAfterViewInit(): void {
-    if (this.customComponent) {
-      this._injectComponent();
+    if (!el) {
       return;
     }
 
-    this._initCollapsibleEl();
-    this._viewInitialized = true;
-  }
-
-  private _injectComponent(): void {
-    if (!this.componentAnchor || !this.customComponent) {
-      return;
-    }
-
-    const componentRef = this.componentAnchor.createComponent(
-      this.customComponent
-    );
-
-    componentRef.instance.label = this.label;
-    componentRef.instance.layout = this.layout;
-    componentRef.instance.props = this.props;
-    componentRef.instance.collapsible = this._collapsible;
-    componentRef.instance.expand = this.expand;
-
-    this._initCollapsibleEl();
-    this._componentRef = componentRef.instance;
-  }
-
-  private _listenTransition(): void {
-    if (!this.collapsibleEl) {
-      return;
-    }
-
-    const transitionEnd$ = fromEvent(this.collapsibleEl, 'transitionend', {
+    const transitionEnd$ = fromEvent(el, 'transitionend', {
       passive: true,
     }).pipe(
-      filter(() => this.expand),
+      filter(() => this.expand()),
       tap(() => {
-        this._renderer2.removeStyle(this.collapsibleEl, 'height');
-        this._renderer2.removeStyle(this.collapsibleEl, 'overflow');
-      })
+        el?.classList.remove(...['height', 'overflow']);
+      }),
     );
 
-    transitionEnd$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe();
+    transitionEnd$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
-  private _setElementHeight(): void {
-    this._setExpandStyle();
+  private setElementHeight(): void {
+    this.setExpandStyle();
 
-    if (!this.expand) {
-      requestAnimationFrame(() => this._setCollapseStyle());
+    if (!this.expand()) {
+      requestAnimationFrame(() => this.setCollapseStyle());
     }
   }
 
-  private _initCollapsibleEl(): void {
-    if (!this.collapsibleEl || !this.collapsible) {
+  private initCollapsibleEl(): void {
+    const el = this.collapsibleEl();
+
+    if (!el || !this.isCollapsible()) {
       return;
     }
 
-    this._collapsibleElCssText = this.collapsibleEl.style.cssText || '';
-    this._renderer2.addClass(this.collapsibleEl, 'collapsible-container');
-    this._listenTransition();
+    this.collapsibleElCssText = el.style.cssText || '';
+    el.classList.add('collapsible-container');
+    this.listenTransition();
 
-    if (!this.expand) {
-      this._setCollapseStyle();
+    if (!this.expand()) {
+      this.setCollapseStyle();
     }
   }
 
-  private _setCollapseStyle(): void {
+  private setCollapseStyle(): void {
+    const el = this.collapsibleEl();
     const stylesToRemove = ['border', 'padding', 'margin'];
 
+    if (!el) {
+      return;
+    }
+
     stylesToRemove.forEach((style) => {
-      if (!this._collapsibleElCssText.includes(style)) return;
-      this._renderer2.removeStyle(this.collapsibleEl, style);
+      if (!this.collapsibleElCssText.includes(style)) return;
+      el.style.removeProperty(style);
     });
 
-    this._renderer2.setStyle(this.collapsibleEl, 'overflow', 'hidden');
-    this._renderer2.setStyle(this.collapsibleEl, 'height', '0px');
+    el.style.setProperty('overflow', 'hidden');
+    el.style.setProperty('height', '0px');
   }
 
-  private _setExpandStyle(): void {
-    const height = !this.collapsibleEl
-      ? 0
-      : this.collapsibleEl.scrollHeight + 1;
+  private setExpandStyle(): void {
+    const el = this.collapsibleEl();
+
+    const height = !el ? 0 : el.scrollHeight + 1;
 
     // Set existing styles from collapsible element first
-    this._renderer2.setProperty(
-      this.collapsibleEl,
-      'style',
-      this._collapsibleElCssText || null
-    );
+    if (this.collapsibleElCssText) {
+      el?.setAttribute('style', this.collapsibleElCssText);
+    }
 
     // Then set height later to overwrite height style
-    this._renderer2.setStyle(this.collapsibleEl, 'height', `${height}px`);
+    el?.style.setProperty('height', `${height}px`);
   }
 
-  private get _collapsible(): boolean {
-    return (
-      this.layout?.contentCollapsible === 'collapse' ||
-      this.layout?.contentCollapsible === 'expand'
-    );
+  private listenClickEvent(): void {
+    const host = this.el.nativeElement as HTMLElement;
+    const collapsible = this.isCollapsible();
+
+    if (!collapsible) {
+      return;
+    }
+
+    fromEvent(host, 'click', { passive: true })
+      .pipe(
+        tap(() => this.toggle()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }

@@ -1,26 +1,26 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <div
     class="group-buttons"
     [ngClass]="{
-      disabled: control.disabled
+      disabled: control.disabled,
     }"
     [ngStyle]="{
-      'flex-direction': data.options?.layout
+      'flex-direction': data.options?.layout,
     }"
   >
     <select
       [propsBinding]="[
         {
-          props: data.props
-        }
+          props: data.props,
+        },
       ]"
       [formControl]="control"
       (blur)="onTouched()"
-      (change)="updateControl($event)"
+      (change)="emitValue($event)"
     >
-      <ng-container *ngFor="let item of data.options?.data; index as i">
-        <option [value]="i">{{ item.label }}</option>
-      </ng-container>
+      @for (item of data.options?.data; track $index) {
+        <option [value]="$index">{{ item.label }}</option>
+      }
     </select>
   </div>
-</ng-container>
+}

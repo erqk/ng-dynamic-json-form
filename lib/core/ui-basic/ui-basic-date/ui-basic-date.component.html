@@ -1,26 +1,25 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <div
     class="date-input"
     [ngClass]="{
-      disabled: control.disabled
+      disabled: control.disabled,
     }"
   >
     <input
       type="date"
-      [attr.min]="dateSettings.min"
-      [attr.max]="dateSettings.max"
+      [attr.min]="dateSettings().min"
+      [attr.max]="dateSettings().max"
       [propsBinding]="[
         {
           props: data.props,
-          omit: ['min', 'max', 'type']
-        }
+          omit: ['min', 'max', 'type'],
+        },
       ]"
       [formControl]="control.controls.date"
-      (change)="updateControl()"
+      (change)="emitValue()"
     />
-
-    <ng-container *ngIf="data?.props?.showTime === true">
+    @if (data.props?.showTime === true) {
       <input type="time" [formControl]="control.controls.time" />
-    </ng-container>
+    }
   </div>
-</ng-container>
+}

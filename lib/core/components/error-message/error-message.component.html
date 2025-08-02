@@ -1,16 +1,16 @@
 <!-- Custom error message component -->
 <ng-container #componentAnchor></ng-container>
 <ng-container
-  [ngTemplateOutlet]="customTemplate ?? null"
+  [ngTemplateOutlet]="customTemplate()"
   [ngTemplateOutletContext]="{
-    control,
-    messages: errorMessages
+    control: control(),
+    messages: errorMessages.value(),
   }"
 ></ng-container>
 
 <!-- Default error message component -->
-<ng-container *ngIf="!customComponent && !customTemplate">
-  <ng-container *ngFor="let error of errorMessages">
+@if (useDefaultTemplate()) {
+  @for (error of errorMessages.value(); track $index) {
     <div>{{ error }}</div>
-  </ng-container>
-</ng-container>
+  }
+}

@@ -1,23 +1,27 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   DestroyRef,
+  effect,
   inject,
-  Input,
-  OnChanges,
-  SimpleChange,
-  SimpleChanges,
+  input,
+  signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  outputToObservable,
+  takeUntilDestroyed,
+} from '@angular/core/rxjs-interop';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { NgDynamicJsonFormComponent } from 'ng-dynamic-json-form';
-import { FormStatusFunctions } from 'ng-dynamic-json-form/core/models/form-status-functions.interface';
+import {
+  FormStatusFunctions,
+  NgDynamicJsonFormComponent,
+} from 'ng-dynamic-json-form';
 import { merge, Subject, takeUntil, tap } from 'rxjs';
 import { PlaygroundEditorComponent } from '../playground-editor/playground-editor.component';
 
 @Component({
   selector: 'app-playground-form-debugger',
-  standalone: true,
   imports: [CommonModule, PlaygroundEditorComponent],
   host: {
     class: 'flex flex-col w-full h-full beauty-scrollbar affect-child',
@@ -25,96 +29,142 @@ import { PlaygroundEditorComponent } from '../playground-editor/playground-edito
   templateUrl: './playground-form-debugger.component.html',
   styleUrls: ['./playground-form-debugger.component.scss'],
 })
-export class PlaygroundFormDebuggerComponent implements OnChanges {
-  private _destroyRef = inject(DestroyRef);
-  private _removeListeners$ = new Subject<void>();
+export class PlaygroundFormDebuggerComponent {
+  private destroyRef = inject(DestroyRef);
+  private removeListeners$ = new Subject<void>();
 
-  @Input() control?: AbstractControl;
-  @Input() form?: UntypedFormGroup;
-  @Input() formInstance?: NgDynamicJsonFormComponent;
-  @Input() triggerReset = false;
+  control = input<AbstractControl>();
+  form = input<UntypedFormGroup>();
+  formInstance = input<NgDynamicJsonFormComponent>();
 
-  controlTypes = ['FormGroup', 'CVA'];
-  activeControlType = this.controlTypes[0];
+  readonly controlTypes = ['FormGroup', 'CVA'];
 
-  activeSections: string[] = ['value'];
-  editingForm = false;
-  editingFormValue: any = '';
-
-  eventsLog: string[] = [];
-
-  controlStatus: { label: string; value: () => boolean }[] = [
+  readonly controlStates: { label: string; value: () => boolean }[] = [
     {
       label: 'dirty',
-      value: () => this.activeControl?.dirty ?? false,
+      value: () => this.activeControl()?.dirty ?? false,
     },
     {
       label: 'pristine',
-      value: () => this.activeControl?.pristine ?? false,
+      value: () => this.activeControl()?.pristine ?? false,
     },
     {
       label: 'touched',
-      value: () => this.activeControl?.touched ?? false,
+      value: () => this.activeControl()?.touched ?? false,
     },
   ];
 
-  statusFunctions?: FormStatusFunctions;
-  statusActions: { label: string; action: Function }[] = [
+  readonly statusActions: { label: string; action: Function }[] = [
     {
       label: 'setDirty()',
       action: () => {
-        this.control?.markAsDirty();
+        this.control()?.markAsDirty();
         this.statusFunctions?.setDirty();
       },
     },
     {
       label: 'setPristine()',
       action: () => {
-        this.control?.markAsPristine();
+        this.control()?.markAsPristine();
         this.statusFunctions?.setPristine();
       },
     },
     {
       label: 'setTouched()',
       action: () => {
-        this.control?.markAsTouched();
+        this.control()?.markAsTouched();
         this.statusFunctions?.setTouched();
       },
     },
     {
       label: 'setUntouched()',
       action: () => {
-        this.control?.markAsUntouched();
+        this.control()?.markAsUntouched();
         this.statusFunctions?.setUntouched();
       },
     },
   ];
 
-  hideErrorMessageActions: { label: string; action: Function }[] = [
+  readonly hideErrorMessageActions: { label: string; action: Function }[] = [
     {
       label: 'true',
-      action: () => this._setHideErrorMessageValue(true),
+      action: () => this.setHideErrorMessageValue(true),
     },
     {
       label: 'false',
-      action: () => this._setHideErrorMessageValue(false),
+      action: () => this.setHideErrorMessageValue(false),
     },
     {
       label: 'undefined',
-      action: () => this._setHideErrorMessageValue(undefined),
+      action: () => this.setHideErrorMessageValue(undefined),
     },
   ];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const { formInstance } = changes;
+  activeControlType = signal(this.controlTypes[0]);
+  activeControl = computed(() => {
+    const type = this.activeControlType();
 
-    if (formInstance) {
-      this._onFormInstanceGet();
+    switch (type) {
+      case 'FormGroup':
+        return this.form();
+
+      case 'CVA':
+        return this.control();
     }
-  }
+
+    return undefined;
+  });
+
+  activeSections: string[] = ['value'];
+  editingFormValue: any = '';
+  isFormEditing = false;
+
+  eventsLog: string[] = [];
+  statusFunctions?: FormStatusFunctions;
+
+  onFormInstanceGet = effect(() => {
+    const formInstance = this.formInstance();
+
+    if (!formInstance) {
+      return;
+    }
+
+    const { formGet, optionsLoaded, updateStatusFunctions } =
+      formInstance ?? {};
+
+    const formGet$ = outputToObservable(formGet).pipe(
+      tap(() => {
+        this.logEvent('formGet');
+        this.setHideErrorMessageValue(undefined);
+      }),
+    );
+
+    const optionsLoaded$ = outputToObservable(optionsLoaded).pipe(
+      tap(() => {
+        this.logEvent('optionsLoaded');
+      }),
+    );
+
+    const updateStatusFunctions$ = outputToObservable(
+      updateStatusFunctions,
+    ).pipe(
+      tap((x) => {
+        this.logEvent('updateStatusFunctions');
+        this.statusFunctions = x;
+      }),
+    );
+
+    this.removeListeners$.next();
+    merge(formGet$, updateStatusFunctions$, optionsLoaded$)
+      .pipe(
+        takeUntil(this.removeListeners$),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  });
 
   setActiveInfoType(type: string): void {
-    this.activeControlType = type;
+    this.activeControlType.set(type);
   }
 
   setActiveSection(section: string): void {
@@ -125,75 +175,42 @@ export class PlaygroundFormDebuggerComponent implements OnChanges {
     }
   }
 
-  toggleFormEdit(patchForm?: boolean): void {
-    this.editingForm = !this.editingForm;
-
-    if (!this.editingForm) {
-      this.activeControl?.patchValue(
-        patchForm ? this.editingFormValue : this.activeControl.value
-      );
-    }
+  editValue(): void {
+    this.isFormEditing = true;
   }
 
-  get activeControl(): AbstractControl | undefined {
-    switch (this.activeControlType) {
-      case 'FormGroup':
-        return this.form;
+  confirmFormValueEdit(): void {
+    const control = this.activeControl();
 
-      case 'CVA':
-        return this.control;
-    }
-
-    return undefined;
+    control?.patchValue(this.editingFormValue);
+    this.isFormEditing = false;
   }
 
-  private _onFormInstanceGet(): void {
-    if (!this.formInstance) {
+  cancelFormValueEdit(): void {
+    const control = this.activeControl();
+
+    this.isFormEditing = false;
+
+    // Restore the editor value to current form's value
+    control?.patchValue(control.value);
+  }
+
+  handleEditorChange(value: any): void {
+    this.editingFormValue = value;
+  }
+
+  private setHideErrorMessageValue(bool?: boolean): void {
+    const formInstance = this.formInstance();
+
+    if (!formInstance) {
       return;
     }
 
-    const { formGet, optionsLoaded, updateStatusFunctions } =
-      this.formInstance ?? {};
-
-    const formGet$ = formGet.pipe(
-      tap(() => {
-        this._logEvent('formGet');
-        this._setHideErrorMessageValue(undefined);
-      })
-    );
-
-    const optionsLoaded$ = optionsLoaded.pipe(
-      tap(() => {
-        this._logEvent('optionsLoaded');
-      })
-    );
-
-    const updateStatusFunctions$ = updateStatusFunctions.pipe(
-      tap((x) => {
-        this._logEvent('updateStatusFunctions');
-        this.statusFunctions = x;
-      })
-    );
-
-    this._removeListeners$.next();
-    merge(formGet$, updateStatusFunctions$, optionsLoaded$)
-      .pipe(
-        takeUntil(this._removeListeners$),
-        takeUntilDestroyed(this._destroyRef)
-      )
-      .subscribe();
+    const prevValue = formInstance.hideErrorMessage;
+    formInstance.hideErrorMessage.set(bool);
   }
 
-  private _setHideErrorMessageValue(bool?: boolean): void {
-    if (!this.formInstance) return;
-
-    const prevValue = this.formInstance.hideErrorMessage;
-    const change = new SimpleChange(prevValue, bool, prevValue === undefined);
-
-    this.formInstance.ngOnChanges({ hideErrorMessage: change });
-  }
-
-  private _logEvent(eventName: string): void {
+  private logEvent(eventName: string): void {
     const time = new Intl.DateTimeFormat('en-US', {
       timeStyle: 'medium',
     }).format(new Date());

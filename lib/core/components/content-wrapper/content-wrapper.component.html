@@ -1,78 +1,74 @@
-<ng-container *ngIf="config && control">
-  <!-- Label -->
-  <ng-container *ngIf="config.label">
-    <form-label
-      [label]="config.label"
-      [layout]="config.layout"
-      [props]="config.props"
-      [collapsibleEl]="collapsibleEl"
-      [customComponent]="labelComponents?.[config.formControlName] ?? labelComponentDefault"
-      [customTemplate]="labelTemplates?.[config.formControlName] ?? labelTemplateDefault"
-      [state]="collapsibleState"
-      [controlLayout]="{
-        type: 'label',
-        layout: config.layout
-      }"
-      [ngClass]="{
-        required:
-          config.layout?.autoAddRequiredClass === false
-            ? null
-            : (control | isControlRequired)
-      }"
-    ></form-label>
-  </ng-container>
-
-  <div
-    #collapsibleEl
+<!-- Label -->
+@if (showLabel()) {
+  <form-label
+    [label]="label()"
+    [layout]="layout()"
+    [props]="props()"
+    [collapsibleEl]="collapsibleEl"
+    [customComponent]="customLabelComponent()"
+    [customTemplate]="customLabelTemplate()"
+    [state]="collapsibleState()"
     [controlLayout]="{
-      type: 'content',
-      layout: config.layout
+      type: 'label',
+      layout: layout(),
     }"
-  >
-    <!-- Description (before) -->
-    <ng-container
-      *ngIf="
-        config.description && config.layout?.descriptionPosition !== 'after'
-      "
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{ data: config }"
-    ></ng-container>
+    [ngClass]="{
+      required:
+        !layout()?.autoAddRequiredClass === true
+          ? (control() | isControlRequired)
+          : null,
+    }"
+  ></form-label>
+}
 
-    <ng-content></ng-content>
+<div
+  #collapsibleEl
+  [controlLayout]="{
+    type: 'content',
+    layout: layout(),
+  }"
+>
+  <!-- Description (before) -->
+  @if (description() && descriptionPosition() !== "after") {
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+  }
 
-    <!-- Description (after) -->
-    <ng-container
-      *ngIf="
-        config.description && config.layout?.descriptionPosition === 'after'
-      "
-      [ngTemplateOutlet]="descriptionTemplate"
-      [ngTemplateOutletContext]="{ data: config }"
-    ></ng-container>
+  <ng-content></ng-content>
 
+  <!-- Validation message -->
+  @if (renderErrorSection()) {
     <error-message
-      [control]="control"
-      [validators]="config.validators"
-      [customComponent]="errorComponents?.[config.formControlName] ?? errorComponentDefault"
-      [customTemplate]="errorTemplates?.[config.formControlName] ?? errorTemplateDefault"
+      [control]="control()"
+      [validators]="validators()"
+      [customComponent]="customErrorComponent()"
+      [customTemplate]="customErrorTemplate()"
       [controlLayout]="{
         type: 'error',
-        layout: config.layout
+        layout: layout(),
       }"
       [ngClass]="{
-        hidden: !showErrors
+        hidden: !showErrors(),
       }"
     ></error-message>
-  </div>
-</ng-container>
+  }
+
+  <!-- Description (after) -->
+  @if (description() && descriptionPosition() === "after") {
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+  }
+</div>
 
 <!-- Description template -->
-<ng-template #descriptionTemplate let-data="data">
+<ng-template #descriptionTemplate>
   <span
     class="form-description"
+    [ngClass]="{
+      'position-after': descriptionPosition() === 'after',
+    }"
     [controlLayout]="{
       type: 'description',
-      layout: data.layout
+      layout: layout(),
     }"
-    >{{ data.description }}</span
+    >{{ description() }}</span
   >
 </ng-template>

@@ -1,10 +1,10 @@
-<ng-container *ngIf="data">
+@if (data(); as data) {
   <mat-slider
     [propsBinding]="[
       {
         key: 'mat-slider',
-        props: data.props
-      }
+        props: data.props,
+      },
     ]"
   >
     <input
@@ -13,4 +13,4 @@
       (input)="onChange(control.value)"
     />
   </mat-slider>
-</ng-container>
+}
