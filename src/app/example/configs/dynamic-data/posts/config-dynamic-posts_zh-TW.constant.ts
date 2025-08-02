@@ -12,7 +12,7 @@ export const CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
       descriptionPosition: 'after',
     },
     options: CONFIG_DYNAMIC_POSTS_EN.find(
-      (x) => x.formControlName === 'tagsControl'
+      (x) => x.formControlName === 'tagsControl',
     )?.options,
   },
   {
@@ -20,19 +20,20 @@ export const CONFIG_DYNAMIC_POSTS_ZHTW: FormControlConfig[] = [
     formControlName: 'postWithTag',
     type: 'select',
     options: CONFIG_DYNAMIC_POSTS_EN.find(
-      (x) => x.formControlName === 'postWithTag'
+      (x) => x.formControlName === 'postWithTag',
     )?.options,
   },
   {
     label: '搜尋貼文',
     formControlName: 'searchControl',
+    value: '',
   },
   {
     label: '貼文搜尋結果',
     formControlName: 'resultPosts',
     type: 'select',
     options: CONFIG_DYNAMIC_POSTS_EN.find(
-      (x) => x.formControlName === 'resultPosts'
+      (x) => x.formControlName === 'resultPosts',
     )?.options,
   },
 ];

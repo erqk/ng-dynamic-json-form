@@ -45,6 +45,7 @@ export const CONFIG_DYNAMIC_POSTS_EN: FormControlConfig[] = [
   {
     label: 'Search post',
     formControlName: 'searchControl',
+    value: '',
   },
   {
     label: 'Posts search result',
