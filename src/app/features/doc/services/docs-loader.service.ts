@@ -46,7 +46,6 @@ export class DocsLoaderService {
     const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
     const url = `assets/docs/${version}/${filePath}`;
     const key = makeStateKey<string>(url);
-    console.log('loadDoc url', url);
 
     if (this.transferState.hasKey(key)) {
       return of(this.transferState.get(key, ''));
@@ -86,7 +85,6 @@ export class DocsLoaderService {
     const version = this.versionService.currentVersion();
     const indexPath = `assets/docs/${version}/index_${lang}.md`;
     const key = makeStateKey<string>(indexPath);
-    console.log('defaultDoc', indexPath);
 
     const source$ = () => {
       if (this.transferState.hasKey(key)) {

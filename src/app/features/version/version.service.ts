@@ -20,19 +20,17 @@ export class VersionService {
   }
 
   private collectVersionsFromDocIndex$(): Observable<string[]> {
-    return this.http
-      .get('/assets/docs/index.md', { responseType: 'text' })
-      .pipe(
-        map((x) => {
-          const matchItems = x.match(/^## (?!.*\(deprecated\)).*$/gm) || [];
-          const result = matchItems
-            .map((x) => x.split('##')[1].trim()[0])
-            .sort()
-            .reverse();
+    return this.http.get('assets/docs/index.md', { responseType: 'text' }).pipe(
+      map((x) => {
+        const matchItems = x.match(/^## (?!.*\(deprecated\)).*$/gm) || [];
+        const result = matchItems
+          .map((x) => x.split('##')[1].trim()[0])
+          .sort()
+          .reverse();
 
-          return result;
-        }),
-      );
+        return result;
+      }),
+    );
   }
 
   private npmPackageVersions$(): Observable<string[]> {
