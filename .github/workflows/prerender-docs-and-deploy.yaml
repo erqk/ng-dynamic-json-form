@@ -95,23 +95,6 @@ jobs:
           echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }}/docs/browser to gh-pages-repo/v$VERSION"
           cp -r ${{ env.BUILD_OUTPUT_DIR }}/docs/browser/* gh-pages-repo/v$VERSION/
 
-          # Find and process HTML files to replace the entire base href tag
-          echo "Processing HTML files to replace base href tag..."
-          find gh-pages-repo/v$VERSION -name "*.html" -type f | while read -r html_file; do
-            echo "Processing: $html_file"
-            # Replace the entire <base href="..."> tag with the correct version
-            sed -i 's|<base href="[^"]*">|<base href="/ng-dynamic-json-form/v'$VERSION'/">|g' "$html_file"
-            
-            # Verify the replacement was made
-            if grep -q "/ng-dynamic-json-form/v$VERSION/" "$html_file"; then
-              echo "✅ Successfully replaced base href tag in $html_file"
-              # Show the new base href for verification
-              grep '<base href=' "$html_file"
-            else
-              echo "ℹ️ No base href tag found in $html_file"
-            fi
-          done
-
           # Verify files were copied
           echo "Files in version directory:"
           ls -la gh-pages-repo/v$VERSION/

@@ -86,7 +86,8 @@
                   "maximumError": "512kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/ng-dynamic-json-form/v9/"
             },
             "development": {
               "optimization": false,
