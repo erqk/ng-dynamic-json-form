@@ -45,23 +45,6 @@ async function main() {
   let serverProc;
 
   try {
-    // Parse command line arguments for base href
-    const args = process.argv.slice(2);
-    let baseHref = null;
-
-    const baseHrefIndex = args.findIndex((arg) =>
-      arg.startsWith("--base-href"),
-    );
-    if (baseHrefIndex !== -1) {
-      if (args[baseHrefIndex].includes("=")) {
-        baseHref = args[baseHrefIndex].split("=")[1];
-      } else if (args[baseHrefIndex + 1]) {
-        baseHref = args[baseHrefIndex + 1];
-      }
-    }
-
-    console.log(`🏷️ Base href: ${baseHref || "default"}`);
-
     console.log("🔧 Step 1: Building library...");
     await run("npm", ["run", "build:lib"]);
 
