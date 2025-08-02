@@ -44,7 +44,7 @@ export class DocsLoaderService {
     const pathSegments = path.split('/');
     const filename = `${pathSegments[pathSegments.length - 1]}_${lang}.md`;
     const filePath = path.endsWith('.md') ? path : `${path}/${filename}`;
-    const url = `/assets/docs/${version}/${filePath}`;
+    const url = `./assets/docs/${version}/${filePath}`;
     const key = makeStateKey<string>(url);
 
     if (this.transferState.hasKey(key)) {
