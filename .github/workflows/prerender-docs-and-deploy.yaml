@@ -65,7 +65,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: gh-pages
-          path: gh-pages
+          path: gh-pages-repo
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update version documentation
@@ -75,13 +75,13 @@ jobs:
           echo "Updating documentation for version: v$VERSION"
 
           # Remove existing version directory if it exists
-          if [ -d "gh-pages/v$VERSION" ]; then
+          if [ -d "gh-pages-repo/v$VERSION" ]; then
             echo "Removing existing version directory: v$VERSION"
-            rm -rf gh-pages/v$VERSION
+            rm -rf gh-pages-repo/v$VERSION
           fi
 
           # Create version directory
-          mkdir -p gh-pages/v$VERSION
+          mkdir -p gh-pages-repo/v$VERSION
 
           # Verify docs/browser directory exists
           if [ ! -d "${{ env.BUILD_OUTPUT_DIR }}/docs/browser" ]; then
@@ -92,65 +92,71 @@ jobs:
           fi
 
           # Copy built documentation files directly (without preserving directory structure)
-          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }}/docs/browser to gh-pages/v$VERSION"
-          cp -r ${{ env.BUILD_OUTPUT_DIR }}/docs/browser/* gh-pages/v$VERSION/
+          echo "Copying files from ${{ env.BUILD_OUTPUT_DIR }}/docs/browser to gh-pages-repo/v$VERSION"
+          cp -r ${{ env.BUILD_OUTPUT_DIR }}/docs/browser/* gh-pages-repo/v$VERSION/
 
-          # Find and process HTML files to replace {{VERSION}} placeholder
-          echo "Processing HTML files to replace {{VERSION}} placeholder..."
-          find gh-pages/v$VERSION -name "*.html" -type f | while read -r html_file; do
+          # Find and process HTML files to replace the entire base href tag
+          echo "Processing HTML files to replace base href tag..."
+          find gh-pages-repo/v$VERSION -name "*.html" -type f | while read -r html_file; do
             echo "Processing: $html_file"
-            # Replace {{VERSION}} with v$VERSION in the base href
-            sed -i "s|{{VERSION}}|v$VERSION|g" "$html_file"
+            # Replace the entire <base href="..."> tag with the correct version
+            sed -i 's|<base href="[^"]*">|<base href="/ng-dynamic-json-form/v'$VERSION'/">|g' "$html_file"
             
             # Verify the replacement was made
-            if grep -q "v$VERSION" "$html_file"; then
-              echo "✅ Successfully replaced {{VERSION}} with v$VERSION in $html_file"
+            if grep -q "/ng-dynamic-json-form/v$VERSION/" "$html_file"; then
+              echo "✅ Successfully replaced base href tag in $html_file"
+              # Show the new base href for verification
+              grep '<base href=' "$html_file"
             else
-              echo "ℹ️ No {{VERSION}} placeholder found in $html_file"
+              echo "ℹ️ No base href tag found in $html_file"
             fi
           done
 
           # Verify files were copied
           echo "Files in version directory:"
-          ls -la gh-pages/v$VERSION/
+          ls -la gh-pages-repo/v$VERSION/
 
           echo "Documentation successfully copied to version directory: v$VERSION"
 
       - name: Create redirect index
         run: |
-          cd gh-pages
+          cd gh-pages-repo
 
           echo "Creating redirect index page..."
 
-          # Find all version directories and sort them
-          VERSIONS=($(find . -maxdepth 1 -type d -name '[0-9]*' | sed 's|./||' | sort -V))
+          # Find all version directories and sort them (looking for v1, v2, v3... pattern)
+          VERSIONS=($(find . -maxdepth 1 -type d -name 'v[0-9]*' | sed 's|./v||' | sort -V))
           echo "Found versions: ${VERSIONS[*]}"
 
           # Get the latest version (last in sorted array)
           if [ ${#VERSIONS[@]} -gt 0 ]; then
             LATEST_VERSION=${VERSIONS[-1]}
-            echo "Latest version determined to be: $LATEST_VERSION"
+            echo "Latest version determined to be: v$LATEST_VERSION"
             
-          cat > index.html << EOF
+            cat > index.html << EOF
           <!DOCTYPE html>
           <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Documentation - Redirecting...</title>
-              <meta http-equiv="refresh" content="0; url=./v$LATEST_VERSION/">
-              <link rel="canonical" href="./v$LATEST_VERSION/">
-          </head>
-          <body>
-              <p>Redirecting to documentation version v$LATEST_VERSION...</p>
-              <p>If you are not redirected automatically, <a href="./v$LATEST_VERSION/">click here</a>.</p>
-          </body>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Documentation - Redirecting...</title>
+                <meta http-equiv="refresh" content="0; url=/ng-dynamic-json-form/v$LATEST_VERSION/">
+                <link rel="canonical" href="/ng-dynamic-json-form/v$LATEST_VERSION/">
+                <script>
+                    // Immediate redirect using JavaScript as fallback
+                    window.location.href = '/ng-dynamic-json-form/v$LATEST_VERSION/';
+                </script>
+            </head>
+            <body>
+                <p>Redirecting to documentation version v$LATEST_VERSION...</p>
+                <p>If you are not redirected automatically, <a href="/ng-dynamic-json-form/v$LATEST_VERSION/">click here</a>.</p>
+            </body>
           </html>
           EOF
-            echo "Created redirect index for latest version: $LATEST_VERSION"
+            echo "Created redirect index for latest version: v$LATEST_VERSION"
           else
             echo "No versions found, creating placeholder index"
-          cat > index.html << EOF
+            cat > index.html << EOF
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -169,7 +175,7 @@ jobs:
 
       - name: Commit and push to gh-pages branch
         run: |
-          cd gh-pages
+          cd gh-pages-repo
 
           # Configure git
           git config user.name "github-actions[bot]"
