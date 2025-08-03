@@ -1,5 +1,13 @@
 # 9.0.1 (2025-08-03)
 
+[c899f63]: https://github.com/erqk/ng-dynamic-json-form/commit/c899f634bff8767b7d75e68020dfcd13b46ae8a8
+
+| Commit    | Type | Description                                                                                                            |
+| --------- | ---- | ---------------------------------------------------------------------------------------------------------------------- |
+| [c899f63] | fix  | For custom observable, use `tap()` with `next` and `error` instead of `finalize()`, to take account of hot observable. |
+
+# 9.0.1 (2025-08-03)
+
 [85e9bc3]: https://github.com/erqk/ng-dynamic-json-form/commit/85e9bc3ecbe671fb5d31ce9d3daf13f1fe41f3f7
 
 | Commit    | Type | Description                                                              |
