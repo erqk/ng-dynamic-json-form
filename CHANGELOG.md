@@ -1,4 +1,12 @@
-# 9.0.1 (2025-08-03)
+# 9.0.3 (2025-08-03)
+
+[0a46b80]: https://github.com/erqk/ng-dynamic-json-form/commit/0a46b802720d67a36fac3e206db3de7190183c0c
+
+| Commit    | Type | Description                                                                       |
+| --------- | ---- | --------------------------------------------------------------------------------- |
+| [0a46b80] | fix  | OptionDataService: `getOptionsByFilter$` should fire finalizeCallback() on error. |
+
+# 9.0.2 (2025-08-03)
 
 [c899f63]: https://github.com/erqk/ng-dynamic-json-form/commit/c899f634bff8767b7d75e68020dfcd13b46ae8a8
 
