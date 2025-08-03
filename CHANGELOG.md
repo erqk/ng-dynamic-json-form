@@ -1,3 +1,11 @@
+# 9.0.1 (2025-08-03)
+
+[85e9bc3]: https://github.com/erqk/ng-dynamic-json-form/commit/85e9bc3ecbe671fb5d31ce9d3daf13f1fe41f3f7
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [85e9bc3] | fix  | `optionsLoaded` should emit regardless the existence of pending options. |
+
 # 9.0.0 (2025-08-01)
 
 - Update to support Angular 20
