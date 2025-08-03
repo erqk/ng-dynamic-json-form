@@ -169,7 +169,16 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
           const source$ = this.global.optionsSources?.[src] || EMPTY;
 
           this.setLoading(true);
-          return source$.pipe(finalize(() => this.setLoading(false)));
+
+          return source$.pipe(
+            // The source$ might be a hybrid Observable, which outer stream is HOT (from Subject),
+            // and inner stream is COLD (http request). So we need to call setLoading(false) in both
+            // `next` and `error`, instead of using finalize().
+            tap({
+              next: () => this.setLoading(false),
+              error: () => this.setLoading(false),
+            }),
+          );
         }
 
         if (src.filter || src.trigger) {
