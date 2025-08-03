@@ -283,11 +283,13 @@ export class NgDynamicJsonFormComponent
 
     const ready = this.formReadyStateService.optionsReady();
 
-    if (!form || !needWaiting) {
+    if (!form) {
       return;
     }
 
-    if (ready) {
+    if (!needWaiting) {
+      this.optionsLoaded.emit();
+    } else if (ready) {
       this.optionsLoaded.emit();
     }
   });
