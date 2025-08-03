@@ -118,7 +118,10 @@ export class OptionsDataService {
           return result;
         }),
       ),
-      tap(() => finalizeCallback()),
+      tap({
+        next: () => finalizeCallback(),
+        error: () => finalizeCallback(),
+      }),
     );
 
     return result$.pipe(takeUntil(this.cancelAll$));
