@@ -9,6 +9,8 @@ import { FORM_CONFIG_TEXTAREA_MAX_LENGTH_EN } from 'src/app/example/configs/cust
 import { FORM_CONFIG_TEXTAREA_MAX_LENGTH_ZHTW } from 'src/app/example/configs/custom-validators/textarea-maxlength/form-config-textarea-maxlength_zh-TW.constant';
 import { CONFIG_ADDRESS_DYNAMIC_EN } from 'src/app/example/configs/dynamic-data/address/config-dynamic-address_en.constant';
 import { CONFIG_ADDRESS_DYNAMIC_ZHTW } from 'src/app/example/configs/dynamic-data/address/config-dynamic-address_zh-TW.constant';
+import { CONFIG_DYNAMIC_CUSTOM_OBSERVABLE_EN } from 'src/app/example/configs/dynamic-data/custom-obervable/config-dynamic-custom-observable_en.constant';
+import { CONFIG_DYNAMIC_CUSTOM_OBSERVABLE_ZHTW } from 'src/app/example/configs/dynamic-data/custom-obervable/config-dynamic-custom-observable_zh-TW.constant';
 import { CONFIG_DYNAMIC_MULTI_SOURCE_EN } from 'src/app/example/configs/dynamic-data/multi-source/config-dynamic-multi-source_en.constant';
 import { CONFIG_DYNAMIC_MULTI_SOURCE_ZHTW } from 'src/app/example/configs/dynamic-data/multi-source/config-dynamic-multi-source_zh-TW.constant';
 import { CONFIG_DYNAMIC_POSTS_EN } from 'src/app/example/configs/dynamic-data/posts/config-dynamic-posts_en.constant';
@@ -121,13 +123,25 @@ export const PLAYGROUND_CONFIGS: {
   },
   'dynamic-multi-source': {
     en: {
-      label: 'Options (Dynamic)',
+      label: 'Options (Multi-source)',
       config: CONFIG_DYNAMIC_MULTI_SOURCE_EN,
       isExample: true,
     },
     'zh-TW': {
-      label: '選項 (動態)',
+      label: '選項 (多來源)',
       config: CONFIG_DYNAMIC_MULTI_SOURCE_ZHTW,
+      isExample: true,
+    },
+  },
+  'dynamic-custom-observable': {
+    en: {
+      label: 'Options (Custom Observable)',
+      config: CONFIG_DYNAMIC_CUSTOM_OBSERVABLE_EN,
+      isExample: true,
+    },
+    'zh-TW': {
+      label: '選項 (自訂 Observable)',
+      config: CONFIG_DYNAMIC_CUSTOM_OBSERVABLE_ZHTW,
       isExample: true,
     },
   },

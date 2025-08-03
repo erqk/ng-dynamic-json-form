@@ -21,6 +21,9 @@ import {
   map,
   Observable,
   share,
+  startWith,
+  Subject,
+  switchMap,
   tap,
   toArray,
 } from 'rxjs';
@@ -107,11 +110,21 @@ export class PagePlaygroundComponent implements OnInit {
     Object.keys(this.customUiComponents)[0];
 
   optionsSources = {
-    custom$: this.http.get('https://dummyjson.com/products').pipe(
+    products$: this.http.get('https://dummyjson.com/products').pipe(
       map((x) => (x as any).products),
       concatAll(),
-      map((x: any) => ({ label: x.title, value: x })),
+      map((x: any) => ({ label: x.title, value: x.title })),
       toArray(),
+    ),
+    'products-hot-observable$': new Subject<string>().pipe(
+      startWith('https://dummyjson.com/products'),
+      switchMap((x) => this.http.get(x)),
+      map((x) =>
+        (x as any).products.map((item: any) => ({
+          label: item.title,
+          value: item.title,
+        })),
+      ),
     ),
   };
 

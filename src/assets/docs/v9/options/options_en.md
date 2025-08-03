@@ -589,11 +589,11 @@ If the `src` is a string, then it is use as a key to match with the Observable i
 
 ```tsx
 optionsSources = {
-  custom$: this._http.get("https://dummyjson.com/products").pipe(
+  products$: this._http.get("https://dummyjson.com/products").pipe(
     map((x) => (x as any).products),
     concatAll(),
     map((x: any) => ({ label: x.title, value: x })),
-    toArray()
+    toArray(),
   ),
 };
 ```
@@ -606,7 +606,7 @@ optionsSources = {
 {
 	...
 	"options": {
-		"src": "custom$",
+		"src": "products$",
 		...
 	}
 }

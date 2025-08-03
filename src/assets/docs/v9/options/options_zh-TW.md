@@ -590,11 +590,11 @@ https://dummyjson.com/products/category/smartphones
 
 ```tsx
 optionsSources = {
-  custom$: this._http.get("https://dummyjson.com/products").pipe(
+  products$: this._http.get("https://dummyjson.com/products").pipe(
     map((x) => (x as any).products),
     concatAll(),
     map((x: any) => ({ label: x.title, value: x })),
-    toArray()
+    toArray(),
   ),
 };
 ```
@@ -607,7 +607,7 @@ optionsSources = {
 {
 	...
 	"options": {
-		"src": "custom$",
+		"src": "products$",
 		...
 	}
 }
