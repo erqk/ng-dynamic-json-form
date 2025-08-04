@@ -219,23 +219,25 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
   });
 
   handleOptionsFetched = effect(() => {
-    const optionsConfig = this.optionsConfig();
     const dynamicOptions = this.dynamicOptions();
     const inputComponent = this.inputComponentRef();
-    const pendingValue = this.pendingValue();
 
     if (!dynamicOptions || !inputComponent) {
       return;
     }
 
-    const { autoSelectFirst, data, srcAppendPosition } = optionsConfig ?? {};
-    const staticOptions = structuredClone(data ?? []);
-    const newOptions =
-      srcAppendPosition === 'before'
-        ? dynamicOptions.concat(staticOptions)
-        : staticOptions?.concat(dynamicOptions);
-
     untracked(() => {
+      const { autoSelectFirst, data, srcAppendPosition } =
+        this.optionsConfig() ?? {};
+
+      const pendingValue = this.pendingValue();
+      const staticOptions = structuredClone(data ?? []);
+
+      const newOptions =
+        srcAppendPosition === 'before'
+          ? dynamicOptions.concat(staticOptions)
+          : staticOptions?.concat(dynamicOptions);
+
       inputComponent.onOptionsGet(newOptions);
 
       if (pendingValue) {
@@ -356,7 +358,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     componentRef: ComponentRef<CustomControlComponent>,
   ): void {
     componentRef.instance.data.set(this.data());
-    componentRef.instance.hostForm.set(this.global.rootForm);
+    componentRef.instance.hostForm.set(this.hostForm);
     componentRef.instance.writeValue(this.pendingValue());
     componentRef.instance.registerOnChange(this.onChange);
     componentRef.instance.registerOnTouched(this.onTouched);
