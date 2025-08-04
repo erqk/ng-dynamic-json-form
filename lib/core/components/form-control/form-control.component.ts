@@ -243,8 +243,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       if (pendingValue) {
         this.writeControlValue(pendingValue);
         this.pendingValue.set(null);
-      } else if (autoSelectFirst) {
-        this.writeControlValue(newOptions?.[0]);
+      } else if (autoSelectFirst && newOptions.length > 0) {
+        this.writeControlValue(newOptions[0].value);
       }
     });
   });
