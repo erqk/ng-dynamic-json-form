@@ -212,7 +212,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       const componentRef = anchor.createComponent(inputComponent);
       this.inputComponentRef.set(componentRef.instance);
       this.initComponentInstance(componentRef);
-      this.syncControlErrors();
+
+      // Do this in the next tick to get the correct state of the component,
+      // because the component is just created at this time.
+      queueMicrotask(() => {
+        this.syncControlErrors();
+      });
 
       this.init.destroy();
     });
@@ -407,6 +412,9 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
         this.updateControlStatus('touched');
       }
     };
+
+    // Propagate the initial errors to the CustomControlComponent
+    setComponentErrors(getErrors());
 
     combineLatest([
       this.hideErrorMessage$,
