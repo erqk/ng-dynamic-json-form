@@ -1,3 +1,92 @@
+# 9.0.5 (2025-08-05)
+
+[72a6dc6]: https://github.com/erqk/ng-dynamic-json-form/commit/72a6dc63726db4d13ff1aa394d2365f87d848b52
+[32d9cf5]: https://github.com/erqk/ng-dynamic-json-form/commit/32d9cf55b475f697a2199b927723be5230af4cb5
+[f48f85e]: https://github.com/erqk/ng-dynamic-json-form/commit/f48f85e40ce777591b5ecd213bd28e8ae79fadfa
+[0b4d7f8]: https://github.com/erqk/ng-dynamic-json-form/commit/0b4d7f8326adea3e76e447b528d40d8df4eb35c8
+
+| Commit    | Type     | Description                                              |
+| --------- | -------- | -------------------------------------------------------- |
+| [72a6dc6] | fix      | Propagates initial errors to the CustomControlComponent. |
+| [32d9cf5] | refactor | Use custom track in the template directly.               |
+| [f48f85e] | feat     | Allow execute conditions directly.                       |
+| [0b4d7f8] | fix      | Form UI is incorrect on init.                            |
+
+# 9.0.4 (2025-08-04)
+
+[95f19db]: https://github.com/erqk/ng-dynamic-json-form/commit/95f19dbbe945a6a5b2bba9d445d2814861a9a9c5
+[e17ef24]: https://github.com/erqk/ng-dynamic-json-form/commit/e17ef241ad7d574280de4964a2952b4c3977ce51
+
+| Commit    | Type | Description                                                 |
+| --------- | ---- | ----------------------------------------------------------- |
+| [95f19db] | fix  | Infinite effect loop.                                       |
+| [e17ef24] | fix  | Value to write is incorrect when `autoSelectFirst` is true. |
+
+# 9.0.3 (2025-08-03)
+
+[0a46b80]: https://github.com/erqk/ng-dynamic-json-form/commit/0a46b802720d67a36fac3e206db3de7190183c0c
+
+| Commit    | Type | Description                                                                       |
+| --------- | ---- | --------------------------------------------------------------------------------- |
+| [0a46b80] | fix  | OptionDataService: `getOptionsByFilter$` should fire finalizeCallback() on error. |
+
+# 9.0.2 (2025-08-03)
+
+[c899f63]: https://github.com/erqk/ng-dynamic-json-form/commit/c899f634bff8767b7d75e68020dfcd13b46ae8a8
+
+| Commit    | Type | Description                                                                                                            |
+| --------- | ---- | ---------------------------------------------------------------------------------------------------------------------- |
+| [c899f63] | fix  | For custom observable, use `tap()` with `next` and `error` instead of `finalize()`, to take account of hot observable. |
+
+# 9.0.1 (2025-08-03)
+
+[85e9bc3]: https://github.com/erqk/ng-dynamic-json-form/commit/85e9bc3ecbe671fb5d31ce9d3daf13f1fe41f3f7
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [85e9bc3] | fix  | `optionsLoaded` should emit regardless the existence of pending options. |
+
+# 9.0.0 (2025-08-01)
+
+- Update to support Angular 20
+- Use signal to replace all the usage of `@Input`, `@Output`, `ngOnChanges`
+
+## Fix
+
+- For control with options, its value should not be overridden after the options is loaded.
+
+## BREAKING CHANGES
+
+### CustomControlComponent
+
+- The properties are now using signal.
+
+  ```ts
+  hostForm = signal<UntypedFormGroup | undefined>(undefined);
+  data = signal<FormControlConfig | undefined>(undefined);
+  hideErrorMessage = signal<boolean | undefined>(undefined);
+  ```
+
+- `registerOnChange` is doing nothing at default. It should not trigger event every time after the `valueChanges` to prevent the CVA becomes dirty unintentionally.
+
+  ```ts
+  // before
+  registerOnChange(fn: any): void {
+    this.control?.valueChanges.subscribe(fn);
+  }
+
+  // after
+  registerOnChange(fn: any): void {}
+  ```
+
+# 8.8.5 (2025-08-05)
+
+[5febc47]: https://github.com/erqk/ng-dynamic-json-form/commit/5febc47127fcc6c2bd123be73aeffba6f075ddf5
+
+| Commit    | Type | Description     |
+| --------- | ---- | --------------- |
+| [5febc47] | fix  | Missing export. |
+
 # 8.8.4 (2025-08-01)
 
 [22f8dc3]: https://github.com/erqk/ng-dynamic-json-form/commit/22f8dc3e2bea791c92d540e6d4da80d3a2a2d07e
