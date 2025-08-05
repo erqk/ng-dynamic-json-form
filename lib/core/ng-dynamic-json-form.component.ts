@@ -135,6 +135,8 @@ export class NgDynamicJsonFormComponent
   private onTouched = () => {};
   private onChangeFn = (_: any) => {};
 
+  private buildFormComplete = signal<boolean>(false);
+
   configs = input<FormControlConfig[] | string>();
   /**
    * User defined custom components. Use `formControlName` as the key to map target component.
@@ -240,13 +242,12 @@ export class NgDynamicJsonFormComponent
 
   buildForm = effect(() => {
     const globalVariablesInitialized = this.globalVariablesInitialized();
-    const { configs, errors } = this.configValidationResult() ?? {};
+    const { configs } = this.configValidationResult() ?? {};
 
     if (
       typeof window === 'undefined' ||
       !globalVariablesInitialized ||
-      !configs?.length ||
-      !!errors?.length
+      !configs?.length
     ) {
       return;
     }
@@ -255,35 +256,49 @@ export class NgDynamicJsonFormComponent
       const form = this.formGeneratorService.generateFormGroup(configs);
 
       this.reset();
-      this.form.set(form);
 
+      // Setting up the global variables
       this.globalVariableService.rootForm = form;
       this.globalVariableService.rootConfigs = configs;
 
+      // Instantiate the form component
+      this.form.set(form);
+
+      // After the form component is instantiated, start the event listeners
       this.setupListeners();
 
-      this.formGet.emit(form);
-      this.updateStatusFunctions.emit({
-        setDirty: () => this.updateFormStatus('setDirty'),
-        setPristine: () => this.updateFormStatus('setPristine'),
-        setTouched: () => this.updateFormStatus('setTouched'),
-        setUntouched: () => this.updateFormStatus('setUntouched'),
-      });
-
       this.cd.markForCheck();
+
+      // Because at this time the form is just instantiate, it needs time to init the view.
+      // Everything inside `queryMicrotask` only works in the next tick.
+      queueMicrotask(() => {
+        this.formConditionsService.executeConditions();
+        this.formGet.emit(form);
+
+        // Put this inside is only for the purpose to prevent it gets earlier than `formGet`,
+        // to prevent user call this function while form is just instantiated.
+        this.updateStatusFunctions.emit({
+          setDirty: () => this.updateFormStatus('setDirty'),
+          setPristine: () => this.updateFormStatus('setPristine'),
+          setTouched: () => this.updateFormStatus('setTouched'),
+          setUntouched: () => this.updateFormStatus('setUntouched'),
+        });
+
+        this.buildFormComplete.set(true);
+      });
     });
   });
 
   handleOptionsReady = effect(() => {
     const { configs } = this.configValidationResult() ?? {};
-    const form = this.form();
+    const buildFormComplete = this.buildFormComplete();
     const needWaiting = this.formReadyStateService.haveOptionsToWait(
       configs ?? [],
     );
 
     const ready = this.formReadyStateService.optionsReady();
 
-    if (!form) {
+    if (!buildFormComplete) {
       return;
     }
 
@@ -452,6 +467,7 @@ export class NgDynamicJsonFormComponent
     this.reset$.next();
     this.form.set(undefined);
     this.allowFormDirty.set(false);
+    this.buildFormComplete.set(false);
 
     this.optionsDataService.cancelAllRequest();
     this.formReadyStateService.resetState();
