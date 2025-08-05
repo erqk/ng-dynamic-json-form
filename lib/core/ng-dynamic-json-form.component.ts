@@ -284,6 +284,21 @@ export class NgDynamicJsonFormComponent
     isDisabled ? this.form?.disable() : this.form?.enable();
   }
 
+  getDisplayValue(): FormDisplayValue | undefined {
+    const form = this.form;
+
+    if (!form) {
+      return undefined;
+    }
+
+    const result = this._formValueService.getFormDisplayValue(
+      form.value,
+      this.configGet
+    );
+
+    return result;
+  }
+
   private _setupVariables(): void {
     const {
       errorComponent,
@@ -486,12 +501,11 @@ export class NgDynamicJsonFormComponent
     };
 
     const updateDisplayValue = () => {
-      const displayValue = this._formValueService.getFormDisplayValue(
-        form.value,
-        this.configGet
-      );
+      const displayValue = this.getDisplayValue();
 
-      this.displayValue.emit(displayValue);
+      if (displayValue) {
+        this.displayValue.emit(displayValue);
+      }
     };
 
     const keepFormPristine = () => {
