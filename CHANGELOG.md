@@ -1,3 +1,27 @@
+# 9.0.5 (2025-08-05)
+
+[72a6dc6]: https://github.com/erqk/ng-dynamic-json-form/commit/72a6dc63726db4d13ff1aa394d2365f87d848b52
+[32d9cf5]: https://github.com/erqk/ng-dynamic-json-form/commit/32d9cf55b475f697a2199b927723be5230af4cb5
+[f48f85e]: https://github.com/erqk/ng-dynamic-json-form/commit/f48f85e40ce777591b5ecd213bd28e8ae79fadfa
+[0b4d7f8]: https://github.com/erqk/ng-dynamic-json-form/commit/0b4d7f8326adea3e76e447b528d40d8df4eb35c8
+
+| Commit    | Type     | Description                                              |
+| --------- | -------- | -------------------------------------------------------- |
+| [72a6dc6] | fix      | Propagates initial errors to the CustomControlComponent. |
+| [32d9cf5] | refactor | Use custom track in the template directly.               |
+| [f48f85e] | feat     | Allow execute conditions directly.                       |
+| [0b4d7f8] | fix      | Form UI is incorrect on init.                            |
+
+# 9.0.4 (2025-08-04)
+
+[95f19db]: https://github.com/erqk/ng-dynamic-json-form/commit/95f19dbbe945a6a5b2bba9d445d2814861a9a9c5
+[e17ef24]: https://github.com/erqk/ng-dynamic-json-form/commit/e17ef241ad7d574280de4964a2952b4c3977ce51
+
+| Commit    | Type | Description                                                 |
+| --------- | ---- | ----------------------------------------------------------- |
+| [95f19db] | fix  | Infinite effect loop.                                       |
+| [e17ef24] | fix  | Value to write is incorrect when `autoSelectFirst` is true. |
+
 # 9.0.3 (2025-08-03)
 
 [0a46b80]: https://github.com/erqk/ng-dynamic-json-form/commit/0a46b802720d67a36fac3e206db3de7190183c0c
