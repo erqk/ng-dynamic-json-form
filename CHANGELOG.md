@@ -1,3 +1,19 @@
+# 9.0.7 (2025-08-06)
+
+[0dd35fc]: https://github.com/erqk/ng-dynamic-json-form/commit/0dd35fcced69de2fd87d890dc04c90057a96c16e
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [0dd35fc] | fix  | Attributes are not set to HTMLElement. |
+
+# 9.0.6 (2025-08-06)
+
+[5349b93]: https://github.com/erqk/ng-dynamic-json-form/commit/5349b93ab0e5d9384d58897d55819220840d687e
+
+| Commit    | Type | Description                                                                           |
+| --------- | ---- | ------------------------------------------------------------------------------------- |
+| [5349b93] | fix  | Slow performance issue if many NgDynamicJsonFormComponent instances in the same page. |
+
 # 9.0.5 (2025-08-05)
 
 [72a6dc6]: https://github.com/erqk/ng-dynamic-json-form/commit/72a6dc63726db4d13ff1aa394d2365f87d848b52
@@ -78,6 +94,14 @@
   // after
   registerOnChange(fn: any): void {}
   ```
+
+# 8.8.6 (2025-08-06)
+
+[cadad897]: https://github.com/erqk/ng-dynamic-json-form/commit/cadad89754e98e26c1ce7ba5d8c7f52a5393f3ee
+
+| Commit     | Type | Description                            |
+| ---------- | ---- | -------------------------------------- |
+| [cadad897] | fix  | Attributes are not set to HTMLElement. |
 
 # 8.8.5 (2025-08-05)
 
