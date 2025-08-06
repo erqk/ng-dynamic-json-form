@@ -1,3 +1,11 @@
+# 9.0.7 (2025-08-06)
+
+[0dd35fc]: https://github.com/erqk/ng-dynamic-json-form/commit/0dd35fcced69de2fd87d890dc04c90057a96c16e
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [0dd35fc] | fix  | Attributes are not set to HTMLElement. |
+
 # 9.0.6 (2025-08-06)
 
 [5349b93]: https://github.com/erqk/ng-dynamic-json-form/commit/5349b93ab0e5d9384d58897d55819220840d687e
