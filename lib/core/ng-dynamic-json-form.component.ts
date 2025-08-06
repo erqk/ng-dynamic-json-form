@@ -67,7 +67,6 @@ import {
   OptionsDataService,
 } from './services';
 import { FormReadyStateService } from './services/form-ready-state.service';
-import { WindowEventService } from './services/window-event.service';
 import { UI_BASIC_COMPONENTS } from './ui-basic/ui-basic-components.constant';
 import { getControlErrors } from './utilities/get-control-errors';
 
@@ -118,7 +117,6 @@ export class NgDynamicJsonFormComponent
   private formValueService = inject(FormValueService);
   private formReadyStateService = inject(FormReadyStateService);
   private globalVariableService = inject(GlobalVariableService);
-  private windowEventService = inject(WindowEventService);
   private optionsDataService = inject(OptionsDataService);
 
   private controlDirective: FormControlDirective | null = null;
@@ -314,11 +312,6 @@ export class NgDynamicJsonFormComponent
   });
 
   ngOnInit(): void {
-    this.windowEventService
-      .start$()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
-
     this.setupVariables();
     this.getControlDirective();
   }
@@ -475,30 +468,14 @@ export class NgDynamicJsonFormComponent
     this.controlDirective?.form.markAsUntouched();
   }
 
-  private updateFormStatus(status: keyof FormStatusFunctions): void {
+  private updateFormStatus(type: keyof FormStatusFunctions): void {
     const form = this.formGroupRef();
 
     if (!form) {
       return;
     }
 
-    switch (status) {
-      case 'setDirty':
-        form.updateStatus('dirty');
-        break;
-
-      case 'setPristine':
-        form.updateStatus('pristine');
-        break;
-
-      case 'setTouched':
-        form.updateStatus('touched');
-        break;
-
-      case 'setUntouched':
-        form.updateStatus('untouched');
-        break;
-    }
+    form.updateStatus(type);
   }
 
   private formValueChanges$(): Observable<any> {

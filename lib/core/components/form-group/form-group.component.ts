@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   input,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
@@ -12,7 +13,7 @@ import { getClassListFromString } from '../../../core/utilities/get-class-list-f
 import { getStyleListFromString } from '../../../core/utilities/get-style-list-from-string';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { HostIdDirective } from '../../directives/host-id.directive';
-import { FormControlConfig } from '../../models';
+import { FormControlConfig, FormStatusFunctions } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import { ControlTypeByConfigPipe } from '../../pipes/control-type-by-config.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
@@ -48,6 +49,10 @@ export class FormGroupComponent {
   rootClass = input<string>();
   rootStyles = input<string>();
 
+  contentWrapperRefs = viewChildren(ContentWrapperComponent);
+  contentWrapperEl = viewChild(ContentWrapperComponent, {
+    read: ElementRef,
+  });
   formGroupRefs = viewChildren(FormGroupComponent);
   formControlRefs = viewChildren(FormControlComponent);
 
@@ -79,8 +84,9 @@ export class FormGroupComponent {
     }
   });
 
-  updateStatus(status: 'dirty' | 'pristine' | 'touched' | 'untouched'): void {
-    this.formControlRefs()?.forEach((x) => x.updateControlStatus(status));
-    this.formGroupRefs()?.forEach((x) => x.updateStatus(status));
+  updateStatus(type: keyof FormStatusFunctions): void {
+    this.contentWrapperRefs()?.forEach((x) => x.updateControlStatus());
+    this.formControlRefs()?.forEach((x) => x.updateControlStatus(type));
+    this.formGroupRefs()?.forEach((x) => x.updateStatus(type));
   }
 }

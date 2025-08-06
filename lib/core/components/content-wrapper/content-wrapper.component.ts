@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { delay, filter, map, merge, switchMap } from 'rxjs';
+import { tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import { IsControlRequiredPipe } from '../../pipes/is-control-required.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
-import { WindowEventService } from '../../services/window-event.service';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { FormLabelComponent } from '../form-label/form-label.component';
 
@@ -26,7 +25,6 @@ import { FormLabelComponent } from '../form-label/form-label.component';
 })
 export class ContentWrapperComponent {
   private global = inject(GlobalVariableService);
-  private windowEventService = inject(WindowEventService);
 
   readonly showErrorsOnTouched = this.global.showErrorsOnTouched;
 
@@ -94,51 +92,42 @@ export class ContentWrapperComponent {
     return typesToHide.filter(Boolean).every((x) => x !== type);
   });
 
-  controlStatus = toSignal(
-    toObservable(this.control).pipe(
-      filter(Boolean),
-      filter(() => typeof window !== 'undefined'),
-      switchMap((x) => {
-        const userEvent$ = merge(
-          this.windowEventService.keyUp$,
-          this.windowEventService.pointerUp$,
-        ).pipe(
-          // Control state is unchanged until the keyup/pointerup event was fired.
-          // We give some time for the control to check and update, so what we
-          // can get the latest result correctly.
-          delay(1),
-        );
+  isDirty = signal<boolean>(false);
+  isTouched = signal<boolean>(false);
 
-        return merge(x.statusChanges, userEvent$);
-      }),
-      map(() => ({
-        dirty: this.control()?.dirty ?? false,
-        touched: this.control()?.touched ?? false,
-      })),
-    ),
+  hideErrors = toSignal(
+    this.global.hideErrorMessage$.pipe(tap(() => this.updateControlStatus())),
   );
-
-  hideErrors = toSignal(this.global.hideErrorMessage$);
 
   showErrors = computed(() => {
     const control = this.control();
-    const controlStatus = this.controlStatus();
     const hideErrors = this.hideErrors();
+    const isDirty = this.isDirty();
+    const isTouched = this.isTouched();
 
     if (!control || hideErrors) {
       return false;
     }
 
     if (control.errors) {
-      const { dirty, touched } = controlStatus ?? {};
-
       if (this.showErrorsOnTouched) {
-        return dirty || touched || false;
+        return isDirty || isTouched || false;
       }
 
-      return dirty ?? false;
+      return isDirty ?? false;
     }
 
     return false;
   });
+
+  updateControlStatus(): void {
+    const control = this.control();
+
+    // At this time this function is fired, all of the `updateControlStatus` in the `FormControlComponent` are just fired.
+    // Control state is unchanged at this event loop, so we put it in the next event loop to get the correct result.
+    queueMicrotask(() => {
+      this.isDirty.set(control?.dirty ?? false);
+      this.isTouched.set(control?.touched ?? false);
+    });
+  }
 }

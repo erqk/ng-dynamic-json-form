@@ -40,6 +40,7 @@ import {
 } from 'rxjs';
 import {
   FormControlConfig,
+  FormStatusFunctions,
   OptionItem,
   OptionSourceConfig,
 } from '../../models';
@@ -286,14 +287,12 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
     return this.inputComponentRef()?.validate(control) ?? null;
   }
 
-  updateControlStatus(
-    status: 'dirty' | 'pristine' | 'touched' | 'untouched',
-  ): void {
+  updateControlStatus(type: keyof FormStatusFunctions): void {
     const control = this.control();
     const inputComponent = this.inputComponentRef();
 
-    switch (status) {
-      case 'dirty': {
+    switch (type) {
+      case 'setDirty': {
         inputComponent?.control?.markAsDirty();
         inputComponent?.markAsDirty();
         control?.markAsDirty();
@@ -301,7 +300,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
         break;
       }
 
-      case 'pristine': {
+      case 'setPristine': {
         inputComponent?.control?.markAsPristine();
         inputComponent?.markAsPristine();
         control?.markAsPristine();
@@ -309,7 +308,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
         break;
       }
 
-      case 'touched': {
+      case 'setTouched': {
         inputComponent?.control?.markAsTouched();
         inputComponent?.markAsTouched();
         control?.markAsTouched();
@@ -317,7 +316,7 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
         break;
       }
 
-      case 'untouched': {
+      case 'setUntouched': {
         inputComponent?.control?.markAsUntouched();
         inputComponent?.markAsUntouched();
         control?.markAsUntouched();
@@ -408,8 +407,8 @@ export class FormControlComponent implements ControlValueAccessor, Validator {
       inputComponent.hideErrorMessage.set(hide);
 
       if (hide === false) {
-        this.updateControlStatus('dirty');
-        this.updateControlStatus('touched');
+        this.updateControlStatus('setDirty');
+        this.updateControlStatus('setTouched');
       }
     };
 
