@@ -68,7 +68,6 @@ export class PropsBindingDirective {
 
         if (target) {
           this.updateComponentProperty({ component: target, key, value });
-          continue;
         }
 
         if (host) {
