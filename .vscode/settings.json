@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  }
+  },
+  "exportall.config.folderListener": ["/lib/core/services", "/lib/core/models"]
 }

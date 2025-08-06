@@ -8,4 +8,3 @@ export * from './form-value.service';
 export * from './global-variable.service';
 export * from './http-request-cache.service';
 export * from './options-data.service';
-export * from './window-event.service';
