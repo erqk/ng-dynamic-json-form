@@ -206,7 +206,6 @@ export class PlaygroundFormDebuggerComponent {
       return;
     }
 
-    const prevValue = formInstance.hideErrorMessage;
     formInstance.hideErrorMessage.set(bool);
   }
 
