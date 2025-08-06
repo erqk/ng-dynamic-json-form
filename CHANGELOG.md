@@ -1,3 +1,11 @@
+# 9.0.6 (2025-08-06)
+
+[5349b93]: https://github.com/erqk/ng-dynamic-json-form/commit/5349b93ab0e5d9384d58897d55819220840d687e
+
+| Commit    | Type | Description                                                                           |
+| --------- | ---- | ------------------------------------------------------------------------------------- |
+| [5349b93] | fix  | Slow performance issue if many NgDynamicJsonFormComponent instances in the same page. |
+
 # 9.0.5 (2025-08-05)
 
 [72a6dc6]: https://github.com/erqk/ng-dynamic-json-form/commit/72a6dc63726db4d13ff1aa394d2365f87d848b52
@@ -78,6 +86,14 @@
   // after
   registerOnChange(fn: any): void {}
   ```
+
+# 8.8.5 (2025-08-05)
+
+[5febc47]: https://github.com/erqk/ng-dynamic-json-form/commit/5febc47127fcc6c2bd123be73aeffba6f075ddf5
+
+| Commit    | Type | Description     |
+| --------- | ---- | --------------- |
+| [5febc47] | fix  | Missing export. |
 
 # 8.8.4 (2025-08-01)
 
