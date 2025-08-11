@@ -1,3 +1,11 @@
+# 9.0.8 (2025-08-11)
+
+[788a9a4]: https://github.com/erqk/ng-dynamic-json-form/commit/788a9a4b6bf2a34c1b87cd468438e2c437cd6f6d
+
+| Commit    | Type | Description                                          |
+| --------- | ---- | ---------------------------------------------------- |
+| [788a9a4] | fix  | ValidationErrors not showing properly on user input. |
+
 # 9.0.7 (2025-08-06)
 
 [0dd35fc]: https://github.com/erqk/ng-dynamic-json-form/commit/0dd35fcced69de2fd87d890dc04c90057a96c16e
