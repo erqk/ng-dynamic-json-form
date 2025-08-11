@@ -1,3 +1,11 @@
+# 9.0.9 (2025-08-11)
+
+[ced1c9d]: https://github.com/erqk/ng-dynamic-json-form/commit/ced1c9d83e636b18ea7cd4c2e6f87fe5e4b87935
+
+| Commit    | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| [ced1c9d] | fix  | `hideErrorMessage` should be an input. |
+
 # 9.0.8 (2025-08-11)
 
 [788a9a4]: https://github.com/erqk/ng-dynamic-json-form/commit/788a9a4b6bf2a34c1b87cd468438e2c437cd6f6d
