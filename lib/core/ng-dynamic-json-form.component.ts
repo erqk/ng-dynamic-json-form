@@ -176,7 +176,7 @@ export class NgDynamicJsonFormComponent
   descriptionPosition = input<FormLayout['descriptionPosition']>();
   rootClass = input<string>();
   rootStyles = input<string>();
-  hideErrorMessage = signal<boolean | undefined>(undefined);
+  hideErrorMessage = input<boolean | undefined>(undefined);
 
   // Custom error components/templates
   errorComponents = input<CustomErrorComponents>();
