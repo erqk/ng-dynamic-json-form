@@ -34,7 +34,6 @@ import {
   Observable,
   Subject,
   filter,
-  fromEvent,
   map,
   merge,
   of,
@@ -63,6 +62,7 @@ import {
   FormValidationService,
   FormValueService,
   GlobalVariableService,
+  HostEventService,
   HttpRequestCacheService,
   OptionsDataService,
 } from './services';
@@ -118,6 +118,7 @@ export class NgDynamicJsonFormComponent
   private formReadyStateService = inject(FormReadyStateService);
   private globalVariableService = inject(GlobalVariableService);
   private optionsDataService = inject(OptionsDataService);
+  private hostEventService = inject(HostEventService);
 
   private controlDirective: FormControlDirective | null = null;
   /**
@@ -311,6 +312,13 @@ export class NgDynamicJsonFormComponent
     this.globalVariableService.hideErrorMessage$.next(this.hideErrorMessage());
   });
 
+  constructor() {
+    this.hostEventService
+      .start$(this.el.nativeElement)
+      .pipe(takeUntilDestroyed())
+      .subscribe();
+  }
+
   ngOnInit(): void {
     this.setupVariables();
     this.getControlDirective();
@@ -412,9 +420,6 @@ export class NgDynamicJsonFormComponent
       return;
     }
 
-    const hostEvent$ = (name: string) =>
-      fromEvent(this.el.nativeElement, name, { passive: true });
-
     const conditions$ = this.formConditionsService.listenConditions$();
     const valueChanges$ = this.formValueChanges$();
 
@@ -432,14 +437,14 @@ export class NgDynamicJsonFormComponent
       }),
     );
 
-    const onTouched$ = hostEvent$('focusout').pipe(
+    const onTouched$ = this.hostEventService.focusOut$.pipe(
       take(1),
       tap(() => this.onTouched()),
     );
 
     const allowDirtyState$ = merge(
-      hostEvent$('pointerdown'),
-      hostEvent$('keydown'),
+      this.hostEventService.pointerDown$,
+      this.hostEventService.keyDown$,
     ).pipe(
       take(1),
       tap(() => this.allowFormDirty.set(true)),

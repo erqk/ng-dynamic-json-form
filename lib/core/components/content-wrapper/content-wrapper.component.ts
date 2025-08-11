@@ -1,13 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
+import {
+  rxResource,
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { tap } from 'rxjs';
+import { map, merge, takeWhile, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
 import { IsControlRequiredPipe } from '../../pipes/is-control-required.pipe';
 import { GlobalVariableService } from '../../services/global-variable.service';
+import { HostEventService } from '../../services/host-event.service';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { FormLabelComponent } from '../form-label/form-label.component';
 
@@ -23,14 +36,32 @@ import { FormLabelComponent } from '../form-label/form-label.component';
   templateUrl: './content-wrapper.component.html',
   styles: [],
 })
-export class ContentWrapperComponent {
+export class ContentWrapperComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private global = inject(GlobalVariableService);
+  private hostEventService = inject(HostEventService);
 
   readonly showErrorsOnTouched = this.global.showErrorsOnTouched;
 
   config = input<FormControlConfig>();
   control = input<AbstractControl>();
   collapsibleState = input<FormLayout['contentCollapsible']>();
+
+  isDirty = signal<boolean>(false);
+  isTouched = signal<boolean>(false);
+
+  controlErrors = rxResource({
+    params: () => this.control(),
+    stream: ({ params }) =>
+      merge(params.valueChanges, params.statusChanges).pipe(
+        map(() => params.errors),
+      ),
+    defaultValue: null,
+  });
+
+  hideErrors = toSignal(
+    this.global.hideErrorMessage$.pipe(tap(() => this.updateControlStatus())),
+  );
 
   formControlName = computed(() => this.config()?.formControlName ?? '');
 
@@ -92,33 +123,32 @@ export class ContentWrapperComponent {
     return typesToHide.filter(Boolean).every((x) => x !== type);
   });
 
-  isDirty = signal<boolean>(false);
-  isTouched = signal<boolean>(false);
-
-  hideErrors = toSignal(
-    this.global.hideErrorMessage$.pipe(tap(() => this.updateControlStatus())),
-  );
-
   showErrors = computed(() => {
-    const control = this.control();
+    const errors = this.controlErrors.value();
     const hideErrors = this.hideErrors();
     const isDirty = this.isDirty();
     const isTouched = this.isTouched();
 
-    if (!control || hideErrors) {
+    if (!errors || hideErrors) {
       return false;
     }
 
-    if (control.errors) {
-      if (this.showErrorsOnTouched) {
-        return isDirty || isTouched || false;
-      }
-
-      return isDirty ?? false;
+    if (this.showErrorsOnTouched) {
+      return isDirty || isTouched || false;
     }
 
-    return false;
+    return isDirty ?? false;
   });
+
+  ngOnInit(): void {
+    merge(this.hostEventService.keyUp$, this.hostEventService.pointerUp$)
+      .pipe(
+        tap(() => this.updateControlStatus()),
+        takeWhile(() => !this.isDirty() && !this.isTouched()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
 
   updateControlStatus(): void {
     const control = this.control();
