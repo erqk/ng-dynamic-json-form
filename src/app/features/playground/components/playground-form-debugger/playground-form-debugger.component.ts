@@ -6,6 +6,7 @@ import {
   effect,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -36,6 +37,8 @@ export class PlaygroundFormDebuggerComponent {
   control = input<AbstractControl>();
   form = input<UntypedFormGroup>();
   formInstance = input<NgDynamicJsonFormComponent>();
+
+  hideErrorMessage = output<boolean | undefined>();
 
   readonly controlTypes = ['FormGroup', 'CVA'];
 
@@ -88,15 +91,15 @@ export class PlaygroundFormDebuggerComponent {
   readonly hideErrorMessageActions: { label: string; action: Function }[] = [
     {
       label: 'true',
-      action: () => this.setHideErrorMessageValue(true),
+      action: () => this.hideErrorMessage.emit(true),
     },
     {
       label: 'false',
-      action: () => this.setHideErrorMessageValue(false),
+      action: () => this.hideErrorMessage.emit(false),
     },
     {
       label: 'undefined',
-      action: () => this.setHideErrorMessageValue(undefined),
+      action: () => this.hideErrorMessage.emit(undefined),
     },
   ];
 
@@ -135,7 +138,7 @@ export class PlaygroundFormDebuggerComponent {
     const formGet$ = outputToObservable(formGet).pipe(
       tap(() => {
         this.logEvent('formGet');
-        this.setHideErrorMessageValue(undefined);
+        this.hideErrorMessage.emit(undefined);
       }),
     );
 
@@ -197,16 +200,6 @@ export class PlaygroundFormDebuggerComponent {
 
   handleEditorChange(value: any): void {
     this.editingFormValue = value;
-  }
-
-  private setHideErrorMessageValue(bool?: boolean): void {
-    const formInstance = this.formInstance();
-
-    if (!formInstance) {
-      return;
-    }
-
-    formInstance.hideErrorMessage.set(bool);
   }
 
   private logEvent(eventName: string): void {

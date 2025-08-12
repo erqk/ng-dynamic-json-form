@@ -40,6 +40,7 @@ export class PlaygroundFormComponent {
   configs = input<FormControlConfig[]>([]);
   customComponents = input<CustomComponents>();
   control = input<FormControl>(new FormControl());
+  hideErrorMessage = input<boolean | undefined>(undefined);
 
   optionsSources =
     input<ReturnType<NgDynamicJsonFormComponent['optionsSources']>>();

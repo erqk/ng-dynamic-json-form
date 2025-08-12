@@ -213,6 +213,7 @@
         [configs]="(configs$ | async) ?? []"
         [control]="formControl"
         [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessage()"
         [optionsSources]="optionsSources"
         (formGet)="onFormGet($event)"
       ></app-playground-form>
@@ -223,6 +224,7 @@
         [configs]="(configs$ | async) ?? []"
         [control]="formControl"
         [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessage()"
         [optionsSources]="optionsSources"
         (formGet)="onFormGet($event)"
       ></app-playground-form-primeng>
@@ -233,6 +235,7 @@
         [configs]="(configs$ | async) ?? []"
         [control]="formControl"
         [customComponents]="customComponents"
+        [hideErrorMessage]="hideErrorMessage()"
         [optionsSources]="optionsSources"
         (formGet)="onFormGet($event)"
       ></app-playground-form-material>
@@ -245,5 +248,6 @@
     [control]="formControl"
     [form]="form"
     [formInstance]="playgroundFormRef()?.formRef()"
+    (hideErrorMessage)="hideErrorMessage.set($event)"
   ></app-playground-form-debugger>
 </ng-template>

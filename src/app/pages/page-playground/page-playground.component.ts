@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit, viewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
   FormGroup,
@@ -40,7 +40,6 @@ import { PlaygroundEditorDataService } from 'src/app/features/playground/service
 import { PlaygroundSettingsService } from 'src/app/features/playground/services/playground-settings.service';
 import { PlaygroundTemplateDataService } from 'src/app/features/playground/services/playground-template-data.service';
 import { UiContentWrapperComponent } from 'src/app/features/ui-content-wrapper/ui-content-wrapper.component';
-import { VersionService } from 'src/app/features/version/version.service';
 
 @Component({
   selector: 'app-page-playground',
@@ -66,15 +65,11 @@ export class PagePlaygroundComponent implements OnInit {
   private layoutService = inject(LayoutService);
   private langService = inject(LanguageService);
   private templateDataService = inject(PlaygroundTemplateDataService);
-  private versionService = inject(VersionService);
   private playgroundSettingsService = inject(PlaygroundSettingsService);
   private editorDataService = inject(PlaygroundEditorDataService);
 
-  playgroundFormRef = viewChild(PlaygroundFormComponent);
-
-  MOBILE_BREAKPOINT = 992;
-
-  uiComponents = [
+  readonly MOBILE_BREAKPOINT = 992;
+  readonly uiComponents = [
     {
       key: 'UI Basic',
       value: undefined,
@@ -88,6 +83,10 @@ export class PagePlaygroundComponent implements OnInit {
       value: UI_MATERIAL_COMPONENTS,
     },
   ];
+
+  playgroundFormRef = viewChild(PlaygroundFormComponent);
+
+  hideErrorMessage = signal<boolean | undefined>(undefined);
 
   form = new FormGroup({});
   formControl = new UntypedFormControl('');
