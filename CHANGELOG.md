@@ -1,3 +1,11 @@
+# 9.0.10 (2025-08-12)
+
+[441b306]: https://github.com/erqk/ng-dynamic-json-form/commit/441b30653c5e84bbff8370ea44b1098484f614cd
+
+| Commit    | Type | Description                                                              |
+| --------- | ---- | ------------------------------------------------------------------------ |
+| [441b306] | fix  | Control validation errors is undefined when receive no user interaction. |
+
 # 9.0.9 (2025-08-11)
 
 [ced1c9d]: https://github.com/erqk/ng-dynamic-json-form/commit/ced1c9d83e636b18ea7cd4c2e6f87fe5e4b87935
