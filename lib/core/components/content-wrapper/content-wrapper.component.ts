@@ -14,7 +14,7 @@ import {
   toSignal,
 } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
-import { map, merge, takeWhile, tap } from 'rxjs';
+import { map, merge, startWith, takeWhile, tap } from 'rxjs';
 import { ControlLayoutDirective } from '../../directives/control-layout.directive';
 import { FormControlConfig } from '../../models';
 import { FormLayout } from '../../models/form-layout.interface';
@@ -54,6 +54,7 @@ export class ContentWrapperComponent implements OnInit {
     params: () => this.control(),
     stream: ({ params }) =>
       merge(params.valueChanges, params.statusChanges).pipe(
+        startWith(params.status),
         map(() => params.errors),
       ),
     defaultValue: null,
