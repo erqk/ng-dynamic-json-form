@@ -1,3 +1,11 @@
+# 9.0.11 (2025-08-14)
+
+[e7a142e]: https://github.com/erqk/ng-dynamic-json-form/commit/e7a142e3ceafcefb99f4310035c19eef861ed61f
+
+| Commit    | Type | Description                        |
+| --------- | ---- | ---------------------------------- |
+| [e7a142e] | fix  | Custom component injection failed. |
+
 # 9.0.10 (2025-08-12)
 
 [441b306]: https://github.com/erqk/ng-dynamic-json-form/commit/441b30653c5e84bbff8370ea44b1098484f614cd
