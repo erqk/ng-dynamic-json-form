@@ -48,7 +48,9 @@ export class FormLabelComponent {
   customComponent = input<Type<CustomFormLabel>>();
   customTemplate = input<TemplateRef<any>>();
 
-  componentAnchor = viewChild.required<ViewContainerRef>('componentAnchor');
+  componentAnchor = viewChild.required('componentAnchor', {
+    read: ViewContainerRef,
+  });
 
   expand = signal<boolean>(false);
 
@@ -75,6 +77,8 @@ export class FormLabelComponent {
     if (!anchor || !customComponent) {
       return;
     }
+
+    anchor.clear();
 
     untracked(() => {
       const componentRef = anchor.createComponent(customComponent);
