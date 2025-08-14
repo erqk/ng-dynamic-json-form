@@ -11,6 +11,7 @@ import {
   provideNgDynamicJsonForm,
 } from 'ng-dynamic-json-form';
 import { CustomErrorMessageComponent } from 'src/app/example/components/custom-error-message/custom-error-message.component';
+import { CustomFormTitleComponent } from 'src/app/example/components/custom-form-title/custom-form-title.component';
 import { CustomLoadingComponent } from 'src/app/example/components/custom-loading/custom-loading.component';
 import { firstUppercaseValidator } from 'src/app/example/validators/first-uppercase.validator';
 import { letterStartsWithAValidator } from 'src/app/example/validators/letter-starts-with-a.async.validator';
@@ -28,7 +29,7 @@ import { textareaMaxLengthValidator } from 'src/app/example/validators/textarea-
       customAsyncValidators: {
         letterStartsWithA: letterStartsWithAValidator,
       },
-      // labelComponent: CustomFormTitleComponent,
+      labelComponent: CustomFormTitleComponent,
       loadingComponent: CustomLoadingComponent,
       errorComponent: CustomErrorMessageComponent,
     }),
